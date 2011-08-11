@@ -1,0 +1,196 @@
+Git一分钟教程
+
+
+转载自:   http://blog.enjoyrails.com/2008/12/31/git%E4%B8%80%E5%88%86%E9%92%9F%E6%95%99%E7%A8%8B/
+
+
+设置用户名与邮箱
+
+
+
+
+1
+2
+ 
+git config --global user.name "My Name"
+git config --global user.email "my@email.com" 
+
+从已有的git库中提取代码
+
+
+
+
+1
+ 
+git clone git@server:app.git myrepo 
+
+每次更改代码的操作
+ 
+更新本地代码到最新版本（需要merge才能合到本地代码中）
+
+
+
+
+1
+ 
+git fetch 
+
+合并更新后的代码到本地
+
+
+
+
+1
+ 
+git merge 
+
+更新代码方式的另一种方法(git pull是git fetch和git merge命令的一个组合)
+
+
+
+
+1
+ 
+git pull 
+
+修改代码后，查看已修改的内容
+
+
+
+
+1
+ 
+git diff --cached 
+
+将新增加文件加入到git中
+
+
+
+
+1
+ 
+git add file1 file2 file3 
+
+从git中删除文件
+
+
+
+
+1
+2
+ 
+git rm file1
+git rm -r dir1 
+
+提交修改
+
+
+
+
+1
+ 
+git commit -m 'this is memo' 
+
+如果想省掉提交之前的 git add 命令，可以直接用
+
+
+
+
+1
+ 
+git commit -a -m 'this is memo' 
+
+
+commit和commit -a的区别, commit -a相当于：
+ 第一步：自动地add所有改动的代码，使得所有的开发代码都列于index file中
+ 第二步：自动地删除那些在index file中但不在工作树中的文件
+ 第三步：执行commit命令来提交
+ 
+提交所有修改到远程服务器，这样，其它团队成员才能更新到这些修改
+
+
+
+
+1
+ 
+git push 
+
+--------------------------------------------------------------------------------
+
+其它常用命令
+ 
+显示commit日志
+
+
+
+
+1
+ 
+git log 
+
+不仅显示commit日志，而且同时显示每次commit的代码改变。
+
+
+
+
+1
+ 
+git log -p 
+
+回滚代码：
+
+
+
+
+1
+ 
+git revert HEAD 
+
+你也可以revert更早的commit，例如：
+
+
+
+
+1
+ 
+git revert HEAD^ 
+
+将branchname分支合并到当前分支中。(如果合并发生冲突，需要自己解决冲突)
+
+
+
+
+1
+ 
+git merge branchname 
+
+解决冲突
+ 
+
+当merge命令自身无法解决冲突的时候，它会将工作树置于一种特殊的状态，并且给用户提供冲突信息，以期用户可以自己解决这些问题。当然在这个时候，未发生冲突的代码已经被git merge登记在了index file里了。如果你这个时候使用git diff，显示出来的只是发生冲突的代码信息。
+ 
+
+在你解决了冲突之前，发生冲突的文件会一直在index file中被标记出来。这个时候，如果你使用git commit提交的话，git会提示：filename.txt needs merge
+ 
+
+在发生冲突的时候，如果你使用git status命令，那么会显示出发生冲突的具体信息。
+ 
+在你解决了冲突之后，你可以使用如下步骤来提交：
+ 
+第一步(如果需要增加文件)：
+
+
+
+
+1
+ 
+git add file1 
+
+第二步：
+
+
+
+
+1
+ 
+git commit 
