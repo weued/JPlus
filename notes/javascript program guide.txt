@@ -205,3 +205,7 @@ var a = 'aa' +
 7.1 API函数应该对参数进行 assert 确认。
 
 7.2  尽量为类 定义 xType 属性 和 toString 方法。
+
+7.3  先书写 imports  然后书写 using
+
+7.4  示例使用 trace 输出。
