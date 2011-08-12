@@ -209,3 +209,5 @@ var a = 'aa' +
 7.3  先书写 imports  然后书写 using
 
 7.4  示例使用 trace 输出。
+
+7.5  使用 UTF-8 编码 和 Windows 换行符 (换行回车)

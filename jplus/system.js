@@ -1,4 +1,5 @@
-﻿//===========================================
+﻿
+		<script src="../../common/assets/scripts/default.js" type="text/javascript"></script>//===========================================
 //  JPlus   0.1
 //===========================================
 
@@ -91,7 +92,6 @@ var JPlus = {
  * @projectDescription JPlus
  * @copyright 2009-2011 JPlus Team
  * @fileOverview 系统核心的核心部分。
- * @author xuld
  */
 
 (function (w) {

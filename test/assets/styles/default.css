@@ -1,0 +1,61 @@
+
+
+body {
+	color: #555555;
+    font-size: 14px;
+}
+
+h1 {
+	color: #666666;
+}
+
+h3 {
+	color: #E27B00;
+}
+
+.toolbar {
+
+}
+
+.toolbar a {
+	font-size: 16px;
+}
+
+.indigo {
+	background-color: #90D9E8;
+}
+
+.blue {
+	background-color: #285A8F;
+	color: #ffffff;
+}
+
+.green {
+	background-color: #B4B900;
+	color: #ffffff;
+}
+
+.purple {
+	background-color: #B05A89;
+	color: #ffffff;
+}
+
+.box {
+	border: 1pt solid #ffffff;
+	width: 80px;
+	height: 80px;
+	float: left;
+	margin-right: 10px;
+	padding: 10px;
+	text-align: center;
+	line-height: 80px;
+}
+
+
+.area {
+	background-color: #E95C41;
+	color: #ffffff;
+	padding: 10px;
+	height: 200px;
+	width: 200px;
+}
