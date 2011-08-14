@@ -30,6 +30,14 @@ var todos = {
 
 
 
+var notes = {
+	'项目说明': {
+		'J+ 介绍': 'JPlus-introduction.html'
+	}
+};
+
+
+
 var navs = {
 	'首页': 'index.html',
 	'核心': 'core/index.html',

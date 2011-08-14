@@ -3,10 +3,174 @@
 
 (function(){
 	
-	showPage();
-	
 	var root, moduleName, currentCases;
+
+	selectModule();
+	document.write('<link type="text/css" rel="stylesheet" href="' + root + 'assets/styles/default.css" />');
+	document.write('<script type="text/javascript" src="' + root + 'assets/project/project.js"></script>');
+	document.write('<script type="text/javascript" src="' + root + 'assets/libs/firebug-lite/build/firebug-lite.js"></script>');
 	
+	apply(window, {
+		
+		initPage: function (navs) {
+			var result = [];
+			for(var nav in navs){
+				result.push('<a href="' + root + navs[nav] +'">' + nav + '</a>');
+			}
+			
+			result[result.length - 1] = result[result.length - 1].replace('<a href="', '<a class="last" href="');
+			navs =  result.join('\r\n');
+			
+			
+			document.write('\
+				<div id="wrap" style="visibility: visible">\
+					<div id="toolbar"></div>\
+					<div id="header">\
+						<h1>J+</h1>\
+						<div id="navbar">' + 
+						navs +	
+						'</div>\
+					</div>\
+					<div id="body">\
+						<div id="main">\
+						正在载入...\
+						</div>\
+					</div>\
+					<div id="footer">\
+						Copyright &copy; 2011 JPlus Team\
+					</div>\
+				</div>');
+				
+			document.body.style.visibility = 'hidden';
+			
+			window.onload = function(){
+				var main = document.getElementById('main'), last, next = document.getElementById('wrap').nextSibling;
+				
+				while(main.firstChild)
+					main.removeChild(main.firstChild);
+					
+				for(; next; next = last){
+					last = next.nextSibling;
+					main.appendChild(next);
+				}
+				
+				document.body.style.visibility = '';
+				
+			};
+			
+			if(window[moduleName]){
+				
+				initMenu(window[moduleName]);
+			}
+			
+			
+		},
+		
+		initMenu: function (menus){
+			var sidebar = document.getElementById('sidebar');
+			if(!sidebar){
+				sidebar = document.getElementById('body').appendChild(document.createElement('div'));
+				sidebar.id = 'sidebar';
+			}
+			var result = [];
+			
+			for(var group in menus) {
+				
+				result.push('<h2>' + group + '</h2>');
+				
+				if(typeof menus[group] === 'string') {
+					var currenHeader = result.length - 1, total = 0, finished = 0;
+					result.push('<ul class="menu">');
+					forEach(menus[group].split(' '), function(value){
+						var clazz;
+						switch(value.charAt(0)) {
+							case '+':
+								clazz = '';
+								value = value.substring(1);
+								total++;
+								finished++;
+								break;
+							case '-':
+								clazz = ' class="removed"';
+								value = value.substring(1);
+								break;
+							case '#':
+								clazz = ' class="strong"';
+								value = value.substring(1);
+								total++;
+								finished++;
+								break;
+							default:
+								clazz = ' class="disabled"';
+								total++;
+								break;
+						}
+						
+						result.push('<li><a href="../' + group + '/' + value +'"' + clazz + '>' + value + '</a></li>');
+					});
+					
+					
+					result[currenHeader] = '<h2>' + group + ' <span class="small">(' + finished + '/' + total + ')</span></h2>';
+					
+				} else {
+					
+					result.push('<ul class="break-line">');
+					
+					for(var menu in menus[group]) {
+						result.push('<li><a href="' + root + menus[group][menu] +'">' + menu + '</a></li>');
+					}
+				}
+				
+				result.push('</ul>');
+				
+			}
+			
+			sidebar.innerHTML = result.join('\r\n');
+			
+		},
+
+		initTestCases: function (testcases) {
+			document.write('<div id="testcases">');
+			
+			currentCases = testcases;
+			
+			for(var name in testcases){
+				var testcase = testcases[name];
+				
+				if(typeof testcase === 'string') {
+					if(testcase === '-'){
+						document.write('<h2 class="testcasegroup">' + name + '</h2>');
+						continue ;
+					}
+					
+					testcase = {overrides: testcase};
+				}
+				
+				
+				var displayName = testcase.name || name;
+				var runTime = testcase.time || 1000;
+				
+				document.write('<div class="testcase" onclick="run(\'' + name + '\')" onmouseover="this.className += \' active\'" onmouseout="this.className = this.className.replace(\' active\', \'\');">');
+				document.write('<a href="javascript://' + name + '">' + displayName + '</a>');
+				
+				if(testcase.summary) {
+					document.write('&nbsp;&nbsp;&nbsp;&nbsp;' + testcase.summary);
+				}
+				
+				document.write('<span><a href="javascript://' + name + '">执行   ' + runTime + ' 次</a> | <a href="javascript://' + name + '">恶意测试</a></span></div>');
+				
+			}
+			
+			document.write('</div>');
+		}
+	
+	
+	});
+	
+	window.initPage = initPage;
+	window.initTestCases = initTestCases;
+	window.initMenu = initMenu;
+	window.run = run;
 	window.assert = window.assert || assert;
 	
 	applyIf(window.assert, {
@@ -53,187 +217,22 @@
 	}
 	
 	function getCurrentFileUrl() {
-		
 		var b = document.getElementsByTagName("script");
-		
 		b = b[b.length - 1];
-				
 		return !-[1, ] ? b.getAttribute('src', 5) : b.src;
-		
 	}
 	
 	function selectModule(){
 		root = getCurrentFileUrl().replace(/assets\/scripts\/.*$/, '');
 		moduleName = location.href.replace(root, '');
 		moduleName = moduleName.substr(0, (moduleName + '/').indexOf('/'));
-	}
-	
-	function showPage(){
-		selectModule();
-		window.initPage = initPage;
-		window.initTestCases = initTestCases;
-		window.initMenu = initMenu;
-		window.run = run;
-		document.write('<link type="text/css" rel="stylesheet" href="' + root + 'assets/styles/default.css" />');
-		document.write('<script type="text/javascript" src="' + root + 'assets/project/project.js"></script>');
-		document.write('<script type="text/javascript" src="' + root + 'assets/libs/firebug-lite/build/firebug-lite.js"></script>');
-	}
-	
-	function initMenu(menus){
-		var sidebar = document.getElementById('sidebar');
-		if(!sidebar){
-			sidebar = document.getElementById('body').appendChild(document.createElement('div'));
-			sidebar.id = 'sidebar';
-		}
-		var result = [];
-		
-		for(var group in menus) {
-			
-			result.push('<h2>' + group + '</h2>');
-			
-			if(typeof menus[group] === 'string') {
-				var currenHeader = result.length - 1, total = 0, finished = 0;
-				result.push('<ul class="menu">');
-				forEach(menus[group].split(' '), function(value){
-					var clazz;
-					switch(value.charAt(0)) {
-						case '+':
-							clazz = '';
-							value = value.substring(1);
-							total++;
-							finished++;
-							break;
-						case '-':
-							clazz = ' class="removed"';
-							value = value.substring(1);
-							break;
-						case '#':
-							clazz = ' class="strong"';
-							value = value.substring(1);
-							total++;
-							finished++;
-							break;
-						default:
-							clazz = ' class="disabled"';
-							total++;
-							break;
-					}
-					
-					result.push('<li><a href="../' + group + '/' + value +'"' + clazz + '>' + value + '</a></li>');
-				});
-				
-				
-				result[currenHeader] = '<h2>' + group + ' <span class="small">(' + finished + '/' + total + ')</span></h2>';
-				
-			} else {
-				
-				result.push('<ul class="break-line">');
-				
-				for(var menu in menus[group]) {
-					result.push('<li><a href="' + root + menus[group][menu] +'">' + menu + '</a></li>');
-				}
-			}
-			
-			result.push('</ul>');
-			
-		}
-		
-		sidebar.innerHTML = result.join('\r\n');
-		
-	}
-	
-	/**
-	 * 初始化整个页面。
-	 */
-	function initPage(navs){
-		var result = [];
-		for(var nav in navs){
-			result.push('<a href="' + root + navs[nav] +'">' + nav + '</a>');
-		}
-		
-		result[result.length - 1] = result[result.length - 1].replace('<a href="', '<a class="last" href="');
-		navs =  result.join('\r\n');
-		
-		
-		document.write('\
-			<div id="wrap" style="visibility: visible">\
-				<div id="toolbar"></div>\
-				<div id="header">\
-					<h1>J+</h1>\
-					<div id="navbar">' + 
-					navs +	
-					'</div>\
-				</div>\
-				<div id="body">\
-					<div id="main">\
-					正在载入...\
-					</div>\
-				</div>\
-				<div id="footer">\
-					Copyright &copy; 2011 JPlus Team\
-				</div>\
-			</div>');
-			
-		document.body.style.visibility = 'hidden';
-		
-		window.onload = function(){
-			var main = document.getElementById('main'), last, next = document.getElementById('wrap').nextSibling;
-			
-			while(main.firstChild)
-				main.removeChild(main.firstChild);
-				
-			for(; next; next = last){
-				last = next.nextSibling;
-				main.appendChild(next);
-			}
-			
-			document.body.style.visibility = '';
-			
-		};
-		
-		if(window[moduleName]){
-			
-			initMenu(window[moduleName]);
-		}
-		
 		
 	}
 	
 	
-	function initTestCases(testcases){
-		document.write('<div id="testcases">');
-		
-		currentCases = testcases;
-		
-		for(var name in testcases){
-			var testcase = testcases[name];
-			
-			if(typeof testcase === 'string') {
-				if(testcase === '-'){
-					document.write('<h2 class="testcasegroup">' + name + '</h2>');
-					continue ;
-				}
-				
-				testcase = {overrides: testcase};
-			}
-			
-			
-			var displayName = testcase.name || name;
-			var runTime = testcase.time || 1000;
-			
-			document.write('<div class="testcase" onclick="run(\'' + name + '\')" onmouseover="this.className += \' active\'" onmouseout="this.className = this.className.replace(\' active\', \'\');">');
-			document.write('<a href="javascript://' + name + '">' + displayName + '</a>');
-			
-			if(testcase.summary) {
-				document.write('&nbsp;&nbsp;&nbsp;&nbsp;' + testcase.summary);
-			}
-			
-			document.write('<span><a href="javascript://' + name + '">执行   ' + runTime + ' 次</a> | <a href="javascript://' + name + '">恶意测试</a></span></div>');
-			
-		}
-		
-		document.write('</div>');
-	}
+	
+	
+	
 		
 	function getElementsByClassName(parentNode, className) {
 		var r = [], i;
@@ -249,23 +248,6 @@
 	function forEach(array, fn, bind){
 		for(var i = 0; i < array.length; i++){
 			fn.call(bind, array[i], i, array);
-		}
-	}
-	
-	function parseOverrides(name, overrides){
-		//  @me = this; 1 => 2; 2, a => 3
-		
-		
-		overrides = overrides.split(';');
-		if(/^\s*@/.test(overrides[0])){
-			var pos = name.indexOf('.prototype.');
-			
-			if(pos !== -1)
-				name = name.substr(pos + '.prototype.'.length);
-			
-			
-
-			
 		}
 	}
 
@@ -393,10 +375,9 @@
 		if(!bValue) console.error.apply(console, [].slice.call(arguments, 1));
 	}
 	
-	function applyIf(dest, src) {
+	function apply(dest, src) {
 		for(var i in src){
-			if(dest[i] === undefined)
-				dest[i] = src[i];
+			dest[i] = src[i];
 		}
 		
 	}
