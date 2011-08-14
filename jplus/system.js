@@ -1,5 +1,4 @@
-﻿
-		<script src="../../common/assets/scripts/default.js" type="text/javascript"></script>//===========================================
+﻿//===========================================
 //  JPlus   0.1
 //===========================================
 
@@ -1201,7 +1200,6 @@ var JPlus = {
 		 * <code>
 		 * Object.update(["aa","aa23"], "length", []); // => [2, 4];
 		 * Object.update([{a: 1},{a: 4}], "a", [{},{}], true); // => [{a: 1},{a: 4}];
-		 * Object.update(["aa","aa23"], function(value, key, array) {return value.charAt(0);}, []); // => ["a", "a"];
 		 * </code>
 		 * */
 		update: function(iterable, fn, dest, args) {
@@ -1509,8 +1507,6 @@ var JPlus = {
 			return r;
 		},
 		
-		
-
 		/**
 		 * 判断一个变量是否是数组。
 		 * @static
@@ -1668,7 +1664,7 @@ var JPlus = {
 		 * @param {Boolean} copyIf=false 是否跳过本来存在的数据。
 		 * @example
 		 * <code>
-		 * String.map("aaa bbb ccc", function(v) {log(v); }); //  aaa bbb ccc
+		 * String.map("aaa bbb ccc", trace); //  aaa bbb ccc
 		 * String.map("aaa bbb ccc", function(v) { return v; }, {});    //    {aaa:aaa, bbb:bbb, ccc:ccc};
 		 * </code>
 		 */
@@ -1765,13 +1761,10 @@ var JPlus = {
 			version = ua.match(/(Version).((\d+)\.?[\d.]*)/i) || match,
 			
 			//浏览器名字
-			browser = match[1],
-	
-			//详细信息
-			fullBrowser = browser + version[3];
+			browser = match[1];
 		
 		
-		navigator["is" + browser] = navigator["is" + fullBrowser] = true;
+		navigator["is" + browser] = navigator["is" + browser + version[3]] = true;
 		
 		/**
 		 * 获取一个值，该值指示是否为 IE 浏览器。
@@ -1813,13 +1806,6 @@ var JPlus = {
 			 */
 			browser: browser,
 			
-			/**
-			 * 浏览器版本。
-			 * @type String
-			 * 输出的格式比如 6.0
-			 */
-			version: version[2],
-			
 			/// #ifdef SupportIE6
 			
 			/**
@@ -1842,10 +1828,11 @@ var JPlus = {
 			/// #endif
 			
 			/**
-			 * 浏览器详细信息。
+			 * 浏览器版本。
 			 * @type String
+			 * 输出的格式比如 6.0
 			 */
-			fullBrowser: fullBrowser
+			version: version[2]
 			
 		};
 	
@@ -2162,15 +2149,14 @@ var JPlus = {
 		 * ["", "aaa", "zzz", "qqq"].insert(3, 4); //   ["", "aaa", "zzz", 4, "qqq"]
 		 * </code>
 		 */
-		insert: function(index, value) {
+		insert : function(index, value) {
 			
 			assert.isNumber(index, "Array.prototype.insert(index, value): 参数 index ~。");
-			
-			for(var i = this.length++; i > index; i--)
-				this[i] = this[i - 1];
-				
+			var tmp = ap.slice.call(this, index);
+			this.length = index;
 			this[index] = value;
-			return this;
+			return ap.push.apply(this, tmp);
+			
 		},
 		
 		/**
@@ -2400,7 +2386,7 @@ var JPlus = {
 			 */
 			document.onReady = function(fn) {
 
-				assert.isFunction(fn, "document.ready(fn): 参数 {fn} ~。");
+				assert.isFunction(fn, "document.onReady(fn): 参数 {fn} ~。");
 				
 				if(document.isReady)
 					fn.call(document);
@@ -2417,7 +2403,7 @@ var JPlus = {
 			 */
 			document.onLoad = function(fn) {
 
-				assert.isFunction(fn, "document.ready(fn): 参数 {fn} ~。");
+				assert.isFunction(fn, "document.onLoad(fn): 参数 {fn} ~。");
 				
 				if(document.isLoaded)
 					fn.call(w);
@@ -2675,7 +2661,7 @@ var JPlus = {
 
 
 // ===========================================
-//   调试   debug.js C
+//   调试        C
 // ===========================================
 
 ///  #ifdef Debug
@@ -3069,8 +3055,8 @@ Object.extendIf(trace, {
 	/**
 	 * 空函数，用于证明函数已经执行过。
 	 */
-	empty: function(msg) {
-		trace("函数运行了    " + ( msg || JPlus.id++));
+	count: function() {
+		trace(JPlus.id++);
 	},
 
 	/**
@@ -3087,24 +3073,23 @@ Object.extendIf(trace, {
 	 * @param {Function} fn 函数。
 	 * @param {Number} times=1000 运行次数。
 	 */
-	test: function(fn, times) {
-		trace("[时间] " + trace.runTime(fn, null, times));
+	time: function(fn, times) {
+		trace("[时间] " + trace.runTime(fn, times));
 	},
 	
 	/**
 	 * 测试某个函数运行一定次数的时间。
 	 * @param {Function} fn 函数。
-	 * @param {Array} args 函数参数。
 	 * @param {Number} times=1000 运行次数。
 	 * @return {Number} 运行的时间 。
 	 */
-	runTime: function(fn, args, times) {
+	runTime: function(fn, times) {
 		times = times || 1000;
 		args = args || [];
-		var d = new Date();
-		while (times-->0)
-			fn.apply(null, args);
-		return new Date() - d;
+		var d = Date.now();
+		while (times-- > 0)
+			fn();
+		return Date.now() - d;
 	}
 
 });

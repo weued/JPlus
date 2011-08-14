@@ -1,0 +1,320 @@
+/*****************************************
+ * JPlus.default.css
+ *****************************************/
+
+
+/*********************************** 全局 *******************************************/
+
+body {
+	color: #555555;
+    font-size: 14px;
+    margin: 0;
+    padding: 0;
+    background-color: #F9F9F9;
+}
+
+h1, h2, h5 {
+	color: #666666;
+}
+
+h3, h4, h6 {
+	color: #E27B00;
+}
+
+a {
+	color: #E27B00;
+}
+
+a:hover {
+	color: #F4C369;
+}
+
+
+code {
+	border:1pt solid #36F;
+	padding: 0 30px;
+	font-family: "Courier New";
+}
+
+pre {
+	line-height:18px;
+}
+
+
+/*********************************** 布局 *******************************************/
+
+#topbar {
+	height: 30px;
+	line-height: 30px;
+	background-color: #E69A10;
+	padding: 0 10px;
+}
+
+#toolbar a, .toolbar {
+	font-size: 16px;
+	color: #FCEFD8;
+}
+
+#toolbar a:hover {
+	color: #FEFAF3;
+}
+
+#wrap{
+	width: 950px;
+	margin: 0px auto;
+}
+
+#header {
+	border-bottom: 1px solid #DDDDDD;
+	position: relative;
+}
+
+#header h1{
+	color: #E27B00;
+	font-size: 40px;
+	text-indent: 8px;
+	margin:13px 0 24px;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+#navbar {
+	position: absolute;
+    right: 8px;
+    top: 20px;
+}
+
+#navbar a {
+	display: block;
+	float: left;
+	width: 80px;
+	height: 30px;
+	line-height: 30px;
+	text-align: center;
+	text-decoration: none;
+	border-right: 1px solid #DDDDDD;
+	font-size: 16px;
+}
+
+#navbar a.last {
+	border-right: none;
+}
+
+#main {
+	width: 680px;
+	padding: 10px;
+	float: left;
+}
+
+#sidebar {
+	width: 200px;
+	margin: 10px;
+	padding: 0 10px 10px;
+	background: #F3F3F3;
+	border: 1px solid #DDDDDD;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	float: right;
+}
+
+#sidebar h2{
+	margin: 0 0 -10px;
+	font-size: 18px;
+	line-height: 36px;
+	clear: left;
+}
+
+#sidebar .menu {
+	margin: 0;
+	padding: 0;
+}
+
+#sidebar .menu li {
+	list-style: none;
+	overflow: hidden;
+	padding: 1px 1px 1px 20px;
+	float: left;
+}
+
+#sidebar .menu li a.disabled{
+	color: gray!important;
+}
+
+#sidebar .menu li a.removed{
+	color: gray!important;
+	text-decoration: overline;
+}
+
+#sidebar .break-line li {
+	float: none;
+}
+
+#sidebar .menu a{
+	text-decoration: underline;
+	font-size: 16px;
+}
+
+#footer {
+	border-top: 1px solid #DDDDDD;
+	text-align: center;
+	padding: 10px;
+	clear: both;
+}
+
+.testcase, .testcasegroup {
+	width: 660px;
+}
+
+.testcasegroup {
+	border-bottom: 1px solid #DDDDDD;
+	margin: 13px 2px 2px;
+	text-indent: 15px;
+	font-size: 20px;
+}
+
+.testcase span{
+	float: right;
+	display: none;
+	margin-right: 20px;
+}
+
+.testcase.active span {
+	display: block;
+}
+
+.testcase, .error, .warn, .success {
+	padding: 2px 10px;
+	line-height:16px;
+	height: 16px;
+	border: 2px solid #F9F9F9;
+}
+
+.error {
+	background:#FBE3E4;
+	color:#8a1f11;
+	border-color:#FBC2C4;
+}
+
+.warn {
+	background:#FFF6BF;
+	color:#514721;
+	border-color:#FFD324;
+}
+
+.success {
+	background:#E6EFC2;
+	color:#264409;
+	border-color:#C6D880;
+}
+
+.error a {
+	color:#8a1f11;
+}
+ 	
+.warn a {
+	color:#514721;
+}
+
+.success a {
+	color:#264409;
+}
+
+
+
+/*********************************** 工具 *******************************************/
+
+.large {
+	font-size:x-larg;
+}
+
+.small {
+	font-size:x-small;
+}
+
+.left {
+	float: left;
+}
+
+.right {
+	float: right;
+}
+
+.center {
+	margin-left:auto;
+	margin-right:auto;
+}
+
+.strong {
+	font-weight: bold;
+}
+
+.clear {
+	clear: both;
+}
+
+* html .clear {
+	height: 1%;
+}
+
+.hide {
+	display: none;
+}
+
+.indigo {
+	background-color: #90D9E8;
+}
+
+.blue {
+	background-color: #285A8F;
+	color: #ffffff;
+}
+
+.green {
+	background-color: #B4B900;
+	color: #ffffff;
+}
+
+.purple {
+	background-color: #B05A89;
+	color: #ffffff;
+}
+
+.gray{
+	background-color: #F3F3F3;
+}
+
+.box {
+	border: 1pt solid #ffffff;
+	width: 80px;
+	height: 80px;
+	float: left;
+	margin-right: 10px;
+	padding: 10px;
+	text-align: center;
+	line-height: 80px;
+	position:relative;
+}
+
+.area {
+	background-color: #E95C41;
+	color: #ffffff;
+	padding: 10px;
+	height: 200px;
+	width: 200px;
+}
+
+.space {
+	height: 5px;
+	display: block;
+	visibility: hidden;
+	background: #F9F9F9;
+	color:#fff;
+}
+
+.content{
+	text-align:left;
+	padding:3px 30px 9px 30px;
+}
+
+p.content {
+	text-indent:2em;
+}
