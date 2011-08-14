@@ -32,7 +32,7 @@ var todos = {
 
 var notes = {
 	'项目说明': {
-		'J+ 介绍': 'JPlus-introduction.html'
+		'J+ 介绍': 'notes/JPlus-introduction.html'
 	}
 };
 
