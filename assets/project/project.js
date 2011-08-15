@@ -32,7 +32,19 @@ var todos = {
 
 var notes = {
 	'项目说明': {
-		'J+ 介绍': 'notes/JPlus-introduction.html'
+		//   'J+ 介绍': 'notes/introduction.html'
+	},
+	'Git 操作': {
+		'使用 Eclipse下载项目': 'notes/git/guide.html',
+		'使用 TortoiseGit下载项目': 'notes/git/tortoisegit.html',
+		'如何在 Eclipse 安装  Git 插件': 'notes/git/install.html',
+		'使用 GIT': 'usage.html'
+	},
+	'公约': {
+		'Javascript 编码规范': 'notes/standards/javascript.html',
+		'项目文件夹结构': 'notes/standards/struct.html',
+		'系统构架': 'notes/standards/architecture.html',
+		'测试系统': 'notes/standards/system.html'
 	}
 };
 

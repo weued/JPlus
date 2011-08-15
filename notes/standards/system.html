@@ -1,0 +1,147 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>测试系统 - 公约 - J+文档库</title>
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+	</head>
+	<body>
+		<h2>测试系统</h2>
+		<div>
+			文/xuld
+		</div>
+		<p class="content">
+			测试系统就是现在这个页面。页面上面的叫导航栏。右边的叫菜单栏。中间的是正文。测试系统的功能为： 文档展示、函数测试、功能演示、项目进度管理。
+		</p>
+		<h4>文档展示</h4>
+		<p class="content">
+			在开发项目时，如果需要新建一些笔记、教程共享，可以在 notes文件夹里新建一个 .html 文件，内容为：
+		</p>
+		<pre><code>
+&lt;!doctype html&gt;
+&lt;html&gt;
+	&lt;head&gt;
+		&lt;meta charset="utf-8"&gt;
+		&lt;title&gt;标题&lt;/title&gt;
+		&lt;script type="text/javascript" <br>src="assets/scripts/default.js"&gt;&lt;/script&gt;
+	&lt;/head&gt;
+	&lt;body&gt;
+		
+	&lt;/body&gt;
+&lt;/html&gt;
+			</code></pre>
+<p class="content">			其中 的 js 路径根据文件位置修改。
+			<br>
+			无需增加外的代码，直接在 &lt;body&gt;内写内容即可。
+			<br>
+			书写的时候注意：
+		</p>
+		<ul class="list">
+			<li>
+				全文标题使用 &lt;h2&gt; 标签。
+			</li>
+			<li>
+				小标题使用 &lt;h4&gt; 标签。
+			</li>
+			<li>
+				段落使用 &lt;p class="content"&gt; 标签。
+			</li>
+			<li>
+				无序列表使用 &lt;ul class="list"&gt; 标签。
+			</li>
+			<li>
+				代码 &lt;pre&gt;&lt;code&gt;正文&lt;/code&gt;&lt;/pre&gt; 。
+			</li>
+			<li>
+				记得句子写完后添加中文圆圈句号。
+			</li>
+		</ul>
+		<p class="content">
+			可以参考当前页的源码。
+		</p>
+		<h4>函数测试</h4>
+		<p class="content">
+			如果需要为某个模块测试 js代码，可以在core文件夹里新建一个 .html 文件，内容同上例，并在 &lt;body&gt;内加一个 &lt;script&gt; 标签，其内容为：
+		</p><pre><code>
+var testcases = {
+	'组名': '-',			 // 分组，
+	'Array.isArray':  {     // 测试的函数名
+		name: '显示的名字',       	 // 名字， 默认同函数名
+		summary: 'summary',  	 //  功能的说明
+		init: 'var a = 1;', 	 // 初始化的时候执行
+		overrides: '[] =&gt; assert.<br>areEqual(value, true); null =&gt; assert.areEqual(value, false)',  // 重载的参数列表
+		uninit: 'a = null;', // 执行结束后执行
+		time: 1000  // 测试速度时执行才次数，  默认 1000
+	},
+	'Array.prototype.push': '@me = []; 1 =&gt; assert.<br>areEqual(value[0], 1), assert.areEqual(value.length, 1)'
+};
+
+initTestCases(testcases);	
+			</code></pre>
+		解读下上面的例子。
+		<p class="content">
+			首先， testcases 叫测试案例集合，它包含的测试的信息，通过 initTestCases 显示。
+		</p>
+		<p class="content">
+			testcases 对象的每个成员都叫一个测试案例。比如上面的例子，可以知道有3个测试案例： <em>组名</em>、<em>Array.isArray</em>、<em>Array.prototype.push</em>。
+		</p>
+		<p class="content">
+			<em>组名</em> 对应的值为 '-' ，表示它不是真正的测试案例，只是用来分组的记号。
+		</p>
+		<p class="content">
+			<em>Array.isArray</em> 对应的值为一个对象，这个对象包括了一个测试案例需要的全部信息。一个测试案例，不是每个信息都是必须的，除了overrides， 其它都可以省略。因此，当只有overrides时，可以像 <em>Array.prototype.push</em> 一样，直接把 overrides 的内容写在后面。
+		</p>
+		<p class="content">
+			各个信息的意义见上面的注释，这里详细说明 overrides 字段的意义。
+		</p>
+		<p class="content">
+			每个测试案例都是对一个函数进行的测试，测试的时候，会调用不同的参数进行测试。以<em>Array.isArray</em>为例， 它是对 Array.isArray 函数进行测试，为了测试这个函数的正确性，我们需要运行这样的代码：
+		</p><pre><code>
+var value = Array.isArray(<strong>[]</strong>);  // 以 [] 作参数进行调用。
+assert.areEqual(value, true);   //  assert.areEqual  用于 验证 2 个值是否相等(具体下面介绍)。
+
+var value = Array.isArray(<strong>null</strong>);  //以 null 作参数进行调用。
+assert.areEqual(value, false);   //
+				 </code></pre>
+<p class="content">			上面的代码简写为 overrides 就是：
+			'[] =&gt; assert.areEqual(value, true); null =&gt; assert.areEqual(value, false)'
+			<br>
+			不同的测试参数用;隔开， 测试前的参数和结果的判断用 =&gt; 隔开， 参数如果有多个，使用 ‘，’ 隔开。 结果如果有多个， 也使用 ‘，’隔开。
+			此外， assert.areEqual(value, <u>XXX</u>) 可以简写为 <u>XXX</u>, 因此，最后，对 Array.isArray 的测试 overrides 可以写为：
+			'[] =&gt; true; null =&gt; false'
+		</p>
+		<p class="content">
+			现在解决最后一个问题： 在例子的<em>Array.prototype.push</em> 测试的 overrides 中， 有个@me = []; 它表示对某个对象调用函数，如果没有这句话，
+			这个测试案例会变成 Array.prototype.push(1)，
+			显然，这不是目标，目标是对一个数组对象调用 push， 因此 @me = [] 表示， 测试时。使用： var me = []; me.push(1);
+			这里为 me 赋初值不是必须的，所以可以在文件顶部执行 var me = []; 以后只需使用 @me ;即可
+		</p>
+		<h4>项目进度管理</h4>
+		<p class="content">
+			本页中所有的导航栏、菜单栏的内容均又 assets/project/project.js 决定。
+			这个文件顶部可以看到 core 对象、 notes对象， 这些就是对应的菜单的内容。
+			</p><pre><code>
+var core = {
+	'Core': 'System',
+	'Dom': 'Element',
+	'Ajax': 'Ajax Json Jsonp',
+	'Fx': '#Base +Animate Transitions -Color'
+}; </code></pre>
+<p class="content">
+	其中， 这样表示测试页， Base、Animate、Transitions等是模块， 每个模块的前缀分别表示:
+	<ul class="list">
+		<li>#: 强调的完成。</li>
+		<li>+: 已完成。</li>
+		<li>无: 未完成。</li>
+		<li>-: 目前不完成。</li>
+	</ul>
+	</p><pre><code>
+var core = {
+	'项目说明': {
+		'J+ 介绍': 'notes/JPlus-introduction.html'
+	}
+}; </code></pre>
+这样表示普通导航。
+		</p>
+	</body>
+</html>

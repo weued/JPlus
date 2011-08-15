@@ -121,7 +121,7 @@
 					
 				} else {
 					
-					result.push('<ul class="break-line">');
+					result.push('<ul class="menu break-line">');
 					
 					for(var menu in menus[group]) {
 						result.push('<li><a href="' + root + menus[group][menu] +'">' + menu + '</a></li>');

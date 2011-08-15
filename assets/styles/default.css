@@ -31,8 +31,10 @@ a:hover {
 
 
 code {
-	border:1pt solid #36F;
+	border:1px solid #EB9100;
+	display: block;
 	padding: 0 30px;
+	background: #FADEB1;
 	font-family: "Courier New";
 }
 
@@ -118,7 +120,7 @@ pre {
 
 #sidebar h2{
 	margin: 0 0 -10px;
-	font-size: 18px;
+	font-size: 16px;
 	line-height: 36px;
 	clear: left;
 }
@@ -150,7 +152,7 @@ pre {
 
 #sidebar .menu a{
 	text-decoration: underline;
-	font-size: 16px;
+	font-size: 12px;
 }
 
 #footer {
@@ -317,4 +319,22 @@ pre {
 
 p.content {
 	text-indent:2em;
+}
+
+.content img {
+	margin: 6px;
+}
+
+.list {
+	list-style-type: none;
+	list-style-position:inside;
+}
+
+.list li {
+	line-height: 28px;
+	text-indent: 2em;
+}
+
+.list code {
+	text-indent: 0;
 }
