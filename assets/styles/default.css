@@ -105,6 +105,7 @@ pre {
 	width: 680px;
 	padding: 10px;
 	float: left;
+	_overflow:hidden;
 }
 
 #sidebar {

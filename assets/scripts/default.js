@@ -462,7 +462,7 @@
 	function getRoot() { 
 		var b = document.getElementsByTagName("script");
 		b = b[b.length - 1];
-		return (!-[1, ] ? b.getAttribute('src', 5) : b.src).replace(/assets\/scripts\/.*$/, '');
+		return (!-[1, ] && typeof Element !== 'function' && String(window.Element).indexOf("object Element") === -1 ? b.getAttribute('src', 5) : b.src).replace(/assets\/scripts\/.*$/, '');
 	}
 		
 	function getElementsByClassName(parentNode, className) {
