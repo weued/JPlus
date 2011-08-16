@@ -36,7 +36,7 @@
 			<br>
 			书写的时候注意：
 		</p>
-		<ul class="list">
+		<ul>
 			<li>
 				全文标题使用 &lt;h2&gt; 标签。
 			</li>
@@ -50,7 +50,7 @@
 				无序列表使用 &lt;ul class="list"&gt; 标签。
 			</li>
 			<li>
-				代码 &lt;pre&gt;&lt;code&gt;正文&lt;/code&gt;&lt;/pre&gt; 。
+				代码 使用&lt;pre&gt;&lt;code&gt;正文&lt;/code&gt;&lt;/pre&gt; 。
 			</li>
 			<li>
 				记得句子写完后添加中文圆圈句号。
@@ -115,6 +115,9 @@ assert.areEqual(value, false);   //
 			这个测试案例会变成 Array.prototype.push(1)，
 			显然，这不是目标，目标是对一个数组对象调用 push， 因此 @me = [] 表示， 测试时。使用： var me = []; me.push(1);
 			这里为 me 赋初值不是必须的，所以可以在文件顶部执行 var me = []; 以后只需使用 @me ;即可
+		</p>
+		<p class="content">
+			除了可以使用 assert.areEqual, 还可以使用: assert.isTrue assert.isFalse assert.notEqual
 		</p>
 		<h4>项目进度管理</h4>
 		<p class="content">
