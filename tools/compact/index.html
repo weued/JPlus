@@ -1,0 +1,235 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--************************************************************************-->
+<!--* JavaScript Crunchinator Demo                                         *-->
+<!--*                                                                      *-->
+<!--* Copyright 2001 by Mike Hall                                          *--><!--************************************************************************-->
+<html>
+<head>
+<title>Javascript 压缩</title>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<script type="text/javascript">//<![CDATA[
+
+var literalStrings;  //临时变量.
+
+function crunch(f) {
+
+  var input, output;
+  var i;
+
+  // 获得输入里的代码,处理并显示输出
+
+  f.elements.codeOut.value = "";
+  f.elements.statusMsg.value = "进行中...";
+  input = f.elements.codeIn.value;
+  output = input;
+  f.elements.statusMsg.value = "替换字符串...";
+  output = replaceLiteralStrings(output);
+  f.elements.statusMsg.value = "去掉注释...";
+  output = removeComments(output);
+  f.elements.statusMsg.value = "压缩空格...";
+  output = compressWhiteSpace(output);
+  f.elements.statusMsg.value = "连接字符串...";
+  output = combineLiteralStrings(output);
+  f.elements.statusMsg.value = "恢复字符串...";
+  output = restoreLiteralStrings(output);
+  f.elements.statusMsg.value = "完成.";
+  f.elements.codeOut.value = output;
+
+  // Compute sizes.
+
+  f.elements.sizeIn.value   = input.length;
+  f.elements.sizeOut.value  = output.length;
+  f.elements.sizeDiff.value = input.length - output.length;
+  if (input.length > 0)
+    f.elements.pctOut.value = 100 -
+      Math.round(output.length / input.length * 10000) / 100;
+
+  return false;
+}
+
+function replaceLiteralStrings(s) {
+
+  var i, c, t, lines, escaped, quoteChar, inQuote, literal;
+
+  literalStrings = new Array();
+  t = "";
+
+  // Split script into individual lines.
+
+  lines = s.split("\n");
+  for (i = 0; i < lines.length; i++) {
+
+    j = 0;
+    inQuote = false;
+    while (j <= lines[i].length) {
+      c = lines[i].charAt(j);
+
+      // If not already in a string, look for the start of one.
+
+      if (!inQuote) {
+        if (c == '"' || c == "'") {
+          inQuote = true;
+          escaped = false;
+          quoteChar = c;
+          literal = c;
+        }
+       else
+         t += c;
+      }
+
+      // Already in a string, look for end and copy characters.
+
+      else {
+        if (c == quoteChar && !escaped) {
+          inQuote = false;
+          literal += quoteChar;
+          t += "__" + literalStrings.length + "__";
+          literalStrings[literalStrings.length] = literal;
+        }
+        else if (c == "\\" && !escaped)
+          escaped = true;
+        else
+          escaped = false;
+        literal += c;
+      }
+      j++;
+    }
+    t += "\n";
+  }
+
+  return t;
+}
+
+function removeComments(s) {
+
+  var lines, i, t;
+
+  // Remove '//' comments from each line.
+
+  lines = s.split("\n");
+  t = "";
+  for (i = 0; i < lines.length; i++)
+    t += lines[i].replace(/([^\x2f]*)\x2f\x2f.*$/, "$1");
+
+  // Replace newline characters with spaces.
+
+  t = t.replace(/(.*)\n(.*)/g, "$1 $2");
+
+  // Remove '/* ... */' comments.
+
+  lines = t.split("*/");
+  t = "";
+  for (i = 0; i < lines.length; i++)
+    t += lines[i].replace(/(.*)\x2f\x2a(.*)$/g, "$1 ");
+
+  return t;
+}
+
+function compressWhiteSpace(s) {
+
+  // Condense white space.
+
+  s = s.replace(/\s+/g, " ");
+  s = s.replace(/^\s(.*)/, "$1");
+  s = s.replace(/(.*)\s$/, "$1");
+
+  // Remove uneccessary white space around operators, braces and parentices.
+
+  //[\x21\x25\x26\x28\x29\x2a\x2b\x2c\x2d\x2f\x3a\x3b\x3c\x3d\x3e\x3f\x5b\x5d\x5c\x7b\x7c\x7d\x7e]
+  //[!%&()*+,-/:;<=>?[]\{|}~]
+  s = s.replace(/\s([\x21\x25\x26\x28\x29\x2a\x2b\x2c\x2d\x2f\x3a\x3b\x3c\x3d\x3e\x3f\x5b\x5d\x5c\x7b\x7c\x7d\x7e])/g, "$1");
+  s = s.replace(/([\x21\x25\x26\x28\x29\x2a\x2b\x2c\x2d\x2f\x3a\x3b\x3c\x3d\x3e\x3f\x5b\x5d\x5c\x7b\x7c\x7d\x7e])\s/g, "$1");
+  return s;
+}
+
+function combineLiteralStrings(s) {
+
+  var i;
+
+  s = s.replace(/"\+"/g, "");
+  s = s.replace(/'\+'/g, "");
+
+  return s;
+}
+
+function restoreLiteralStrings(s) {
+
+  var i;
+
+  for (i = 0; i < literalStrings.length; i++)
+    s = s.replace(new RegExp("__" + i + "__"), literalStrings[i]);
+
+  return s;
+}
+
+//]]></script>
+<script src="../../assets/scripts/default.js" type="text/javascript"></script>
+</head>
+<body>
+<h2>Javascript 压缩</h2>
+<p>粘贴代码到这个文本框然后点击格式化按压缩</p>
+<div style="WIDTH: 1003px">
+  <div style="FLOAT: left">
+    <form onsubmit="return crunch(this)" action="">
+      <table border="0">
+        <tbody>
+          <tr>
+            <th colspan="3">输入</th>
+          </tr>
+          <tr>
+            <td colspan="3"><textarea rows="10" cols="80" name="codeIn"></textarea></td>
+          </tr>
+          <tr>
+            <td><b>字节数:</b>
+              <input disabled="disabled" size="10" type="text" name="sizeIn"></td>
+            <td><b>状态:</b>
+              <input disabled="disabled" size="30" type="text" name="statusMsg"></td>
+            <td style="TEXT-ALIGN: right"><input class="button" value="压缩" type="submit">
+              <input class="button" value="清除" type="reset"></td>
+          </tr>
+        </tbody>
+      </table>
+      <p></p>
+      <table border="0">
+        <tbody>
+          <tr>
+            <th colspan="4">输出</th>
+          </tr>
+          <tr>
+            <td colspan="4"><textarea rows="10" cols="80" name="codeOut"></textarea></td>
+          </tr>
+          <tr>
+            <td><b>字节数:</b>
+              <input disabled="disabled" size="10" type="text" name="sizeOut"></td>
+            <td><b>减少:</b>
+              <input disabled="disabled" size="10" type="text" name="sizeDiff"></td>
+            <td><b>% 减少率:</b>
+              <input disabled="disabled" size="10" type="text" name="pctOut"></td>
+            <td style="TEXT-ALIGN: right"><input class="button" onclick="this.form.codeOut.select();this.form.codeOut.focus();" value="全选" type="button"></td>
+          </tr>
+        </tbody>
+      </table>
+    </form>
+  </div>
+  <div style="width: 600px;">
+    <p class="STYLE1">使用须知：</p>
+    <p class="STYLE1">大量的代码运行效率较低，cpu占用较高，请耐心等待！呵呵</p>
+    <p class="STYLE2">1.保存好您的开发版本，便于以后修改维护；</p>
+    <p class="STYLE2">2.压缩前，检查每一行代码确保以&quot;;&quot;结束;</p>
+    <p 
+class="STYLE2">3.if...else...语句加上&quot;{}&quot;，即如果你的i语句为<br>
+      if(...)<br>
+      ...//一条语句<br>
+      else<br>
+      ...//一条语句</p>
+    <p 
+class="STYLE2">请改为<br>
+      if(...)<br>
+      {...}//一条语句<br>
+      else<br>
+      {...}//一条语句</p>
+      <p style="text-align: right">作者  Mike Hall</p>
+  </div>
+</div>
+</body>
+</html>

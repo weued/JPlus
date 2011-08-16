@@ -63,6 +63,15 @@ var notes = {
 
 
 
+var tools = {
+	'Javascript': {
+		'格式化': 'tools/format/index.html',
+		'加密': 'tools/pack/index.html',
+		'压缩': 'tools/compact/index.html'	
+	}
+	
+};
+
 var navs = {
 	'首页': 'index.html',
 	'核心': 'core/index.html',
@@ -70,7 +79,7 @@ var navs = {
 	'组件': 'components/index.html',
 	'文档': 'notes/index.html',
 	'工具': 'tools/index.html',
-	'其它': 'resources/index.html'
+	'共享': 'resources/index.html'
 };
 
 
