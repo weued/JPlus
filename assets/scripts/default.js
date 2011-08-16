@@ -47,8 +47,12 @@
 						Copyright &copy; 2011 JPlus Team\
 					</div>\
 				</div>');
-				
-			document.body.style.visibility = 'hidden';
+			
+			try{
+				document.body.style.visibility = 'hidden';
+			}catch(e){
+				location.reload();
+			}
 			
 			window.onload = function(){
 				var main = document.getElementById('main'), last, next = document.getElementById('wrap').nextSibling;
