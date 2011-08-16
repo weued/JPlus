@@ -1,4 +1,6 @@
-
+/**
+ * @fileOverview J+ 测试系统核心引擎。
+ */
 
 
 (function(){

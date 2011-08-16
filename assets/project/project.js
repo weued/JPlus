@@ -31,20 +31,33 @@ var todos = {
 
 
 var notes = {
-	'项目说明': {
-		//   'J+ 介绍': 'notes/introduction.html'
+	'俱乐部': {
+		'新人必读': 'notes/club/parter.html',
+		'参与': 'notes/club/division.html',
+		'正式开发': 'notes/club/develop.html',
+		'文档注释': 'notes/club/doccomment.html',
+		'测试': 'notes/club/test.html',
+		'用户界面设计': 'notes/club/ui.html'
 	},
+	
+	'库': {
+		'J+ 介绍': 'notes/library/introduction.html',
+		'J+ 相对于其它库的最大不同点': 'notes/library/features.html',
+		'J+ 最快入门': 'notes/library/helloworld.html'
+	},
+	
 	'Git 操作': {
 		'使用 Eclipse下载项目': 'notes/git/guide.html',
 		'使用 TortoiseGit下载项目': 'notes/git/tortoisegit.html',
 		'如何在 Eclipse 安装  Git 插件': 'notes/git/install.html',
-		'使用 GIT': 'usage.html'
+		'使用 GIT': 'notes/git/usage.html'
 	},
+	
 	'公约': {
-		'Javascript 编码规范': 'notes/standards/javascript.html',
-		'项目文件夹结构': 'notes/standards/struct.html',
+		'测试系统': 'notes/standards/system.html',
 		'系统构架': 'notes/standards/architecture.html',
-		'测试系统': 'notes/standards/system.html'
+		'项目文件夹结构': 'notes/standards/struct.html',
+		'Javascript 编码规范': 'notes/standards/javascript.html'
 	}
 };
 

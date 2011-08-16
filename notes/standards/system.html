@@ -11,7 +11,12 @@
 			文/xuld
 		</div>
 		<p class="content">
-			测试系统就是现在这个页面。页面上面的叫导航栏。右边的叫菜单栏。中间的是正文。测试系统的功能为： 文档展示、函数测试、功能演示、项目进度管理。
+			测试系统就是现在这个页面。页面上面的叫导航栏。右边的叫菜单栏。中间的是正文。
+			测试系统就好比J+项目的后勤服务中心，无论是开发、学习还是休闲都和它有关系。
+			测试系统的功能为： 文档展示、函数测试、功能演示、项目进度管理。
+		</p>
+		<p class="content">
+			测试系统所需用的文件都在 assets 目录。其核心文件为 <a href="../../assets/scripts/default.js" target="_blank">assets/scripts/default.js</a>
 		</p>
 		<h4>文档展示</h4>
 		<p class="content">
@@ -23,10 +28,10 @@
 	&lt;head&gt;
 		&lt;meta charset="utf-8"&gt;
 		&lt;title&gt;标题&lt;/title&gt;
-		&lt;script type="text/javascript" <br>src="assets/scripts/default.js"&gt;&lt;/script&gt;
+		&lt;script type="text/javascript" <br>src="<u>assets</u>/scripts/default.js"&gt;&lt;/script&gt;
 	&lt;/head&gt;
 	&lt;body&gt;
-		
+		&lt;!--  在这里直接写正文    --&gt;
 	&lt;/body&gt;
 &lt;/html&gt;
 			</code></pre>
@@ -80,7 +85,7 @@ initTestCases(testcases);
 			</code></pre>
 		解读下上面的例子。
 		<p class="content">
-			首先， testcases 叫测试案例集合，它包含的测试的信息，通过 initTestCases 显示。
+			首先， testcases 叫测试案例集合，它包含测试的信息，通过 initTestCases 显示。
 		</p>
 		<p class="content">
 			testcases 对象的每个成员都叫一个测试案例。比如上面的例子，可以知道有3个测试案例： <em>组名</em>、<em>Array.isArray</em>、<em>Array.prototype.push</em>。
@@ -113,15 +118,23 @@ assert.areEqual(value, false);   //
 		<p class="content">
 			现在解决最后一个问题： 在例子的<em>Array.prototype.push</em> 测试的 overrides 中， 有个@me = []; 它表示对某个对象调用函数，如果没有这句话，
 			这个测试案例会变成 Array.prototype.push(1)，
-			显然，这不是目标，目标是对一个数组对象调用 push， 因此 @me = [] 表示， 测试时。使用： var me = []; me.push(1);
+			显然，这不是目标，目标是对一个数组对象调用 push， 因此 @me = [] 表示：测试时，使用   var me = []; me.push(1);
 			这里为 me 赋初值不是必须的，所以可以在文件顶部执行 var me = []; 以后只需使用 @me ;即可
 		</p>
 		<p class="content">
-			除了可以使用 assert.areEqual, 还可以使用: assert.isTrue assert.isFalse assert.notEqual
+			assert系列的函数说明: 
+			<ul class="list">
+				<li>assert.areEqual(value1, value2): 表示，应该返回 value2， 是否和测试实际的 value1 相等。注意的是：引用类型的 [1] 和 [1] 被认为是相等的; {a:1} 和 {a:1} 被认为是相等的 。</li>
+				<li>assert.notEqual(value1, value2): 和 assert.areEqual 相反。</li>
+				<li>assert.isTrue(value): 测试value进行非操作后是否是 false 。注意 assert.isTrue(1) 被认为是满足要求的。</li>
+				<li>assert.isFalse(value): 和 assert.isTrue 相反</li>
+				<li>assert.log(value): 在测试过程中，记录一段输出。</li>
+				<li>assert.logged(value): 测试结束后，测试之前的输出是否和 value 相同。</li>
+			</ul>
 		</p>
 		<h4>项目进度管理</h4>
 		<p class="content">
-			本页中所有的导航栏、菜单栏的内容均又 assets/project/project.js 决定。
+			本页中所有的导航栏、菜单栏的内容均由  <a href="../../assets/scripts/project.js" target="_blank">assets/scripts/project.js</a> 决定。
 			这个文件顶部可以看到 core 对象、 notes对象， 这些就是对应的菜单的内容。
 			</p><pre><code>
 var core = {
@@ -131,7 +144,8 @@ var core = {
 	'Fx': '#Base +Animate Transitions -Color'
 }; </code></pre>
 <p class="content">
-	其中， 这样表示测试页， Base、Animate、Transitions等是模块， 每个模块的前缀分别表示:
+	这个结构就表示测试页， Base、Animate、Transitions等是模块，点击 <u>Base</u> 进入  core/fx/<u>base</u>.html 测试页。
+	 每个模块的前缀分别表示:
 	<ul class="list">
 		<li>#: 强调的完成。</li>
 		<li>+: 已完成。</li>
@@ -139,12 +153,16 @@ var core = {
 		<li>-: 目前不完成。</li>
 	</ul>
 	</p><pre><code>
-var core = {
+var notes = {
 	'项目说明': {
-		'J+ 介绍': 'notes/JPlus-introduction.html'
+		'文档首页': 'notes/index.html'
 	}
 }; </code></pre>
-这样表示普通导航。
+这个结构就表示链接。点击文档首页进入 notes/index.html， 比如当新建一个文档时，它不会出现在右边导航栏，需要在 assets/project/project.js 中找到 notes 对象，并添加相应的链接。
+		</p>
+		
+		<p>
+			<a href="architecture.html">继续阅读《系统构架》&gt;&gt;</a>
 		</p>
 	</body>
 </html>
