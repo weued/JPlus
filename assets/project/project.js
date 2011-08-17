@@ -61,7 +61,7 @@ var resources = {
 	
 	'users': users,
 	'javascript 基础能力自测': {
-		'语法基础': 'resources/javascript/index.html'
+		'B 等级 - 语法': 'resources/javascript/level-B.html'
 	}
 };
 

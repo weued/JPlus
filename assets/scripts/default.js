@@ -227,7 +227,7 @@
 			current.answers = [''];
 			for(var question in questions) {
 				var answers = questions[question];
-				document.write('<div class="testcase" id="q');
+				document.write('<div class="testcase" id="qd');
 				document.write(i);
 				document.write('">\r\n');
 				document.write('<div class="questions">\r\n');
@@ -253,7 +253,7 @@
 					document.write(j);
 					document.write('">');
 					document.write(answers[j]);
-					document.write('</label>\r\n');
+					document.write('</label><br>\r\n');
 				}
 				document.write('\r\n</div>\r\n');
 				document.write('\r\n</div>\r\n');
@@ -271,13 +271,13 @@
 		checkAnswers: function (){
 			var errorCount  = 0, total = current.answers.length;
 			for(var i = 1; i < total; i++){
-				if(!current.answers[i]) 
+				if(current.answers[i] === undefined) 
 					continue;
 				if(!document.getElementById('q' + i + current.answers[i]).checked){
 					errorCount++;
-					document.getElementById('q' + i).className = 'error';
+					document.getElementById('qd' + i).className = 'error';
 				} else {
-					document.getElementById('q' + i).className = 'testcase';
+					document.getElementById('qd' + i).className = 'testcase';
 				}
 			}
 			
