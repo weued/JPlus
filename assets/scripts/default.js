@@ -7,7 +7,7 @@
 	
 	var root = getRoot(),
 		moduleName = location.href.replace(root, '') + '/',
-		currentCases,
+		current = {},
 		params = [
 		     '', '0', 'null', 'NaN', '""', '"<div />"', '[]', '{a:1}', 'false', 'document.body', 'function(){return false}',
 		     '0, 0', 'null, null', '[], []', '{}, {}',
@@ -36,6 +36,7 @@
 					<div id="toolbar"></div>\
 					<div id="header">\
 						<h1>J+</h1>\
+						<em>让 Javascript 成为一门艺术</em>\
 						<div id="navbar">' + 
 						navs +	
 						'</div>\
@@ -56,7 +57,7 @@
 				location.reload();
 			}
 			
-			window.onload = function(){
+			addEvent(window, 'load', function(){
 				var main = document.getElementById('main'), last, next = document.getElementById('wrap').nextSibling;
 				
 				while(main.firstChild)
@@ -69,7 +70,7 @@
 				
 				document.body.style.visibility = '';
 				
-			};
+			});
 			
 			if(window[moduleName]){
 				
@@ -113,13 +114,17 @@
 								total++;
 								finished++;
 								break;
+							case '|':
+								value = value.substring(1) || "|";
+								result.push('<li>' + value + '</li>');
+								return;
 							default:
 								clazz = ' class="disabled"';
 								total++;
 								break;
 						}
 						
-						result.push('<li><a href="../' + group.toLowerCase() + '/' + value.toLowerCase() +'.html"' + clazz + '>' + value + '</a></li>');
+						result.push('<li><a href="' + root + moduleName  + '/' + group.toLowerCase() + '/' + value.toLowerCase() +'.html"' + clazz + '>' + value + '</a></li>');
 					});
 					
 					
@@ -130,7 +135,8 @@
 					result.push('<ul class="menu break-line">');
 					
 					for(var menu in menus[group]) {
-						result.push('<li><a href="' + root + menus[group][menu] +'">' + menu + '</a></li>');
+						var url = menus[group][menu] ? root + menus[group][menu] : 'javascript:;';
+						result.push('<li><a href="' + url +'">' + menu + '</a></li>');
 					}
 				}
 				
@@ -147,7 +153,7 @@
 			
 			document.write('<div id="testcases">');
 			
-			currentCases = {};
+			current.testCases = {};
 			
 			for(var name in testcases){
 				var testcase = testcases[name];
@@ -161,8 +167,8 @@
 					testcase = {overrides: testcase};
 				}
 				
-				currentCases[name] = new TestCase(testcase, name);
-				document.write(currentCases[name].toHTML());
+				current.testCases[name] = new TestCase(testcase, name);
+				document.write(current.testCases[name].toHTML());
 			}
 			
 			document.write('</div>');
@@ -170,7 +176,7 @@
 		
 		doRun: function (name, showSuccess){
 
-			var info = currentCases[name];
+			var info = current.testCases[name];
 			
 			if(info) {
 				
@@ -184,7 +190,7 @@
 		},
 
 		doTime: function (name){
-			var info = currentCases[name];
+			var info = current.testCases[name];
 			
 			if(info) {
 				return new Function(info.toTime())();
@@ -194,7 +200,7 @@
 		},
 
 		doTest: function (name){
-			var info = currentCases[name];
+			var info = current.testCases[name];
 			
 			if(info) {
 				return new Function(info.toTest())();
@@ -203,15 +209,105 @@
 		},
 		
 		doRunAll: function(){
-			for(var name in currentCases) {
+			for(var name in current.testCases) {
 				this.doRun(name, true);
 			}
 		},
 		
 		doTestAll: function(){
-			for(var name in currentCases) {
+			for(var name in current.testCases) {
 				this.doTest(name);
 			}
+		},
+
+		initQuestions: function (questions,  result) {
+			
+			var i = 1;
+			current.result = result;
+			current.answers = [''];
+			for(var question in questions) {
+				var answers = questions[question];
+				document.write('<div class="testcase" id="q');
+				document.write(i);
+				document.write('">\r\n');
+				document.write('<div class="questions">\r\n');
+				document.write(i);
+				document.write('. ');
+				document.write(question);
+				document.write('\r\n</div>\r\n');
+				document.write('<div class="note">\r\n');
+				
+				for(var j = 0; j < answers.length; j++) {
+					if(answers[j].charAt(0) === '@') {
+						current.answers[i] = j;
+						answers[j] = answers[j].substr(1);
+					}
+					
+					document.write('<input type="radio" name="q');
+					document.write(i);
+					document.write('" id="q');
+					document.write(i);
+					document.write(j);
+					document.write('"><label for="q');
+					document.write(i);
+					document.write(j);
+					document.write('">');
+					document.write(answers[j]);
+					document.write('</label>\r\n');
+				}
+				document.write('\r\n</div>\r\n');
+				document.write('\r\n</div>\r\n');
+				
+				i++;
+				
+				
+			}
+			
+			document.write('<input type="button" onclick="checkAnswers()" value="验证">');
+			document.write('<div id="info"></div>');
+			
+		},
+		
+		checkAnswers: function (){
+			var errorCount  = 0, total = current.answers.length;
+			for(var i = 1; i < total; i++){
+				if(!current.answers[i]) 
+					continue;
+				if(!document.getElementById('q' + i + current.answers[i]).checked){
+					errorCount++;
+					document.getElementById('q' + i).className = 'error';
+				} else {
+					document.getElementById('q' + i).className = 'testcase';
+				}
+			}
+			
+			var r = (total - errorCount) * 100 / total;
+			for(var key in current.result){
+				if(parseFloat(key) <= r){
+					document.getElementById('info').innerHTML = '答对 ' + (total - errorCount) + '/' + total + ' &nbsp;' +  current.result[key];
+					document.getElementById('info').className = 'success';
+					return;
+				}
+			}
+			
+			document.getElementById('info').innerHTML = '要认真哦';
+			document.getElementById('info').className = 'error';
+					
+		},
+		
+		initUserMenu: function(todo,  done){
+			initMenu({
+				'现在完成': todo,
+				'已完成': done
+			});
+		},
+		
+		initUser: function(){
+			
+			var currentUser = location.href.match(/\/([^\/]*).htm/)[1];
+			
+			document.write('<script src="' + root + 'assets/project/' + currentUser +'.js" type="text/javascript"></' + 'script>');
+			
 		}
 	
 	});
@@ -480,6 +576,15 @@
 		}
 		
 		return r;
+	}
+	
+	function addEvent(obj, event, fn){
+		if(obj.addEventListener)
+			obj.addEventListener(event, fn, false);
+		else{
+			obj.attachEvent('on' + event, fn);
+		}
+		
 	}
 	
 	function assert(bValue, msg){

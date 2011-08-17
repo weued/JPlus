@@ -79,6 +79,12 @@ pre {
 	font-family: Arial, Helvetica, sans-serif;
 }
 
+#header em{
+	color: #999999;	
+	position: relative;
+	top: -20px;
+}
+
 #navbar {
 	position: absolute;
     right: 8px;
@@ -187,7 +193,6 @@ pre {
 .testcase, .error, .warn, .success {
 	padding: 2px 10px;
 	line-height:16px;
-	height: 16px;
 	border: 2px solid #F9F9F9;
 }
 
@@ -338,4 +343,8 @@ p.content {
 
 .list code {
 	text-indent: 0;
+}
+
+.note {
+	padding-left: 10px;
 }

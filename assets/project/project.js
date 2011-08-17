@@ -1,5 +1,5 @@
 var core = {
-	'Core': 'System',
+	'System': 'Object',
 	'Dom': 'Element',
 	'Ajax': 'Ajax Json Jsonp',
 	'Fx': 'Base Animate Transitions Color'
@@ -8,30 +8,10 @@ var core = {
 
 
 
-var todos = {
-	'前期初始化': {
-		'为项目命名、创建项目。': 1,
-		'定义项目结构、文件夹的结构': 2,
-		'制作测试页，包括单元测试、速度测试。': 3
-	},
-	'核心部分': {
-		'System': 1,
-		'Dom/Element': 1,
-		'Ajax/Ajax': 1,
-		'Fx/Base、Fx/Animate': 2,
-		'Fx/Transitions、Fx/Colors': 2,
-		'Ajax/Json、Ajax/Jsonp': 2
-	},
-	'工具部分': {
-		'Broswer':4,
-		'Core/': 5
-	}
-};
-
-
 
 var notes = {
 	'俱乐部': {
+		'注册': 'notes/club/register.html',
 		'新人必读': 'notes/club/parter.html',
 		'参与': 'notes/club/division.html',
 		'正式开发': 'notes/club/develop.html',
@@ -43,6 +23,7 @@ var notes = {
 	'库': {
 		'J+ 介绍': 'notes/library/introduction.html',
 		'J+ 相对于其它库的最大不同点': 'notes/library/features.html',
+		'为什么 J+': 'notes/library/whyjplus.html',
 		'J+ 最快入门': 'notes/library/helloworld.html'
 	},
 	
@@ -72,6 +53,19 @@ var tools = {
 	
 };
 
+
+var users = '+xuld';
+
+
+var resources = {
+	
+	'users': users,
+	'javascript 基础能力自测': {
+		'语法基础': 'resources/javascript/index.html'
+	}
+};
+
+
 var navs = {
 	'首页': 'index.html',
 	'核心': 'core/index.html',
@@ -79,7 +73,7 @@ var navs = {
 	'组件': 'components/index.html',
 	'文档': 'notes/index.html',
 	'工具': 'tools/index.html',
-	'共享': 'resources/index.html'
+	'项目': 'resources/index.html'
 };
 
 
