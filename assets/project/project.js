@@ -1,5 +1,5 @@
 var core = {
-	'System': 'Object',
+	'System': '#Object Navigator Class Namespace DomReady Trace',
 	'Dom': 'Element',
 	'Ajax': 'Ajax Json Jsonp',
 	'Fx': 'Base Animate Transitions Color'
@@ -27,11 +27,12 @@ var notes = {
 		'J+ 最快入门': 'notes/library/helloworld.html'
 	},
 	
-	'Git 操作': {
+	'教程': {
+		'Javascript 高级教程': 'notes/javascript/advance.html',
 		'使用 Eclipse下载项目': 'notes/git/guide.html',
 		'使用 TortoiseGit下载项目': 'notes/git/tortoisegit.html',
 		'如何在 Eclipse 安装  Git 插件': 'notes/git/install.html',
-		'使用 GIT': 'notes/git/usage.html'
+		'如何使用 GIT': 'notes/git/usage.html'
 	},
 	
 	'公约': {
@@ -63,6 +64,10 @@ var resources = {
 	'javascript 基础能力自测': {
 		'B 等级 - 语法': 'resources/javascript/level-B.html'
 	}
+};
+
+var issues = {
+	'1': '@System 是否需要增加 Object.clone 的支持'
 };
 
 

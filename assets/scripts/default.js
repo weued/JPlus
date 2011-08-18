@@ -90,7 +90,7 @@
 			
 			for(var group in menus) {
 				
-				result.push('<h2>' + group + '</h2>');
+				result.push('<h2>' + encodeHTML(group) + '</h2>');
 				
 				if(typeof menus[group] === 'string') {
 					var currenHeader = result.length - 1, total = 0, finished = 0;
@@ -124,11 +124,11 @@
 								break;
 						}
 						
-						result.push('<li><a href="' + root + moduleName  + '/' + group.toLowerCase() + '/' + value.toLowerCase() +'.html"' + clazz + '>' + value + '</a></li>');
+						result.push('<li><a href="' + root + moduleName  + '/' + group.toLowerCase() + '/' + value.toLowerCase() +'.html"' + clazz + '>' + encodeHTML(value) + '</a></li>');
 					});
 					
 					
-					result[currenHeader] = '<h2>' + group + ' <span class="small">(' + finished + '/' + total + ')</span></h2>';
+					result[currenHeader] = '<h2>' + encodeHTML(group) + ' <span class="small">(' + finished + '/' + total + ')</span></h2>';
 					
 				} else {
 					
@@ -136,7 +136,7 @@
 					
 					for(var menu in menus[group]) {
 						var url = menus[group][menu] ? root + menus[group][menu] : 'javascript:;';
-						result.push('<li><a href="' + url +'">' + menu + '</a></li>');
+						result.push('<li><a href="' + url +'">' + encodeHTML(menu) + '</a></li>');
 					}
 				}
 				
@@ -149,7 +149,7 @@
 		},
 
 		initTestCases: function (testcases) {
-			document.write('<div class="right small"><a href="javascript:;" onclick="doRunAll();">全部测试</a> | <a href="javascript:;" onclick="doTestAll();">恶意测试</a></div>');
+			document.write('<div class="right small"><a href="javascript:;" onclick="doRunAll();">全部测试</a> | <a href="javascript:;" onclick="doTimeAll();">全部时间</a> | <a href="javascript:;" onclick="doTestAll();">恶意测试</a></div>');
 			
 			document.write('<div id="testcases">');
 			
@@ -160,7 +160,7 @@
 				
 				if(typeof testcase === 'string') {
 					if(testcase === '-'){
-						document.write('<h2 class="testcasegroup">' + name + '</h2>');
+						document.write('<h2 class="testcasegroup">' + encodeHTML(name) + '</h2>');
 						continue ;
 					}
 					
@@ -180,9 +180,9 @@
 			
 			if(info) {
 				
-				info = new Function(info.toRun())();
+				info = runFn(new Function(info.toRun()));
 				
-				document.getElementById('testcase-' + name).className = assert.hasError ? 'testcase error' : showSuccess ? 'testcase success' : 'testcase';
+				document.getElementById('testcase-' + name).className = assert.hasError === true ? 'testcase error' : !showSuccess ? 'testcase' : assert.hasError === false ? 'testcase success' : 'testcase warn';
 				
 				return  info;
 			
@@ -193,7 +193,7 @@
 			var info = current.testCases[name];
 			
 			if(info) {
-				return new Function(info.toTime())();
+				return runFn(new Function(info.toTime()));
 			
 			}
 			
@@ -203,7 +203,7 @@
 			var info = current.testCases[name];
 			
 			if(info) {
-				return new Function(info.toTest())();
+				return runFn(new Function(info.toTest()));
 			
 			}
 		},
@@ -214,10 +214,20 @@
 			}
 		},
 		
+		doTimeAll: function(){
+			for(var name in current.testCases) {
+				this.doTime(name);
+			}
+		},
+		
 		doTestAll: function(){
 			for(var name in current.testCases) {
 				this.doTest(name);
 			}
+		},
+		
+		doLog: function(value){
+			console.log(typeof value === 'string' ? "'" + value.replace(/'/g, "\\\'") + "'" : value);
 		},
 
 		initQuestions: function (questions,  result) {
@@ -233,7 +243,7 @@
 				document.write('<div class="questions">\r\n');
 				document.write(i);
 				document.write('. ');
-				document.write(question);
+				document.write(encodeHTML(question));
 				document.write('\r\n</div>\r\n');
 				document.write('<div class="note">\r\n');
 				
@@ -252,7 +262,7 @@
 					document.write(i);
 					document.write(j);
 					document.write('">');
-					document.write(answers[j]);
+					document.write(encodeHTML(answers[j]));
 					document.write('</label><br>\r\n');
 				}
 				document.write('\r\n</div>\r\n');
@@ -308,6 +318,38 @@
 			
 			document.write('<script src="' + root + 'assets/project/' + currentUser +'.js" type="text/javascript"></' + 'script>');
 			
+		},
+		
+		createTestCases: function (obj){
+			var r = [], value = eval(obj), tabs = "\t\t\t\t";
+			for(var i in value){
+				if(value.hasOwnProperty(i) && typeof value[i] == 'function' && value[i].toString().indexOf('[native code]') == -1){
+					r.push(format(i));
+				}
+			}
+			
+			for(var i in value.prototype){
+				if(value.prototype.hasOwnProperty(i) && typeof value.prototype[i] == 'function' && value.prototype[i].toString().indexOf('[native code]') == -1){
+					r.push(format("prototype." + i));
+				}
+			}
+			
+			r = tabs + r.join(",\n" + tabs);
+			
+			alert(r);
+			
+			return r;
+			
+			function format(name){
+				var d = obj+ "." + name;
+				return "'" + d +"': ''";
+			}
+		},
+		
+		createFunction: function (v) {
+		   return function(){
+		   		return v;
+		   }
 		}
 	
 	});
@@ -342,7 +384,7 @@
 		},
 		
 		reset: function(){
-			assert.hasError = false;
+			assert.hasError = null;
 		},
 		
 		clearLog: function(){
@@ -350,7 +392,7 @@
 		},
 		
 		logged: function(value){
-			return assert(areEqual(value1, value2), "断言失败。应该输出 ", value, ", 现在返回", assert._log);
+			return assert(areEqual(value, assert._log), "断言失败。应该输出 ", value, ", 现在是", assert._log);
 		}
 	
 	});
@@ -362,6 +404,11 @@
 		this.method = name;
 		
 		apply(this, info);
+		
+		if(this.doCall === false) {
+			this.method = 'createFunction(' + this.method + ')';
+		}
+		
 		this.id = name;
 		
 		var overrides = (info.overrides || "").split(';');
@@ -373,12 +420,19 @@
 			}
 			
 			t = overrides[0].substr(1).split(/\s*=\s*/);
-			this.method = t[0] + '.' + this.method;
 			if(t[1]) {
 				this.prefix = 'var ' +  t[0] + ' = ' + t[1] + ';\r\n';
+				this.methodName = t[1] + this.method;
 			}
 			
+			this.method = t[0] + this.method;
+			
+			
 			overrides.splice(0, 1);
+		}
+		
+		if(!this.methodName){
+			this.methodName =   this.method;
 		}
 		
 		this.overrides = {};
@@ -407,15 +461,15 @@
 			    this.id,
 			    '" class="testcase" onmouseover="this.className += \' active\'" onmouseout="this.className = this.className.replace(\' active\', \'\');">',
 			    '<a href="javascript://',
-			    this.method, '(', p || '', ')',
-			    this.overrides[p] ? ' => ' + this.overrides[p] : '',
+			    encodeHTML(this.method), '(', encodeHTML(p || ''), ')',
+			    encodeHTML(this.overrides[p] ? ' => ' + this.overrides[p] : ''),
 			    '" onclick="doRun(\'', 
 			    this.id,
-			    '\')">', this.name || this.id,
+			    '\')">', encodeHTML(this.name || this.id),
 			    '</a>',
-			    this.summary ? '&nbsp;&nbsp;&nbsp;&nbsp;' + this.summary : '',
+			    this.summary ? '&nbsp;&nbsp;&nbsp;&nbsp;' + encodeHTML(this.summary) : '',
 			    '<span><a href="javascript://',
-			    this.method,
+			    encodeHTML(this.method),
 			    '" onclick="doRun(\'',
 			    this.id,
 			    '\');">测试</a> | <a href="javascript://测试速度" onclick="doTime(\'',
@@ -444,7 +498,7 @@
 				r.push(this.prefix);
 				r.push('assert.clearLog();\r\n');
 				r.push('console.log("');
-				r.push(this.method);
+				r.push(this.methodName.replace(/"/g, '\\\"'));
 				r.push('(');
 				r.push(override.replace(/\"/g, "\\\""));
 				r.push(') => ", ');
@@ -524,7 +578,7 @@
 				r.push('\r\n');
 			}
 
-			forEach(params, function(param) {
+			forEach('params' in this ? this.params : params, function(param) {
 				r.push(this.prefix);
 				r.push('try {\r\n');
 				r.push('console.log("');
@@ -542,7 +596,7 @@
 				r.push(this.method);
 				r.push('(');
 				r.push(param.replace(/\"/g, "\\\""));
-				r.push(') 抛出了异常 ", e.message, " @", e.lineNumber);\r\n');
+				r.push(') 抛出了异常 ", e.message);\r\n');
 				r.push('}\r\n');
 				
 				
@@ -587,10 +641,23 @@
 		
 	}
 	
+	function encodeHTML(value){
+		return  value
+			.replace(/&/g,"&amp;")
+			.replace(/</g,"&lt;")
+			.replace(/>/g,"&gt;")
+         	.replace(/ /g,"&nbsp;")
+        	.replace(/\'/g,"&#39;")
+         	.replace(/\"/g,"&quot;"); 
+		
+	}
+	
 	function assert(bValue, msg){
 		if(!bValue) {
 			assert.hasError = true;
 			console.error.apply(console, [].slice.call(arguments, 1));
+		} else {
+		   assert.hasError  = false;	
 		}
 	}
 	
@@ -607,8 +674,18 @@
 		}
 	}
 	
+	function runFn(fn){
+		try{
+			return    fn();
+		}catch(e){
+			console.error(e.message);
+			console.info(fn.toString());
+		}
+		
+	}
+	
 	function areEqual(value1, value2) {
-		if(value1 == value2) 
+		if(value1 === value2) 
 			return true;
 		
 		if(value1 && typeof value1 === 'object' && value2 && typeof value2 === 'object') {

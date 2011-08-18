@@ -459,7 +459,7 @@ var JPlus = {
 					url = xmlHttp.responseText;
 					
 					// 运行处理函数。
-					return callback ? callback(url) : uri;
+					return callback ? callback(url) : url;
 	
 				} catch(e) {
 					
@@ -1223,7 +1223,7 @@ var JPlus = {
 					
 					value = value[fn];
 					
-					assert(dest[key], "Object.update(iterable, fn, dest, args): 试图把iterable[{key}][{fn}] 放到 dest[key][fn], 但  dest[key] 是一个空的成员。");
+					assert(!args || dest[key], "Object.update(iterable, fn, dest, args): 试图把iterable[{key}][{fn}] 放到 dest[key][fn], 但  dest[key] 是一个空的成员。", key, fn);
 					
 					// 如果属性是非函数，则说明更新。 a.value -> b.value
 					if(args)
@@ -1318,6 +1318,10 @@ var JPlus = {
 				// 如果对象支持复制，自己复制。
 				if(obj.clone)
 					return obj.clone();
+				
+				// #1    
+				// if(obj.cloneNode)
+				//	return obj.cloneNode(true);
 					
 				//仅当对象才需深拷贝，null除外。
 				obj = o.update(obj, o.clone, Array.isArray(obj) ? [] : {}, deep);
@@ -1477,6 +1481,8 @@ var JPlus = {
 			
 			for(var i = 0; i < src.length; i++)
 				dest.include(src[i]);
+				
+			return dest;
 		},
 
 		/**
@@ -1713,7 +1719,7 @@ var JPlus = {
 		ellipsis: function(value, len) {
 			assert.isString(value, "String.ellipsis(value, len): 参数  {value} ~。");
 			assert.isNumber(len, "String.ellipsis(value, len): 参数  {len} ~。");
-			return value.length > len ?  value.substr(0, len) + "..." : value;
+			return value.length > len ?  value.substr(0, len - 3) + "..." : value;
 		}
 		
 	});
@@ -2149,13 +2155,15 @@ var JPlus = {
 		 * ["", "aaa", "zzz", "qqq"].insert(3, 4); //   ["", "aaa", "zzz", 4, "qqq"]
 		 * </code>
 		 */
-		insert : function(index, value) {
+		insert: function(index, value) {
 			
 			assert.isNumber(index, "Array.prototype.insert(index, value): 参数 index ~。");
-			var tmp = ap.slice.call(this, index);
-			this.length = index;
-			this[index] = value;
-			return ap.push.apply(this, tmp);
+			var me = this,
+				tmp = ap.slice.call(this, index);
+			me.length = index;
+			me[index] = value;
+			ap.push.apply(me, tmp);
+			return me;
 			
 		},
 		
@@ -2742,11 +2750,13 @@ Object.extendIf(trace, {
 	 */
 	api: function(obj, prefix) {
 		var title = 'API信息: ', msg = [];
+		
+		var definedObj = 'Object String Date Array RegExp Element document JPlus navigator XMLHttpRequest trace assert Function';
 
 		if(arguments.length === 0) {
 			title = '全局对象: ';
 			prefix = '';
-			String.map('Object String Date Array RegExp Function Element document JPlus navigator XMLHttpRequest', function(propertyName) {
+			String.map(definedObj, function(propertyName) {
 				addValue(window, propertyName);
 			});
 
@@ -2775,39 +2785,50 @@ Object.extendIf(trace, {
 				} catch(e) {
 				}
 			}
+		} else {
+			msg = ['无法对 ' + (obj === null ? "null" : "undefined") + ' 分析'];
 		}
 
 		// 尝试获取一层的元素。
 		if(prefix === undefined) {
-
+			
+			String.map(definedObj + ' window location history', function(value) {
+				if(window[value] === obj) {
+					title = value + ' ' + getMember(obj, value) + '的成员: ';
+					prefix = value;
+				}
+			});
+			
 			var typeName ,constructor = obj != null && obj.constructor;
 			
-			if(obj && obj.nodeType) {
-				prefix = 'Element.prototype';
-				title = 'Element 类的实例成员: ';
-			} else {
-				
-				if(typeName = getClassInfo(obj)) {
-					var extObj = getMember(obj, typeName) === '类' && getClassInfo(obj.base);
-					title = typeName + ' ' + getMember(obj, typeName) + (extObj && extObj != "Object" ? '(继承于 ' + extObj + ' 类)' : '') + '的成员: ';
-					prefix = typeName;
-				} else if(typeName = getClassInfo(constructor)) {
-					prefix = typeName + '.prototype';
-					title = typeName + ' 类的实例成员: ';
-				}
-			}
-
 			if(!prefix) {
 				
-				String.map('Object String Date Array RegExp Number Function Element XMLHttpRequest', function(value) {
-					if(window[value] === obj) {
-						title = value + ' ' + getMember(obj, value) + '的成员: ';
-						prefix = value;
-					} else if(constructor === window[value]) {
+				String.map(definedObj, function(value) {
+					if(constructor === window[value]) {
 						prefix = value + '.prototype';
 						title = value + ' 类的实例成员: ';
 					}
 				});
+				
+			}
+
+			if(!prefix) {
+				
+				
+				if(obj && obj.nodeType) {
+					prefix = 'Element.prototype';
+					title = 'Element 类的实例成员: ';
+				} else {
+					
+					if(typeName = getClassInfo(obj)) {
+						var extObj = getMember(obj, typeName) === '类' && getClassInfo(obj.base);
+						title = typeName + ' ' + getMember(obj, typeName) + (extObj && extObj != "Object" ? '(继承于 ' + extObj + ' 类)' : '') + '的成员: ';
+						prefix = typeName;
+					} else if(typeName = getClassInfo(constructor)) {
+						prefix = typeName + '.prototype';
+						title = typeName + ' 类的实例成员: ';
+					}
+				}
 			}
 		}
 
@@ -3085,7 +3106,6 @@ Object.extendIf(trace, {
 	 */
 	runTime: function(fn, times) {
 		times = times || 1000;
-		args = args || [];
 		var d = Date.now();
 		while (times-- > 0)
 			fn();
@@ -3138,7 +3158,7 @@ function assert(bValue, msg) {
 
 	}
 
-	return bValue;
+	return !!bValue;
 }
 
 (function() {

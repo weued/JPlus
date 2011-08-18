@@ -1,0 +1,125 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Javascript 高级部分 - Javascript - J+文档库</title>
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+	</head>
+	<body>
+		<h2>Javascript 高级部分</h2>
+		<p>文/xuld</p>
+		<p class="content">
+			本文适合对 Javascript 基础语法比较熟练，希望能继续学习一些"牛"的技术细节的读者。
+		</p>
+		<h4>this 的理解</h4>
+		<p class="content">
+			Javascript 的 this 不同于其它编程语言的 this 。
+
+this可以出现在任何位置。如果是全局下，  this 是 window ，不能更改的。
+
+定理: <strong>代码是这样的: c.a()  那么 a函数里面的this就是 c    。</strong>
+
+默认下， window.a() 是可以省略为 a() 的 所以 直接 a() ， this是 window。
+
+代码是这样的: <strong>new a() 那么 a函数里面的是this就是a.prototype的复制版本，且，new a()的默认返回就是这个复制版本</strong>。
+
+a.call 和 a.apply 可以改变默认的this行为， a.call(b， 参数1，...，参数n) 和 a.apply(b， 参数数组) 执行时， a里的 this 是 b。
+
+		</p>
+		<h4>闭包的理解</h4>
+		<p class="content">
+			</p><pre><code>function a(){
+      var i=0;
+ }
+ 
+a();   </code></pre>	<p class="content">
+每次a执行的时候，都会创建一个新的执行环境，并在这个环境创建变量i，也就是说，每次的i是不一样的。这样就叫函数a对变量i的闭包。
+这样的代码是典型的没有闭包的代码:</p><pre><code>
+for(var i = 0; i < 9;i++){
+   a.childNodes[i].onclick = function(){
+      alert(i);
+  };
+}  </code></pre>	<p class="content">
+它有个问题，就是变量i只有1个，最后输出的都是当前的i(=9)。要想保存执行时的i，就要利用闭包。使每次的i都不同
+</p><pre><code>for(var i = 0; i < 9;i++){
+   var fn = function(m){
+       var  i = m;       // 利用fn保存i。
+       return function(){
+           alert(i);  // 我们已经利用闭包，把变量i保存起来了
+       };
+   };
+   a.childNodes[i].onclick = fn(i);
+}
+
+</code></pre>	<p class="content">
+		</p>
+		<h4>继承的实现</h4>
+		<p class="content">
+			在 Javascript 中， 类就是函数，要想实现类A，继承于类B 即 函数A的原型中拥有函数B的原型的全部成员。所以只需 A.prototype = new B()  这样A的原型就有B原型的全部成员了。当然这里调用了B的构造函数，为避免调用，使用一个中间函数fn。让fn.prototype = B.prototype ， 这样 A.prototype = new fn() 就可以实现继承，并且fn的构造函数是空的。
+
+最后的代码为:</p><pre><code>
+function A(){}
+ 
+function B(){}
+ 
+ 
+// -------------------------------
+// 下面让 A继承 B
+ 
+var fn = function(){}
+fn.prototye = B.prototype
+A.prototype = new fn();
+ 
+ 
+// --------------------------------
+//        结束
+
+</code></pre>	<p class="content">
+	<h4>函数定义和函数表达式</h4>
+	<p class="content">
+		</p><pre><code><br/>
+function a(){
+	
+}
+
+var b = function c(){
+	
+};		
+		</code></pre>	<p class="content">
+		这个例子中，有2个函数，a 和 b ，它们有本质区别吗? 像a、c这样的叫 函数定义, b 叫函数表达式   。函数定义是可以出现在当前作用域的任何位置，并直接使用的，而不用关心顺序问题。而函数表达式只是一个值，在没赋值前无法使用。
+		</p>
+		<h4>for(in) 的内涵</h4>
+		<p class="content">
+		如果 a = [1,2,3]; 那么 for(i in a) 遍历出什么 ? 如果没有扩展 Array.prototype  ，遍历出成员 1,2, 3 。否则，遍历出扩展的成员。
+		正常情况下，由 Javascript 原生的成员不会被遍历出，除非手动修改了这些成员，但在 IE6 下，即使修改了，也不会遍历出。 for(in) 除了遍历自己的成员，也会遍历原型链的成员，如果不需要原型链的，需要对成员进行筛选： obj.hasOwnProperty    
+		</p>
+		<h4>表达式的变量和作用域的变量</h4>
+		<p class="content">
+		</p><pre><code><br/>
+			var c = 1;
+function a(){
+	c = 10;
+	return 2;
+}
+
+
+var b = c + a();
+
+//   b 是多少?
+		
+		</code></pre>	<p class="content">
+			 答案是 3  ， 为什么? 因为表达式在计算的时候，所有变量的值都是缓存出来计算的。而不是在计算的时候再去找变量的值。
+		</p>	
+		<h4>蹊跷的原型链： Object.prototype 是什么?</h4>
+		<p class="content">
+			比如一个数组，其原型是什么?  Array.prototype,那么 Array.prototype 是什么呢?
+			可以理解为 Array.prototype = new Object(); 所以 Array.prototype  原型是 Object.prototype ?
+			那么  Object.prototype 呢， 如果认为  Object.prototype = new Object() 那么 如果在  Object.prototype 下查找成员 a， 势必在 Object.prototype  的原型链继续查找成员 a， 因为 Object.prototype  的原型链 是自己， 会造成递归查找。
+			其实答案是:   Object.prototype 是一个内部对象。 在 Javascript 虚拟机执行代码时，将全部的Js对象用 一个 NativeObject类(不等于Js的Object)表示。(比如 V8 中。这个类是 V8::internal::Object)
+			然后， js 的 Object.prototype = new NativeObject(); 所有Js对象对象都是继承于 NativeObject 的，  因此有： Object = new NativeFunction(); Object.prototype = new NativeObject();  Object.prototype.constructor = Object;
+			上面 3个等式 完全解释了 Object 的创建过程。一个普通的数组的创建方法为：Array = new NativeFunction(); Array.prototype = new NativeObject(); Array.prototype.constructor = Array; arr = new NativeArray(); arr.prototype = Array 。
+			所以，  Array.prototype 其实不是 new Object(), 而是 new NativeObject(); 而其实 new Object() 本质上，返回的也是  new NativeObject() ，相当于： new Array(); 本质是 var a = new NativeObject(); a.__prop__ = Array.prototype; return a;
+		</p>	
+		
+	</body>
+</html>
