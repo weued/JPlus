@@ -46,7 +46,7 @@ var notes = {
 
 
 
-var users = '+xuld';
+var users = '+aki +xuld';//新增账户第2个加号记得加上空格
 
 
 var resources = {
