@@ -45,15 +45,6 @@ var notes = {
 
 
 
-var tools = {
-	'Javascript': {
-		'格式化': 'tools/format/index.html',
-		'加密': 'tools/pack/index.html',
-		'压缩': 'tools/compact/index.html'	
-	}
-	
-};
-
 
 var users = '+xuld';
 
@@ -61,14 +52,17 @@ var users = '+xuld';
 var resources = {
 	
 	'users': users,
+	'工具': {
+		'格式化': 'tools/format/index.html',
+		'加密': 'tools/pack/index.html',
+		'压缩': 'tools/compact/index.html'	
+	},
 	'javascript 基础能力自测': {
 		'B 等级 - 语法': 'resources/javascript/level-B.html'
 	}
 };
 
-var issues = {
-	'1': '@System 是否需要增加 Object.clone 的支持'
-};
+var tools = resources;
 
 
 var navs = {
@@ -77,7 +71,6 @@ var navs = {
 	'控件': 'controls/index.html',
 	'组件': 'components/index.html',
 	'文档': 'notes/index.html',
-	'工具': 'tools/index.html',
 	'项目': 'resources/index.html'
 };
 
