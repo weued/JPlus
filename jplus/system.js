@@ -2288,32 +2288,7 @@ var JPlus = {
 			
 			var document = w.document,
 			
-				doReady = function() {
-					
-					if(document.isReady)
-						return;
-						
-					document.isReady = true;
-					
-					// 使用 document 删除事件。
-					p.removeEventListener.call(document, eventName, doReady, false);
-					
-					// 调用所有函数。
-					doReady.list.invoke('call', [document, p]);
-					
-					
-					doReady = null;
-					
-				},
-				
-				doLoad = function() {
-					document.isLoaded = true;
-					p.removeEventListener.call(w, 'load', doLoad, false);
-					
-					doLoad.list.invoke('call', [w, p]);
-					
-					doLoad = null;
-				},
+				list = [],
 				
 				/// #ifdef SupportIE8
 			
@@ -2324,52 +2299,71 @@ var JPlus = {
 				/// eventName = 'DOMContentLoaded';  
 				
 				/// #endif
+				
+			[['onReady', 'isReady', document, eventName], ['onLoad', 'isLoaded', w, 'load']].forEach(function(value, i){
+				var onReadyLoad = value[0],
+					owner = value[2]; 
+					
+				//  设置 onReady  Load
+				document[onReadyLoad] = function(fn) {
+	
+					assert.isFunction(fn, "document." +  onReadyLoad + "(fn): 参数 {fn} ~。");
+					
+					if(document[value[1]])
+						fn.call(owner);
+					else
+						// 已经完成则执行函数，否则 on 。
+						doReadyLoad.list.push(fn);
+					
+					return this;
+				};
+				
+				// 真正执行的函数。
+				function doReadyLoad(){
+					document[value[1]] = true;
+					
+					// 使用 document 删除事件。
+					p.removeEventListener.call(owner, eventName, doReadyLoad, false);
+					
+					// 调用所有函数。
+					doReadyLoad.list.invoke('call', [owner, p]);
+					
+					
+					doReadyLoad = null;
+					
+				}
+				
+				list[i] = doReadyLoad;
+				
+			});
 		
 			/**
 			 * 页面加载时执行。
 			 * @param {Functon} fn 执行的函数。
 			 * @memberOf document
 			 */
-			document.onReady = function(fn) {
-
-				assert.isFunction(fn, "document.onReady(fn): 参数 {fn} ~。");
-				
-				if(document.isReady)
-					fn.call(document);
-				else
-					// 已经完成则执行函数，否则 on 。
-					doReady.list.push(fn);
-				
-			};
 			
 			/**
 			 * 在文档载入的时候执行函数。
 			 * @param {Functon} fn 执行的函数。
 			 * @memberOf document
 			 */
-			document.onLoad = function(fn) {
-
-				assert.isFunction(fn, "document.onLoad(fn): 参数 {fn} ~。");
 				
-				if(document.isLoaded)
-					fn.call(w);
-				else
-					// 已经完成则执行函数，否则 on 。
-					doLoad.list.push(fn);
-				
-			};
-				
-			doReady.list = [];
+			list[0].list = [];
 			
-			doLoad.list = [doReady];
+			list[1].list = [function(){
+				if(!document.isReady)
+					list[0]();
+				list = null;
+			}];
 				
 			// 如果readyState 不是  complete, 说明文档正在加载。
 			if (document.readyState !== "complete") { 
 	
 				// 使用系统文档完成事件。
-				p.addEventListener.call(document, eventName, doReady, false);
+				p.addEventListener.call(document, eventName, list[0], false);
 				
-				p.addEventListener.call(w, 'load', doLoad, false);
+				p.addEventListener.call(w, 'load', list[1], false);
 				
 				/// #ifdef SupportIE8
 				
@@ -2404,7 +2398,7 @@ var JPlus = {
 								return;
 							}
 						
-							doReady();
+							list[0]();
 						})();
 					}
 				}
@@ -2412,7 +2406,7 @@ var JPlus = {
 				/// #endif
 				
 			} else {
-				setTimeout(doLoad, 1);
+				setTimeout(list[1], 1);
 			}
 			
 			/// #endregion
