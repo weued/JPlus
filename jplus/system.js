@@ -32,6 +32,13 @@ var JPlus = {
 	 * @config {Boolean}
 	 */
 	debug: true,
+	
+	/**
+	 * 启用控制台调试。
+	 * @config {Boolean} 
+	 * 如果不存在控制台，将自动调整为 false 。
+	 */
+	trace: true,
 
 	/**
 	 * 根目录。(需要末尾追加 /)
@@ -67,14 +74,7 @@ var JPlus = {
 	 * @config {String}
 	 * @value 'share'
 	 */
-	resource: 'share',
-	
-	/**
-	 * 启用控制台调试。
-	 * @config {Boolean} 
-	 * 如果不存在控制台，将自动调整为 false 。
-	 */
-	trace: true
+	resource: 'share'
 
 };
 
@@ -89,7 +89,7 @@ var JPlus = {
 
 /**
  * @projectDescription JPlus
- * @copyright 2009-2011 JPlus Team
+ * @copyright n2011 JPlus Team
  * @fileOverview 系统核心的核心部分。
  */
 
@@ -269,7 +269,7 @@ var JPlus = {
 				
 				assert.isObject(obj, "JPlus.getData(obj, type): 参数 {obj} ~。");
 				
-				// 获取变量。
+				// 获取属性'$data'。
 				var d = obj.$data;
 				return d && d[type];
 			},
@@ -317,6 +317,7 @@ var JPlus = {
 				if(data) {
 					dest.$data = o.clone.call(1, data);
 					
+					// event 作为系统内部对象。事件的拷贝必须重新进行 on 绑定。
 					var evt = src.$data.event, i  ;
 					if(evt) {
 						delete dest.data.event;
@@ -344,7 +345,7 @@ var JPlus = {
 			 */
 			eval: w.execScript || function(statement) {
 				
-				// 如果正常浏览器，使用 window.eval
+				// 如果正常浏览器，使用 window.eval  。
 				return w.eval(statement);
 			},
 			
@@ -372,7 +373,7 @@ var JPlus = {
 			 */
 			Class: function (members) {
 					
-				// 生成新类
+				// 创建类，其实就是 继承 Object ，创建一个类。
 				return Object.extend(members);
 			},
 			
@@ -511,6 +512,7 @@ var JPlus = {
 					src = 'src';
 				 }
 				 
+				 // 如果在节点找到符合的就返回，找不到，调用 callback
 				 each.call(doms, function(dom) {
 				 	return !dom[src] || dom[src].toLowerCase().indexOf(namespace) === -1;
 				 }) && callback(p.rootPath + namespace);
@@ -670,10 +672,8 @@ var JPlus = {
 					
 					// 如果未绑定
 					if (!evt) {
-					
-						eMgr = me;
 						
-						evt = me.constructor;
+						evt = (eMgr = me).constructor;
 						
 						// 遍历父类， 找到适合的 eMgr	
 						while(!(eMgr = eventMgr[eMgr.xType]) || !(eMgr = eMgr[type])) {
@@ -744,7 +744,7 @@ var JPlus = {
 					
 					return this.on(type, function() {
 						
-						// 删除先。
+						// 删除。
 						this.un( type, arguments.callee);
 						
 						// 然后调用。
@@ -999,6 +999,7 @@ var JPlus = {
 			
 			assert(!events || o.isObject(events), "Class.addEvents(events): 参数 {event} 必须是一个包含事件的对象。 如 {click: { add: ..., remove: ..., initEvent: ..., trigger: ... } ", events);
 			
+			// 实现 事件 接口。
 			applyIf(ep, p.IEvent);
 			
 			// 如果有自定义事件，则添加。
@@ -1070,26 +1071,26 @@ var JPlus = {
 	
 			// 未指定函数   使用默认构造函数(Object.prototype.constructor);
 			
-			// 生成子类
+			// 生成子类 。
 			var subClass = hasOwnProperty.call(members =  members instanceof Function ? {
 					constructor: members
 				} : (members || {}), "constructor") ? members.constructor : function() {
 					
-					// 调用父类构造函数
+					// 调用父类构造函数 。
 					arguments.callee.base.apply(this, arguments);
 					
 				};
 				
-			// 代理类
+			// 代理类 。
 			emptyFn.prototype = (subClass.base = this).prototype;
 			
-			// 指定成员
+			// 指定成员 。
 			subClass.prototype = o.extend(new emptyFn, members);
 			
 			// 覆盖构造函数。
 			subClass.prototype.constructor = subClass;
 
-			// 指定Class内容
+			// 指定Class内容 。
 			return Class(subClass);
 
 		}
@@ -1121,8 +1122,8 @@ var JPlus = {
 			for (var item in {toString: true})
 				return apply;
 			
-			p.enumerables = ["toString", "hasOwnProperty", "valueOf", "constructor", "isPrototypeOf"];
-			// IE6  需要复制
+			p.enumerables = "toString hasOwnProperty valueOf constructor isPrototypeOf".split(' ');
+			// IE6  不会遍历系统对象需要复制，所以强制去测试，如果改写就复制 。
 			return function(dest, src) {
 				for (var i = p.enumerables.length, value; i--;)
 					if(hasOwnProperty.call(src, value = p.enumerables[i]))
@@ -1170,7 +1171,7 @@ var JPlus = {
 			// 如果 iterable 是 null， 无需遍历 。
 			if (iterable != null) {
 				
-				//可遍历
+				//普通对象使用 for( in ) , 数组用 0 -> length  。
 				if (iterable.length === undefined) {
 					
 					// Object 遍历。
@@ -1274,17 +1275,17 @@ var JPlus = {
 		 * */
 		type: function(obj) {
 			
-			//获得类型
+			//获得类型  。
 			var b = typeof obj;
 			
 			switch (b) {
-				case "object":  // 对象， 直接获取 xType
+				case "object":  // 对象， 直接获取 xType 。
 					return obj == null ? "null" : (obj.xType || b);
 
-				case "function":  // 如果有原型， 则为类
+				case "function":  // 如果有原型， 则为类 。
 					for(obj in obj.prototype) { return "class";}
 					
-				default:  // 和 typeof 一样
+				default:  // 和 typeof 一样 。
 					return b;
 					
 			}
@@ -1453,7 +1454,9 @@ var JPlus = {
 		create: function(iterable, start) {
 			if(!iterable)
 				return [];
-			if(iterable.item || iterable.count) {   //  DOM     Object  集 
+				
+			//  [DOM Object] 。
+			if(iterable.item || iterable.count) {   
 				var l = iterable.length || iterable.count;
 				start = start || 0;
 				
@@ -1465,52 +1468,6 @@ var JPlus = {
 			
 			// 调用 slice 实现。
 			return ap.slice.call(iterable, start);
-		},
-		
-		/**
-		 * 如果目标数组不存在值，则拷贝，否则忽略。
-		 * @static
-		 * @param {Array} src 来源数组。
-		 * @param {Array} dest 目标数组。
-		 * @example
-		 * <code>
-		 * Array.copyIf([4,6], [4, 7]); // [4, 7, 6]
-		 * </code>
-		 */
-		copyIf: function(src, dest) {
-			
-			for(var i = 0; i < src.length; i++)
-				dest.include(src[i]);
-				
-			return dest;
-		},
-
-		/**
-		 * 把传入的值连接为新的数组。如果元素本身是数组，则合并。此函数会过滤存在的值。
-		 * @static
-		 * @param {Object} ... 数据成员。
-		 * @return {Array} 新数组。
-		 * @example
-		 * <code>
-		 * Array.plain([4,6], [[4], 7]); // [4, 7, 6]
-		 * </code>
-		 */
-		plain: function() {
-
-			var r = [];
-			
-			// 对每个参数
-			ap.forEach.call(arguments, function(d) {
-				
-				
-				// 如果数组，把内部元素压入r。
-				if (Array.isArray(d)) Array.copyIf(d, r);
-				
-				// 不是数组，直接压入 r 。
-				else r.include(d);
-			});
-
-			return r;
 		},
 		
 		/**
@@ -1679,9 +1636,13 @@ var JPlus = {
 			assert(typeof str == 'string', 'String.map(str, source, dest, copyIf): 参数 {str} 必须是字符串。', str);
 			
 			var isFn = Function.isFunction(source);
-			// 分隔。
+			// 使用 ' '、分隔, 这是约定的。
 			str.split(' ').forEach(function(v, k, c) {
+				
+				// 如果是函数，调用函数， 否则是属性。
 				var val = isFn ? source(v, k, c) : source[v];
+				
+				// 如果有 dest ，则复制。
 				if(dest && !(copyIf && (v in dest)))
 					dest[v] = val;
 			});
@@ -1704,6 +1665,8 @@ var JPlus = {
 			o.each(obj, function( value, key ) {
 				s.push(e(key) + '=' + e(value));
 			});
+			
+			//  %20 -> +  。
 			return s.join('&').replace(rWhite, '+');
 		},
 	
@@ -1923,34 +1886,6 @@ var JPlus = {
 			} finally {
 				delete fn.$bubble;
 			}
-		},
-		
-		/**
-		 * 创建当前 Object 的浅表副本。
-		 * @return {Object} 当前变量的副本。
-		 * @protected
-		 * @example
-		 * <code>
-		 * var MyBa = new Class({
-		 *    clone: function() {
-		 * 	     return this.memberwiseClone();
-		 *    }
-		 * });
-		 * </code>
-		 */
-		memberwiseClone : function() {
-			
-			// 创建一个同类。
-			var me = this, newObject = new me.constructor(), i;
-			
-			// 复制自身。
-			for(i in me) {
-				if(hasOwnProperty.call(me, i)) {
-					newObject[i] = me[i];
-				}
-			}
-			
-			return newObject;
 		}
 	
 	});
@@ -2161,7 +2096,7 @@ var JPlus = {
 			var me = this,
 				tmp = ap.slice.call(this, index);
 			me.length = index;
-			me[index] = value;
+			this[index] = value;
 			ap.push.apply(me, tmp);
 			return me;
 			
@@ -2181,6 +2116,8 @@ var JPlus = {
 		invoke: function(fn, args) {
 			assert(Function.isFunction(fn) || (args && typeof args.length === 'number'), "Array.prototype.invoke(fn, args): 参数 {args} 必须是数组, 无法省略。", args)
 			var r = [];
+			
+			// 如果函数，则调用。 否则对 属性调用函数。
 			ap.forEach.call(this, Function.isFunction(fn) ? function(value, index) {
 				r.push(fn.call(args, value, index));
 			} : function(value) { 
@@ -2200,9 +2137,11 @@ var JPlus = {
 		 * </code>
 		 */
 		unique: function() {
-			var r = [];
-			Array.copyIf(this, r);
-		    return r; 
+			
+			// 删除从 i + 1 之后的当前元素。
+			for(var i = 0; i < this.length; ap.remove.call(this, this[i], ++i)) ;
+			
+			return this;
 		},
 		
 		/**
@@ -2214,11 +2153,11 @@ var JPlus = {
 		 * [1,7,8,8].remove(7); //   1
 		 * </code>
 		 */
-		remove: function(value) {
+		remove: function(value, startIndex) {
 			
 			// 找到位置， 然后删。
-			var i = this.indexOf(value);
-			if(i !== -1)this.splice(i, 1);
+			var i = ap.indexOf.call(this, value, startIndex);
+			if(i !== -1) ap.splice.call(this, i, 1);
 			return i;
 		},
 		
@@ -2361,7 +2300,6 @@ var JPlus = {
 					
 					// 调用所有函数。
 					doReady.list.invoke('call', [document, p]);
-					
 					
 					
 					doReady = null;
