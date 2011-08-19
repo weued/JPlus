@@ -55,7 +55,8 @@ var resources = {
 	'工具': {
 		'格式化': 'tools/format/index.html',
 		'加密': 'tools/pack/index.html',
-		'压缩': 'tools/compact/index.html'	
+		'压缩': 'tools/compact/index.html',
+		'速度测试': 'tools/speedmatch/index.html'	
 	},
 	'javascript 基础能力自测': {
 		'B 等级 - 语法': 'resources/javascript/level-B.html'
