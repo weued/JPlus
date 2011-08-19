@@ -228,10 +228,10 @@ var JPlus = {
 			 * 获取属于一个元素的数据。
 			 * @static
 			 * @param {Object} obj 元素。
-			 * @param {String} type 类型。
+			 * @param {String} dataType 类型。
 			 * @return {Object} 值。
-			 * 这个函数会在对象内生成一个 data 字段， 并生成一个 data.type 对象返回。
-			 * 如果原先存在 data.type, 则直接返回。
+			 * 这个函数会在对象内生成一个 data 字段， 并生成一个 data.dataType 对象返回。
+			 * 如果原先存在 data.dataType, 则直接返回。
 			 * @example
 			 * <code>
 			 * var obj = {};
@@ -239,25 +239,25 @@ var JPlus = {
 			 * trace(  JPlus.data(obj, 'a').c  ) // 2
 			 * </code>
 			 */
-			data: function (obj, type) {
+			data: function (obj, dataType) {
 				
-				assert.isObject(obj, "JPlus.data(obj, type): 参数 {obj} ~。");
+				assert.isObject(obj, "JPlus.data(obj, dataType): 参数 {obj} ~。");
 				
 				// 创建或测试 '$data'。
 				var d = obj.$data || (obj.$data = {}) ;
 				
-				// 创建或测试   type。
-				return d[type] || (d[type] = {});
+				// 创建或测试   dataType。
+				return d[dataType] || (d[dataType] = {});
 			},
 		
 			/**
 			 * 如果存在，获取属于一个元素的数据。
 			 * @static
 			 * @param {Object} obj 元素。
-			 * @param {String} type 类型。
+			 * @param {String} dataType 类型。
 			 * @return {Object} 值。
-			 * 这个函数会在对象内生成一个 data 字段， 并生成一个 data.type 对象返回。
-			 * 如果原先存在 data.type, 则直接返回。
+			 * 这个函数会在对象内生成一个 data 字段， 并生成一个 data.dataType 对象返回。
+			 * 如果原先存在 data.dataType, 则直接返回。
 			 * @example
 			 * <code>
 			 * var obj = {};
@@ -265,20 +265,20 @@ var JPlus = {
 			 *     trace(  JPlus.data(obj, 'a')  )
 			 * </code>
 			 */
-			getData:function (obj, type) {
+			getData:function (obj, dataType) {
 				
-				assert.isObject(obj, "JPlus.getData(obj, type): 参数 {obj} ~。");
+				assert.isObject(obj, "JPlus.getData(obj, dataType): 参数 {obj} ~。");
 				
 				// 获取属性'$data'。
 				var d = obj.$data;
-				return d && d[type];
+				return d && d[dataType];
 			},
 			
 			/**
 			 * 设置属于一个元素的数据。
 			 * @static
 			 * @param {Object} obj 元素。
-			 * @param {String} type 类型。
+			 * @param {String} dataType 类型。
 			 * @param {Object} data 内容。
 			 * @return data
 			 * @example
@@ -287,12 +287,12 @@ var JPlus = {
 			 * JPlus.setData(obj, 'a', 5);    //     5
 			 * </code>
 			 */
-			setData: function(obj, type, data) {
+			setData: function(obj, dataType, data) {
 				
-				assert.isObject(obj, "JPlus.setData(obj, type): 参数 {obj} ~。");
+				assert.isObject(obj, "JPlus.setData(obj, dataType): 参数 {obj} ~。");
 				
 				// 简单设置变量。
-				return (obj.$data || (obj.$data = {}))[type] = data;
+				return (obj.$data || (obj.$data = {}))[dataType] = data;
 			},
 			
 			/**
@@ -481,7 +481,7 @@ var JPlus = {
 			 * @method
 			 * @static
 			 * @param {String} namespace 名字空间。
-			 * @param {Boolean} isStyle 是否为样式表。
+			 * @param {Boolean} isStyle=false 是否为样式表。
 			 * 有关名字空间的说明， 见 {@link namespace} 。
 			 * @example
 			 * <code>
@@ -590,7 +590,7 @@ var JPlus = {
 			 * @static
 			 * @param {Element} elem 元素。
 			 * @param {String} type 类型。
-			 * @param {Function} fn 函数。
+			 * @param {Function} listener 函数。
 			 * @seeAlso JPlus.removeListener
 			 * @example
 			 * <code>
@@ -599,12 +599,12 @@ var JPlus = {
 			 * });
 			 * </code>
 			 */
-			addEventListener: document.addEventListener ? function( type, fn) {
-				this.addEventListener(type, fn, false);
+			addEventListener: document.addEventListener ? function(type, listener) {
+				this.addEventListener(type, listener, false);
 			} : function(type, fn) {
 				
 				// IE8- 使用 attachEvent 。
-				this.attachEvent('on' + type, fn);
+				this.attachEvent('on' + type, listener);
 			},
 			
 			/**
@@ -613,7 +613,7 @@ var JPlus = {
 			 * @static
 			 * @param {Element} elem 元素。
 			 * @param {String} type 类型。
-			 * @param {Function} fn 函数。
+			 * @param {Function} listener 函数。
 			 * @seeAlso JPlus.addListener
 			 * @example
 			 * <code>
@@ -622,12 +622,12 @@ var JPlus = {
 			 * });
 			 * </code>
 			 */
-			removeEventListener: document.removeEventListener ? function(type, fn) {
-				this.removeEventListener(type, fn, false);
+			removeEventListener: document.removeEventListener ? function(type, listener) {
+				this.removeEventListener(type, listener, false);
 			} : function(type, fn) {
 				
 				// IE8- 使用 detachEvent 。
-				this.detachEvent('on' + type, fn);
+				this.detachEvent('on' + type, listener);
 			},
 			
 			/// #endif
@@ -654,7 +654,7 @@ var JPlus = {
 				/**
 				 * 增加一个监听者。
 				 * @param {String} type 监听名字。
-				 * @param {Function} fn 调用函数。
+				 * @param {Function} listener 调用函数。
 				 * @return Object this
 				 * @example
 				 * <code>
@@ -663,9 +663,9 @@ var JPlus = {
 				 * });
 				 * </code>
 				 */
-				on: function(type, fn) {
+				on: function(type, listener) {
 					
-					assert.isFunction(fn, 'IEvent.on(type, fn): 参数 {fn} ~。');
+					assert.isFunction(listener, 'IEvent.on(type, listener): 参数 {listener} ~。');
 					
 					// 获取本对象     本对象的数据内容   本事件值
 					var me = this, d = p.data(me, 'event'), evt = d[type], eMgr;
@@ -689,8 +689,8 @@ var JPlus = {
 						
 						// 支持自定义安装。
 						evt = function(e) {
-							var fn = arguments.callee,
-								target = fn.target,
+							var listener = arguments.callee,
+								target = listener.target,
 								handlers = fn.handlers.slice(0), 
 								i = -1,
 								len = handlers.length;
@@ -707,7 +707,7 @@ var JPlus = {
 						evt.event = eMgr;
 						
 						//指定当然事件的全部函数。
-						evt.handlers = [eMgr.initEvent, fn];
+						evt.handlers = [eMgr.initEvent, listener];
 						
 						// 保存全部内容。
 						d[type] = evt;
@@ -716,7 +716,7 @@ var JPlus = {
 						eMgr.add(evt.target = me, type, evt);
 						
 					} else {
-						evt.handlers.push(fn);
+						evt.handlers.push(listener);
 					}
 						
 					return me;
@@ -725,7 +725,7 @@ var JPlus = {
 				/**
 				 * 增加一个只执行一次的监听者。
 				 * @param {String} type 监听名字。
-				 * @param {Function} fn 调用函数。
+				 * @param {Function} listener 调用函数。
 				 * @return Object this
 				 * @example
 				 * <code>
@@ -737,9 +737,9 @@ var JPlus = {
 				 * elem.trigger('click');   //  没有输出 
 				 * </code>
 				 */
-				one: function(type, fn) {
+				one: function(type, listener) {
 					
-					assert.isFunction(fn, 'IEvent.one(type, fn): 参数 {fn} ~。');
+					assert.isFunction(listener, 'IEvent.one(type, listener): 参数 {listener} ~。');
 					
 					
 					return this.on(type, function() {
@@ -748,14 +748,14 @@ var JPlus = {
 						this.un( type, arguments.callee);
 						
 						// 然后调用。
-						return fn.apply(this, arguments);
+						return listener.apply(this, arguments);
 					});
 				},
 				
 				/**
 				 * 删除一个监听器。
 				 * @param {String} [type] 监听名字。
-				 * @param {Function/undefined} fn 回调器。
+				 * @param {Function/undefined} listener 回调器。
 				 * @return Object this
 				 * 注意: function() {} !== function() {}, 这意味着这个代码有问题:
 				 * <code>
@@ -775,19 +775,19 @@ var JPlus = {
 				 * });
 				 * </code>
 				 */
-				un: function (type, fn) {
+				un: function (type, listener) {
 					
-					assert(!fn || Function.isFunction(fn), 'IEvent.un(type, fn): 参数 {fn} 必须是可执行的函数或空参数。', fn);
+					assert(!listener || Function.isFunction(listener), 'IEvent.un(type, listener): 参数 {listener} 必须是可执行的函数或空参数。', listener);
 					
 					// 获取本对象     本对象的数据内容   本事件值
 					var me = this, d = p.getData(me, 'event'), evt;
 					if (d) {
 						 if (evt = d[type]) {
-							if (fn) 
-								evt.handlers.remove(fn);
+							if (listener) 
+								evt.handlers.remove(listener);
 								
 							// 检查是否存在其它函数或没设置删除的函数。
-							if (!fn || evt.handlers.length < 2) {
+							if (!listener || evt.handlers.length < 2) {
 								
 								evt.handlers = null;
 								delete d[type];
@@ -838,7 +838,7 @@ var JPlus = {
 		/**
 		 * 扩展当前类的动态方法。
 		 * @static
-		 * @param {Object} obj 成员。
+		 * @param {Object} members 成员。
 		 * @return this
 		 * @seeAlso JPlus.Object.implementIf
 		 * @example
@@ -852,11 +852,11 @@ var JPlus = {
 		 * (1).sin();  //  Math.sin(1);
 		 * </code>
 		 */
-		implement: function (obj) {
+		implement: function (members) {
 
-			assert(obj && this.prototype, "Class.implement(obj): 无法扩展类，因为 {obj} 或 this.prototype 为空。", obj);
+			assert(members && this.prototype, "Class.implement(members): 无法扩展类，因为 {members} 或 this.prototype 为空。", members);
 			// 复制到原型
-			o.extend(this.prototype, obj);
+			o.extend(this.prototype, members);
 	        
 			return this;
 		},
@@ -864,15 +864,15 @@ var JPlus = {
 		/**
 		 * 如果不存在成员, 扩展当前类的动态方法。
 		 * @static
-		 * @param {Object} obj 成员。
+		 * @param {Object} members 成员。
 		 * @return this
 		 * @seeAlso JPlus.Object.implement
 		 */
-		implementIf: function(obj) {
+		implementIf: function(members) {
 		
-			assert(obj && this.prototype, "Class.implementIf(obj): 无法扩展类，因为 {obj} 或 this.prototype 为空。", obj);
+			assert(members && this.prototype, "Class.implementIf(members): 无法扩展类，因为 {members} 或 this.prototype 为空。", members);
 	
-			applyIf(this.prototype, obj);
+			applyIf(this.prototype, members);
 			
 			return this;
 		},
@@ -1335,7 +1335,7 @@ var JPlus = {
 		 * 将一个对象解析成一个类的属性。
 		 * @static
 		 * @param {Object} obj 类实例。
-		 * @param {Object} config 参数。
+		 * @param {Object} configs 参数。
 		 * 这个函数会分析对象，并试图找到一个 属性设置函数。
 		 * 当设置对象 obj 的 属性 key 为 value:
 		 * 发生了这些事:
@@ -1357,14 +1357,14 @@ var JPlus = {
 		 * 
 		 * </code>
 		 */
-		set: function(obj, config) {
+		set: function(obj, configs) {
 			
-			if(config) 
-				for(var key in config) {
+			if(configs) 
+				for(var key in configs) {
 					
 					// 检查 setValue 。
 					var setter = 'set' + key.capitalize(),
-						val = config[key];
+						val = configs[key];
 			
 			
 					if (Function.isFunction(obj[setter])) {
@@ -1397,7 +1397,7 @@ var JPlus = {
 		 * 添加一个对象的成员函数调用结束后的回调函数。
 		 * @static
 		 * @param {Object} obj 对象。
-		 * @param {String} name 成员函数名。
+		 * @param {String} propertyName 成员函数名。
 		 * @param {Function} fn 对象。
 		 * @return {Object} obj。
 		 * @example
@@ -1407,17 +1407,17 @@ var JPlus = {
 		 * Object.addCallback(window, "onload",trace.empty);
 		 * </code>
 		 */
-		addCallback: function(obj, name, fn) {
+		addCallback: function(obj, propertyName, fn) {
 			
-			assert.notNull(obj, 'Object.addCallback(obj, name, fn): 参数 obj ~。');
+			assert.notNull(obj, 'Object.addCallback(obj, propertyName, fn): 参数 obj ~。');
 			
-			assert.isFunction(fn, 'Object.addCallback(obj, name, fn): 参数 {fn} ~。');
+			assert.isFunction(fn, 'Object.addCallback(obj, propertyName, fn): 参数 {fn} ~。');
 			
 			// 获取已有的句柄。
-			var f = obj[name];
+			var f = obj[propertyName];
 			
 			// 如果不存在则直接拷贝，否则重新拷贝。新函数对原函数调用。
-			obj[name] = typeof f === 'function' ? function() {
+			obj[propertyName] = typeof f === 'function' ? function() {
 				
 				// 获取上次的函数。
 				var v = f.apply(this, arguments);
@@ -1444,30 +1444,30 @@ var JPlus = {
 		 * 在原有可迭代对象生成一个数组。
 		 * @static
 		 * @param {Object} iterable 可迭代的实例。
-		 * @param {Number} start=0 开始的位置。
+		 * @param {Number} startIndex=0 开始的位置。
 		 * @return {Array} 复制得到的数组。
 		 * @example
 		 * <code>
 		 * Array.create([4,6], 1); // [6]
 		 * </code>
 		 */
-		create: function(iterable, start) {
+		create: function(iterable, startIndex) {
 			if(!iterable)
 				return [];
 				
 			//  [DOM Object] 。
 			if(iterable.item || iterable.count) {   
 				var l = iterable.length || iterable.count;
-				start = start || 0;
+				startIndex = startIndex || 0;
 				
 				// 复制。
 				var r = new Array(l);
-				while (l--) r[l] = iterable[start++];
+				while (l--) r[l] = iterable[startIndex++];
 				return r;
 			}
 			
 			// 调用 slice 实现。
-			return ap.slice.call(iterable, start);
+			return ap.slice.call(iterable, startIndex);
 		},
 		
 		/**
@@ -1598,15 +1598,15 @@ var JPlus = {
 		 *  不要出现{{{ 和  }}} 这样将获得不可预知的结果。
 		 * </code>
 		 */
-		format: function(format, object) {
+		format: function(format, args) {
 
 			if (!format) return "";
 					
-			assert(format.replace, 'String.format(format, object): 参数 {format} 必须是字符串。', format);
+			assert(format.replace, 'String.format(format, args): 参数 {format} 必须是字符串。', format);
 
 			//支持参数2为数组或对象的直接格式化。
 			var toString = this,
-				arr = o.isObject(object) && arguments.length === 2 ? object: ap.slice.call(arguments, 1);
+				arr = o.isObject(args) && arguments.length === 2 ? args: ap.slice.call(arguments, 1);
 
 			//通过格式化返回
 			return format.replace(rFormat, function(match, name) {
@@ -1631,20 +1631,20 @@ var JPlus = {
 		 * String.map("aaa bbb ccc", function(v) { return v; }, {});    //    {aaa:aaa, bbb:bbb, ccc:ccc};
 		 * </code>
 		 */
-		map: function(str, source, dest, copyIf) {
+		map: function(str, src, dest, copyIf) {
 					
-			assert(typeof str == 'string', 'String.map(str, source, dest, copyIf): 参数 {str} 必须是字符串。', str);
+			assert(typeof str == 'string', 'String.map(str, src, dest, copyIf): 参数 {str} 必须是字符串。', str);
 			
-			var isFn = Function.isFunction(source);
+			var isFn = Function.isFunction(src);
 			// 使用 ' '、分隔, 这是约定的。
-			str.split(' ').forEach(function(v, k, c) {
+			str.split(' ').forEach(function(value, index, array) {
 				
 				// 如果是函数，调用函数， 否则是属性。
-				var val = isFn ? source(v, k, c) : source[v];
+				var val = isFn ? src(value, index, array) : src[value];
 				
 				// 如果有 dest ，则复制。
-				if(dest && !(copyIf && (v in dest)))
-					dest[v] = val;
+				if(dest && !(copyIf && (value in dest)))
+					dest[value] = val;
 			});
 			return dest;
 		},
@@ -1832,7 +1832,7 @@ var JPlus = {
 		
 		/**
 		 * 调用父类的成员变量。
-		 * @param {String} name 属性名。
+		 * @param {String} methodName 属性名。
 		 * @param {Object} ... 调用的参数数组。
 		 * @return {Object} 父类返回。
 		 * 注意只能从子类中调用父类的同名成员。
@@ -1855,25 +1855,27 @@ var JPlus = {
 		 * new MyCls().a();   
 		 * </code>
 		 */
-		base: function(name, args) {
+		base: function(methodName, args) {
 			
 			var me = this.constructor,
 			
-				fn = this[name];
+				fn = this[methodName];
 				
-			assert(fn, "Object.prototype.base(name, args): 子类不存在 {name} 的属性或方法。", name);
+			assert(fn, "Object.prototype.base(methodName, args): 子类不存在 {methodName} 的属性或方法。", name);
 			
 			// 标记当前类的 fn 已执行。
 			fn.$bubble = true;
 				
-			assert(!me || me.prototype[name], "Object.prototype.base(name, args): 父类不存在 {name} 的属性或方法。", name);
+			assert(!me || me.prototype[methodName], "Object.prototype.base(methodName, args): 父类不存在 {methodName} 的属性或方法。", name);
 			
 			// 保证得到的是父类的成员。
 			
 			do {
 				me = me.base;
-				assert(me && me.prototype[name], "Object.prototype.base(name, args): 父类不存在 {name} 的属性或方法。", name);
-			} while('$bubble' in (fn = me.prototype[name]));
+				assert(me && me.prototype[methodName], "Object.prototype.base(methodName, args): 父类不存在 {methodName} 的属性或方法。", name);
+			} while('$bubble' in (fn = me.prototype[methodName]));
+			
+			assert.isFunction(fn, "Object.prototype.base(methodName, args): 父类的成员 {fn}不是一个函数。  ");
 			
 			fn.$bubble = true;
 			
@@ -2203,16 +2205,16 @@ var JPlus = {
 	
 	/**
 	 * 判断当前请求是否有正常的返回。
-	 * @param {XMLHttpRequest} xmlHttp 请求。
+	 * @param {XMLHttpRequest} xmlHttpRequest 请求。
 	 * @return {Boolean} 正常返回true 。
 	 * @static
 	 */
-	w.XMLHttpRequest.isOk = function(xmlHttp) {
+	w.XMLHttpRequest.isOk = function(xmlHttpRequest) {
 		
-		assert.isObject(xmlHttp, 'XMLHttpRequest.isOk(xmlHttp): 参数 {xmlHttp} 不是合法的 XMLHttpRequest 对象');
+		assert.isObject(xmlHttpRequest, 'XMLHttpRequest.isOk(xmlHttpRequest): 参数 {xmlHttpRequest} 不是合法的 XMLHttpRequest 对象');
 		
 		// 获取状态。
-		var status = xmlHttp.status;
+		var status = xmlHttpRequest.status;
 		if (!status) {
 			
 			// 获取协议。
@@ -2254,14 +2256,14 @@ var JPlus = {
 				
 				/// HACK: this function fails in special environment
 				
-				var b = document.getElementsByTagName("script");
+				var scripts = document.getElementsByTagName("script");
 				
 				// 当前脚本在 <script> 引用。最后一个脚本即当前执行的文件。
-				b = b[b.length - 1];
+				scripts = scripts[scripts.length - 1];
 						
 				// IE6/7 使用  getAttribute
-				b = navigator.isQuirks ? b.getAttribute('src', 5) : b.src;
-				return (b.match(/[\S\s]*\//) || [""])[0];
+				scripts = navigator.isQuirks ? scripts.getAttribute('src', 5) : scripts.src;
+				return (scripts.match(/[\S\s]*\//) || [""])[0];
 				
 		}) (),
 		
@@ -2466,9 +2468,8 @@ var JPlus = {
 		assert(Function.isFunction(fn), "Array.prototype.each(fn, bind): 参数 {fn} 必须是一个可执行的函数。", fn);
 		
 		var i = -1,
-			me = this,
-			l = me.length;
-		while (++i < l)
+			me = this;
+		while (++i < me.length)
 			if(fn.call(bind, me[i], i, me) === false)
 				return false;
 		return true;
@@ -2532,12 +2533,12 @@ var JPlus = {
 
 	/**
 	 * 定义名字空间。
-	 * @param {String} name 名字空间。
+	 * @param {String} ns 名字空间。
 	 * @param {Object/Boolean} obj 值。
 	 */
-	function namespace(name, obj) {
+	function namespace(ns, obj) {
 		
-		assert(name && name.split, "namespace(namespace, obj, value): 参数 {namespace} 不是合法的名字空间。", name);
+		assert(ns && ns.split, "namespace(namespace, obj, value): 参数 {namespace} 不是合法的名字空间。", ns);
 		
 		
 		// 简单声明。
@@ -2546,7 +2547,7 @@ var JPlus = {
 			/// #ifdef SupportUsing
 			
 			// 加入已使用的名字空间。
-			return   p.namespaces.include(name);
+			return   p.namespaces.include(ns);
 			
 			/// #else
 			
@@ -2557,24 +2558,22 @@ var JPlus = {
 			
 		
 		// 取值，创建。
-		name = name.split('.');
+		ns = name.split('.');
 		
-		var current = w, i = -1, len = name.length - 1;
+		var current = w, i = -1, len = ns.length - 1;
 		
-		name[0] = name[0] || 'JPlus';
+		ns[0] = ns[0] || 'JPlus';
 		
 		while(++i < len)
-			current = current[name[i]] || (current[name[i]] = {});
+			current = current[ns[i]] || (current[ns[i]] = {});
 			
-		i = name[len];
-		
-		
-		
-		if (!i) {
-			obj = applyIf(current, obj);
-			i = name[--len];
-		} else 
+		if(i = ns[len])
 			current[i] = obj;
+		else {
+			obj = applyIf(current, obj);
+			i = ns[--len];
+		}
+			
 		
 		/// #ifdef SupportGlobalObject
 		
