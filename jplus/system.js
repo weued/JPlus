@@ -1770,10 +1770,10 @@ var JPlus = {
 		return {
 			
 			/**
-			 * 浏览器信息。
+			 * 浏览器名字。
 			 * @type String
 			 */
-			browser: browser,
+			name: browser,
 			
 			/// #ifdef SupportIE6
 			
@@ -1799,7 +1799,8 @@ var JPlus = {
 			/**
 			 * 浏览器版本。
 			 * @type String
-			 * 输出的格式比如 6.0
+			 * 输出的格式比如 6.0.0 。
+			 * 这是一个字符串，如果需要比较版本，应该使用 parseFloat(navigator.version) < 4 。
 			 */
 			version: version[2]
 			
