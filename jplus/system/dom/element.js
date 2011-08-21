@@ -1,5 +1,5 @@
 ﻿//===========================================
-//  元素             G
+//  元素: 提供最底层的 DOM 辅助函数。       A
 //===========================================
 
 (function(w) {
@@ -49,7 +49,7 @@
 		 * @type Function
 		 * 如果页面已经存在 Element， 不管是不是用户自定义的，都直接使用。只需保证 Element 是一个函数即可。
 		 */
-		e = w.Element || (w.Element = function() {}),
+		e = navigator.isQuirks ? namespace(".Element", function() {}) : w.Element,
 	
 		/// #else
 	
@@ -187,6 +187,8 @@
 	 * @implements JPlus.IEvent
 	 */
 	apply(e, {
+		
+		// 来自 jQuery (MIT)
 
 		/**
 		 * 转换一个HTML字符串到节点。
@@ -210,8 +212,8 @@
 
 				// 过滤空格  // 修正   XHTML
 				var h = html.trim().replace(rXhtmlTag, "<$1></$2>"),
-				tag = rTagName.exec(h),
-				notSaveInCache = cachable !== false && rNoClone.test(html);
+					tag = rTagName.exec(h),
+					notSaveInCache = cachable !== undefined ? cachable : rNoClone.test(html);
 
 
 				if (tag) {
@@ -222,10 +224,9 @@
 
 					if (wrap) {
 						div.innerHTML = wrap[1] + h + wrap[2];
-						wrap = wrap[0];
 
 						// 转到正确的深度
-						while (wrap--)
+						while (wrap[0]--)
 							div = div.lastChild;
 
 					} else
@@ -396,7 +397,7 @@
 		 * @param {Element/Document/Window} elem 元素。
 		 * @return {Document} 当前节点所在文档。
 		 */
-		getDocument: getDoc
+		getDocumentument: getDocument
 
 	})
 	
@@ -427,7 +428,7 @@
 
 	}, 2);
 
-	assert.isNode(document.documentElement, "在 element.js 执行时，必须存在 document.documentElement 属性。请确认浏览器为标准浏览器。");
+	assert.isNode(document.documentElement, "在 element.js 执行时，必须存在 document.documentElement 属性。请确认浏览器为标准浏览器， 且未使用  Quirks 模式。");
 
 	/**
 	 * @namespace document
@@ -499,8 +500,8 @@
 	 * @param {Element} elem 元素。
 	 * @return {Document} 文档。
 	 */
-	function getDoc(elem) {
-		assert.isNode(elem, 'Element.getDocument(elem): 参数 {elem} ~。');
+	function getDocument(elem) {
+		assert.isNode(elem, 'Element.getDocumentument(elem): 参数 {elem} ~。');
 		return elem.ownerDocument || elem.document || elem;
 	}
 
@@ -736,7 +737,7 @@
 			if(!e.preventDefault){
 				initUIEvent(e);
 				e.relatedTarget = e.fromElement === e.target ? e.toElement : e.fromElement;
-				var dom = getDoc(e.target).dom;
+				var dom = getDocument(e.target).dom;
 				e.pageX = e.clientX + dom.scrollLeft;
 				e.pageY = e.clientY + dom.scrollTop;
 				e.layerX = e.x;
@@ -1896,7 +1897,7 @@
 
 			var me = this.dom || this,
 				bound = me.getBoundingClientRect(),
-				doc = getDoc(me),
+				doc = getDocument(me),
 				html = doc.dom,
 				htmlScroll = checkPosition(me, 'fixed') ? {
 					x:0,
@@ -1965,7 +1966,7 @@
 		 * @return {Element} 元素。
 		 */
 		getOffsetParent: function() {
-			var me = this.dom || this, elem = me.offsetParent || getDoc(me).body;
+			var me = this.dom || this, elem = me.offsetParent || getDocument(me).body;
 			while ( elem && !isBody(elem) && checkPosition(elem, "static") ) {
 				elem = elem.offsetParent;
 			}
@@ -2662,7 +2663,7 @@
 			assert.isNode(me, "Element.prototype.insert(html, swhere): this.dom || this 返回的必须是 DOM 节点。");
 			assert(!swhere || 'afterEnd beforeBegin afterBegin beforeEnd '.indexOf(swhere + ' ') != -1, "Element.prototype.insert(html, swhere): 参数 {swhere} 必须是 beforeBegin、beforeEnd、afterBegin 或 afterEnd 。", swhere);
 			if (!html.nodeType) {
-				html = html.dom || e.parse(html, getDoc(me));
+				html = html.dom || e.parse(html, getDocument(me));
 			}
 
 			switch (swhere) {
@@ -2706,7 +2707,7 @@
 			assert.notNull(html, "Element.prototype.append(html, escape): 参数 {html} ~。");
 
 			if(!html.nodeType) {
-				html = html.dom || e.parse(html, getDoc(me.dom || me));
+				html = html.dom || e.parse(html, getDocument(me.dom || me));
 			}
 
 			assert.isNode(html, "Element.prototype.append(html, escape): 参数 {html} 不是合法的 节点或 HTML 片段。");
@@ -2736,7 +2737,7 @@
 
 			assert.notNull(html, "Element.prototype.replaceWith(html): 参数 {html} ~。");
 			if (!html.nodeType) {
-				html = html.dom || e.parse(html, getDoc(me));
+				html = html.dom || e.parse(html, getDocument(me));
 			}
 
 

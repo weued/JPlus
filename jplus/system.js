@@ -84,7 +84,7 @@ var JPlus = {
 /// #endif
 
 //===========================================
-//  核心:定义必须的系统函数。   
+//  核心: 定义必须的系统函数。      G
 //===========================================
 
 /**
@@ -480,7 +480,7 @@ var JPlus = {
 			 * 使用一个名空间。
 			 * @method
 			 * @static
-			 * @param {String} namespace 名字空间。
+			 * @param {String} ns 名字空间。
 			 * @param {Boolean} isStyle=false 是否为样式表。
 			 * 有关名字空间的说明， 见 {@link namespace} 。
 			 * @example
@@ -488,16 +488,16 @@ var JPlus = {
 			 * using("System.Dom.Keys");
 			 * </code>
 			 */
-			using: function(namespace, isStyle) {
+			using: function(ns, isStyle) {
 				
-				assert.isString(namespace, "using(namespace): 参数 {namespace} 不是合法的名字空间。");
+				assert.isString(ns, "using(ns): 参数 {ns} 不是合法的名字空间。");
 				
 				// 已经载入。
-				if(p.namespaces.include(namespace))
+				if(p.namespaces.include(ns))
 					return;
 				
-				if(namespace.indexOf('/') === -1) {
-					namespace = namespace.toLowerCase().replace(rPoint, '/') + (isStyle ? '.css' : '.js');
+				if(ns.indexOf('/') === -1) {
+					ns = ns.toLowerCase().replace(rPoint, '/') + (isStyle ? '.css' : '.js');
 				}
 				 
 				 var doms, check, callback;
@@ -514,8 +514,8 @@ var JPlus = {
 				 
 				 // 如果在节点找到符合的就返回，找不到，调用 callback
 				 each.call(doms, function(dom) {
-				 	return !dom[src] || dom[src].toLowerCase().indexOf(namespace) === -1;
-				 }) && callback(p.rootPath + namespace);
+				 	return !dom[src] || dom[src].toLowerCase().indexOf(ns) === -1;
+				 }) && callback(p.rootPath + ns);
 			},
 			
 			/// #endif
@@ -2556,10 +2556,9 @@ var JPlus = {
 			
 			/// #endif
 		}
-			
 		
 		// 取值，创建。
-		ns = name.split('.');
+		ns = ns.split('.');
 		
 		var current = w, i = -1, len = ns.length - 1;
 		
@@ -2567,7 +2566,7 @@ var JPlus = {
 		
 		while(++i < len)
 			current = current[ns[i]] || (current[ns[i]] = {});
-			
+
 		if(i = ns[len])
 			current[i] = obj;
 		else {
