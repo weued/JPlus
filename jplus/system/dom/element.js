@@ -49,7 +49,7 @@
 		 * @type Function
 		 * 如果页面已经存在 Element， 不管是不是用户自定义的，都直接使用。只需保证 Element 是一个函数即可。
 		 */
-		e = navigator.isQuirks ? namespace(".Element", function() {}) : w.Element,
+		e = p.Element = w.Element || (w.Element = function(){}),
 	
 		/// #else
 	
@@ -99,33 +99,41 @@
 			td: [ 3, "<table><tbody><tr>", "</tr></tbody></table>" ],
 			col: [ 2, "<table><tbody></tbody><colgroup>", "</colgroup></table>" ],
 			area: [ 1, "<map>", "</map>" ]
-		};
+		}
 
 	/// #ifdef SupportIE6
+	
+		,
+		
+		getDom = getElementById;
 
 	if (navigator.isQuirks) {
 		ep.domVersion = 1;
-
+		getDom = function(id) {
+			var dom = getElementById(id);
+	
+			if(dom && dom.domVersion !== ep.domVersion) {
+				o.extendIf(dom, ep);
+			}
+	
+			return dom;
+	
+	
+		};
+		
 	}
 
 	/**
 	 * 根据一个 id 或 对象获取节点。
 	 * @param {String/Element} id 对象的 id 或对象。
 	 * @memberOf JPlus
+	 * @name $
 	 */
-	namespace(".$", navigator.isQuirks ? function(id) {
-		var dom = getElementById(id);
-
-		if(dom && dom.domVersion !== ep.domVersion) {
-			o.extendIf(dom, ep);
-		}
-
-		return dom;
-
-
-	} : getElementById);
+	namespace(".$", getDom);
 
 	/// #else
+	
+	/// ;
 
 	/// namespace(".$", getElementById);
 

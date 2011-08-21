@@ -128,11 +128,48 @@ var JPlus = {
 
 	/// #region 全局变量
 	
-	/**
-	 * 检查空白的正则表达式。
-	 * @type RegExp
-	 */
-	var rSpace = /^[\s\u00A0]+|[\s\u00A0]+$/g,
+	
+		/**
+		 * document 简写。
+		 * @type Document
+		 */
+	var document = w.document,
+		
+		/**
+		 * navigator 简写。
+		 * @type Navigator
+		 */
+		navigator = w.navigator,
+		
+		/**
+		 * Array.prototype  简写。
+		 * @type Object
+		 */
+		ap = Array.prototype,
+		
+		/**
+		 * Object  简写。
+		 * @type Function
+		 */
+		o = w.Object,
+	
+		/**
+		 * Object.prototype.toString 简写。
+		 * @type Function
+		 */
+		toString = o.prototype.toString,
+		
+		/**
+		 * Object.prototype.hasOwnProperty 简写。
+		 * @type Function
+		 */
+		hasOwnProperty = o.prototype.hasOwnProperty,
+		
+		/**
+		 * 检查空白的正则表达式。
+		 * @type RegExp
+		 */
+		rSpace = /^[\s\u00A0]+|[\s\u00A0]+$/g,
 		
 		/**
 		 * 格式化字符串用的正则表达式。
@@ -181,42 +218,6 @@ var JPlus = {
 			}
 			
 		},
-		
-		/**
-		 * document 简写。
-		 * @type Document
-		 */
-		document = w.document,
-		
-		/**
-		 * navigator 简写。
-		 * @type Navigator
-		 */
-		navigator = w.navigator,
-		
-		/**
-		 * Object  简写。
-		 * @type Function
-		 */
-		o = w.Object,
-	
-		/**
-		 * Object.prototype.toString 简写。
-		 * @type Function
-		 */
-		toString = o.prototype.toString,
-		
-		/**
-		 * Object.prototype.hasOwnProperty 简写。
-		 * @type Function
-		 */
-		hasOwnProperty = o.prototype.hasOwnProperty,
-		
-		/**
-		 * Array.prototype  简写。
-		 * @type Object
-		 */
-		ap = Array.prototype,
 
 		/**
 		 * Py静态对象。
@@ -394,6 +395,19 @@ var JPlus = {
 			namespaces: [],
 			
 			/**
+			 * 同步载入代码。
+			 * @static
+			 * @param {String} uri 地址。
+			 * @example
+			 * <code>
+			 * JPlus.loadScript('./v.js');
+			 * </code>
+			 */
+			loadScript: function(url) {
+				return p.loadText(url, p.eval);
+			},
+			
+			/**
 			 * 异步载入样式。
 			 * @static
 			 * @param {String} uri 地址。
@@ -408,19 +422,6 @@ var JPlus = {
 					rel: 'stylesheet',
 					type: 'text/css'
 				}));
-			},
-			
-			/**
-			 * 同步载入代码。
-			 * @static
-			 * @param {String} uri 地址。
-			 * @example
-			 * <code>
-			 * JPlus.loadScript('./v.js');
-			 * </code>
-			 */
-			loadScript: function(url) {
-				return p.loadText(url, p.eval);
 			},
 			
 			/**
@@ -601,7 +602,7 @@ var JPlus = {
 			 */
 			addEventListener: document.addEventListener ? function(type, listener) {
 				this.addEventListener(type, listener, false);
-			} : function(type, fn) {
+			} : function(type, listener) {
 				
 				// IE8- 使用 attachEvent 。
 				this.attachEvent('on' + type, listener);
@@ -624,7 +625,7 @@ var JPlus = {
 			 */
 			removeEventListener: document.removeEventListener ? function(type, listener) {
 				this.removeEventListener(type, listener, false);
-			} : function(type, fn) {
+			} : function(type, listener) {
 				
 				// IE8- 使用 detachEvent 。
 				this.detachEvent('on' + type, listener);
@@ -723,36 +724,6 @@ var JPlus = {
 				},
 				
 				/**
-				 * 增加一个只执行一次的监听者。
-				 * @param {String} type 监听名字。
-				 * @param {Function} listener 调用函数。
-				 * @return Object this
-				 * @example
-				 * <code>
-				 * elem.one('click', function(e) {
-				 * 		trace('a');  
-				 * });
-				 * 
-				 * elem.trigger('click');   //  输出  a
-				 * elem.trigger('click');   //  没有输出 
-				 * </code>
-				 */
-				one: function(type, listener) {
-					
-					assert.isFunction(listener, 'IEvent.one(type, listener): 参数 {listener} ~。');
-					
-					
-					return this.on(type, function() {
-						
-						// 删除。
-						this.un( type, arguments.callee);
-						
-						// 然后调用。
-						return listener.apply(this, arguments);
-					});
-				},
-				
-				/**
 				 * 删除一个监听器。
 				 * @param {String} [type] 监听名字。
 				 * @param {Function/undefined} listener 回调器。
@@ -821,7 +792,39 @@ var JPlus = {
 					   
 					return !evt || !(evt = evt[type]) || ( evt.event.trigger ? evt.event.trigger(me, type, evt, e) : evt(e) );
 					
+				},
+				
+				/**
+				 * 增加一个只执行一次的监听者。
+				 * @param {String} type 监听名字。
+				 * @param {Function} listener 调用函数。
+				 * @return Object this
+				 * @example
+				 * <code>
+				 * elem.one('click', function(e) {
+				 * 		trace('a');  
+				 * });
+				 * 
+				 * elem.trigger('click');   //  输出  a
+				 * elem.trigger('click');   //  没有输出 
+				 * </code>
+				 */
+				one: function(type, listener) {
+					
+					assert.isFunction(listener, 'IEvent.one(type, listener): 参数 {listener} ~。');
+					
+					
+					return this.on(type, function() {
+						
+						// 删除。
+						this.un( type, arguments.callee);
+						
+						// 然后调用。
+						return listener.apply(this, arguments);
+					});
 				}
+				
+				
 			}
 			
 		});
@@ -1259,79 +1262,6 @@ var JPlus = {
 		},
 		
 		/**
-		 * 返回一个变量的类型的字符串形式。
-		 * @static
-		 * @param {Object} obj 变量。
-		 * @return {String} 所有可以返回的字符串：  string  number   boolean   undefined	null	array	function   element  class   date   regexp object。
-		 * @example
-		 * <code> 
-		 * Object.type(null); // "null"
-		 * Object.type(); // "undefined"
-		 * Object.type(new Function); // "function"
-		 * Object.type(+'a'); // "number"
-		 * Object.type(/a/); // "regexp"
-		 * Object.type([]); // "array"
-		 * </code>
-		 * */
-		type: function(obj) {
-			
-			//获得类型  。
-			var b = typeof obj;
-			
-			switch (b) {
-				case "object":  // 对象， 直接获取 xType 。
-					return obj == null ? "null" : (obj.xType || b);
-
-				case "function":  // 如果有原型， 则为类 。
-					for(obj in obj.prototype) { return "class";}
-					
-				default:  // 和 typeof 一样 。
-					return b;
-					
-			}
-		},
-
-		/**
-		 * 深拷贝一个对象本身, 不深复制函数。
-		 * @static
-		 * @param {Object} obj 要拷贝的对象。
-		 * @return {Object} 返回复制后的对象。
-		 * @example
-		 * <code>
-		 * var obj1 = {a: 0, b: 1};
-		 * var obj2 = Object.clone(obj1);
-		 *  
-		 * obj1.a = 3;
-		 * trace(obj1.a);  // trace 3
-		 * trace(obj2.a);  // trace 0
-		 *
-		 * </code>
-		 */
-		clone: function(obj) {
-			
-			// 内部支持深度。
-			// 用法:  Object.clone.call(1, val);
-			var deep = this - 1;
-			
-			// 如果是对象，则复制。
-			if (o.isObject(obj) && !(deep < 0)) {
-				
-				// 如果对象支持复制，自己复制。
-				if(obj.clone)
-					return obj.clone();
-				
-				// #1    
-				// if(obj.cloneNode)
-				//	return obj.cloneNode(true);
-					
-				//仅当对象才需深拷贝，null除外。
-				obj = o.update(obj, o.clone, Array.isArray(obj) ? [] : {}, deep);
-			}
-			
-			return obj;
-		},
-		
-		/**
 		 * 将一个对象解析成一个类的属性。
 		 * @static
 		 * @param {Object} obj 类实例。
@@ -1392,6 +1322,79 @@ var JPlus = {
 				}
 			
 		},
+
+		/**
+		 * 深拷贝一个对象本身, 不深复制函数。
+		 * @static
+		 * @param {Object} obj 要拷贝的对象。
+		 * @return {Object} 返回复制后的对象。
+		 * @example
+		 * <code>
+		 * var obj1 = {a: 0, b: 1};
+		 * var obj2 = Object.clone(obj1);
+		 *  
+		 * obj1.a = 3;
+		 * trace(obj1.a);  // trace 3
+		 * trace(obj2.a);  // trace 0
+		 *
+		 * </code>
+		 */
+		clone: function(obj) {
+			
+			// 内部支持深度。
+			// 用法:  Object.clone.call(1, val);
+			var deep = this - 1;
+			
+			// 如果是对象，则复制。
+			if (o.isObject(obj) && !(deep < 0)) {
+				
+				// 如果对象支持复制，自己复制。
+				if(obj.clone)
+					return obj.clone();
+				
+				// #1    
+				// if(obj.cloneNode)
+				//	return obj.cloneNode(true);
+					
+				//仅当对象才需深拷贝，null除外。
+				obj = o.update(obj, o.clone, Array.isArray(obj) ? [] : {}, deep);
+			}
+			
+			return obj;
+		},
+		
+		/**
+		 * 返回一个变量的类型的字符串形式。
+		 * @static
+		 * @param {Object} obj 变量。
+		 * @return {String} 所有可以返回的字符串：  string  number   boolean   undefined	null	array	function   element  class   date   regexp object。
+		 * @example
+		 * <code> 
+		 * Object.type(null); // "null"
+		 * Object.type(); // "undefined"
+		 * Object.type(new Function); // "function"
+		 * Object.type(+'a'); // "number"
+		 * Object.type(/a/); // "regexp"
+		 * Object.type([]); // "array"
+		 * </code>
+		 * */
+		type: function(obj) {
+			
+			//获得类型  。
+			var b = typeof obj;
+			
+			switch (b) {
+				case "object":  // 对象， 直接获取 xType 。
+					return obj == null ? "null" : (obj.xType || b);
+
+				case "function":  // 如果有原型， 则为类 。
+					for(obj in obj.prototype) { return "class";}
+					
+				default:  // 和 typeof 一样 。
+					return b;
+					
+			}
+		},
 		
 		/**
 		 * 添加一个对象的成员函数调用结束后的回调函数。
@@ -1439,6 +1442,24 @@ var JPlus = {
 	 * @class Array
 	 */
 	applyIf(Array, {
+		
+		/**
+		 * 判断一个变量是否是数组。
+		 * @static
+		 * @param {Object} object 变量。
+		 * @return {Boolean} 如果是数组，返回 true， 否则返回 false。
+		 * @example
+		 * <code> 
+		 * Array.isArray([]); // true
+		 * Array.isArray(document.getElementsByTagName("div")); // false
+		 * Array.isArray(new Array); // true
+		 * </code>
+		 */
+		isArray: function(obj) {
+			
+			// 检查原型。
+			return toString.call(obj) === "[object Array]";
+		},
 
 		/**
 		 * 在原有可迭代对象生成一个数组。
@@ -1468,24 +1489,6 @@ var JPlus = {
 			
 			// 调用 slice 实现。
 			return ap.slice.call(iterable, startIndex);
-		},
-		
-		/**
-		 * 判断一个变量是否是数组。
-		 * @static
-		 * @param {Object} object 变量。
-		 * @return {Boolean} 如果是数组，返回 true， 否则返回 false。
-		 * @example
-		 * <code> 
-		 * Array.isArray([]); // true
-		 * Array.isArray(document.getElementsByTagName("div")); // false
-		 * Array.isArray(new Array); // true
-		 * </code>
-		 */
-		isArray: function(obj) {
-			
-			// 检查原型。
-			return toString.call(obj) === "[object Array]";
 		}
 
 	});
@@ -1495,6 +1498,27 @@ var JPlus = {
 	 * @class Function
 	 */
 	apply(Function, {
+		
+		/**
+		 * 绑定函数作用域。
+		 * @static
+		 * @param {Function} fn 函数。
+		 * @param {Object} bind 位置。
+		 * 注意，未来 Function.prototype.bind 是系统函数， 因此这个函数将在那个时候被 替换掉。
+		 * @example
+		 * <code>
+		 * Function.bind(function() {return this}, 0)()    ; // 0
+		 * </code>
+		 */
+		bind: function(fn, bind) {
+					
+			assert.isFunction(fn, 'Function.bind(fn): 参数 {fn} ~。');
+			
+			// 返回对 bind 绑定。
+			return function() {
+				return fn.apply(bind, arguments);
+			}
+		},
 		
 		/**
 		 * 空函数。
@@ -1537,27 +1561,6 @@ var JPlus = {
 			
 			// 检查原型。
 			return toString.call(obj) === "[object Function]";
-		},
-		
-		/**
-		 * 绑定函数作用域。
-		 * @static
-		 * @param {Function} fn 函数。
-		 * @param {Object} bind 位置。
-		 * 注意，未来 Function.prototype.bind 是系统函数， 因此这个函数将在那个时候被 替换掉。
-		 * @example
-		 * <code>
-		 * Function.bind(function() {return this}, 0)()    ; // 0
-		 * </code>
-		 */
-		bind: function(fn, bind) {
-					
-			assert.isFunction(fn, 'Function.bind(fn): 参数 {fn} ~。');
-			
-			// 返回对 bind 绑定。
-			return function() {
-				return fn.apply(bind, arguments);
-			}
 		},
 		
 		/**
@@ -1769,12 +1772,6 @@ var JPlus = {
 		//结果
 		return {
 			
-			/**
-			 * 浏览器名字。
-			 * @type String
-			 */
-			name: browser,
-			
 			/// #ifdef SupportIE6
 			
 			/**
@@ -1795,6 +1792,12 @@ var JPlus = {
 			isStd: !!-[1,],
 			
 			/// #endif
+			
+			/**
+			 * 浏览器名字。
+			 * @type String
+			 */
+			name: browser,
 			
 			/**
 			 * 浏览器版本。
@@ -2682,7 +2685,7 @@ Object.extendIf(trace, {
 	api: function(obj, prefix) {
 		var title = 'API信息: ', msg = [];
 		
-		var definedObj = 'Object String Date Array RegExp Element document JPlus navigator XMLHttpRequest trace assert Function';
+		var definedObj = 'Object String Date Array RegExp document JPlus navigator XMLHttpRequest trace assert Function';
 
 		if(arguments.length === 0) {
 			title = '全局对象: ';
