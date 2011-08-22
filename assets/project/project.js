@@ -28,6 +28,7 @@ var notes = {
 	},
 	
 	'教程': {
+		'DOM 基础': 'notes/javascript/dom.html',
 		'Javascript 高级教程': 'notes/javascript/advance.html',
 		'使用 Eclipse下载项目': 'notes/git/guide.html',
 		'使用 TortoiseGit下载项目': 'notes/git/tortoisegit.html',

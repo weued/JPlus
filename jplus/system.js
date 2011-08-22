@@ -2579,14 +2579,9 @@ var JPlus = {
 			
 		
 		/// #ifdef SupportGlobalObject
-		
-		// 指明的是对象。
-		if (!(i in JPlus.defaultNamespace)) {
 			
-			// 复制到全局对象和名字空间。
-			JPlus.defaultNamespace[i] = obj;
-			
-		}
+		// 复制到全局对象和名字空间。
+		JPlus.defaultNamespace[i] = obj;
 		
 		/// #endif
 		
