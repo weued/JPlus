@@ -4,15 +4,12 @@
 
 
 //
-// HtmlFive - 支持 IE10+ FF5+ Chrome12+ Opera12+ Safari6+ 。
+// SupportIE10 - 支持 IE10+ FF5+ Chrome12+ Opera12+ Safari6+ 。
 // SupportIE9 - 支持 IE9+ FF4+ Chrome10+ Opera10+ Safari4+ 。
 // SupportIE8  -   支持 IE8+ FF3+ Chrome10+ Opera10+ Safari4+ 。
 // SupportIE6   -  支持 IE6+ FF2.5+ Chrome1+ Opera9+ Safari4+ 。
 // SupportUsing - 支持 namespace 等。
 // Compact - 当前执行了打包操作。
-// Zip - 当前执行了压缩操作。
-// Format - 当前在格式化代码。
-// SupportGlobalObject  - 允许扩展全局对象。
 // Debug - 启用调试， 启用调试将执行 assert 函数。
 
 
@@ -60,7 +57,7 @@ var JPlus = {
 	 * @config {Object}
 	 * @value window
 	 */
-	defaultNamespace: this,
+	defaultNamespace: 'JPlus',
 	
 	/**
 	 * 如果使用了 UI 库，则 theme 表示默认主题。
@@ -128,11 +125,10 @@ var JPlus = {
 
 	/// #region 全局变量
 	
-	
-		/**
-		 * document 简写。
-		 * @type Document
-		 */
+	/**
+	 * document 简写。
+	 * @type Document
+	 */
 	var document = w.document,
 		
 		/**
@@ -581,7 +577,7 @@ var JPlus = {
 			 * @config {Object}
 			 * @value window
 			 */
-			defaultNamespace: w,
+			defaultNamespace: 'JPlus',
 			
 			/// #ifdef SupportIE8
 								
@@ -2279,13 +2275,9 @@ var JPlus = {
 		setupWindow: function(w) {
 			
 			/// #region 变量
-			
-			/// #ifdef SupportGlobalObject
 		
 			// 将以下成员赋予 window ，这些成员是全局成员。
 			String.map('Class using namespace undefined IEvent', p, w, true);
-			
-			/// #endif
 		
 			
 			/// #endregion
@@ -2565,7 +2557,7 @@ var JPlus = {
 		
 		var current = w, i = -1, len = ns.length - 1;
 		
-		ns[0] = ns[0] || 'JPlus';
+		ns[0] = ns[0] || p.defaultNamespace;
 		
 		while(++i < len)
 			current = current[ns[i]] || (current[ns[i]] = {});
@@ -2576,16 +2568,8 @@ var JPlus = {
 			obj = applyIf(current, obj);
 			i = ns[--len];
 		}
-			
 		
-		/// #ifdef SupportGlobalObject
-			
-		// 复制到全局对象和名字空间。
-		JPlus.defaultNamespace[i] = obj;
-		
-		/// #endif
-		
-		return obj;
+		return w[i] = obj;
 		
 		
 		
@@ -2828,6 +2812,7 @@ Object.extendIf(trace, {
 	from: function(msg) {
 		return function() {
 			trace(msg, arguments);
+			return msg;
 		};
 	},
 
@@ -2845,7 +2830,7 @@ Object.extendIf(trace, {
 					for (i in obj) 
 						r += "\t" + i + " = " + trace.inspect(obj[i], 1) + "\r\n";
 					r += "}";
-					trace.alert(r);
+					trace(r);
 				}
 		}
 	},
@@ -2962,7 +2947,7 @@ Object.extendIf(trace, {
 			if (window.console && console.warn) 
 				console.warn(msg);
 			else 
-				trace.alert("[警告]" + msg);
+				trace.write("[警告]" + msg);
 		}
 	},
 
@@ -2975,7 +2960,7 @@ Object.extendIf(trace, {
 			if (window.console && console.info) 
 				console.info(msg);
 			else 
-				trace.alert("[信息]" + msg);
+				trace.write("[信息]" + msg);
 		}
 	},
 
@@ -2985,7 +2970,7 @@ Object.extendIf(trace, {
 	 * @return String 返回运行的错误。如无错, 返回空字符。
 	 */
 	ifDebug: function(f) {
-		if (JPlus.debug === false) return;
+		if (!JPlus.debug) return;
 		try {
 			f();
 			return "";

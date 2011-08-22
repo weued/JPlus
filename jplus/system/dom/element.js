@@ -99,17 +99,21 @@
 			td: [ 3, "<table><tbody><tr>", "</tr></tbody></table>" ],
 			col: [ 2, "<table><tbody></tbody><colgroup>", "</colgroup></table>" ],
 			area: [ 1, "<map>", "</map>" ]
-		}
+		};
+	
+	/**
+	 * 根据一个 id 或 对象获取节点。
+	 * @param {String/Element} id 对象的 id 或对象。
+	 * @memberOf JPlus
+	 * @name $
+	 */
+	p.$ = getElementById;
 
 	/// #ifdef SupportIE6
-	
-		,
-		
-		getDom = getElementById;
 
 	if (navigator.isQuirks) {
 		ep.domVersion = 1;
-		getDom = function(id) {
+		p.$ = function(id) {
 			var dom = getElementById(id);
 	
 			if(dom && dom.domVersion !== ep.domVersion) {
@@ -123,21 +127,9 @@
 		
 	}
 
-	/**
-	 * 根据一个 id 或 对象获取节点。
-	 * @param {String/Element} id 对象的 id 或对象。
-	 * @memberOf JPlus
-	 * @name $
-	 */
-	namespace(".$", getDom);
-
-	/// #else
-	
-	/// ;
-
-	/// namespace(".$", getElementById);
-
 	/// #endif
+
+	if(!w.$) w.$ = p.$;
 
 	///   #region ElementList
 
