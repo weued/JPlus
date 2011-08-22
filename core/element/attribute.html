@@ -1,26 +1,66 @@
 ﻿<!doctype html>
 <html>
 	<head>
-		<meta charset="utf-8">
+		<meta charset='utf-8'>
 		<title>J+ Core 测试</title>
-		<script type="text/javascript" src="../../jplus/system.js" ></script>
-		<script type="text/javascript" src="../../jplus/system/dom/element.js" ></script>
-		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+		<script type='text/javascript' src='../../jplus/system.js' ></script>
+		<script type='text/javascript' src='../../jplus/system/dom/element.js' ></script>
+		<script type='text/javascript' src='../../assets/scripts/default.js' ></script>
+		<style>
+			#a {
+				background: #DCDCDC; margin: 4px; padding: 8px;
+			}
+			
+			#b {
+				background: #EDEDED; padding: 8px;
+			}
+			
+			#c {
+				background: #EAF2F5; border:  1px solid #ffffff; margin: 4px auto; width: 300px; text-align: center;
+			}
+			
+			#d {
+				background: #EAF2F5;  border:  10px solid #BEDCE7; padding: 8px;
+			}
+		</style>
 	</head>
 	<body>
+		<div id='a'> id=a margin=4 padding=8
+			<div id='b'>id=b padding=8
+				<div id='c'>id=c border=1 margin=4 auto width=300</div>
+			</div>
+			<div id='d'>id=d border=10 padding=8</div>
+		</div>
+		
 		<script>
+		
+			var a = $('a'), b = $('b'), c = $('c'), d = $('d');
 			
 			var testcases = {
-				'testcase': '-',
-				'add': '1=>3',
-				'sample': {  				 // 测试的函数名
-					name: 'name',       	 // 名字
-					summary: 'summary',  	 //  功能的说明
-					init: 'var a = 1;', 	 // 初始化的时候执行
-					overrides: '@me = this; 1 => 2; 2, a => 3',  // 重载的参数列表
-					uninit: 'a = null;', // 执行结束后执行
-					time: 1000  // 测试速度时执行才次数
-				}
+				'Style': '-',
+				'Element.prototype.setStyle': '@a; "font-size", 14 => assert.areEqual(a.style.fontSize, "14px")',
+				'Element.prototype.getStyle': '@a; "font-size" => "14px"',
+				'Element.prototype.setOpacity': '@a; 0.8 => assert.areEqual(a.  getOpacity(), .8)',
+				'Element.prototype.getOpacity': '@a; => 0.8',
+				'Class': '-',
+				'Element.prototype.addClass': '@a; "light" => assert.areEqual(a.hasClass("light"), true)  ',
+				'Element.prototype.hasClass': '@a; "light" => true ',
+				'Element.prototype.removeClass': '@a; "light" => assert.areEqual(a.hasClass("light"), false)',
+				'Element.prototype.toggleClass': '@a; "light" => assert.areEqual(a.hasClass("light"), true)',
+				'Attr': '-',
+				'Element.prototype.setAttr': '@a; "innerText", "12121" => assert.areEqual(a.getAttr("innerText"), "12121")',
+				'Element.prototype.getAttr': '@a; "innerText" =>  "12121"',
+				'Element.prototype.set': '@a; {"innerHTML": "cv"} => assert',
+				'Element.prototype.getText': '@a; => "cv"',
+				'Element.prototype.setText': '@a; "sssas" => assert.areEqual(a.getText(), "sssas")',
+				'Rich': '-',
+				'Element.prototype.toggle': '@a;',
+				'Element.prototype.hide': '@a; =>assert.areEqual(a.isHidden(), true)',
+				'Element.prototype.show': '@a; => assert.areEqual(a.isHidden(), false)',
+				'Element.prototype.isHidden': '@a; => false',
+				'Element.prototype.animate': '@a;',
+				'Element.prototype.setUnselectable': '@a;',
+				'Element.prototype.bringToFront': '@a;'
 			};
 			
 			initTestCases(testcases);

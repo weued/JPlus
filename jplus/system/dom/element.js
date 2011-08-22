@@ -303,20 +303,20 @@
 		 * 
 		 * 
 		 *
-		 *  参数 coJPlusIf 仅内部使用。
+		 *  参数 copyIf 仅内部使用。
 		 */
-		implement: function (obj, listType, coJPlusIf) {
+		implement: function (obj, listType, copyIf) {
 
 			assert.notNull(obj, "Element.implement(obj, listType): 参数 {obj} ~。");
 				
 			Object.each(obj, function (value, key) {
 	
 				this.implementTargets.forEach( function(m) {
-					if(!coJPlusIf || !(key in m))
+					if(!copyIf || !(key in m))
 						m[key] = obj[key];
 				});
 				
-				if(!coJPlusIf || !(key in p.ElementList.prototype)) {
+				if(!copyIf || !(key in p.ElementList.prototype)) {
 	
 					// 复制到  p.ElementList
 					switch (listType) {
@@ -338,7 +338,7 @@
 						case 4:
 							value = function() {
 								var args = arguments;
-								return new p.ElementList(Array.plain.apply(Array, this.each( function(elem, index) {
+								return new p.ElementList(ap.concat.apply([], this.each( function(elem, index) {
 									var r = this[index][key].apply(this[index], args);
 									return r && r.doms || r;
 								}, this.doms)));
@@ -2593,24 +2593,24 @@
 
 		/**
 		 * 复制节点。
-		 * @param {Boolean} coJPlusDataAndEvent=false 是否复制事件。
+		 * @param {Boolean} copyDataAndEvent=false 是否复制事件。
 		 * @param {Boolean} contents=true 是否复制子元素。
 		 * @param {Boolean} keepid=false 是否复制 id 。
 		 * @return {Element} 元素。
 		 */
-		clone: function(coJPlusDataAndEvent, contents, keepid) {
+		clone: function(copyDataAndEvent, contents, keepid) {
 
-			assert.isNode(this.dom || this, "Element.prototype.clone(coJPlusDataAndEvent, contents, keepid): this.dom || this 返回的必须是 DOM 节点。");
+			assert.isNode(this.dom || this, "Element.prototype.clone(copyDataAndEvent, contents, keepid): this.dom || this 返回的必须是 DOM 节点。");
 
 			var elem = this.dom || this,
 			clone = elem.cloneNode(contents = contents !== false);
 
 			if (contents) {
 				for (var ce = clone.getElementsByTagName('*'), te = elem.getElementsByTagName('*'), i = ce.length; i--;)
-					clean(ce[i], te[i], coJPlusDataAndEvent, keepid);
+					clean(ce[i], te[i], copyDataAndEvent, keepid);
 			}
 
-			clean(elem, clone, coJPlusDataAndEvent, keepid);
+			clean(elem, clone, copyDataAndEvent, keepid);
 
 			/// #ifdef SupportIE6
 
@@ -2853,11 +2853,11 @@
 	 * 删除由于拷贝导致的杂项。
 	 * @param {Element} srcElem 源元素。
 	 * @param {Element} destElem 目的元素。
-	 * @param {Boolean} coJPlusDataAndEvent=true 是否复制数据。
+	 * @param {Boolean} copyDataAndEvent=true 是否复制数据。
 	 * @param {Boolean} keepid=false 是否留下ID。
 	 * @return {Element} 元素。
 	 */
-	function clean(srcElem, destElem, coJPlusDataAndEvent, keepid) {
+	function clean(srcElem, destElem, copyDataAndEvent, keepid) {
 		if (!keepid)
 			destElem.removeAttribute('id');
 
@@ -2869,8 +2869,6 @@
 			destElem.mergeAttributes(srcElem);
 			// 在 IE delete destElem.$data  出现异常。
 			destElem.removeAttribute("$data");
-			//if(srcElem.$data)
-			//	destElem.$data = null;   // IE  将复制 node.$data
 
 
 			if (srcElem.options) {
@@ -2880,7 +2878,7 @@
 
 		/// #endif
 
-		if (coJPlusDataAndEvent) {
+		if (copyDataAndEvent) {
 			p.cloneData(destElem, srcElem);
 		}
 
