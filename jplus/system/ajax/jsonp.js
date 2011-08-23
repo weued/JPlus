@@ -2,20 +2,56 @@
 //  请求处理JSON-P数据            A
 //===========================================
 
-
-
-
-using("System.Ajax.Ajax");
-
-
-
-JPlus.Ajax.JSONP = JPlus.Class({
-	
-	send: function(callback){
-		this.trigger("success", this.parseJSON(response));
+namespace(".JSONP", Class({
+	constructor: function(obj) {
+		if (obj) Object.extend(this, obj);
+	},parseJSON:function(response){
+		return eval("(" + response + ")");
+	},setEncoding: function(value){
+		if(value)
+			this.setHeader("Accept-Charset", value);
+		return this.setHeader('contentType', 'application/x-www-form-urlencoded' + (value ? '; charset=' + value : ''));
+	},createFunction:function(time){
+		var me = this;
+		window["jsonp"+time] = function(){
+			me.success(arguments[0]);
+		};
+	},getId:function(){
+		return +new Date();
+	},parseData:function(){
+		var data = this.data ,query = "";
+		for(var name in data){
+			query  = name +"=";
+			query += data[name];
+		}
+		return query;
+	},parseUrl:function(time){
+		var me = this,url = me.url;
+		return url.replace("jsonp=?","jsonp="+time)+ me.parseData();
+	},initScript:function(time){
+		var me = this;
+		me.createFunction(time);
+		var script = document.createElement("script");
+		script.src = me.parseUrl(time);
+		script.type = "text/javascript";
+		return script;
+	},send: function(){
+		var head = document.getElementsByTagName("head")[0],me = this
+			,time = me.getId(),script = me.initScript(time);
+		head.appendChild(script);
+		script.onload = script.onreadystatechange = function(){
+			if(!this.readyState || this.readyState === 'loaded' || this.readyState === 'complete'){
+				script.onload = script.onreadystatechange = null;
+				head.removeChild(script);
+				delete window["jsonp"+time];
+			}
+		}
 	}
-
+}));
+namespace(".getJSONP",function(json){
+	new JSONP({url:json.url,success:json.success}).send();
 });
+
 
 // 
 		// send : function(data){
