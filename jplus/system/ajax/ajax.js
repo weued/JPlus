@@ -164,7 +164,7 @@ namespace(".Ajax", Class({
 	send: function(data) {
 	
 		assert.notNull(this.url, "Ajax.prototype.send(data, chain): {this.url} ~。", this.url);
-		assert(/^(GET|POST|PUT)$/.test(this.type), "{this.type} 必须是 GET、PUT 或 POST (注意大小写) 。");
+		assert(/^(GET|POST|PUT)$/.test(this.type), "{this.type} 必须是 GET、PUT 或 POST (注意大小写) 。",this.type);
 		
 		
 		/**
