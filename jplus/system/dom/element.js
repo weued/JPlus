@@ -144,12 +144,7 @@
 	namespace(".ElementList", p.Class({
 
 		/**
-		 * xType
-		 */
-		xType: "elementlist",
-
-		/**
-		 * 初始化 p.ElementList  实例。
+		 * 初始化   ElementList  实例。
 		 * @param {Array/p.ElementList} doms 节点集合。
 		 * @constructor
 		 */
@@ -176,7 +171,12 @@
 
 			// 防止 doms 为 p.ElementList
 			return ap.invoke.call(this.doms, fn, args);
-		}
+		},
+
+		/**
+		 * xType
+		 */
+		xType: "elementlist"
 
 	}));
 
@@ -206,12 +206,12 @@
 
 			assert(context.createElement, 'Element.parse(html, context, cachable): 参数 {context} 必须是一个 Document 对象。', context);
 
-			var div = cache[html];
+			var div = cache[html = html.trim()];
 
 			if (!div || div.ownerDocument !== context) {
 
 				// 过滤空格  // 修正   XHTML
-				var h = html.trim().replace(rXhtmlTag, "<$1></$2>"),
+				var h = html.replace(rXhtmlTag, "<$1></$2>"),
 					tag = rTagName.exec(h),
 					notSaveInCache = cachable !== undefined ? cachable : rNoClone.test(html);
 
@@ -242,8 +242,7 @@
 						var newS = div.nextSibling;
 						while(newS) {
 							fragment.appendChild(div);
-							div = newS;
-							newS = newS.nextSibling;
+							newS = (div = newS).nextSibling;
 						}
 
 
@@ -276,11 +275,19 @@
 		},
 
 		/**
+		 * 获取一个元素的文档。
+		 * @static
+		 * @param {Element/Document/Window} elem 元素。
+		 * @return {Document} 当前节点所在文档。
+		 */
+		getDocument: getDocument,
+
+		/**
 		 * 实现了 Element 实现的处理函数。
 		 * @private
 		 * @static
 		 */
-		implementTargets: [ ep, document],
+		implementTargets: [p.ElementList.prototype, ep, document],
 
 		/**
 		 * 将一个成员附加到 Element 对象和相关类。
@@ -310,63 +317,65 @@
 			assert.notNull(obj, "Element.implement(obj, listType): 参数 {obj} ~。");
 				
 			Object.each(obj, function (value, key) {
-	
-				this.implementTargets.forEach( function(m) {
-					if(!copyIf || !(key in m))
-						m[key] = obj[key];
-				});
 				
-				if(!copyIf || !(key in p.ElementList.prototype)) {
-	
-					// 复制到  p.ElementList
-					switch (listType) {
-						case 2:
-							value = function() {
-								var doms = this.doms, l = doms.length, i = -1;
-								while (++i < l)
-									doms[i][key].apply(doms[i], arguments);
-								return this;
-							};
-							
-							break;
-						case 3:
-							value = function() {
-								return new p.ElementList(this.each(key, arguments));
-							};
-							break;
-							
-						case 4:
-							value = function() {
-								var args = arguments;
-								return new p.ElementList(ap.concat.apply([], this.each( function(elem, index) {
-									var r = this[index][key].apply(this[index], args);
-									return r && r.doms || r;
-								}, this.doms)));
-	
-							};
-							break;
-							
-						case 5:
-							value = function() {
-								var args = arguments;
-								return !ap.each.call(this.doms, function(node) {
-									return  !node[key].apply(node[key], args);
-								});
-							};
-							break;
-							
-						default:
-							value = function() {
-								return this.each(key, arguments);
-							};
-							
+				var i = this.length;
+				
+				while(i--) {
+					if(!copyIf || !(key in this[i])) {
+						
+						if(!i){
+									
+							// 复制到  p.ElementList
+							switch (listType) {
+								case 2:  //   return this
+									value = function() {
+										var doms = this.doms, l = doms.length, i = -1;
+										while (++i < l)
+											doms[i][key].apply(doms[i], arguments);
+										return this;
+									};
+									
+									break;
+								case 3:  //  return  ElementList(dom)
+									value = function() {
+										return new p.ElementList(this.each(key, arguments));
+									};
+									break;
+									
+								case 4:  //  return ElementList(ElementList)
+									value = function() {
+										var args = arguments;
+										return new p.ElementList(ap.concat.apply([], this.each( function(elem, index) {
+											var r = this[index][key].apply(this[index], args);
+											return r && r.doms || r;
+										}, this.doms)));
+			
+									};
+									break;
+									
+								case 5:   // return bool
+									value = function() {
+										var args = arguments;
+										return !ap.each.call(this.doms, function(node) {
+											return  !node[key].apply(node[key], args);
+										});
+									};
+									break;
+									
+								default:  // return return
+									value = function() {
+										return this.each(key, arguments);
+									};
+									
+							}
+						}
+						
+						this[i][key] = value;
+						
 					}
-				
-					p.ElementList.prototype[key] = value;
 				}
 				
-				
-			}, this);
+			}, this.implementTargets);
 
 			/// #ifdef SupportIE6
 
@@ -389,15 +398,7 @@
 		 */
 		implementIf: function (obj, listType) {
 			return this.implement(obj, listType, true);
-		},
-
-		/**
-		 * 获取一个元素的文档。
-		 * @static
-		 * @param {Element/Document/Window} elem 元素。
-		 * @return {Document} 当前节点所在文档。
-		 */
-		getDocumentument: getDocument
+		}
 
 	})
 	
@@ -637,7 +638,7 @@
 
 		}, ee.$default)), ee);
 
-		return arguments.callee;
+		return e.defineEvents;
 	};
 
 	/**
@@ -645,7 +646,7 @@
 	 * @class JPlus.Event
 	 */
 
-	var pep = namespace(".Event", Class({
+	var pep = (p.Event = Class({
 
 		/**
 		 * 构造函数。
@@ -1503,6 +1504,8 @@
 						o.each(me.options, function(e) {
 							e.selected = value.indexOf(e.value) > -1;
 						});
+						
+						break;
 
 					}
 
@@ -1526,35 +1529,6 @@
 
 			(this.dom || this).innerHTML = value;
 			return this;
-		},
-
-		/**
-		 * 变化到某值。
-		 * @param {String} value 变化的值。可以为 height opacity width all size position left top
-		 * right bottom。
-		 * @param {Function} [callBack] 回调。
-		 * @param {Number} duration=500 时间。
-		 * @param {String} [type] 类型。
-		 * @return this
-		 */
-		animate: function () {
-			var args = arguments, value = args[1];
-			if(typeof args[0] === 'string') {
-				(args[1] = {})[args[0]] = value;
-				args[0] = null;
-			} else if(typeof value !== 'object') {
-				ap.unshift.call(args, null);
-			}
-
-			this.set(args[1]);
-			
-			if(args[4])
-				args[4].call(this);
-				
-			if(args[3])
-				setTimeout(args[3], 0);
-
-			return  this;
 		},
 
 		/**
