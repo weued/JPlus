@@ -109,9 +109,9 @@
 	 */
 	p.$ = getElementById;
 
-	/// #ifdef SupportIE6
+	/// #ifdef SupportIE8
 
-	if (navigator.isQuirks) {
+	if (!navigator.isStd) {
 		ep.domVersion = 1;
 		p.$ = function(id) {
 			var dom = getElementById(id);

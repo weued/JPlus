@@ -1704,7 +1704,7 @@ var JPlus = {
 		 * </code>
 		 */
 		now: function() {
-			return +new Date();
+			return +new Date;
 		}
 		
 	});

@@ -405,10 +405,6 @@
 		
 		apply(this, info);
 		
-		if(this.doCall === false) {
-			this.method = 'createFunction(' + this.method + ')';
-		}
-		
 		this.id = name;
 		
 		var overrides = (info.overrides || "").split(';');
@@ -431,11 +427,17 @@
 			overrides.splice(0, 1);
 		}
 		
+		if(this.doCall === false) {
+			this.method = 'createFunction(' + this.method + ')';
+		}
+		
 		if(!this.methodName){
 			this.methodName =   this.method;
 		}
 		
 		this.overrides = {};
+		
+		if(!overrides.length) overrides.push('');
 		
 		forEach(overrides, function(value){
 			value = value.split('=>');
