@@ -2,21 +2,15 @@
 //  元素: 提供最底层的 DOM 辅助函数。       A
 //===========================================
 
-(function(w) {
+(function(w, p) {
 
 	/// #region 核心
-
-	/**
-	 * JPlus 简写。
-	 * @type JPlus
-	 */
-	var p = w.JPlus,
 	
 		/**
 		 * document 简写。
 		 * @type Document
 		 */
-		document = w.document,
+	var document = w.document,
 	
 		/**
 		 * Object  简写。
@@ -41,6 +35,13 @@
 		 * @type Element
 		 */
 		div = document.createElement('DIV'),
+		
+		/**
+		 * 元素。
+		 */
+		pe = p.Element = Class(function(dom){
+			this.dom = dom;
+		}),
 	
 		/// #ifdef SupportIE6
 	
@@ -49,7 +50,7 @@
 		 * @type Function
 		 * 如果页面已经存在 Element， 不管是不是用户自定义的，都直接使用。只需保证 Element 是一个函数即可。
 		 */
-		e = p.Element = w.Element || (w.Element = function(){}),
+		e = w.Element || (w.Element = pe),
 	
 		/// #else
 	
@@ -92,44 +93,14 @@
 		 * @type Object
 		 */
 		wrapMap = {
-			option: [ 1, "<select multiple='multiple'>", "</select>" ],
-			legend: [ 1, "<fieldset>", "</fieldset>" ],
-			thead: [ 1, "<table>", "</table>" ],
-			tr: [ 2, "<table><tbody>", "</tbody></table>" ],
-			td: [ 3, "<table><tbody><tr>", "</tr></tbody></table>" ],
-			col: [ 2, "<table><tbody></tbody><colgroup>", "</colgroup></table>" ],
-			area: [ 1, "<map>", "</map>" ]
+			option: [ 1, '<select multiple="multiple">', '</select>' ],
+			legend: [ 1, '<fieldset>', '</fieldset>' ],
+			thead: [ 1, '<table>', '</table>' ],
+			tr: [ 2, '<table><tbody>', '</tbody></table>' ],
+			td: [ 3, '<table><tbody><tr>', '</tr></tbody></table>' ],
+			col: [ 2, '<table><tbody></tbody><colgroup>', '</colgroup></table>' ],
+			area: [ 1, '<map>', '</map>' ]
 		};
-	
-	/**
-	 * 根据一个 id 或 对象获取节点。
-	 * @param {String/Element} id 对象的 id 或对象。
-	 * @memberOf JPlus
-	 * @name $
-	 */
-	p.$ = getElementById;
-
-	/// #ifdef SupportIE8
-
-	if (!navigator.isStd) {
-		ep.domVersion = 1;
-		p.$ = function(id) {
-			var dom = getElementById(id);
-	
-			if(dom && dom.domVersion !== ep.domVersion) {
-				o.extendIf(dom, ep);
-			}
-	
-			return dom;
-	
-	
-		};
-		
-	}
-
-	/// #endif
-
-	if(!w.$) w.$ = p.$;
 
 	///   #region ElementList
 
@@ -167,10 +138,11 @@
 		 * @param {Array} args/... 参数。
 		 * @return {Array} 结果集。
 		 */
-		each: function(fn, args) {
+		forEach: function(fn, args) {
 
 			// 防止 doms 为 p.ElementList
-			return ap.invoke.call(this.doms, fn, args);
+			ap.forEach.call(this.doms, fn, args);
+			return this;
 		},
 
 		/**
@@ -179,8 +151,44 @@
 		xType: "elementlist"
 
 	}));
+	
+	String.map("each invoke indexOf", function(func){
+		p.ElementList.prototype[func] = function(){
+			return ap[func].apply(this.doms, arguments);
+		};
+	});
 
 	/// #endregion
+	
+	/**
+	 * 根据一个 id 或 对象获取节点。
+	 * @param {String/Element} id 对象的 id 或对象。
+	 * @memberOf JPlus
+	 * @name $
+	 */
+	p.$ = getElementById;
+
+	/// #ifdef SupportIE8
+
+	if (!navigator.isStd) {
+		ep.domVersion = 1;
+		p.$ = function(id) {
+			var dom = getElementById(id);
+	
+			if(dom && dom.domVersion !== ep.domVersion) {
+				o.extendIf(dom, ep);
+			}
+	
+			return dom;
+	
+	
+		};
+		
+	}
+
+	/// #endif
+
+	if(!w.$) w.$ = p.$;
 	
 	/**
 	 * @class Element
@@ -283,13 +291,6 @@
 		getDocument: getDocument,
 
 		/**
-		 * 实现了 Element 实现的处理函数。
-		 * @private
-		 * @static
-		 */
-		implementTargets: [p.ElementList.prototype, ep, document],
-
-		/**
 		 * 将一个成员附加到 Element 对象和相关类。
 		 * @param {Object} obj 要附加的对象。
 		 * @param {Number} listType = 1 说明如何复制到 p.ElementList 实例。
@@ -312,20 +313,18 @@
 		 *
 		 *  参数 copyIf 仅内部使用。
 		 */
-		implement: function (obj, listType, copyIf) {
+		implement: function (members, listType, copyIf) {
 
-			assert.notNull(obj, "Element.implement(obj, listType): 参数 {obj} ~。");
-				
-			Object.each(obj, function (value, key) {
+			assert.notNull(members, "Element.implement" + (copyIf ? 'If' : '') + "(members, listType): 参数 {members} ~。");
+			
+			Object.each(members, function (value, key) {
 				
 				var i = this.length;
-				
 				while(i--) {
-					if(!copyIf || !(key in this[i])) {
+					var prop = this[i];
+					if(prop && (!copyIf || !prop[key])) {
 						
-						if(!i){
-									
-							// 复制到  p.ElementList
+						if(!i) {
 							switch (listType) {
 								case 2:  //   return this
 									value = function() {
@@ -338,7 +337,7 @@
 									break;
 								case 3:  //  return  ElementList(dom)
 									value = function() {
-										return new p.ElementList(this.each(key, arguments));
+										return new p.ElementList(this.invoke(key, arguments));
 									};
 									break;
 									
@@ -370,13 +369,13 @@
 							}
 						}
 						
-						this[i][key] = value;
-						
+						prop[key] = value;
 					}
 				}
 				
-			}, this.implementTargets);
-
+				
+			}, [p.ElementList.prototype, document.constructor ? document.constructor.prototype : document, p.Element, e != p.Element && ep]);
+			
 			/// #ifdef SupportIE6
 
 			if(ep.domVersion) {
@@ -2930,4 +2929,4 @@
 
 	/// #endregion
 
-})(this);
+})(this, JPlus);

@@ -39,7 +39,7 @@
 				'Array.prototype.select': '@ar = [5,4]; function(v){return v > 2} => [5,4]',
 				'Array.prototype.include': '@ar = [5,4]; 4 => true; 2 => assert.areEqual(ar, [5, 4, 2])',
 				'Array.prototype.insert': '@ar = [5,4]; 1, "1" => [5, "1", 4]',
-				'Array.prototype.invoke': '@ar = [5,4]; "toString", [] => ["5", "4"]',
+				'Array.prototype.invoke': '@ar = [5,4]; "toString" => ["5", "4"]',
 				'Array.prototype.unique': {overrides:'@ar = [2, 5, 7, 5]; => [2, 5, 7]', time: 10000},
 				'Array.prototype.remove': '@ar = [5,4]; 5 =>assert,  true, assert.areEqual(ar, [4])',
 				'Function': '-',
