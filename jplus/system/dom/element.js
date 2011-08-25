@@ -114,11 +114,11 @@
 	 * ElementList 允许快速操作多个节点。
 	 * ElementList 的实例一旦创建，则不允许修改其成员。
 	 */
-	namespace(".ElementList", p.Class({
+	namespace(".ElementList", Class({
 
 		/**
 		 * 初始化   ElementList  实例。
-		 * @param {Array/p.ElementList} doms 节点集合。
+		 * @param {Array/ElementList} doms 节点集合。
 		 * @constructor
 		 */
 		constructor: function(doms) {
@@ -135,19 +135,6 @@
 		},
 
 		/**
-		 * 对集合每个元素执行一次函数。
-		 * @param {Function/String} fn 参数。
-		 * @param {Array} args/... 参数。
-		 * @return {Array} 结果集。
-		 */
-		forEach: function(fn, args) {
-
-			// 防止 doms 为 p.ElementList
-			ap.forEach.call(this.doms, fn, args);
-			return this;
-		},
-
-		/**
 		 * xType
 		 */
 		xType: "elementlist"
@@ -155,7 +142,7 @@
 	}));
 	
 	String.map("each invoke indexOf", function(func){
-		p.ElementList.prototype[func] = function(){
+		ElementList.prototype[func] = function(){
 			return ap[func].apply(this.doms, arguments);
 		};
 	});
@@ -303,7 +290,7 @@
 		/**
 		 * 将一个成员附加到 Element 对象和相关类。
 		 * @param {Object} obj 要附加的对象。
-		 * @param {Number} listType = 1 说明如何复制到 p.ElementList 实例。
+		 * @param {Number} listType = 1 说明如何复制到 ElementList 实例。
 		 * @return {Element} this
 		 * @static
 		 * 对 Element 扩展，内部对 Element ElementList document 皆扩展。
@@ -342,14 +329,14 @@
 									break;
 								case 3:  //  return  ElementList(dom)
 									value = function() {
-										return new p.ElementList(this.invoke(key, arguments));
+										return new ElementList(this.invoke(key, arguments));
 									};
 									break;
 									
 								case 4:  //  return ElementList(ElementList)
 									value = function() {
 										var args = arguments;
-										return new p.ElementList(ap.concat.apply([], this.each( function(elem, index) {
+										return new ElementList(ap.concat.apply([], this.each( function(elem, index) {
 											var r = this[index][key].apply(this[index], args);
 											return r && r.doms || r;
 										}, this.doms)));
@@ -373,7 +360,7 @@
 				}
 				
 				
-			}, [p.ElementList, p.Document, p.Element, e != p.Element && e]);
+			}, [ElementList, p.Document, p.Element, e != p.Element && e]);
 			
 			/// #ifdef SupportIE6
 
@@ -390,7 +377,7 @@
 		 * 若不存在，则将一个对象附加到 Element 对象。
 		 * @static
 		 * @param {Object} obj 要附加的对象。
-		 * @param {Number} listType 说明如何复制到 p.ElementList 实例。
+		 * @param {Number} listType 说明如何复制到 ElementList 实例。
 		 * @param {Number} docType 说明如何复制到 Document 实例。
 		 * @return {Element} this
 		 */
@@ -464,10 +451,10 @@
 		 * @return {Element/ElementList} 如果只有1个参数，返回元素，否则返回元素集合。
 		 */
 		getDom: function() {
-			return arguments.length === 1 ? p.$(arguments[0]) : new p.ElementList(arguments);
+			return arguments.length === 1 ? p.$(arguments[0]) : new ElementList(arguments);
 
 			/*
-			 return new p.ElementList(o.update(arguments, function(id){
+			 return new ElementList(o.update(arguments, function(id){
 			 return typeof id == 'string' ? this.getElementById(id) : id;
 			 }, [], this));
 			 */
@@ -490,7 +477,7 @@
 	 * @return {Document} 文档。
 	 */
 	function getDocument(elem) {
-		assert.isNode(elem, 'Element.getDocumentument(elem): 参数 {elem} ~。');
+		assert.isNode(elem, 'Element.getDocument(elem): 参数 {elem} ~。');
 		return elem.ownerDocument || elem.document || elem;
 	}
 
@@ -2328,7 +2315,7 @@
 	
 			// 全部子节点。
 			children: [function(elem, fn) {
-				return new p.ElementList(find(elem,  fn));
+				return new ElementList(find(elem,  fn));
 			}],
 	
 			// 上级节点。
@@ -2423,7 +2410,7 @@
 
 		/// #endif
 
-		// 使     p.ElementList 支持此函数
+		// 使     ElementList 支持此函数
 		
 		/**
 		 * 根据标签返回子节点。
@@ -2453,10 +2440,10 @@
 		 */
 		findAll: div.querySelectorAll ? function(selecter) {
 			assert.isString(selecter, "Element.prototype.findAll(selecter): 参数 {selecter} ~。");
-			return new p.ElementList((this.dom || this).querySelectorAll(selecter));
+			return new ElementList((this.dom || this).querySelectorAll(selecter));
 		} : function(selecter) {
 			assert.isString(selecter, "Element.prototype.findAll(selecter): 参数 {selecter} ~。");
-			var current = new p.ElementList([this.dom || this]);
+			var current = new ElementList([this.dom || this]);
 			selecter.split(' ').forEach( function(v) {
 				current = findBy(current, v);
 			});
@@ -2808,7 +2795,7 @@
 			}
 			elem = elem[walk];
 		}
-		return new p.ElementList(es);
+		return new ElementList(es);
 	}
 
 	/**
