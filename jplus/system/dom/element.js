@@ -103,6 +103,8 @@
 		};
 
 	///   #region ElementList
+	
+	p.Document = p.Native(document.constructor || {prototype: document});
 
 	/**
 	 * 节点集合。
@@ -171,8 +173,11 @@
 	/// #ifdef SupportIE8
 
 	if (!navigator.isStd) {
+		
 		ep.domVersion = 1;
+		
 		p.$ = function(id) {
+			
 			var dom = getElementById(id);
 	
 			if(dom && dom.domVersion !== ep.domVersion) {
@@ -180,12 +185,17 @@
 			}
 	
 			return dom;
-	
-	
+			
 		};
 		
+		/**
+		 * 返回当前文档默认的视图。
+		 * @type {Window}
+		 */
+		document.defaultView = document.parentWindow;
+		
 	}
-
+		
 	/// #endif
 
 	if(!w.$) w.$ = p.$;
@@ -303,11 +313,10 @@
 		 *
 		 * DOM 方法 有 以下种
 		 *
-		 *  1, 其它  getText - 执行结果是数据，返回结果数组。 (默认)
-		 *  2  setText - 执行结果返回 this， 返回 this 。
+		 *  1, setText - 执行结果返回 this， 返回 this 。(默认)
+		 *  2      其它  getText - 执行结果是数据，返回结果数组。 
 		 *  3  getElementById - 执行结果是DOM，返回  ElementList 包装。
 		 *  4  getElementsByTagName - 执行结果是DOM数组，返回  ElementList 包装。
-		 *  5  contains  - 执行结果是判断， 如果每个返回值都是 true， 则返回 true， 否则返回 false。
 		 * 
 		 * 
 		 *
@@ -321,19 +330,15 @@
 				
 				var i = this.length;
 				while(i--) {
-					var prop = this[i];
-					if(prop && (!copyIf || !prop[key])) {
+					var cls = this[i].prototype;
+					if(cls && (!copyIf || !cls[key])) {
 						
 						if(!i) {
 							switch (listType) {
 								case 2:  //   return this
 									value = function() {
-										var doms = this.doms, l = doms.length, i = -1;
-										while (++i < l)
-											doms[i][key].apply(doms[i], arguments);
-										return this;
+										return this.invoke(key, arguments);
 									};
-									
 									break;
 								case 3:  //  return  ElementList(dom)
 									value = function() {
@@ -352,29 +357,23 @@
 									};
 									break;
 									
-								case 5:   // return bool
-									value = function() {
-										var args = arguments;
-										return !ap.each.call(this.doms, function(node) {
-											return  !node[key].apply(node[key], args);
-										});
-									};
-									break;
-									
 								default:  // return return
 									value = function() {
-										return this.each(key, arguments);
+										var doms = this.doms, l = doms.length, i = -1;
+										while (++i < l)
+											doms[i][key].apply(doms[i], arguments);
+										return this;
 									};
 									
 							}
 						}
 						
-						prop[key] = value;
+						cls[key] = value;
 					}
 				}
 				
 				
-			}, [p.ElementList.prototype, document.constructor ? document.constructor.prototype : document, p.Element, e != p.Element && ep]);
+			}, [p.ElementList, p.Document, p.Element, e != p.Element && e]);
 			
 			/// #ifdef SupportIE6
 
@@ -426,14 +425,14 @@
 		 */
 		xType: "element"
 
-	}, 2);
+	});
 
 	assert.isNode(document.documentElement, "在 element.js 执行时，必须存在 document.documentElement 属性。请确认浏览器为标准浏览器， 且未使用  Quirks 模式。");
 
 	/**
 	 * @namespace document
 	 */
-	o.extendIf(document, {
+	p.Document.implement({
 
 		/**
 		 * 创建一个节点。
@@ -473,16 +472,6 @@
 			 }, [], this));
 			 */
 		},
-
-		/// #ifndef SupportIE8
-		
-		/**
-		 * 返回当前文档默认的视图。
-		 * @type {Window}
-		 */
-		defaultView: document.parentWindow,
-	
-		/// #endif
 
 		/**
 		 * 获取节点本身。
@@ -786,7 +775,7 @@
 			('mouseleave', 'mouseout', checkMouseEnter);
 	}
 
-	e.implement(p.IEvent, 2);
+	e.implement(p.IEvent);
 
 	/// #endregion
 
@@ -841,7 +830,7 @@
 		 * 是否使用方法 getComputedStyle。
 		 * @type Boolean
 		 */
-		defaultView = document.defaultView.getComputedStyle,
+		getComputedStyle = document.defaultView.getComputedStyle,
 	
 		/**
 		 * 获取元素的计算样式。
@@ -850,7 +839,7 @@
 		 * @return {String} 样式。
 		 * @private
 		 */
-		getStyle = defaultView ? function(elem, name) {
+		getStyle = getComputedStyle ? function(elem, name) {
 	
 			assert.isElement(elem , "Element.getStyle(elem, name): 参数 {elem} ~。");
 			
@@ -980,7 +969,7 @@
 		 * @return {Number} 转换后的大小。
 		 * @static
 		 */
-		getSizes: defaultView ? function (elem, type, names) {
+		getSizes: getComputedStyle ? function (elem, type, names) {
 
 			assert.isElement(elem, "Element.getSizes(elem, type, names): 参数 {elem} ~。");
 			assert(type in e.styleMaps, "Element.getSizes(elem, type, names): 参数 {type} 必须是 \"x\" 或 \"y\"。", type);
@@ -1277,7 +1266,7 @@
 			return (me.style.display || getStyle(me, 'display')) === 'none';
 		}
 
-	})
+	}, 2)
 
 	.implement({
 
@@ -1605,7 +1594,7 @@
 			return this;
 		}
 
-	}, 2);
+	});
 	
 	String.map('x y', function(c, i){
 		c = e.styleMaps[c] = {};
@@ -1946,7 +1935,7 @@
 			return elem;
 		}
 
-	})
+	}, 2)
 
 	.implement({
 
@@ -2042,12 +2031,12 @@
 			return me.setOffset(offset);
 		}
 
-	} ,2);
+	});
 
 	/**
 	 * @namespace document
 	 */
-	apply(document, {
+	p.Document.implement({
 
 		/**
 		 * 获取元素可视区域大小。包括 margin 和 border 大小。
@@ -2535,7 +2524,7 @@
 			return child ? e.hasChild(me, child.dom || child) : me.firstChild !== null;
 		}
 
-	}, 5)
+	}, 2)
 
 	.implement({
 
@@ -2777,7 +2766,7 @@
 			e.dispose(this.dom || this);
 		}
 
-	}, 2);
+	});
 
 	/**
 	 * @class

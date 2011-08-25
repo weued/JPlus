@@ -49,4 +49,29 @@ initUserMenu(todo, done);
 // 
 			// return  this;
 		// },
+		
+		
+		/*
+		
+			var r = [],
+				args = arguments,
+				fn = args[0];
+				
+			assert.isString(fn, "Array.prototype.invoke(fn, args): 参数 {fn} ~。");
+			
+			// 如果函数，则调用。 否则对 属性调用函数。
+			ap.forEach.call(this, function(value) { 
+				assert(value && Function.isFunction(value[fn]), "Array.prototype.invoke(fn, ...): {value} 不包含可执行的函数 {fn}。", value, fn);
+				// value[fn](args[1], args[2], ...);
+				// value[fn].call(value, args[1], args[2], ...);
+				// value[fn].call(args[0], args[1], args[2], ...);
+				// value[fn].call.apply(value[fn], args);
+				args[0] = value;
+				r.push(value[fn].call.apply(value[fn], args));
+			});
+			
+			return r;
+			
+			
+    */
  // */

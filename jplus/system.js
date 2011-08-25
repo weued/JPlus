@@ -380,6 +380,13 @@ var JPlus = {
 			 */
 			Object: Object,
 			
+			/**
+			 * 本地化已有的类。
+			 * @param {Function/Class} constructor 将创建的类。
+	 		 * @return {Class} 生成的类。
+			 */
+			Native: Class,
+			
 			/// #ifdef SupportUsing
 		
 			/**
@@ -2105,31 +2112,21 @@ var JPlus = {
 		},
 		
 		/**
-		 * 对数组成员遍历执行。
-		 * @param {String/Function} fn
-		 * @param {Array} args
+		 * 对数组成员调用指定的成员，返回结果数组。
+		 * @param {String} fn 调用的成员名。
+		 * @param {Array} args 调用的参数数组。
 		 * @return {Array} 结果。
 		 * @example
 		 * <code>
 		 * ["vhd"].invoke('charAt', [0]); //    ['v']
 		 * </code>
 		 */
-		invoke: function() {
-			var r = [],
-				args = arguments,
-				fn = args[0];
-				
-			assert.isString(fn, "Array.prototype.invoke(fn, args): 参数 {fn} ~。");
-			
-			// 如果函数，则调用。 否则对 属性调用函数。
+		invoke: function(fn, args) {
+			assert(args && typeof args.length === 'number', "Array.prototype.invoke(fn, args): 参数 {args} 必须是数组, 无法省略。", args)
+			var r = [];
 			ap.forEach.call(this, function(value) { 
-				assert(value && Function.isFunction(value[fn]), "Array.prototype.invoke(fn, ...): {value} 不包含可执行的函数 {fn}。", value, fn);
-				// value[fn](args[1], args[2], ...);
-				// value[fn].call(value, args[1], args[2], ...);
-				// value[fn].call(args[0], args[1], args[2], ...);
-				// value[fn].call.apply(value[fn], args);
-				args[0] = value;
-				r.push(value[fn].call.apply(value[fn], args));
+				assert(value && Function.isFunction(value[fn]), "Array.prototype.invoke(fn, args): {args} 内的 {value} 不包含可执行的函数 {fn}。", args, value, fn);
+				r.push(value[fn].apply(value, args));
 			});
 			
 			return r;
@@ -2329,7 +2326,7 @@ var JPlus = {
 					p.removeEventListener.call(owner, eventName, doReadyLoad, false);
 					
 					// 调用所有函数。
-					doReadyLoad.list.invoke('call', owner, p);
+					doReadyLoad.list.invoke('call', [owner, p]);
 					
 					
 					doReadyLoad = null;
