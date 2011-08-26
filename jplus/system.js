@@ -90,7 +90,7 @@ var JPlus = {
  * @fileOverview 系统核心的核心部分。
  */
 
-(function (w) {
+(function (window) {
 	
 	/// #define JPlus
 	
@@ -129,13 +129,13 @@ var JPlus = {
 	 * document 简写。
 	 * @type Document
 	 */
-	var document = w.document,
+	var document = window.document,
 		
 		/**
 		 * navigator 简写。
 		 * @type Navigator
 		 */
-		navigator = w.navigator,
+		navigator = window.navigator,
 		
 		/**
 		 * Array.prototype  简写。
@@ -147,7 +147,7 @@ var JPlus = {
 		 * Object  简写。
 		 * @type Function
 		 */
-		o = w.Object,
+		o = window.Object,
 	
 		/**
 		 * Object.prototype.toString 简写。
@@ -320,7 +320,7 @@ var JPlus = {
 						delete dest.data.event;
 						for (i in evt) {
 							evt[i].handlers.forEach( function(fn) {
-								p.IEvent.on.call(dest, i, fn);
+								IEvent.on.call(dest, i, fn);
 							});
 						}
 					}
@@ -340,10 +340,10 @@ var JPlus = {
 			 * JPlus.eval('alert("hello")');
 			 * </code>
 			 */
-			eval: w.execScript || function(statement) {
+			eval: window.execScript || function(statement) {
 				
 				// 如果正常浏览器，使用 window.eval  。
-				return w.eval(statement);
+				return window.eval(statement);
 			},
 			
 			/**
@@ -442,7 +442,7 @@ var JPlus = {
 				
 				assert.notNull(url, "JPlus.loadText(url, callback): 参数 {url} ~。");
 	
-				//     assert(w.location.protocol != "file:", "JPlus.loadText(uri, callback):  当前正使用 file 协议，请使用 http 协议。 \r\n请求地址: {0}",  uri);
+				//     assert(window.location.protocol != "file:", "JPlus.loadText(uri, callback):  当前正使用 file 协议，请使用 http 协议。 \r\n请求地址: {0}",  uri);
 				
 				// 新建请求。
 				var xmlHttp = new XMLHttpRequest();
@@ -458,7 +458,7 @@ var JPlus = {
 					// 检查当前的 XMLHttp 是否正常回复。
 					if (!XMLHttpRequest.isOk(xmlHttp)) {
 						//载入失败的处理。
-						throw String.format("请求失败:  \r\n   地址: {0} \r\n   状态: {1}   {2}  {3}", url, xmlHttp.status, xmlHttp.statusText, w.location.protocol == "file:" ? '\r\n原因: 当前正使用 file 协议打开文件，请使用 http 协议。' : '');
+						throw String.format("请求失败:  \r\n   地址: {0} \r\n   状态: {1}   {2}  {3}", url, xmlHttp.status, xmlHttp.statusText, window.location.protocol == "file:" ? '\r\n原因: 当前正使用 file 协议打开文件，请使用 http 协议。' : '');
 					}
 					
 					url = xmlHttp.responseText;
@@ -1006,7 +1006,7 @@ var JPlus = {
 			assert(!events || o.isObject(events), "Class.addEvents(events): 参数 {event} 必须是一个包含事件的对象。 如 {click: { add: ..., remove: ..., initEvent: ..., trigger: ... } ", events);
 			
 			// 实现 事件 接口。
-			applyIf(ep, p.IEvent);
+			applyIf(ep, IEvent);
 			
 			// 如果有自定义事件，则添加。
 			if (events) {
@@ -1782,7 +1782,7 @@ var JPlus = {
 			 * @type Boolean
 			 * 此处认为 IE6,7 是怪癖的。
 			 */
-			isQuirks: typeof Element !== 'function' && String(w.Element).indexOf("object Element") === -1,
+			isQuirks: typeof Element !== 'function' && String(window.Element).indexOf("object Element") === -1,
 			
 			/// #endif
 			
@@ -2037,39 +2037,6 @@ var JPlus = {
 		forEach: each,
 		
 		/// #endif
-		
-		/**
-		 * 对数组每个元素筛选出一个函数返回true或属性符合的项。 
-		 * @param {Function/String} name 函数。 {@param {Object} value 当前变量的值} {@param {Number} key 当前变量的索引} {@param {Number} index 当前变量的索引} {@param {Array} array 数组本身} /数组成员的字段。
-		 * @param {Object} value 值。
-		 * @return this
-		 * @seeAlso Array.prototype.filter
-		 * @example
-		 * <code>
-		 * ["", "aaa", "zzz", "qqq"].select("length", 0); //  [""];
-		 * [{q: "1"}, {q: "3"}].select("q", "3");	//  返回   [{q: "3"}];
-		 * [{q: "1"}, {q: "3"}].select(function(v) {
-		 * 	  return v.["q"] == "3";
-		 * });	//  返回   [{q: "3"}];
-		 * </code>
-		 */
-		select: function(name, value) {
-			var me = this, index = -1, i = -1 , l = me.length, t,
-				fn = Function.isFunction(name) ? name : function(t) {
-					return t[name] === value;
-				};
-			while (++i < l) {
-				t = me[i];
-				
-				// 调用。
-				if (fn.call(t, t, i, me)) {
-					me[++index] = t;
-				}
-			}
-			me.splice(++index, l - index);
-			
-			return me;
-		},
 
 		/**
 		 * 包含一个元素。元素存在直接返回。
@@ -2113,7 +2080,7 @@ var JPlus = {
 		
 		/**
 		 * 对数组成员调用指定的成员，返回结果数组。
-		 * @param {String} fn 调用的成员名。
+		 * @param {String} func 调用的成员名。
 		 * @param {Array} args 调用的参数数组。
 		 * @return {Array} 结果。
 		 * @example
@@ -2121,12 +2088,12 @@ var JPlus = {
 		 * ["vhd"].invoke('charAt', [0]); //    ['v']
 		 * </code>
 		 */
-		invoke: function(fn, args) {
-			assert(args && typeof args.length === 'number', "Array.prototype.invoke(fn, args): 参数 {args} 必须是数组, 无法省略。", args)
+		invoke: function(func, args) {
+			assert(args && typeof args.length === 'number', "Array.prototype.invoke(func, args): 参数 {args} 必须是数组, 无法省略。", args);
 			var r = [];
 			ap.forEach.call(this, function(value) { 
-				assert(value && Function.isFunction(value[fn]), "Array.prototype.invoke(fn, args): {args} 内的 {value} 不包含可执行的函数 {fn}。", args, value, fn);
-				r.push(value[fn].apply(value, args));
+				assert(value != null && value[func] && value[func].apply, "Array.prototype.invoke(func, args): {value} 不包含可执行的函数 {func}。", value, func);
+				r.push(value[func].apply(value, args));
 			});
 			
 			return r;
@@ -2185,15 +2152,15 @@ var JPlus = {
 	 * @return {XMLHttpRequest} 请求的对象。
 	 */
 	
-	if(!w.XMLHttpRequest || navigator.isQuirks) {
+	if(navigator.isQuirks) {
 		
 		try{
-			(w.XMLHttpRequest = function() {
+			(window.XMLHttpRequest = function() {
 				return new ActiveXObject("MSXML2.XMLHTTP");
 			})();
 		} catch(e) {
 			try {
-				(w.XMLHttpRequest = function() {
+				(window.XMLHttpRequest = function() {
 					return new ActiveXObject("Microsoft.XMLHTTP");
 				})();
 			} catch (e) {
@@ -2211,7 +2178,7 @@ var JPlus = {
 	 * @return {Boolean} 正常返回true 。
 	 * @static
 	 */
-	w.XMLHttpRequest.isOk = function(xmlHttpRequest) {
+	window.XMLHttpRequest.isOk = function(xmlHttpRequest) {
 		
 		assert.isObject(xmlHttpRequest, 'XMLHttpRequest.isOk(xmlHttpRequest): 参数 {xmlHttpRequest} 不是合法的 XMLHttpRequest 对象');
 		
@@ -2220,7 +2187,7 @@ var JPlus = {
 		if (!status) {
 			
 			// 获取协议。
-			var protocol = w.location.protocol;
+			var protocol = window.location.protocol;
 			
 			// 对谷歌浏览器，  status 不存在。
 			return (protocol == "file: " || protocol == "chrome: " || protocol == "app: ");
@@ -2237,184 +2204,42 @@ var JPlus = {
 	/// #endregion
 
 	/// #region 页面
+		
+	// 将以下成员赋予 window ，这些成员是全局成员。
+	String.map('undefined Class IEvent using namespace', p, window);
 	
 	/**
-	 * @namespace JPlus
+	 * id种子 。
+	 * @type Number
 	 */
-	apply(p, {
-		
-		/**
-		 * id种子 。
-		 * @type Number
-		 */
-		id: Date.now() % 100,
-			
-		/**
-		 * JPlus 安装的根目录, 可以为相对目录。
-		 * @config {String}
-		 */
-		rootPath: p.rootPath || (function() {
-				
-				
-				/// HACK: this function fails in special environment
-				
-				var scripts = document.getElementsByTagName("script");
-				
-				// 当前脚本在 <script> 引用。最后一个脚本即当前执行的文件。
-				scripts = scripts[scripts.length - 1];
-						
-				// IE6/7 使用  getAttribute
-				scripts = navigator.isQuirks ? scripts.getAttribute('src', 5) : scripts.src;
-				return (scripts.match(/[\S\s]*\//) || [""])[0];
-				
-		}) (),
-		
-		/**
-		 * 初始化 window 对象。
-		 * @param {Document} doc
-		 * @private
-		 */
-		setupWindow: function(w) {
-			
-			/// #region 变量
-		
-			// 将以下成员赋予 window ，这些成员是全局成员。
-			String.map('Class using namespace undefined IEvent', p, w, true);
-		
-			
-			/// #endregion
-			
-			/// #region bindReady
-			
-			var document = w.document,
-			
-				list = [],
-				
-				/// #ifdef SupportIE8
-			
-				eventName = navigator.isStd ? 'DOMContentLoaded' : 'readystatechange';
-			
-				/// #else
-				
-				/// eventName = 'DOMContentLoaded';  
-				
-				/// #endif
-				
-			[['onReady', 'isReady', document, eventName], ['onLoad', 'isLoaded', w, 'load']].forEach(function(value, i){
-				var onReadyLoad = value[0],
-					owner = value[2]; 
-					
-				//  设置 onReady  Load
-				document[onReadyLoad] = function(fn) {
+	p.id = Date.now() % 100;
 	
-					assert.isFunction(fn, "document." +  onReadyLoad + "(fn): 参数 {fn} ~。");
-					
-					if(document[value[1]])
-						fn.call(owner);
-					else
-						// 已经完成则执行函数，否则 on 。
-						doReadyLoad.list.push(fn);
-					
-					return this;
-				};
-				
-				// 真正执行的函数。
-				function doReadyLoad(){
-					document[value[1]] = true;
-					
-					// 使用 document 删除事件。
-					p.removeEventListener.call(owner, eventName, doReadyLoad, false);
-					
-					// 调用所有函数。
-					doReadyLoad.list.invoke('call', [owner, p]);
-					
-					
-					doReadyLoad = null;
-					
-				}
-				
-				list[i] = doReadyLoad;
-				
-			});
-		
-			/**
-			 * 页面加载时执行。
-			 * @param {Functon} fn 执行的函数。
-			 * @memberOf document
-			 */
+	/**
+	 * JPlus 安装的根目录, 可以为相对目录。
+	 * @config {String}
+	 */
+	if(!p.rootPath){
+		try {
+			var scripts = document.getElementsByTagName("script");
 			
-			/**
-			 * 在文档载入的时候执行函数。
-			 * @param {Functon} fn 执行的函数。
-			 * @memberOf document
-			 */
-				
-			list[0].list = [];
+			// 当前脚本在 <script> 引用。最后一个脚本即当前执行的文件。
+			scripts = scripts[scripts.length - 1];
+					
+			// IE6/7 使用  getAttribute
+			scripts = navigator.isQuirks ? scripts.getAttribute('src', 5) : scripts.src;
 			
-			list[1].list = [function(){
-				if(!document.isReady)
-					list[0]();
-				list = null;
-			}];
-				
-			// 如果readyState 不是  complete, 说明文档正在加载。
-			if (document.readyState !== "complete") { 
-	
-				// 使用系统文档完成事件。
-				p.addEventListener.call(document, eventName, list[0], false);
-				
-				p.addEventListener.call(w, 'load', list[1], false);
-				
-				/// #ifdef SupportIE8
-				
-				// 只对 IE 检查。
-				if (!navigator.isStd) {
-				
-					// 来自 jQuery
+			// 设置路径。
+			p.rootPath = (scripts.match(/[\S\s]*\//) || [""])[0];
 		
-					//   如果是 IE 且不是框架
-					var toplevel = false;
-		
-					try {
-						toplevel = w.frameElement == null;
-					} catch(e) {}
-		
-					if ( toplevel && document.documentElement.doScroll) {
-						
-						/**
-						 * 为 IE 检查状态。
-						 * @private
-						 */
-						(function () {
-							if (document.isReady) {
-								return;
-							}
-						
-							try {
-								//  http:// javascript.nwbox.com/IEContentLoaded/
-								document.documentElement.doScroll("left");
-							} catch(e) {
-								setTimeout( arguments.callee, 1 );
-								return;
-							}
-						
-							list[0]();
-						})();
-					}
-				}
-				
-				/// #endif
-				
-			} else {
-				setTimeout(list[1], 1);
-			}
+		} catch(e) {
 			
-			/// #endregion
+			// 出错后，设置当前位置.			
+			p.rootPath = "";
 		}
+			
 		
-	});
-	
-	p.setupWindow(w);
+		
+	}
 
 	/// #endregion
 	
@@ -2557,7 +2382,7 @@ var JPlus = {
 		// 取值，创建。
 		ns = ns.split('.');
 		
-		var current = w, i = -1, len = ns.length - 1;
+		var current = window, i = -1, len = ns.length - 1;
 		
 		ns[0] = ns[0] || p.defaultNamespace;
 		
@@ -2571,7 +2396,7 @@ var JPlus = {
 			i = ns[--len];
 		}
 		
-		return w[i] = obj;
+		return window[i] = obj;
 		
 		
 		
@@ -2666,7 +2491,7 @@ Object.extendIf(trace, {
 	api: function(obj, prefix) {
 		var title = 'API信息: ', msg = [];
 		
-		var definedObj = 'Object String Date Array RegExp document JPlus navigator XMLHttpRequest trace assert Function';
+		var definedObj = 'Object String Date Array RegExp document JPlus navigator XMLHttpRequest trace assert Function Element Document';
 
 		if(arguments.length === 0) {
 			title = '全局对象: ';
@@ -3048,7 +2873,7 @@ function assert(bValue, msg) {
 		// 如果启用 [参数] 功能
 		if (val.length > 2) {
 			var i = 2;
-			msg = msg.replace(/\{([\w$\.\(\)]*?)\}/g, function(s, x) {
+			msg = msg.replace(/\{([\w\.\(\)]*?)\}/g, function(s, x) {
 				return val.length <= i ? s : x + " = " + String.ellipsis(trace.inspect(val[i++]), 200);
 			});
 		}else {

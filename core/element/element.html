@@ -25,27 +25,71 @@
 		</style>
 	</head>
 	<body>
-		<div id="a"> id=a margin=4 padding=8
-			<div id="b">id=b padding=8
-				<div id="c">id=c border=1 margin=4 auto width=300</div>
+		<span id="all">
+			<div id="a"> id=a margin=4 padding=8
+				<div id="b">id=b padding=8
+					<div id="c">id=c border=1 margin=4 auto width=300</div>
+				</div>
+				<div id="d">id=d border=10 padding=8</div>
 			</div>
-			<div id="d">id=d border=10 padding=8</div>
-		</div>
+		</span>
 		
 		<object id="o"></object>
 		
-		<script>
+		<iframe id="iframe"></iframe>
 		
-			var a = $('a'), b = $('b'), c = $('c'), d = $('d'), o = $('o');
+		<script>
+			
+			
+			//  Element Class
+			
+			
+			Element.implement({
+				a: function(){return 1;}
+			});
+			
+			Element.implement({
+				b: function(){return 1;}
+			}, 2);
+			
+			Element.implement({
+				c: function(){return this;}
+			}, 3);
+			
+			Element.implement({
+				d: function(){return  new ElementList([this]);}
+			}, 4);
+		
+			var a = $('a'), b = $('b'), c = $('c'), d = $('d'), o = $('o'), abcd = new ElementList($('all').getElementsByTagName("div"));
 			
 			var testcases = {
-				'Element': {doCall: false},
-				'Element.prototype.xType': {doCall: false, overrides: '@o'},   
-				'Element.parse': '"<div/>" ; "<div><div />a</div>"; "<div/> f <div/>"'
+				'Element.prototype.a': {overrides: '@o; => 1'},
+				'ElementList.prototype.each': '@abcd; function(value){ assert.log(value.id)} => assert.logged("abcd")',
+				'ElementList.prototype.filter': '@abcd; function(value) {return value === a || value === c} => assert.areEqual(value.doms, [a, c])',
+				'ElementList.prototype.invoke': '@abcd; "setAttribute", ["ff", 1] => assert.isTrue(a.getAttribute("ff") == 1),  assert.isTrue(d.getAttribute("ff") == 1) ',
+				'ElementList.prototype.indexOf': '@abcd; a => 0; d => 3; o => -1',
+				'ElementList.prototype.a': '@abcd; => abcd',
+				'ElementList.prototype.b': '@abcd; => [1,1,1,1]',
+				'ElementList.prototype.c': '@abcd; => assert.areEqual(value.doms, [a, b,c, d])',
+				'ElementList.prototype.d': '@abcd; => assert.areEqual(value.doms, [a, b,c, d])'
+			//	'Element.prototype.xType': {doCall: false, overrides: '@o'},   
+			//	'Element.parse': '"<div/>" ; "<div><div />a</div>"; "<div/> f <div/>"'
 			};
 			
 			initTestCases(testcases);
 			
+			// iframe
+			
+			
+			$('iframe').src = '../index.html';
+			 $('iframe').onload = function() {
+			 	if($('iframe').contentWindow.document.readyState === 'complete'    ) {
+					window.iframeWindow = $('iframe').contentWindow;
+					JPlus.setupWindow(window.iframeWindow);
+					console.log("iframe ready");
+					assert.isTrue(window.iframeWindow.document.getDom);
+				}
+			};
 		</script>
 	</body>
 </html>

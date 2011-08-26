@@ -595,6 +595,7 @@
 				r.push(')');
 				r.push(');\r\n');
 				r.push('} catch(e) {\r\n');
+				r.push('assert.hasError = true;\r\n');
 				r.push('console.error("');
 				r.push(this.method);
 				r.push('(');
@@ -681,6 +682,7 @@
 		try{
 			return    fn();
 		}catch(e){
+			assert.hasError    = true;
 			console.error(e.message);
 			console.info(fn.toString());
 		}

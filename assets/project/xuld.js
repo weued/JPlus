@@ -72,6 +72,54 @@ initUserMenu(todo, done);
 			
 			return r;
 			
+		
+		
+		
+		
+		/**
+		 * 对数组每个元素筛选出一个函数返回true或属性符合的项。 
+		 * @param {Function/String} name 函数。 {@param {Object} value 当前变量的值} {@param {Number} key 当前变量的索引} {@param {Number} index 当前变量的索引} {@param {Array} array 数组本身} /数组成员的字段。
+		 * @param {Object} value 值。
+		 * @return this
+		 * @seeAlso Array.prototype.filter
+		 * @example
+		 * <code>
+		 * ["", "aaa", "zzz", "qqq"].select("length", 0); //  [""];
+		 * [{q: "1"}, {q: "3"}].select("q", "3");	//  返回   [{q: "3"}];
+		 * [{q: "1"}, {q: "3"}].select(function(v) {
+		 * 	  return v.["q"] == "3";
+		 * });	//  返回   [{q: "3"}];
+		 * </code>
+		 */
+	
+	
+	/*
+	
+		select: function(name, value) {
+			var me = this, index = -1, i = -1 , l = me.length, t,
+				fn = Function.isFunction(name) ? name : function(t) {
+					return t[name] === value;
+				};
+			while (++i < l) {
+				t = me[i];
+				
+				// 调用。
+				if (fn.call(t, t, i, me)) {
+					me[++index] = t;
+				}
+			}
+			ap.splice.call(me, ++index, l - index);
 			
-    */
- // */
+			return me;
+		},
+			
+		
+		* */
+
+
+
+
+
+
+
+

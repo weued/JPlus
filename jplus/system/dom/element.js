@@ -2,15 +2,28 @@
 //  元素: 提供最底层的 DOM 辅助函数。       A
 //===========================================
 
-(function(w, p) {
 
-	/// #region 核心
+/**
+ * 初始化 window 对象。
+ * @param {Document} doc
+ * @private
+ */
+(JPlus.setupWindow = function(w, init) {
 	
+	
+	/// #region Core
+	
+	/**
+	 * JPlus 简写。
+	 * @type Object
+	 */
+	var p = JPlus,
+		
 		/**
 		 * document 简写。
 		 * @type Document
 		 */
-	var document = w.document,
+		document = w.document,
 	
 		/**
 		 * Object  简写。
@@ -28,83 +41,87 @@
 		 * 数组原型。
 		 * @type Object
 		 */
-		ap = Array.prototype,
+		ap = Array.prototype;
+
+	assert.isNode(document.documentElement, "在 element.js 执行时，必须存在 document.documentElement 属性。请确认浏览器为标准浏览器， 且未使用  Quirks 模式。");
+	
+	if(init) {
 	
 		/**
-		 * 被测元素。
-		 * @type Element
+		 * @namespace JPlus
 		 */
-		div = document.createElement('DIV'),
-		
-		/**
-		 * 元素。
-		 */
-		pe = p.Element = Class(function(dom){
-			this.dom = dom;
-		}),
+		apply(p, {
+			
+			/**
+			 * 元素。
+			 */	
+			Element: Class(function(dom){this.dom = dom;}),
+			
+			/**
+			 * 文档。
+			 */
+			Document: p.Native(document.constructor || {prototype: document}),
+			
+			/**
+			 * 根据一个 id 或 对象获取节点。
+			 * @param {String/Element} id 对象的 id 或对象。
+			 */
+			$: getElementById
+			
+		});
 	
-		/// #ifdef SupportIE6
+	}
 	
-		/**
-		 * 元素。
-		 * @type Function
-		 * 如果页面已经存在 Element， 不管是不是用户自定义的，都直接使用。只需保证 Element 是一个函数即可。
-		 */
-		e = w.Element || (w.Element = pe),
-	
-		/// #else
-	
-		/// e = w.Element,
-	
-		/// #endif
+	/**
+	 * 元素。
+	 * @type Function
+	 * 如果页面已经存在 Element， 不管是不是用户自定义的，都直接使用。只需保证 Element 是一个函数即可。
+	 */
+	var e = w.Element || p.Element,
 	
 		/**
 		 * 元素原型。
 		 * @type Object
 		 */
-		ep = e.prototype,
-	
-		/**
-		 * 元素。
-		 * @type Object
-		 */
-		cache = {},
-	
-		/**
-		 * 是否为标签。
-		 * @type RegExp
-		 */
-		rXhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/ig,
-	
-		/**
-		 * 无法复制的标签。
-		 * @type RegExp
-		 */
-		rNoClone = /<(?:script|object|embed|option|style)|\schecked/i,
-	
-		/**
-		 * 是否为标签名。
-		 * @type RegExp
-		 */
-		rTagName = /<([\w:]+)/,
-	
-		/**
-		 * 包装。
-		 * @type Object
-		 */
-		wrapMap = {
-			option: [ 1, '<select multiple="multiple">', '</select>' ],
-			legend: [ 1, '<fieldset>', '</fieldset>' ],
-			thead: [ 1, '<table>', '</table>' ],
-			tr: [ 2, '<table><tbody>', '</tbody></table>' ],
-			td: [ 3, '<table><tbody><tr>', '</tr></tbody></table>' ],
-			col: [ 2, '<table><tbody></tbody><colgroup>', '</colgroup></table>' ],
-			area: [ 1, '<map>', '</map>' ]
-		};
+		ep = e.prototype;
 
-	///   #region ElementList
+	/// #ifdef SupportIE8
+
+	if (!navigator.isStd) {
+		
+		ep.$version = 1;
+		
+		p.$ = function(id) {
+			
+			var dom = getElementById(id);
 	
-	p.Document = p.Native(document.constructor || {prototype: document});
+			if(dom && dom.$version !== ep.$version) {
+				o.extendIf(dom, ep);
+			}
+	
+			return dom;
+			
+		};
+		
+		/**
+		 * 返回当前文档默认的视图。
+		 * @type {Window}
+		 */
+		document.defaultView = document.parentWindow;
+
+		try {
+	
+			//  修复IE6 因 css 改变背景图出现的闪烁。
+			document.execCommand("BackgroundImageCache", false, true);
+		} catch(e) {
+	
+		}
+		
+	}
+		
+	/// #endif
+	
+	String.map("$ Element Document", p, w, true);
 
 	/**
 	 * 节点集合。
@@ -125,13 +142,24 @@
 
 			assert(doms && doms.length !== undefined, 'ElementList.prototype.constructor(doms): 参数 {doms} 必须是一个 NodeList 或 Array 类型的变量。', doms);
 
-			this.doms = doms;
 			
 			// 检查是否需要为每个成员调用  $ 函数。
-			if(doms[0] && !doms[0].xType) {
-				o.update(doms, p.$);
+			if(doms[0] && doms[0].$version != ep.$version) {
+				doms = o.update(doms, p.$, []);
 			}
+			
+			this.doms = doms;
 
+		},
+		
+		/**
+		 * 使用指定函数过滤当前集合，返回符合要求的元素组成的新的集合。
+		 * @param {Function} fn 函数。参数 value, index, this。
+		 * @param {Object} bind 绑定的对象。
+		 * @return {ElementList} 元素列表。
+		 */
+		filter: function(fn, bind){
+			return new ElementList(ap.filter.call(this.doms, fn, bind));
 		},
 
 		/**
@@ -141,152 +169,17 @@
 
 	}));
 	
-	String.map("each invoke indexOf", function(func){
+	String.map("invoke each indexOf forEach", function(func){
 		ElementList.prototype[func] = function(){
 			return ap[func].apply(this.doms, arguments);
 		};
 	});
-
-	/// #endregion
-	
-	/**
-	 * 根据一个 id 或 对象获取节点。
-	 * @param {String/Element} id 对象的 id 或对象。
-	 * @memberOf JPlus
-	 * @name $
-	 */
-	p.$ = getElementById;
-
-	/// #ifdef SupportIE8
-
-	if (!navigator.isStd) {
-		
-		ep.domVersion = 1;
-		
-		p.$ = function(id) {
-			
-			var dom = getElementById(id);
-	
-			if(dom && dom.domVersion !== ep.domVersion) {
-				o.extendIf(dom, ep);
-			}
-	
-			return dom;
-			
-		};
-		
-		/**
-		 * 返回当前文档默认的视图。
-		 * @type {Window}
-		 */
-		document.defaultView = document.parentWindow;
-		
-	}
-		
-	/// #endif
-
-	if(!w.$) w.$ = p.$;
 	
 	/**
 	 * @class Element
-	 * @implements JPlus.IEvent
 	 */
 	apply(e, {
 		
-		// 来自 jQuery (MIT)
-
-		/**
-		 * 转换一个HTML字符串到节点。
-		 * @param {String/Element} html 字符。
-		 * @param {Document} context=document 内容。
-		 * @param {Boolean} cachable=true 是否缓存。
-		 * @return {Element/TextNode/DocumentFragment} 元素。
-		 * @static
-		 */
-		parse: function(html, context, cachable) {
-
-			assert.isString(html, 'Element.parse(html, context, cachable): 参数 {html} ~。');
-
-			context = context || document;
-
-			assert(context.createElement, 'Element.parse(html, context, cachable): 参数 {context} 必须是一个 Document 对象。', context);
-
-			var div = cache[html = html.trim()];
-
-			if (!div || div.ownerDocument !== context) {
-
-				// 过滤空格  // 修正   XHTML
-				var h = html.replace(rXhtmlTag, "<$1></$2>"),
-					tag = rTagName.exec(h),
-					notSaveInCache = cachable !== undefined ? cachable : rNoClone.test(html);
-
-
-				if (tag) {
-
-					div = context.createElement("div", true);
-
-					var wrap = wrapMap[tag[1].toLowerCase()];
-
-					if (wrap) {
-						div.innerHTML = wrap[1] + h + wrap[2];
-
-						// 转到正确的深度
-						while (wrap[0]--)
-							div = div.lastChild;
-
-					} else
-						div.innerHTML = h;
-
-					// 一般使用最好的节点， 如果存在最后的节点，使用父节点。
-					div = div.firstChild;
-
-					// 如果有多节点，则复制到片段对象。
-					if(div.nextSibling) {
-						var fragment = context.createDocumentFragment();
-
-						var newS = div.nextSibling;
-						while(newS) {
-							fragment.appendChild(div);
-							newS = (div = newS).nextSibling;
-						}
-
-
-						fragment.appendChild(div);
-
-						div = fragment;
-					} else {
-
-						/// #ifdef SupportIE6
-
-						p.$(div);
-
-						/// #endif
-
-					}
-
-				} else {
-
-					// 创建文本节点。
-					div = context.createTextNode(html);
-				}
-
-			}
-
-			if(!notSaveInCache)
-				cache[html] = div.clone ? div.clone(false, true) : div.cloneNode(true);
-
-			return div;
-
-		},
-
-		/**
-		 * 获取一个元素的文档。
-		 * @static
-		 * @param {Element/Document/Window} elem 元素。
-		 * @return {Document} 当前节点所在文档。
-		 */
-		getDocument: getDocument,
-
 		/**
 		 * 将一个成员附加到 Element 对象和相关类。
 		 * @param {Object} obj 要附加的对象。
@@ -335,11 +228,14 @@
 									
 								case 4:  //  return ElementList(ElementList)
 									value = function() {
-										var args = arguments;
-										return new ElementList(ap.concat.apply([], this.each( function(elem, index) {
-											var r = this[index][key].apply(this[index], args);
-											return r && r.doms || r;
-										}, this.doms)));
+										var args = arguments, r = [];
+										this.forEach(function(node){
+											var t = node[key].apply(node, args);
+											if(t){
+												r.push.apply(r, t.doms || [t]);
+											}
+										});
+										return new ElementList(r);
 			
 									};
 									break;
@@ -362,10 +258,10 @@
 				
 			}, [ElementList, p.Document, p.Element, e != p.Element && e]);
 			
-			/// #ifdef SupportIE6
+			/// #ifdef SupportIE8
 
-			if(ep.domVersion) {
-				ep.domVersion++;
+			if(ep.$version) {
+				ep.$version++;
 			}
 
 			/// #endif
@@ -384,10 +280,218 @@
 		implementIf: function (obj, listType) {
 			return this.implement(obj, listType, true);
 		}
+		
+	});
 
-	})
+	/**
+	 * 根据一个 id 或 对象获取节点。
+	 * @param {String/Element} id 对象的 id 或对象。
+	 * @return {Element} 元素。
+	 */
+	function getElementById(id) {
+		return typeof id == "string" ? document.getElementById(id) : id;
+	}
+
+	/// #endregion
 	
-	.implementIf({
+	/// #region NodeBase
+	
+	/**
+	 * 被测元素。
+	 * @type Element
+	 */
+	var div = document.createElement('DIV'),
+		
+		/**
+		 * 元素缓存。
+		 */
+		cache = {},
+	
+		/**
+		 * 是否为标签。
+		 * @type RegExp
+		 */
+		rXhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/ig,
+	
+		/**
+		 * 无法复制的标签。
+		 * @type RegExp
+		 */
+		rNoClone = /<(?:script|object|embed|option|style)/i,
+	
+		/**
+		 * 是否为标签名。
+		 * @type RegExp
+		 */
+		rTagName = /<([\w:]+)/,
+		
+		/**
+		 * 包装。
+		 * @type Object
+		 */
+		wrapMap = {
+			option: [ 1, '<select multiple="multiple">', '</select>' ],
+			legend: [ 1, '<fieldset>', '</fieldset>' ],
+			thead: [ 1, '<table>', '</table>' ],
+			tr: [ 2, '<table><tbody>', '</tbody></table>' ],
+			td: [ 3, '<table><tbody><tr>', '</tr></tbody></table>' ],
+			col: [ 2, '<table><tbody></tbody><colgroup>', '</colgroup></table>' ],
+			area: [ 1, '<map>', '</map>' ]
+		};
+	
+	/**
+	 * @namespace document
+	 */
+	p.Document.implement({
+
+		/**
+		 * 创建一个节点。
+		 * @param {Object} tagName
+		 * @param {Object} className
+		 */
+		create: function(tagName, className) {
+			
+			assert.isString(tagName, 'Document.prototype.create(tagName, className): 参数 {tagName} ~。');
+
+			/// #ifdef SupportIE6
+
+			var div = p.$(this.createElement(tagName));
+
+			/// #else
+
+			/// var div = document.createElement(tagName);
+
+			/// #endif
+
+			div.className = className;
+
+			return div;
+		},
+
+		/**
+		 * 根据元素返回节点。
+		 * @param {String/Element} ... 对象的 id 或对象。
+		 * @return {Element/ElementList} 如果只有1个参数，返回元素，否则返回元素集合。
+		 */
+		getDom: function() {
+			return arguments.length === 1 ? p.$(arguments[0]) : new ElementList(o.update(arguments, p.$));
+		},
+
+		/**
+		 * 获取节点本身。
+		 */
+		dom: document.documentElement
+		
+	});
+	
+	div.innerHTML = '';
+	
+	/**
+	 * @class Element
+	 */
+	apply(e, {
+		
+		/**
+		 * 转换一个HTML字符串到节点。
+		 * @param {String/Element} html 字符。
+		 * @param {Boolean} cachable=true 是否缓存。
+		 * @return {Element/TextNode/DocumentFragment} 元素。
+		 * @static
+		 */
+		parse: function(html, cachable) {
+
+			assert.notNull(html, 'Element.parse(html, cachable): 参数 {html} ~。');
+			
+			if(html.nodeType) return html;
+			
+			if(html.dom) return html.dom;
+
+			assert.isString(html, 'Element.parse(html, cachable): 参数 {html} ~。');
+
+			var div = cache[html = html.trim()];
+
+			if (!div) {
+
+				// 过滤空格  // 修正   XHTML
+				var h = html.replace(rXhtmlTag, "<$1></$2>"),
+					tag = rTagName.exec(h),
+					notSaveInCache = cachable !== undefined ? cachable : rNoClone.test(html);
+
+
+				if (tag) {
+
+					div = document.createElement("div", true);
+
+					var wrap = wrapMap[tag[1].toLowerCase()];
+
+					if (wrap) {
+						div.innerHTML = wrap[1] + h + wrap[2];
+
+						// 转到正确的深度
+						while (wrap[0]--)
+							div = div.lastChild;
+
+					} else
+						div.innerHTML = h;
+
+					// 一般使用最好的节点， 如果存在最后的节点，使用父节点。
+					div = div.firstChild;
+
+					// 如果有多节点，则复制到片段对象。
+					if(div.nextSibling) {
+						var fragment = document.createDocumentFragment();
+
+						var newS = div.nextSibling;
+						while(newS) {
+							fragment.appendChild(div);
+							newS = (div = newS).nextSibling;
+						}
+
+
+						fragment.appendChild(div);
+
+						div = fragment;
+					} else {
+
+						/// #ifdef SupportIE6
+
+						p.$(div);
+
+						/// #endif
+
+					}
+
+				} else {
+
+					// 创建文本节点。
+					div = context.createTextNode(html);
+				}
+
+			}
+
+			if(!notSaveInCache)
+				cache[html] = div.clone ? div.clone(false, true) : div.cloneNode(true);
+
+			return div;
+
+		},
+		
+		/**
+		 * 获取元素的文档。
+		 * @param {Element} elem 元素。
+		 * @return {Document} 文档。
+		 */
+		getDocument: function (elem) {
+			assert.isNode(elem, 'Element.getDocument(elem): 参数 {elem} ~。');
+			return elem.ownerDocument || elem.document || elem;
+		},
+		
+		/**
+		 * 浏览器兼容情况。
+		 */
+		support: {}
+		
+	}).implementIf({
 
 		/// #ifndef SupportIE8
 
@@ -413,86 +517,12 @@
 		xType: "element"
 
 	});
-
-	assert.isNode(document.documentElement, "在 element.js 执行时，必须存在 document.documentElement 属性。请确认浏览器为标准浏览器， 且未使用  Quirks 模式。");
-
-	/**
-	 * @namespace document
-	 */
-	p.Document.implement({
-
-		/**
-		 * 创建一个节点。
-		 * @param {Object} tagName
-		 * @param {Object} className
-		 */
-		create: function(tagName, className) {
-			
-			assert.isString(tagName, 'document.create(tagName, className): 参数 {tagName} ~。');
-
-			/// #ifdef SupportIE6
-
-			var div = p.$(document.createElement(tagName));
-
-			/// #else
-
-			/// var div = document.createElement(tagName);
-
-			/// #endif
-
-			div.className = className;
-
-			return div;
-		},
-
-		/**
-		 * 根据元素返回节点。
-		 * @param {String/Element} ... 对象的 id 或对象。
-		 * @return {Element/ElementList} 如果只有1个参数，返回元素，否则返回元素集合。
-		 */
-		getDom: function() {
-			return arguments.length === 1 ? p.$(arguments[0]) : new ElementList(arguments);
-
-			/*
-			 return new ElementList(o.update(arguments, function(id){
-			 return typeof id == 'string' ? this.getElementById(id) : id;
-			 }, [], this));
-			 */
-		},
-
-		/**
-		 * 获取节点本身。
-		 */
-		dom: document.documentElement
-		
-	});
 	
-	/**
-	 * @class
-	 */
-
-	/**
-	 * 获取元素的文档。
-	 * @param {Element} elem 元素。
-	 * @return {Document} 文档。
-	 */
-	function getDocument(elem) {
-		assert.isNode(elem, 'Element.getDocument(elem): 参数 {elem} ~。');
-		return elem.ownerDocument || elem.document || elem;
-	}
-
-	/**
-	 * 根据一个 id 或 对象获取节点。
-	 * @param {String/Element} id 对象的 id 或对象。
-	 * @return {Element} 元素。
-	 */
-	function getElementById(id) {
-		return typeof id == "string" ? document.getElementById(id) : id;
-	}
-
+	e.support
+	
 	/// #endregion
 
-	/// #region 事件
+	/// #region Event
 
 	/**
 	 * 默认事件。
@@ -765,8 +795,135 @@
 	e.implement(p.IEvent);
 
 	/// #endregion
+	
+	/// #region Ready
+	
+	var list = [],
+		
+		/// #ifdef SupportIE8
+	
+		domReady = navigator.isStd ? 'DOMContentLoaded' : 'readystatechange',
+		
+		dp = p.Document.prototype;
+	
+		/// #else
+		
+		/// domReady = 'DOMContentLoaded';  
+		
+		/// #endif
+		
+	[['onReady', 'isReady', document, domReady], ['onLoad', 'isLoaded', w, 'load']].forEach(function(value, i){
+		var onReadyLoad = value[0],
+			owner = value[2]; 
+			
+		//  设置 onReady  Load
+		dp[onReadyLoad] = function(fn) {
 
-	/// #region 属性
+			assert.isFunction(fn, "document." +  onReadyLoad + "(fn): 参数 {fn} ~。");
+			
+			if(dp[value[1]])
+				fn.call(owner);
+			else
+				// 已经完成则执行函数，否则 on 。
+				doReadyLoad.list.push(fn);
+			
+			return this;
+		};
+		
+		// 真正执行的函数。
+		function doReadyLoad(){
+			dp[value[1]] = true;
+			
+			// 使用 document 删除事件。
+			p.removeEventListener.call(owner, domReady, doReadyLoad, false);
+			
+			// 调用所有函数。
+			doReadyLoad.list.invoke('call', [owner, p]);
+			
+			
+			doReadyLoad = null;
+			
+		}
+		
+		list[i] = doReadyLoad;
+		
+	});
+
+	/**
+	 * 页面加载时执行。
+	 * @param {Functon} fn 执行的函数。
+	 * @memberOf document
+	 */
+	
+	/**
+	 * 在文档载入的时候执行函数。
+	 * @param {Functon} fn 执行的函数。
+	 * @memberOf document
+	 */
+		
+	list[0].list = [];
+	
+	list[1].list = [function(){
+		if(!document.isReady)
+			list[0]();
+		list = null;
+	}];
+		
+	// 如果readyState 不是  complete, 说明文档正在加载。
+	if (document.readyState !== "complete") { 
+
+		// 使用系统文档完成事件。
+		p.addEventListener.call(document, domReady, list[0], false);
+		
+		p.addEventListener.call(w, 'load', list[1], false);
+		
+		/// #ifdef SupportIE8
+		
+		// 只对 IE 检查。
+		if (!navigator.isStd) {
+		
+			// 来自 jQuery
+
+			//   如果是 IE 且不是框架
+			var toplevel = false;
+
+			try {
+				toplevel = w.frameElement == null;
+			} catch(e) {}
+
+			if ( toplevel && document.documentElement.doScroll) {
+				
+				/**
+				 * 为 IE 检查状态。
+				 * @private
+				 */
+				(function () {
+					if (document.isReady) {
+						return;
+					}
+				
+					try {
+						//  http:// javascript.nwbox.com/IEContentLoaded/
+						document.documentElement.doScroll("left");
+					} catch(e) {
+						setTimeout( arguments.callee, 1 );
+						return;
+					}
+				
+					list[0]();
+				})();
+			}
+		}
+		
+		/// #endif
+		
+	} else {
+		setTimeout(list[1], 1);
+	}
+	
+	/// #endregion
+
+	/// #region Attribute
 
 	/**
 	 * 透明度的正则表达式。
@@ -1638,557 +1795,7 @@
 
 	/// #endregion
 
-	/// #region 位置
-
-	var rBody = /^(?:body|html)$/i,
-	
-		/**
-		 * 表示一个点。
-		 * @class Point
-		 */
-		Point = namespace(".Point", p.Class({
-	
-			/**
-			 * 初始化 Point 的实例。
-			 * @param {Number} x X 坐标。
-			 * @param {Number} y Y 坐标。
-			 * @constructor Point
-			 */
-			constructor: function(x, y) {
-				this.x = x;
-				this.y = y;
-			},
-	
-			/**
-			 * 将 (x, y) 增值。
-			 * @param {Number} value 值。
-			 * @return {Point} this
-			 */
-			add: function(x, y) {
-	
-				assert(typeof x == 'number' && typeof y == 'number', "Point.prototype.add(x, y): 参数 x 和 参数 y 必须是数字。");
-				this.x += x;
-				this.y += y;
-				return this;
-			},
-	
-			/**
-			 * 将一个点坐标减到当前值。
-			 * @param {Point} p 值。
-			 * @return {Point} this
-			 */
-			minus: function(p) {
-	
-				assert(p && 'x' in p && 'y' in p, "Point.prototype.minus(p): 参数 {p} 必须有 'x' 和 'y' 属性。", p);
-				this.x -= p.x;
-				this.y -= p.y;
-				return this;
-			},
-	
-			/**
-			 * 复制当前对象。
-			 * @return {Point} 坐标。
-			 */
-			clone: function() {
-				return new Point(this.x, this.y);
-			}
-	
-		})),
-	
-		/**
-		 * 获取滚动条已滚动的大小。
-		 * @return {Point} 位置。
-		 */
-		getWindowScroll = 'pageXOffset' in w ? function() {
-			var win = this.defaultView;
-			return new Point(win.pageXOffset, win.pageYOffset);
-		} : getScroll;
-
-	//   来自  Mootools (MIT license)
-	/**
-	 * @class Element
-	 */
-
-	apply(e, {
-
-		/**
-		 * 设置一个元素可拖动。
-		 * @param {Element} elem 要设置的节点。
-		 * @static
-		 */
-		setMovable: function(elem) {
-			assert.isElement(elem, "Element.setMovable(elem): 参数 elem ~。");
-			if(!checkPosition(elem, "absolute"))
-				elem.style.position = "relative";
-		},
-
-		/**
-		 * 检查元素的 position 是否和指定的一致。
-		 * @param {Element} elem 元素。
-		 * @param {String} position 方式。
-		 * @return {Boolean} 一致，返回 true 。
-		 * @static
-		 */
-		checkPosition: checkPosition,
-
-		/**
-		 * 根据 x, y 获取 {x: x y: y} 对象
-		 * @param {Number/Point} x
-		 * @param {Number} y
-		 * @static
-		 * @private
-		 */
-		getXY: getXY
-
-	})
-
-	.implement({
-
-		/**
-		 * 获取滚动区域大小。
-		 * @return {Point} 位置。
-		 */
-		getScrollSize: function() {
-			var me = this.dom || this;
-
-			return new Point(me.scrollWidth, me.scrollHeight);
-		},
-
-		/**
-		 * 获取元素可视区域大小。包括 border 大小。
-		 * @return {Point} 位置。
-		 */
-		getSize: function() {
-			var me = this.dom || this;
-
-			return new Point(me.offsetWidth, me.offsetHeight);
-		},
-
-		/**
-		 * 获取元素可视区域大小。包括 margin 大小。
-		 * @return {Point} 位置。
-		 */
-		getOuterSize: function() {
-			var me = this.dom || this;
-			return this.getSize().add(e.getSizes(me, 'x', 'm'), e.getSizes(me, 'y', 'm'));
-		},
-
-		/**
-		 * 获取元素的相对位置。
-		 * @return {Point} 位置。
-		 */
-		getOffset: function() {
-
-			// 如果设置过 left top ，这是非常轻松的事。
-			var me = this.dom || this,
-				left = me.style.left,
-				top = me.style.top;
-
-			// 如果未设置过。
-			if (!left || !top) {
-
-				// 绝对定位需要返回绝对位置。
-				if(checkPosition(me, 'absolute'))
-					return this.getOffsets(this.getOffsetParent());
-
-				// 非绝对的只需检查 css 的style。
-				left = getStyle(me, 'left');
-				top = getStyle(me, 'top');
-			}
-
-			// 碰到 auto ， 空 变为 0 。
-			return new Point(parseFloat(left) || 0, parseFloat(top) || 0);
-		},
-
-		/**
-		 * 获取元素自身大小（不带滚动条）。
-		 * @return {Point} 位置。
-		 */
-		getWidth: function() {
-			return styleNumber(this.dom || this, 'width');
-		},
-
-		/**
-		 * 获取元素自身大小（不带滚动条）。
-		 * @return {Point} 位置。
-		 */
-		getHeight: function() {
-			return styleNumber(this.dom || this, 'height');
-		},
-
-		/**
-		 * 获取滚动条已滚动的大小。
-		 * @return {Point} 位置。
-		 */
-		getScroll: getScroll,
-
-		/**
-		 * 获取元素的上下左右大小。
-		 * @return {Rectange} 大小。
-		 */
-		getBound: function() {
-			var p = this.getPosition(), s = this.getSize();
-			return {
-				left: p.x,
-				top: p.y,
-				width: s.x,
-				height: s.y,
-				right: p.x + s.x,
-				bottom: p.y + s.y
-			};
-		},
-
-		/**
-		 * 获取距父元素的偏差。
-		 * @return {Point} 位置。
-		 */
-		getPosition: div.getBoundingClientRect   ? function() {
-
-			var me = this.dom || this,
-				bound = me.getBoundingClientRect(),
-				doc = getDocument(me),
-				html = doc.dom,
-				htmlScroll = checkPosition(me, 'fixed') ? {
-					x:0,
-					y:0
-				} : doc.getScroll();
-
-			return new Point(
-				bound.left+ htmlScroll.x - html.clientLeft,
-				bound.top + htmlScroll.y - html.clientTop
-			    );
-		} : function() {
-
-			var me = this.dom || this,
-				elem = me,
-				p = getScrolls(elem);
-
-			while (elem && !isBody(elem)) {
-				p.add(elem.offsetLeft, elem.offsetTop);
-				if (navigator.isFirefox) {
-					if (nborderBox(elem)) {
-						add(elem);
-					}
-					var parent = elem.parentNode;
-					if (parent && styleString(parent, 'overflow') != 'visible') {
-						add(parent);
-					}
-				} else if (elem != me && navigator.isSafari) {
-					add(elem);
-				}
-
-				elem = elem.offsetParent;
-			}
-			if (navigator.isFirefox && nborderBox(me)) {
-				p.add(-styleNumber(me, borderLeftWidth), -styleNumber(me, borderTopWidth));
-			}
-			
-			function add(elem){
-				p.add(styleNumber(elem, borderLeftWidth),  styleNumber(elem, borderTopWidth));
-			}
-			return p;
-		},
-
-		/**
-		 * 获取包括滚动位置的位置。
-		 * @param {Element/String/Boolean} relative 相对的节点。
-		 * @return {Point} 位置。
-		 */
-		getOffsets: function( relative) {
-			var pos, me = this.dom || this;
-			if (isBody(me))
-				return new Point(0, 0);
-			pos = this.getPosition().minus(getScrolls(me));
-			if(relative) {
-				
-				relative = relative.dom || p.$(relative);
-
-				assert.isElement(relative, "Element.prototype.getOffsets(relative): 参数 {relative} ~。");
-
-				pos.minus(relative.getOffsets()).add( -styleNumber(me, 'marginLeft') - styleNumber(relative, borderLeftWidth) ,-styleNumber(me, 'marginTop') - styleNumber(relative,  borderTopWidth) );
-			}
-			return pos;
-		},
-
-		/**
-		 * 获取用于作为父元素的节点。
-		 * @return {Element} 元素。
-		 */
-		getOffsetParent: function() {
-			var me = this.dom || this, elem = me.offsetParent || getDocument(me).body;
-			while ( elem && !isBody(elem) && checkPosition(elem, "static") ) {
-				elem = elem.offsetParent;
-			}
-			return elem;
-		}
-
-	}, 2)
-
-	.implement({
-
-		/**
-		 * 改变大小。
-		 * @param {Number} x 坐标。
-		 * @param {Number} y 坐标。
-		 * @return {Element} this
-		 */
-		setSize: function(x, y) {
-			return setSize(this, 'pb', x, y);
-		},
-
-		/**
-		 * 改变大小。
-		 * @param {Number} x 坐标。
-		 * @param {Number} y 坐标。
-		 * @return {Element} this
-		 */
-		setOuterSize: function(x, y) {
-			return setSize(this, 'mpb', x, y);
-		},
-
-		/**
-		 * 获取元素自身大小（不带滚动条）。
-		 * @return {Element} this
-		 */
-		setWidth: function(value) {
-
-			(this.dom || this).style.width = value > 0 ? value + 'px' : value <= 0 ? '0px' : '';
-			return this;
-		},
-
-		/**
-		 * 获取元素自身大小（不带滚动条）。
-		 * @return {Element} this
-		 */
-		setHeight: function(value) {
-
-			(this.dom || this).style.height = value > 0 ? value + 'px' : value <= 0 ? '0px' : '';
-			return this;
-		},
-
-		/**
-		 * 滚到。
-		 * @param {Element} dom
-		 * @param {Number} x 坐标。
-		 * @param {Number} y 坐标。
-		 * @return {Element} this
-		 */
-		setScroll: function(x, y) {
-			var me = this.dom || this, p = getXY(x,y);
-
-			if(p.x != null)
-				me.scrollLeft = p.x;
-			if(p.y != null)
-				me.scrollTop = p.y;
-			return this;
-
-		},
-
-		/**
-		 * 设置元素的相对位置。
-		 * @param {Point} p
-		 * @return {Element} this
-		 */
-		setOffset: function(p) {
-
-			assert(o.isObject(p) && 'x' in p && 'y' in p, "Element.prototype.setOffset(p): 参数 {p} 必须有 'x' 和 'y' 属性。", p);
-			var s = (this.dom || this).style;
-			s.top = p.y + 'px';
-			s.left = p.x + 'px';
-			return this;
-		},
-
-		/**
-		 * 设置元素的固定位置。
-		 * @param {Number} x 坐标。
-		 * @param {Number} y 坐标。
-		 * @return {Element} this
-		 */
-		setPosition: function(x, y) {
-			var me = this, offset = me.getOffset().minus(me.getPosition()), p = getXY(x,y);
-
-			if (p.x)
-				offset.x += p.x;
-
-			if (p.y)
-				offset.y += p.y;
-
-			e.setMovable(me.dom || me);
-
-			return me.setOffset(offset);
-		}
-
-	});
-
-	/**
-	 * @namespace document
-	 */
-	p.Document.implement({
-
-		/**
-		 * 获取元素可视区域大小。包括 margin 和 border 大小。
-		 * @method getSize
-		 * @return {Point} 位置。
-		 */
-		getSize: function() {
-			var doc = this.dom;
-
-			return new Point(doc.clientWidth, doc.clientHeight);
-		},
-
-		/**
-		 * 获取滚动条已滚动的大小。
-		 * @method getScroll
-		 * @return {Point} 位置。
-		 */
-		getScroll: getWindowScroll,
-
-		/**
-		 * 获取距父元素的偏差。
-		 * @method getOffsets
-		 * @return {Point} 位置。
-		 */
-		getPosition: getWindowScroll,
-
-		/**
-		 * 获取滚动区域大小。
-		 * @method getScrollSize
-		 * @return {Point} 位置。
-		 */
-		getScrollSize: function() {
-			var html = this.dom,
-				min = this.getSize(),
-				max = Math.max,
-				body = this.body;
-
-
-			return new Point(max(html.scrollWidth, body.scrollWidth, min.x), max(html.scrollHeight, body.scrollHeight, min.y));
-		},
-
-		/**
-		 * 滚到。
-		 * @method setScroll
-		 * @param {Number} x 坐标。
-		 * @param {Number} y 坐标。
-		 * @return {Document} this 。
-		 */
-		setScroll: function(x, y) {
-			var p = adaptXY(x,y, this, 'getScroll');
-
-			this.defaultView.scrollTo(p.x, p.y);
-
-			return this;
-		}
-
-	});
-	
-	/**
-	 * @namespace
-	 */
-
-	/**
-	 * 检查元素的 position 是否和指定的一致。
-	 * @param {Element} elem 元素。
-	 * @param {String} position 方式。
-	 * @return {Boolean} 一致，返回 true 。
-	 */
-	function checkPosition(elem, position) {
-		return styleString(elem, "position") === position;
-	}
-
-	/**
-	 * 获取一个元素滚动。
-	 * @return {Point} 大小。
-	 */
-	function getScroll() {
-		var doc = this.dom || this;
-		return new Point(doc.scrollLeft, doc.scrollTop);
-	}
-
-	/**
-	 * 检查是否为 body 。
-	 * @param {Element} elem 内容。
-	 * @return {Boolean} 是否为文档或文档跟节点。
-	 */
-	function isBody(elem) {
-		return rBody.test(elem.nodeName);
-	}
-	
-	/**
-	 * 设置元素的宽或高。
-	 * @param {Element/Control} me 元素。
-	 * @param {String} fix 修正的边框。
-	 * @param {Number} x 宽。
-	 * @param {Number} y 宽。
-	 */
-	function setSize(elem, fix, x ,y) {
-		var p = getXY(x,y);
-
-		if(p.x != null)
-			elem.setWidth(p.x - e.getSizes(elem.dom || elem, 'x', fix));
-
-		if (p.y != null)
-			elem.setHeight(p.y - e.getSizes(elem.dom || elem, 'y', fix));
-
-		return elem;
-	}
-
-	/**
-	 * 未使用盒子边框
-	 * @param {Element} elem 元素。
-	 * @return {Boolean} 是否使用。
-	 */
-	function nborderBox(elem) {
-		return styleString(elem, 'MozBoxSizing') != 'border-box';
-	}
-
-	/**
-	 * 转换参数为标准点。
-	 * @param {Number} x X
-	 * @param {Number} y Y
-	 */
-	function getXY(x, y) {
-		return x && typeof x === 'object' ? x : {
-			x:x,
-			y:y
-		};
-	}
-
-	/**
-	 * 获取默认的位置。
-	 * @param {Object} x
-	 * @param {Object} y
-	 * @param {Object} obj
-	 * @param {Object} method
-	 */
-	function adaptXY(x, y, obj, method) {
-		var p = getXY(x, y);
-		if(p.x == null)
-			p.x = obj[method]().x;
-		if(p.y == null)
-			p.x = obj[method]().y;
-		assert(!isNaN(p.x) && !isNaN(p.y), "adaptXY(x, y, obj, method): 参数 {x}或{y} 不是合法的数字。(method = {method})", x, y, method);
-		return p;
-	}
-
-	/**
-	 * 获取一个元素的所有滚动大小。
-	 * @param {Element} elem 元素。
-	 * @return {Point} 偏差。
-	 */
-	function getScrolls(elem) {
-		var p = new Point(0, 0);
-		elem = elem.parentNode;
-		while (elem && !isBody(elem)) {
-			p.add(-elem.scrollLeft, -elem.scrollTop);
-			elem = elem.parentNode;
-		}
-		return p;
-	}
-
-	/// #endregion
-
-	/// #region 节点
+	/// #region Node
 
 	/**
 	 * 属性。
@@ -2885,24 +2492,559 @@
 		assert.isFunction(fn, "Element.prototype.get(type, fn): 参数 {fn} 必须是一个函数、数字或字符串。", fn);
 		return fn;
 	}
+
 	/// #endregion
 
-	/// #region 核心
+	/// #region Dimension
 
-	/// #ifdef SupportIE6
+	var rBody = /^(?:body|html)$/i,
+	
+		/**
+		 * 表示一个点。
+		 * @class Point
+		 */
+		Point = namespace(".Point", p.Class({
+	
+			/**
+			 * 初始化 Point 的实例。
+			 * @param {Number} x X 坐标。
+			 * @param {Number} y Y 坐标。
+			 * @constructor Point
+			 */
+			constructor: function(x, y) {
+				this.x = x;
+				this.y = y;
+			},
+	
+			/**
+			 * 将 (x, y) 增值。
+			 * @param {Number} value 值。
+			 * @return {Point} this
+			 */
+			add: function(x, y) {
+	
+				assert(typeof x == 'number' && typeof y == 'number', "Point.prototype.add(x, y): 参数 x 和 参数 y 必须是数字。");
+				this.x += x;
+				this.y += y;
+				return this;
+			},
+	
+			/**
+			 * 将一个点坐标减到当前值。
+			 * @param {Point} p 值。
+			 * @return {Point} this
+			 */
+			minus: function(p) {
+	
+				assert(p && 'x' in p && 'y' in p, "Point.prototype.minus(p): 参数 {p} 必须有 'x' 和 'y' 属性。", p);
+				this.x -= p.x;
+				this.y -= p.y;
+				return this;
+			},
+	
+			/**
+			 * 复制当前对象。
+			 * @return {Point} 坐标。
+			 */
+			clone: function() {
+				return new Point(this.x, this.y);
+			}
+	
+		})),
+	
+		/**
+		 * 获取滚动条已滚动的大小。
+		 * @return {Point} 位置。
+		 */
+		getWindowScroll = 'pageXOffset' in w ? function() {
+			var win = this.defaultView;
+			return new Point(win.pageXOffset, win.pageYOffset);
+		} : getScroll;
 
-	try {
+	//   来自  Mootools (MIT license)
+	/**
+	 * @class Element
+	 */
 
-		//  修复IE6 因 css 改变背景图出现的闪烁。
-		document.execCommand("BackgroundImageCache", false, true);
-	} catch(e) {
+	apply(e, {
 
+		/**
+		 * 设置一个元素可拖动。
+		 * @param {Element} elem 要设置的节点。
+		 * @static
+		 */
+		setMovable: function(elem) {
+			assert.isElement(elem, "Element.setMovable(elem): 参数 elem ~。");
+			if(!checkPosition(elem, "absolute"))
+				elem.style.position = "relative";
+		},
+
+		/**
+		 * 检查元素的 position 是否和指定的一致。
+		 * @param {Element} elem 元素。
+		 * @param {String} position 方式。
+		 * @return {Boolean} 一致，返回 true 。
+		 * @static
+		 */
+		checkPosition: checkPosition,
+
+		/**
+		 * 根据 x, y 获取 {x: x y: y} 对象
+		 * @param {Number/Point} x
+		 * @param {Number} y
+		 * @static
+		 * @private
+		 */
+		getXY: getXY
+
+	})
+
+	.implement({
+
+		/**
+		 * 获取滚动区域大小。
+		 * @return {Point} 位置。
+		 */
+		getScrollSize: function() {
+			var me = this.dom || this;
+
+			return new Point(me.scrollWidth, me.scrollHeight);
+		},
+
+		/**
+		 * 获取元素可视区域大小。包括 border 大小。
+		 * @return {Point} 位置。
+		 */
+		getSize: function() {
+			var me = this.dom || this;
+
+			return new Point(me.offsetWidth, me.offsetHeight);
+		},
+
+		/**
+		 * 获取元素可视区域大小。包括 margin 大小。
+		 * @return {Point} 位置。
+		 */
+		getOuterSize: function() {
+			var me = this.dom || this;
+			return this.getSize().add(e.getSizes(me, 'x', 'm'), e.getSizes(me, 'y', 'm'));
+		},
+
+		/**
+		 * 获取元素的相对位置。
+		 * @return {Point} 位置。
+		 */
+		getOffset: function() {
+
+			// 如果设置过 left top ，这是非常轻松的事。
+			var me = this.dom || this,
+				left = me.style.left,
+				top = me.style.top;
+
+			// 如果未设置过。
+			if (!left || !top) {
+
+				// 绝对定位需要返回绝对位置。
+				if(checkPosition(me, 'absolute'))
+					return this.getOffsets(this.getOffsetParent());
+
+				// 非绝对的只需检查 css 的style。
+				left = getStyle(me, 'left');
+				top = getStyle(me, 'top');
+			}
+
+			// 碰到 auto ， 空 变为 0 。
+			return new Point(parseFloat(left) || 0, parseFloat(top) || 0);
+		},
+
+		/**
+		 * 获取元素自身大小（不带滚动条）。
+		 * @return {Point} 位置。
+		 */
+		getWidth: function() {
+			return styleNumber(this.dom || this, 'width');
+		},
+
+		/**
+		 * 获取元素自身大小（不带滚动条）。
+		 * @return {Point} 位置。
+		 */
+		getHeight: function() {
+			return styleNumber(this.dom || this, 'height');
+		},
+
+		/**
+		 * 获取滚动条已滚动的大小。
+		 * @return {Point} 位置。
+		 */
+		getScroll: getScroll,
+
+		/**
+		 * 获取元素的上下左右大小。
+		 * @return {Rectange} 大小。
+		 */
+		getBound: function() {
+			var p = this.getPosition(), s = this.getSize();
+			return {
+				left: p.x,
+				top: p.y,
+				width: s.x,
+				height: s.y,
+				right: p.x + s.x,
+				bottom: p.y + s.y
+			};
+		},
+
+		/**
+		 * 获取距父元素的偏差。
+		 * @return {Point} 位置。
+		 */
+		getPosition: div.getBoundingClientRect   ? function() {
+
+			var me = this.dom || this,
+				bound = me.getBoundingClientRect(),
+				doc = getDocument(me),
+				html = doc.dom,
+				htmlScroll = checkPosition(me, 'fixed') ? {
+					x:0,
+					y:0
+				} : doc.getScroll();
+
+			return new Point(
+				bound.left+ htmlScroll.x - html.clientLeft,
+				bound.top + htmlScroll.y - html.clientTop
+			    );
+		} : function() {
+
+			var me = this.dom || this,
+				elem = me,
+				p = getScrolls(elem);
+
+			while (elem && !isBody(elem)) {
+				p.add(elem.offsetLeft, elem.offsetTop);
+				if (navigator.isFirefox) {
+					if (nborderBox(elem)) {
+						add(elem);
+					}
+					var parent = elem.parentNode;
+					if (parent && styleString(parent, 'overflow') != 'visible') {
+						add(parent);
+					}
+				} else if (elem != me && navigator.isSafari) {
+					add(elem);
+				}
+
+				elem = elem.offsetParent;
+			}
+			if (navigator.isFirefox && nborderBox(me)) {
+				p.add(-styleNumber(me, borderLeftWidth), -styleNumber(me, borderTopWidth));
+			}
+			
+			function add(elem){
+				p.add(styleNumber(elem, borderLeftWidth),  styleNumber(elem, borderTopWidth));
+			}
+			return p;
+		},
+
+		/**
+		 * 获取包括滚动位置的位置。
+		 * @param {Element/String/Boolean} relative 相对的节点。
+		 * @return {Point} 位置。
+		 */
+		getOffsets: function( relative) {
+			var pos, me = this.dom || this;
+			if (isBody(me))
+				return new Point(0, 0);
+			pos = this.getPosition().minus(getScrolls(me));
+			if(relative) {
+				
+				relative = relative.dom || p.$(relative);
+
+				assert.isElement(relative, "Element.prototype.getOffsets(relative): 参数 {relative} ~。");
+
+				pos.minus(relative.getOffsets()).add( -styleNumber(me, 'marginLeft') - styleNumber(relative, borderLeftWidth) ,-styleNumber(me, 'marginTop') - styleNumber(relative,  borderTopWidth) );
+			}
+			return pos;
+		},
+
+		/**
+		 * 获取用于作为父元素的节点。
+		 * @return {Element} 元素。
+		 */
+		getOffsetParent: function() {
+			var me = this.dom || this, elem = me.offsetParent || getDocument(me).body;
+			while ( elem && !isBody(elem) && checkPosition(elem, "static") ) {
+				elem = elem.offsetParent;
+			}
+			return elem;
+		}
+
+	}, 2)
+
+	.implement({
+
+		/**
+		 * 改变大小。
+		 * @param {Number} x 坐标。
+		 * @param {Number} y 坐标。
+		 * @return {Element} this
+		 */
+		setSize: function(x, y) {
+			return setSize(this, 'pb', x, y);
+		},
+
+		/**
+		 * 改变大小。
+		 * @param {Number} x 坐标。
+		 * @param {Number} y 坐标。
+		 * @return {Element} this
+		 */
+		setOuterSize: function(x, y) {
+			return setSize(this, 'mpb', x, y);
+		},
+
+		/**
+		 * 获取元素自身大小（不带滚动条）。
+		 * @return {Element} this
+		 */
+		setWidth: function(value) {
+
+			(this.dom || this).style.width = value > 0 ? value + 'px' : value <= 0 ? '0px' : '';
+			return this;
+		},
+
+		/**
+		 * 获取元素自身大小（不带滚动条）。
+		 * @return {Element} this
+		 */
+		setHeight: function(value) {
+
+			(this.dom || this).style.height = value > 0 ? value + 'px' : value <= 0 ? '0px' : '';
+			return this;
+		},
+
+		/**
+		 * 滚到。
+		 * @param {Element} dom
+		 * @param {Number} x 坐标。
+		 * @param {Number} y 坐标。
+		 * @return {Element} this
+		 */
+		setScroll: function(x, y) {
+			var me = this.dom || this, p = getXY(x,y);
+
+			if(p.x != null)
+				me.scrollLeft = p.x;
+			if(p.y != null)
+				me.scrollTop = p.y;
+			return this;
+
+		},
+
+		/**
+		 * 设置元素的相对位置。
+		 * @param {Point} p
+		 * @return {Element} this
+		 */
+		setOffset: function(p) {
+
+			assert(o.isObject(p) && 'x' in p && 'y' in p, "Element.prototype.setOffset(p): 参数 {p} 必须有 'x' 和 'y' 属性。", p);
+			var s = (this.dom || this).style;
+			s.top = p.y + 'px';
+			s.left = p.x + 'px';
+			return this;
+		},
+
+		/**
+		 * 设置元素的固定位置。
+		 * @param {Number} x 坐标。
+		 * @param {Number} y 坐标。
+		 * @return {Element} this
+		 */
+		setPosition: function(x, y) {
+			var me = this, offset = me.getOffset().minus(me.getPosition()), p = getXY(x,y);
+
+			if (p.x)
+				offset.x += p.x;
+
+			if (p.y)
+				offset.y += p.y;
+
+			e.setMovable(me.dom || me);
+
+			return me.setOffset(offset);
+		}
+
+	});
+
+	/**
+	 * @namespace document
+	 */
+	p.Document.implement({
+
+		/**
+		 * 获取元素可视区域大小。包括 margin 和 border 大小。
+		 * @method getSize
+		 * @return {Point} 位置。
+		 */
+		getSize: function() {
+			var doc = this.dom;
+
+			return new Point(doc.clientWidth, doc.clientHeight);
+		},
+
+		/**
+		 * 获取滚动条已滚动的大小。
+		 * @method getScroll
+		 * @return {Point} 位置。
+		 */
+		getScroll: getWindowScroll,
+
+		/**
+		 * 获取距父元素的偏差。
+		 * @method getOffsets
+		 * @return {Point} 位置。
+		 */
+		getPosition: getWindowScroll,
+
+		/**
+		 * 获取滚动区域大小。
+		 * @method getScrollSize
+		 * @return {Point} 位置。
+		 */
+		getScrollSize: function() {
+			var html = this.dom,
+				min = this.getSize(),
+				max = Math.max,
+				body = this.body;
+
+
+			return new Point(max(html.scrollWidth, body.scrollWidth, min.x), max(html.scrollHeight, body.scrollHeight, min.y));
+		},
+
+		/**
+		 * 滚到。
+		 * @method setScroll
+		 * @param {Number} x 坐标。
+		 * @param {Number} y 坐标。
+		 * @return {Document} this 。
+		 */
+		setScroll: function(x, y) {
+			var p = adaptXY(x,y, this, 'getScroll');
+
+			this.defaultView.scrollTo(p.x, p.y);
+
+			return this;
+		}
+
+	});
+	
+	/**
+	 * @namespace
+	 */
+
+	/**
+	 * 检查元素的 position 是否和指定的一致。
+	 * @param {Element} elem 元素。
+	 * @param {String} position 方式。
+	 * @return {Boolean} 一致，返回 true 。
+	 */
+	function checkPosition(elem, position) {
+		return styleString(elem, "position") === position;
 	}
 
-	/// #endif
+	/**
+	 * 获取一个元素滚动。
+	 * @return {Point} 大小。
+	 */
+	function getScroll() {
+		var doc = this.dom || this;
+		return new Point(doc.scrollLeft, doc.scrollTop);
+	}
 
-	div = null;
+	/**
+	 * 检查是否为 body 。
+	 * @param {Element} elem 内容。
+	 * @return {Boolean} 是否为文档或文档跟节点。
+	 */
+	function isBody(elem) {
+		return rBody.test(elem.nodeName);
+	}
+	
+	/**
+	 * 设置元素的宽或高。
+	 * @param {Element/Control} me 元素。
+	 * @param {String} fix 修正的边框。
+	 * @param {Number} x 宽。
+	 * @param {Number} y 宽。
+	 */
+	function setSize(elem, fix, x ,y) {
+		var p = getXY(x,y);
+
+		if(p.x != null)
+			elem.setWidth(p.x - e.getSizes(elem.dom || elem, 'x', fix));
+
+		if (p.y != null)
+			elem.setHeight(p.y - e.getSizes(elem.dom || elem, 'y', fix));
+
+		return elem;
+	}
+
+	/**
+	 * 未使用盒子边框
+	 * @param {Element} elem 元素。
+	 * @return {Boolean} 是否使用。
+	 */
+	function nborderBox(elem) {
+		return styleString(elem, 'MozBoxSizing') != 'border-box';
+	}
+
+	/**
+	 * 转换参数为标准点。
+	 * @param {Number} x X
+	 * @param {Number} y Y
+	 */
+	function getXY(x, y) {
+		return x && typeof x === 'object' ? x : {
+			x:x,
+			y:y
+		};
+	}
+
+	/**
+	 * 获取默认的位置。
+	 * @param {Object} x
+	 * @param {Object} y
+	 * @param {Object} obj
+	 * @param {Object} method
+	 */
+	function adaptXY(x, y, obj, method) {
+		var p = getXY(x, y);
+		if(p.x == null)
+			p.x = obj[method]().x;
+		if(p.y == null)
+			p.x = obj[method]().y;
+		assert(!isNaN(p.x) && !isNaN(p.y), "adaptXY(x, y, obj, method): 参数 {x}或{y} 不是合法的数字。(method = {method})", x, y, method);
+		return p;
+	}
+
+	/**
+	 * 获取一个元素的所有滚动大小。
+	 * @param {Element} elem 元素。
+	 * @return {Point} 偏差。
+	 */
+	function getScrolls(elem) {
+		var p = new Point(0, 0);
+		elem = elem.parentNode;
+		while (elem && !isBody(elem)) {
+			p.add(-elem.scrollLeft, -elem.scrollTop);
+			elem = elem.parentNode;
+		}
+		return p;
+	}
 
 	/// #endregion
 
-})(this, JPlus);
+
+})(this, true);
+
