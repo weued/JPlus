@@ -695,7 +695,7 @@ var JPlus = {
 						evt = function(e) {
 							var listener = arguments.callee,
 								target = listener.target,
-								handlers = fn.handlers.slice(0), 
+								handlers = listener.handlers.slice(0), 
 								i = -1,
 								len = handlers.length;
 							
@@ -2477,8 +2477,8 @@ function trace(obj, args) {
 Object.extendIf(trace, {
 	
 	/**
-	 * 输出方式。
-	 * @param {String} message 信息。
+	 * 输出方式。  {@param {String} message 信息。}
+	 * @type Function
 	 */
 	write: function(message) {
 		alert(message);
@@ -2486,151 +2486,351 @@ Object.extendIf(trace, {
 	
 	/**
 	 * 输出类的信息。
-	 * @param {Object} 成员。
+	 * @param {Object} [obj] 要查看成员的对象。如果未提供这个对象，则显示全局的成员。
+	 * @param {Boolean} showPredefinedMembers=true 是否显示内置的成员。
 	 */
-	api: function(obj, prefix) {
-		var title = 'API信息: ', msg = [];
+	api: (function(){
 		
-		var definedObj = 'Object String Date Array RegExp document JPlus navigator XMLHttpRequest trace assert Function Element Document';
-
-		if(arguments.length === 0) {
-			title = '全局对象: ';
-			prefix = '';
-			String.map(definedObj, function(propertyName) {
-				addValue(window, propertyName);
-			});
-
-			for(var propertyName in JPlus) {
-				if(JPlus.defaultNamespace[propertyName] === JPlus[propertyName]) {
-					addValue(JPlus, propertyName);
-				}
-			}
-		} else if(obj != null) {
-			if(obj.prototype) {
-				for(var propertyName in obj.prototype) {
-					var extObj = obj;
+		var nodeTypes = 'Window Element Attr Text CDATASection Entity EntityReference ProcessingInstruction Comment HTMLDocument DocumentType DocumentFragment Document Node'.split(' '),
+		
+			definedClazz = 'String Date Array Number RegExp Function XMLHttpRequest Object'.split(' ').concat(nodeTypes),
+	
+			predefinedNonStatic = {
+				'Object': 'valueOf hasOwnProperty toString',
+				'String': 'length charAt charCodeAt concat indexOf lastIndexOf match quote slice split substr substring toLowerCase toUpperCase trim sub sup anchor big blink bold small fixed fontcolor italics link',
+				'Array': 'length pop push reverse shift sort splice unshift concat join slice indexOf lastIndexOf filter forEach', /* ' every map some reduce reduceRight'  */
+				'Number': 'toExponential toFixed toLocaleString toPrecision',
+				'Function': 'length apply call',
+				'Date': 'getDate getDay getFullYear getHours getMilliseconds getMinutes getMonth getSeconds getTime getTimezoneOffset getUTCDate getUTCDay getUTCFullYear getUTCHours getUTCMinutes getUTCMonth getUTCSeconds getYear setDate setFullYear setHours setMinutes setMonth setSeconds setTime setUTCDate setUTCFullYear setUTCHours setUTCMilliseconds setUTCMinutes setUTCMonth setUTCSeconds setYear toGMTString toLocaleString toUTCString',
+				'RegExp': 'exec test'
+			},
+			
+			predefinedStatic = {
+				'Array': 'isArray',
+				'Number': 'MAX_VALUE MIN_VALUE NaN NEGATIVE_INFINITY POSITIVE_INFINITY',
+				'Date': 'now parse UTC'
+			},
+			
+			APIInfo = window.aPIInfo = Class({
+				
+				memberName: '',
+				
+				title: 'API 信息:',
+				
+				prefix: '',
+				
+				getPrefix: function (obj) {
+					for(var i = 0; i < definedClazz.length; i++){
+						if(window[definedClazz[i]] === obj) {
+							return this.memberName = definedClazz[i];
+						}
+					}
 					
-					try {
-						while(!Object.prototype.hasOwnProperty.call(extObj.prototype, propertyName) && (extObj = extObj.base) && extObj.prototype);
-						extObj = extObj === obj ? '' : (extObj = getClassInfo(extObj)) ? '(继承于 ' + extObj + ' 类)' : '(继承的)';
+					return this.getTypeName(obj, window, "", 3);
+				},
+				
+				getTypeName: function (obj, base, baseName, deep){
+								
+					for(var memberName in base){
+						if(base[memberName] === obj){
+							this.memberName = memberName;
+							return baseName + memberName;
+						}
+					}
+				           
+					if(deep-- > 0) {
+						for(var memberName in base){
+							try{
+								if(base[memberName] && isUpper(memberName, 0)) {
+									memberName = this.getTypeName(obj, base[memberName], baseName + memberName + ".", deep);
+									if(memberName) 
+										return memberName;
+								}
+							}catch(e){}
+						}
+					}
+					
+					return '';
+				},
+				
+				getBaseClassDescription: function (obj) {
+					if(obj.base) {
+						var extObj = this.getTypeName(obj.base, window, "", 3);
+						return " 类" + (extObj && extObj != "JPlus.Object"  ? "(继承于 " + extObj + " 类)" : "");
+					}
+					
+					return " 类";
+				},
+				
+				/**
+				 * 获取类的继承关系。
+				 */
+				getExtInfo: function (clazz) {
+					if(!this.baseClasses) {
+						this.baseClassNames = [];
+						this.baseClasses = [];
+						while(clazz && clazz.prototype) {
+							var name = this.getPrefix(clazz);
+							if(name){
+								this.baseClasses.push(clazz);
+								this.baseClassNames.push(name);	
+							}
+							
+							clazz = clazz.base;
+						}
+					}
+					
+					
+				},
+				
+				constructor: function(obj, showPredefinedMembers){
+					this.members = {};
+					this.sortInfo = {};
+				
+					this.showPredefinedMembers = showPredefinedMembers !== false;
+					this.isClass = obj === Function || (obj.prototype && obj.prototype.constructor !== Function);
+					
+					//  如果是普通的变量。获取其所在的原型的成员。
+					if(!this.isClass && obj.constructor !== Object) {
+						this.prefix = this.getPrefix(obj.constructor);
 						
-						msg.push('prototype.' + propertyName + ' ' + getMember(obj.prototype[propertyName], propertyName) + extObj);
-					} catch(e) {
+						if(!this.prefix) {
+							var nodeType = obj.replaceChild ? obj.nodeType : obj.setInterval && obj.clearTimeout ? 0 : null;
+							if(nodeType) {
+								this.prefix = this.memberName = nodeTypes[nodeType];
+								if(this.prefix){
+									this.baseClassNames = ['Node', 'Element', 'HTMLElement', 'Document'];
+									this.baseClasses = [window.Node, window.Element, window.HTMLElement, window.HTMLDocument];
+								}
+							}
+						}
+						
+						if(this.prefix) {
+							this.title = this.prefix + this.getBaseClassDescription(obj.constructor) + "的实例成员: ";
+							this.prefix += '.prototype.';
+						}
+						
+						if([Number, String, Boolean].indexOf(obj.constructor) === -1) {
+							var betterPrefix = this.getPrefix(obj);
+							if(betterPrefix) {
+								this.orignalPrefix = betterPrefix + ".";
+							}
+						}
+							
 					}
-				}
-			}
-			for(var item in obj) {
-				try {
-					addValue(obj, item);
-				} catch(e) {
-				}
-			}
-		} else {
-			msg = ['无法对 ' + (obj === null ? "null" : "undefined") + ' 分析'];
-		}
-
-		// 尝试获取一层的元素。
-		if(prefix === undefined) {
-			
-			String.map(definedObj + ' window location history', function(value) {
-				if(window[value] === obj) {
-					title = value + ' ' + getMember(obj, value) + '的成员: ';
-					prefix = value;
-				}
-			});
-			
-			var typeName ,constructor = obj != null && obj.constructor;
-			
-			if(!prefix) {
-				
-				String.map(definedObj, function(value) {
-					if(constructor === window[value]) {
-						prefix = value + '.prototype';
-						title = value + ' 类的实例成员: ';
-					}
-				});
-				
-			}
-
-			if(!prefix) {
-				
-				
-				if(obj && obj.nodeType) {
-					prefix = 'Element.prototype';
-					title = 'Element 类的实例成员: ';
-				} else {
 					
-					if(typeName = getClassInfo(obj)) {
-						var extObj = getMember(obj, typeName) === '类' && getClassInfo(obj.base);
-						title = typeName + ' ' + getMember(obj, typeName) + (extObj && extObj != "Object" ? '(继承于 ' + extObj + ' 类)' : '') + '的成员: ';
-						prefix = typeName;
-					} else if(typeName = getClassInfo(constructor)) {
-						prefix = typeName + '.prototype';
-						title = typeName + ' 类的实例成员: ';
+					if(!this.prefix){
+						
+						this.prefix = this.getPrefix(obj);
+						 
+						// 如果是类或对象， 在这里遍历。
+						if(this.prefix) {
+							this.title = this.prefix + (this.isClass ? this.getBaseClassDescription(obj) : ' ' + getMemberType(obj, this.memberName)) + "的成员: ";
+							this.prefix += '.';
+						}
+					
 					}
+				    
+					// 如果是类，获取全部成员。
+					if(this.isClass) {
+						this.getExtInfo(obj);
+						this.addStaticMembers(obj);
+						this.addStaticMembers(obj.prototype, 1, true);
+						delete this.members.prototype;
+						if(this.showPredefinedMembers) {
+							this.addPredefinedNonStaticMembers(obj, obj.prototype, true);
+							this.addPredefinedMembers(obj, obj, predefinedStatic);
+						}
+						
+					} else {
+						this.getExtInfo(obj.constructor);
+						// 否则，获取当前实例下的成员。
+						this.addStaticMembers(obj);
+						
+						if(this.showPredefinedMembers) {
+							this.addPredefinedNonStaticMembers(obj.constructor, obj);
+						}
+					
+					}
+				},
+				
+				addStaticMembers: function (obj, nonStatic) {
+					for(var memberName in obj) {
+						try {
+							this.addMember(obj, memberName, 1, nonStatic);
+						} catch(e) {
+						}
+					}
+					
+				},
+				
+				addPredefinedMembers: function (clazz, obj, staticOrNonStatic, nonStatic) {
+					for(var type in staticOrNonStatic){
+						if(clazz === window[type]) {
+							staticOrNonStatic[type].forEach(function(memberName){
+								this.addMember(obj, memberName, 5, nonStatic);
+							}, this);
+						}
+					}
+				},
+				
+				addPredefinedNonStaticMembers: function (clazz, obj, nonStatic) {
+					
+					if(clazz !== Object) {
+						
+						predefinedNonStatic.Object.forEach(function(memberName){
+							if(clazz.prototype[memberName] !== Object.prototype[memberName]){
+								this.addMember(obj, memberName, 5, nonStatic);
+							}
+						}, this);
+					
+					}
+						
+					if(clazz === Object && !this.isClass){
+						return;	
+					}
+					
+					this.addPredefinedMembers(clazz, obj, predefinedNonStatic, nonStatic);
+					
+					
+					
+				},
+				
+				addMember: function (base, memberName, type, nonStatic) {
+					
+					var hasOwnProperty = Object.prototype.hasOwnProperty,
+						owner = hasOwnProperty.call(base, memberName),
+						prefix,
+						extInfo = '';
+						
+					nonStatic = nonStatic ? 'prototype.' : '';
+					
+					// 如果 base 不存在 memberName 的成员，则尝试在父类查找。
+					if(owner) {
+						prefix = this.orignalPrefix || (this.prefix + nonStatic);
+						type--;  // 自己的成员置顶。
+					} else {
+						
+						// 搜索包含当前成员的父类。
+						this.baseClasses.each(function(baseClass, i){
+							if(baseClass.prototype[memberName] === base[memberName] && hasOwnProperty.call(baseClass.prototype, memberName)){
+								prefix = this.baseClassNames[i] + ".prototype.";
+								return  false;
+							}
+						}, this);
+						
+						// 如果没找到正确的父类，使用当前类替代，并指明它是继承的成员。
+						if(!prefix) {   
+							prefix = this.prefix + nonStatic;
+							extInfo = '(继承的)';
+						}
+						
+						
+						
+					}
+					
+					this.sortInfo[this.members[memberName] = (type >= 4 ? '[内置]' : '') + prefix + getDescription(base, memberName) + extInfo] = type + memberName;
+					
+				},
+				
+				copyTo: function (value) {
+					for(var member in this.members){
+						value.push(this.members[member]);
+					}
+					
+					if(value.length) {
+						var sortInfo = this.sortInfo;
+						value.sort(function(a, b){return sortInfo[a] < sortInfo[b] ? -1 : 1;});
+						value.unshift(this.title);
+					} else {
+						value.push(this.title + '没有可用的 API 信息。');
+					}
+					
+					
+					
 				}
-			}
+				
+				
+			});
+		
+		
+		initPredefined(predefinedNonStatic);
+		initPredefined(predefinedStatic);
+	
+		function initPredefined(predefined){
+			for(var obj in predefined)
+				predefined[obj] = predefined[obj].split(' ');
 		}
-
-		if(msg.length === 0)
-			msg.push(title + '无');
-		else {
-			msg.sort();
-			msg.unshift(title);
-		}
-
-		trace(msg.join( prefix ? '\r\n' + prefix + "." : '\r\n'));
-
-
+	
 		function isEmptyObject(obj) {
-			for(var i in obj)
-			return false;
-
+			
+			// null 被认为是空对象。
+			// 有成员的对象将进入 for(in) 并返回 false 。
+			for(obj in (obj || {}))
+				return false;
 			return true;
 		}
+		
+		// 90 是 'Z' 65 是 'A'
+		function isUpper(str, index) {
+			str = str.charCodeAt(index);
+			return str <= 90 && str >= 65;
+		}
 
-		function getMember(val, name) {
+		function getMemberType(obj, name) {
 			
-			if(typeof val === 'function' && name === 'constructor')
+			// 构造函数最好识别。
+			if(typeof obj === 'function' && name === 'constructor')
 				return '构造函数';
-
-			if(val && val.prototype && !isEmptyObject(val.prototype))
-				return '类';
-
-			if(Object.isObject(val))
+			
+			// IE6 的 DOM 成员不被认为是函数，这里忽略这个错误。
+			// 有 prototype 的函数一定是类。
+			// 没有 prototype 的函数肯能是类。
+			// 这里根据命名如果名字首字母大写，则作为空类理解。
+			// 这不是一个完全正确的判断方式，但它大部分时候正确。
+			// 这个世界不要求很完美，能解决实际问题的就是好方法。
+			if(obj.prototype && obj.prototype.constructor)
+				return !isEmptyObject(obj.prototype) || isUpper(name, 0) ? '类': '函数';
+			
+			// 最后判断对象。
+			if(Object.isObject(obj))
 				return name.charAt(0) === 'I' && isUpper(name, 1) ? '接口' : '对象';
-
-			if(Function.isFunction(val)) {
-				return isUpper(name, 0) ? '类' : '函数';
-			}
-
+			
+			// 空成员、值类型都作为属性。
 			return '属性';
 		}
-
-		function isUpper(s, i) {
-			s = s.charCodeAt(i);
-			return s <= 90 && s >= 65;
-		}
 		
-		function getClassInfo(value) {
+		function getDescription(base, name) {
+			return name + ' ' + getMemberType(base[name], name);
+		}
+	
+		return function(obj, showPredefinedMembers) {
+			var r = [];
 			
-			if(value) {
-				for(var item in JPlus) {
-					if(JPlus[item] === value) {
-						return item;
-					}
+			// 如果没有参数，显示全局对象。
+			if(arguments.length === 0) {
+				for(var i = 0; i < 7; i++){
+					r.push(getDescription(window, definedClazz[i]));	
 				}
+	
+				for(var name in JPlus)
+					if(window[name] && (isUpper(name, 0) || window[name] === JPlus[name]))
+						r.push(getDescription(window, name));
 				
-			}
-			
-			return null;
-		}
-		
-		function addValue(base, memberName) {
-			msg.push(memberName + ' ' + getMember(base[memberName], memberName));
-		}
+				r.sort();
+				r.unshift('全局对象: ');
 
-	},
+			} else if(obj != null) {
+				new APIInfo(obj, showPredefinedMembers).copyTo(r);
+			} else {
+				r.push('无法对 ' + (obj === null ? "null" : "undefined") + ' 分析');
+			}
+	
+			trace(r.join('\r\n'));
+	
+		};
+		
+	})() ,
 	
 	/**
 	 * 得到输出指定内容的函数。
