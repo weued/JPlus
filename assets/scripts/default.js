@@ -151,7 +151,7 @@
 		initTestCases: function (testcases) {
 			document.write('<div class="right small"><a href="javascript:;" onclick="doRunAll();">全部测试</a> | <a href="javascript:;" onclick="doTimeAll();">全部时间</a> | <a href="javascript:;" onclick="doTestAll();">恶意测试</a></div>');
 			
-			document.write('<div id="testcases">');
+			document.write('<div id="testcases" class="clear">');
 			
 			current.testCases = {};
 			

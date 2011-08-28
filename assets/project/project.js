@@ -1,6 +1,6 @@
 var core = {
 	'System': '+Object +Navigator +Class +Namespace +Trace',
-	'Element': '#Element Event +DomReady Node Attribute Dimension',
+	'Element': '+Element #NodeBase Event +DomReady Node Attribute Dimension',
 	'Ajax': 'Ajax Json Jsonp',
 	'Fx': 'Base Animate Transitions Color'
 };

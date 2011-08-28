@@ -2,13 +2,7 @@
 //  元素: 提供最底层的 DOM 辅助函数。       A
 //===========================================
 
-
-/**
- * 初始化 window 对象。
- * @param {Document} doc
- * @private
- */
-(JPlus.setupWindow = function(w, init) {
+(function(w) {
 	
 	
 	/// #region Core
@@ -45,32 +39,28 @@
 
 	assert.isNode(document.documentElement, "在 element.js 执行时，必须存在 document.documentElement 属性。请确认浏览器为标准浏览器， 且未使用  Quirks 模式。");
 	
-	if(init) {
-	
+	/**
+	 * @namespace JPlus
+	 */
+	apply(p, {
+		
 		/**
-		 * @namespace JPlus
+		 * 元素。
+		 */	
+		Element: Class(function(dom){this.dom = dom;}),
+		
+		/**
+		 * 文档。
 		 */
-		apply(p, {
-			
-			/**
-			 * 元素。
-			 */	
-			Element: Class(function(dom){this.dom = dom;}),
-			
-			/**
-			 * 文档。
-			 */
-			Document: p.Native(document.constructor || {prototype: document}),
-			
-			/**
-			 * 根据一个 id 或 对象获取节点。
-			 * @param {String/Element} id 对象的 id 或对象。
-			 */
-			$: getElementById
-			
-		});
-	
-	}
+		Document: p.Native(document.constructor || {prototype: document}),
+		
+		/**
+		 * 根据一个 id 或 对象获取节点。
+		 * @param {String/Element} id 对象的 id 或对象。
+		 */
+		$: getElementById
+		
+	});
 	
 	/**
 	 * 元素。
@@ -142,11 +132,14 @@
 
 			assert(doms && doms.length !== undefined, 'ElementList.prototype.constructor(doms): 参数 {doms} 必须是一个 NodeList 或 Array 类型的变量。', doms);
 
+			/// #ifdef SupportIE8
 			
 			// 检查是否需要为每个成员调用  $ 函数。
-			if(doms[0] && doms[0].$version != ep.$version) {
+			if(!navigator.isStd)
 				doms = o.update(doms, p.$, []);
-			}
+
+			
+			/// #endif
 			
 			this.doms = doms;
 
@@ -338,6 +331,10 @@
 			col: [ 2, '<table><tbody></tbody><colgroup>', '</colgroup></table>' ],
 			area: [ 1, '<map>', '</map>' ]
 		};
+		
+	wrapMap.optgroup = wrapMap.option;
+	wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
+	wrapMap.th = wrapMap.td;
 	
 	/**
 	 * @namespace document
@@ -359,7 +356,7 @@
 
 			/// #else
 
-			/// var div = document.createElement(tagName);
+			/// var div = this.createElement(tagName);
 
 			/// #endif
 
@@ -370,11 +367,11 @@
 
 		/**
 		 * 根据元素返回节点。
-		 * @param {String/Element} ... 对象的 id 或对象。
-		 * @return {Element/ElementList} 如果只有1个参数，返回元素，否则返回元素集合。
+		 * @param {String} ... 对象的 id 或对象。
+		 * @return {ElementList} 如果只有1个参数，返回元素，否则返回元素集合。
 		 */
 		getDom: function() {
-			return arguments.length === 1 ? p.$(arguments[0]) : new ElementList(o.update(arguments, p.$));
+			return arguments.length === 1 ? p.$(this.getElementById(arguments[0])) :  new ElementList(o.update(arguments, this.getElementById, null, this));
 		},
 
 		/**
@@ -383,8 +380,6 @@
 		dom: document.documentElement
 		
 	});
-	
-	div.innerHTML = '';
 	
 	/**
 	 * @class Element
@@ -398,64 +393,61 @@
 		 * @return {Element/TextNode/DocumentFragment} 元素。
 		 * @static
 		 */
-		parse: function(html, cachable) {
+		parse: function(html, context, cachable) {
 
-			assert.notNull(html, 'Element.parse(html, cachable): 参数 {html} ~。');
+			assert.notNull(html, 'Element.parse(html, context, cachable): 参数 {html} ~。');
 			
 			if(html.nodeType) return html;
 			
 			if(html.dom) return html.dom;
 
-			assert.isString(html, 'Element.parse(html, cachable): 参数 {html} ~。');
+			assert.isString(html, 'Element.parse(html, context, cachable): 参数 {html} ~。');
 
 			var div = cache[html = html.trim()];
+			
+			context = context ? e.getDocument(context) : document;
+			
+			assert(context.createElement, 'Element.parse(html, context, cachable): 参数 {context} 必须是 DOM 节点。', context);
 
-			if (!div) {
+			if (!div || div.ownerDocument !== context) {
+				
+				html = html.replace(rXhtmlTag, "<$1></$2>");
 
 				// 过滤空格  // 修正   XHTML
-				var h = html.replace(rXhtmlTag, "<$1></$2>"),
-					tag = rTagName.exec(h),
+				var tag = rTagName.exec(html),
 					notSaveInCache = cachable !== undefined ? cachable : rNoClone.test(html);
 
 
 				if (tag) {
 
-					div = document.createElement("div", true);
+					div = context.createElement("div");
 
 					var wrap = wrapMap[tag[1].toLowerCase()];
 
 					if (wrap) {
-						div.innerHTML = wrap[1] + h + wrap[2];
+						div.innerHTML = wrap[1] + html + wrap[2];
 
 						// 转到正确的深度
 						while (wrap[0]--)
 							div = div.lastChild;
 
 					} else
-						div.innerHTML = h;
+						div.innerHTML = html;
 
-					// 一般使用最好的节点， 如果存在最后的节点，使用父节点。
-					div = div.firstChild;
-
+					// 一般使用最后的节点， 如果存在最后的节点，使用父节点。
 					// 如果有多节点，则复制到片段对象。
-					if(div.nextSibling) {
-						var fragment = document.createDocumentFragment();
+					if(div.lastChild !== div.firstChild) {
+						context = context.createDocumentFragment();
 
-						var newS = div.nextSibling;
-						while(newS) {
-							fragment.appendChild(div);
-							newS = (div = newS).nextSibling;
-						}
+						while(div.firstChild)
+							context.appendChild(div.firstChild);
 
-
-						fragment.appendChild(div);
-
-						div = fragment;
+						div = context;
 					} else {
 
-						/// #ifdef SupportIE6
+						/// #ifdef SupportIE8
 
-						p.$(div);
+						div = p.$(div.lastChild);
 
 						/// #endif
 
@@ -484,12 +476,7 @@
 		getDocument: function (elem) {
 			assert.isNode(elem, 'Element.getDocument(elem): 参数 {elem} ~。');
 			return elem.ownerDocument || elem.document || elem;
-		},
-		
-		/**
-		 * 浏览器兼容情况。
-		 */
-		support: {}
+		}
 		
 	}).implementIf({
 
@@ -518,8 +505,705 @@
 
 	});
 	
-	e.support
+	/// #endregion
+
+	/// #region Node
+
+	/**
+	 * 属性。
+	 * @type RegExp
+	 */
+	var rAttr = /^\[\s*([^=]+?)(\s*=\s*(['"])([\s\S]*)\3)?\s*\]$/,
 	
+		/**
+		 * @type Object
+		 */
+		childMap = 'firstElementChild' in div ?
+			[walk, 'nextElementSibling', 'firstElementChild', 'parentNode', 'previousElementSibling', 'lastElementChild'] :
+			[walk, 'nextSibling', 'firstChild', 'parentNode', 'previousSibling', 'lastChild'],
+	
+		/**
+		 * 查找一个节点。
+		 * @param {Element} elem 父节点。
+		 * @param {Function} fn 查找函数。
+		 * @return {Element} 节点。
+		 */
+		find = 'all' in div ? function(elem, fn) { // 返回数组
+			assert.isFunction(fn, "Element.prototype.find(elem, fn): 参数 {fn} ~。");
+			return  ap.filter.call(elem.all, fn);
+		} : function(elem, fn) {
+			assert.isFunction(fn, "Element.prototype.find(elem, fn): 参数 {fn} ~。");
+			if(!elem.firstChild) return [];
+			var ds = [], doms = [elem], p, nx;
+			while (doms.length) {
+				p = doms.pop();
+				nx = p.firstChild;
+				do {
+					if (nx.nodeType != 1)
+						continue;
+					if (fn(nx)) {
+						ds.push(nx);
+					}
+	
+					if(nx.firstChild)
+						doms.push(nx);
+				} while(nx = nx.nextSibling);
+			}
+	
+			return ds;
+		};
+
+	/**
+	 * @class Element
+	 */
+	
+	apply(e, {
+	
+		/**
+		 * 判断指定节点之后有无存在子节点。
+		 * @param {Element} elem 节点。
+		 * @param {Element} child 子节点。
+		 * @return {Boolean} 如果确实存在子节点，则返回 true ， 否则返回 false 。
+		 * @static
+		 */
+		hasChild: !div.compareDocumentPosition ? function(elem, child) {
+			assert.isNode(elem, "Element.hasChild(elem, child): 参数 {elem} ~。");
+			assert.isNode(child, "Element.hasChild(elem, child): 参数 {child} ~。");
+			while(child = child.parentNode) {
+				if(elem === child)
+					return true;
+			}
+			return false;
+		} : function(elem, child) {
+			assert.isNode(elem, "Element.hasChild(elem, child): 参数 {elem} ~。");
+			assert.isNode(child, "Element.hasChild(elem, child): 参数 {child} ~。");
+			return !!(elem.compareDocumentPosition(child) & 16);
+		},
+
+		/**
+		 * 删除一个节点的所有子节点。
+		 * @param {Element} elem 节点。
+		 * @static
+		 */
+		empty: function (elem) {
+			assert.isNode(elem, "Element.empty(elem): 参数 {elem} ~。");
+			while(elem.lastChild)
+				e.dispose(elem.lastChild);
+		},
+
+		/**
+		 * 释放节点所有资源。
+		 * @param {Element} elem 节点。
+		 * @static
+		 */
+		dispose: function (elem) {
+			assert.isNode(elem, "Element.dispose(elem): 参数 {elem} ~。");
+			
+			//删除事件
+			if (elem.clearAttributes) {
+				elem.clearAttributes();
+			}
+
+			p.IEvent.un.call(elem);
+			
+			if(elem.$data)
+				elem.$data = null;
+
+			e.empty(elem);
+
+			elem.parentNode && elem.parentNode.removeChild(elem);
+
+		},
+	
+		/**
+		 * 特殊属性集合。
+		 * @type Object
+		 */
+		properties: {
+			INPUT: 'checked',
+			OPTION: 'selected',
+			TEXTAREA: 'value'
+		},
+		
+		/**
+		 * 用于 get 的名词对象。
+		 * @type String
+		 */
+		nodeMaps: {
+	
+			// 全部子节点。
+			children: [function(elem, fn) {
+				return new ElementList(find(elem,  fn));
+			}],
+	
+			// 上级节点。
+			parent: [walk, childMap[3], childMap[3]],
+	
+			// 直接的子节点。
+			child: [dir, childMap[1], childMap[2]],
+	
+			// 后面的节点。
+			next: [walk, childMap[1]],
+	
+			// 前面的节点。
+			previous: [walk, childMap[4], childMap[4]],
+	
+			// 第一个节点。
+			first: childMap,
+	
+			// 最后的节点。
+			last: [walk, childMap[4], childMap[5]],
+	
+			// 全部上级节点。
+			parents: [dir, childMap[3]],
+	
+			// 前面的节点。
+			previouses: [dir, childMap[4]],
+	
+			// 后面的节点。
+			nexts: [dir, childMap[1]],
+	
+			// 奇数或偶数个。
+			odd: [function(elem, fn) {
+				return dir(elem, function() {
+					return fn = fn === false;
+				}, childMap[1], childMap[2]);
+			}],
+	
+			// 兄弟节点。
+			siblings: [function(elem, fn) {
+				return dir(elem, function(node) {
+					return node != elem && fn(elem);
+				}, childMap[1], childMap[2]);
+	
+			}]
+	
+		}
+
+	})
+
+	.implementIf({
+
+		/**
+		 * 根据属性获得元素内容。
+		 * @param {Strung} name 属性名。
+		 * @param {Strung} value 属性值。
+		 * @return {Array} 节点集合。
+		 */
+		getElementsByAttribute: function(name, value) {
+			return find(this.dom || this, value === undefined ? function(elem){
+				return !!e.getAttr(elem, name);
+			} : function(elem) {
+
+				// 或者属性值 == value 且 value 非空
+				// 或者 value空， 属性值非空
+				return e.getAttr(elem, name) === value;
+			});
+
+		},
+
+		/// #ifdef SupportIE6
+
+		/**
+		 * 根据类名返回子节点。
+		 * @param {Strung} className 类名。
+		 * @return {Array} 节点集合。
+		 */
+		getElementsByClassName: function(className) {
+			assert.isString(className, "Element.prototype.getElementsByClassName(classname): 参数 {classname} ~。");
+			className = className.split(/\s/); 
+			return find(this.dom || this, function(elem) {
+				var i = className.length;
+				while(i--) if(!e.hasClass(elem, className[i])) return false;
+                return true;
+			});
+
+		},
+
+		/// #else
+
+		/// getElementsByClassName:  function(name) {
+		/// 	return this.getElementsByClassName(name);
+		/// },
+
+		/// #endif
+
+		// 使     ElementList 支持此函数
+		
+		/**
+		 * 根据标签返回子节点。
+		 * @param {Strung} name 类名。
+		 * @return {Array} 节点集合。
+		 */
+		getElementsByTagName: function(name) {
+			return this.getElementsByTagName(name);
+		},
+
+		/**
+		 * 根据名字返回子节点。
+		 * @param {Strung} classname 类名。
+		 * @return {Array} 节点集合。
+		 */
+		getElementsByName: function(name) {
+			return this.getElementsByAttribute('name', name);
+		},
+
+		/// #ifdef SupportIE6
+
+		/**
+		 * 执行一个简单的选择器。
+		 * @method
+		 * @param {String} selecter 选择器。 如 h2 .cls attr=value 。
+		 * @return {Element/undefined} 节点。
+		 */
+		findAll: div.querySelectorAll ? function(selecter) {
+			assert.isString(selecter, "Element.prototype.findAll(selecter): 参数 {selecter} ~。");
+			return new ElementList((this.dom || this).querySelectorAll(selecter));
+		} : function(selecter) {
+			assert.isString(selecter, "Element.prototype.findAll(selecter): 参数 {selecter} ~。");
+			var current = new ElementList([this.dom || this]);
+			selecter.split(' ').forEach( function(v) {
+				current = findBy(current, v);
+			});
+
+			return current;
+		},
+
+		/// #else
+
+		/// findAll: div.querySelectorAll,
+
+		/// #endif
+
+		/**
+		 * 获得相匹配的节点。
+		 * @param {String} type 类型。
+		 * @param {Function/Number} fn 过滤函数或索引或标签。
+		 * @return {Element} 元素。
+		 */
+		get: function(type, fn) {
+
+			// 如果 type 为函数， 表示 默认所有子节点。
+			switch (typeof type) {
+				case 'string':
+					fn = fn ? getFilter(fn) : Function.returnTrue;
+					break;
+				case 'function':
+					fn = type;
+					type = 'children';
+					break;
+				case 'number':
+					fn = getFilter(type);
+					type = 'first';
+			}
+
+			var n = e.nodeMaps[type];
+			assert(n, 'Element.prototype.get(type, fn): 函数不支持 {0}类型 的节点关联。', type);
+			return n[0](this.dom || this, fn, n[1], n[2]);
+		}
+
+	}, 4)
+
+	.implement({
+
+		/**
+		 * 判断一个节点是否包含一个节点。 一个节点包含自身。
+		 * @param {Element} child 子节点。
+		 * @return {Boolean} 有返回true 。
+		 */
+		contains: function(child) {
+			var me = this.dom || this;
+			assert.isNode(me, "Element.prototype.contains(child): this.dom || this 返回的必须是 DOM 节点。");
+			assert.notNull(child, "Element.prototype.contains(child):参数 {child} ~。");
+			child = child.dom || child;
+			return child == me || e.hasChild(me, child);
+		},
+
+		/**
+		 * 判断一个节点是否有子节点。
+		 * @param {Element} child 子节点。
+		 * @return {Boolean} 有返回true 。
+		 */
+		hasChild: function(child) {
+			var me = this.dom || this;
+			return child ? e.hasChild(me, child.dom || child) : me.firstChild !== null;
+		}
+
+	}, 2)
+
+	.implement({
+
+		/// #ifdef SupportIE6
+
+		/**
+		 * 执行一个简单的选择器。
+		 * @param {String} selecter 选择器。 如 h2 .cls attr=value 。
+		 * @return {Element/undefined} 节点。
+		 */
+		find: div.querySelector ? function(selecter) {
+			assert.isString(selecter, "Element.prototype.find(selecter): 参数 {selecter} ~。");
+			return (this.dom || this).querySelector(selecter);
+		} : function(selecter) {
+			var current = this.dom || this;
+			assert.isString(selecter, "Element.prototype.find(selecter): 参数 {selecter} ~。");
+			if(selecter.split(' ').each(function(v) {
+				return !!(current = findBy(current, v)[0]);
+			}))
+				return p.$(current);
+		},
+
+		/// #else
+
+		/// find: div.querySelector,
+
+		/// #endif
+
+		/**
+		 * 复制节点。
+		 * @param {Boolean} copyDataAndEvent=false 是否复制事件。
+		 * @param {Boolean} contents=true 是否复制子元素。
+		 * @param {Boolean} keepid=false 是否复制 id 。
+		 * @return {Element} 元素。
+		 */
+		clone: function(copyDataAndEvent, contents, keepid) {
+
+			assert.isNode(this.dom || this, "Element.prototype.clone(copyDataAndEvent, contents, keepid): this.dom || this 返回的必须是 DOM 节点。");
+
+			var elem = this.dom || this,
+			clone = elem.cloneNode(contents = contents !== false);
+
+			if (contents) {
+				for (var ce = clone.getElementsByTagName('*'), te = elem.getElementsByTagName('*'), i = ce.length; i--;)
+					clean(ce[i], te[i], copyDataAndEvent, keepid);
+			}
+
+			clean(elem, clone, copyDataAndEvent, keepid);
+
+			/// #ifdef SupportIE6
+
+			if (navigator.isQuirks) {
+				o.update(elem.getElementsByTagName('object'), 'outerHTML', clone.getElementsByTagName('object'), true);
+			}
+
+			/// #endif
+
+			return clone;
+		},
+
+		/**
+		 * 在某个位置插入一个HTML 。
+		 * @param {String/Element} html 内容。
+		 * @param {String} [swhere] 插入地点。 beforeBegin   节点外    beforeEnd   节点里
+		 * afterBegin    节点外  afterEnd     节点里
+		 * @return {Element} 插入的节点。
+		 */
+		insert: 'insertAdjacentElement' in div ? function(html, swhere) {
+			var me = this.dom || this;
+			assert.isNode(me, "Element.prototype.insert(html, swhere): this.dom || this 返回的必须是 DOM 节点。");
+			assert.notNull(html, "Element.prototype.insert(html, swhere): 参数  {html} ~。");
+			assert(!swhere || 'afterEnd beforeBegin afterBegin beforeEnd '.indexOf(swhere + ' ') != -1, "Element.prototype.insert(html, swhere): 参数  {swhere} 必须是 beforeBegin、beforeEnd、afterBegin 或 afterEnd 。", swhere);
+			if(typeof html === 'string')
+				me.insertAdjacentHTML(swhere, html);
+			else
+				me.insertAdjacentElement(swhere, html.dom || html);
+			switch (swhere) {
+				case "afterEnd":
+					html = me.nextSibling;
+					break;
+				case "beforeBegin":
+					html = me.previousSibling;
+					break;
+				case "afterBegin":
+					html = me.firstChild;
+					break;
+				default:
+					html = me.lastChild;
+					break;
+			}
+
+			return p.$(html);
+		} : function(html, swhere) {
+
+			var me = this.dom || this;
+
+			assert.notNull(html, "Element.prototype.insert(html, swhere): 参数 {html} ~。");
+			assert.isNode(me, "Element.prototype.insert(html, swhere): this.dom || this 返回的必须是 DOM 节点。");
+			assert(!swhere || 'afterEnd beforeBegin afterBegin beforeEnd '.indexOf(swhere + ' ') != -1, "Element.prototype.insert(html, swhere): 参数 {swhere} 必须是 beforeBegin、beforeEnd、afterBegin 或 afterEnd 。", swhere);
+			if (!html.nodeType) {
+				html = html.dom || e.parse(html, e.getDocument(me));
+			}
+
+			switch (swhere) {
+				case "afterEnd":
+					if(!me.nextSibling) {
+
+						assert(me.parentNode != null, "Element.prototype.insert(html, swhere): 节点无父节点时无法插入 {this}", me);
+
+						me.parentNode.appendChild(html);
+						break;
+					}
+
+					me = me.nextSibling;
+				case "beforeBegin":
+					assert(me.parentNode != null, "Element.prototype.insert(html, swhere): 节点无父节点时无法插入 {this}", me);
+					me.parentNode.insertBefore(html, me);
+					break;
+				case "afterBegin":
+					if (me.firstChild) {
+						me.insertBefore(html, me.firstChild);
+						break;
+					}
+				default:
+					assert(arguments.length == 1 || !swhere || swhere == 'beforeEnd' || swhere == 'afterBegin', 'Element.prototype.insert(html, swhere): 参数 {swhere} 必须是 beforeBegin、beforeEnd、afterBegin 或 afterEnd 。', swhere);
+					me.appendChild(html);
+					break;
+			}
+
+			return html;
+		},
+
+		/**
+		 * 插入一个HTML 。
+		 * @param {String/Element} html 内容。
+		 * @return {Element} 元素。
+		 */
+		append: function(html) {
+			var me = this;
+
+
+			assert.notNull(html, "Element.prototype.append(html, escape): 参数 {html} ~。");
+
+			if(!html.nodeType) {
+				html = html.dom || e.parse(html, getDocument(me.dom || me));
+			}
+
+			assert.isNode(html, "Element.prototype.append(html, escape): 参数 {html} 不是合法的 节点或 HTML 片段。");
+			return me.appendChild(html);
+		},
+
+		/**
+		 * 将一个节点用html包围。
+		 * @param {String} html 内容。
+		 * @return {Element} 元素。
+		 */
+		wrapWith: function(html) {
+			html = this.replaceWith(html);
+			while(html.lastChild)
+				html = html.lastChild;
+			html.appendChild(this.dom || this);
+			return html;
+		},
+
+		/**
+		 * 将一个节点用另一个节点替换。
+		 * @param {String} html 内容。
+		 * @return {Element} 元素。
+		 */
+		replaceWith: function(html) {
+			var me = this.dom || this;
+
+			assert.notNull(html, "Element.prototype.replaceWith(html): 参数 {html} ~。");
+			if (!html.nodeType) {
+				html = html.dom || e.parse(html, getDocument(me));
+			}
+
+
+			assert(me.parentNode, 'Element.prototype.replaceWith(html): 当前节点无父节点，不能执行此方法 {this}', me);
+			assert.isNode(html, "Element.prototype.replaceWith(html, escape): 参数 {html} ~或 HTM 片段。");
+			me.parentNode.replaceChild(html, me);
+			return html;
+		}
+
+	}, 3)
+
+	.implement({
+
+		/**
+		 * 设置节点的父节点。
+		 * @method renderTo
+		 * @param {Element} elem 节点。
+		 * @return {Element} this
+		 */
+		renderTo: function(elem) {
+
+			elem = elem && elem !== true ? p.$(elem) : document.body;
+
+			assert(elem.appendChild, 'Element.prototype.renderTo(elem): 参数 {elem} ~ 必须是 DOM 节点或控件。');
+			
+			var me = this.dom || this;
+			
+			if (me.parentNode !== elem) {
+
+				// 插入节点
+				elem.appendChild(me);
+			}
+
+			// 返回
+			return this;
+		},
+
+		/**
+		 * 删除元素子节点或本身。
+		 * @param {Object/undefined} child 子节点。
+		 * @return {Element} this
+		 */
+		remove: function(child) {
+			var me = this.dom || this;
+			assert(!child || this.hasChild(child.dom || child), 'Element.prototype.remove(child): 参数 {child} 不是当前节点的子节点', child);
+			child ? this.removeChild(child.dom || child) : ( me.parentNode && me.parentNode.removeChild(me) );
+			return this;
+		},
+
+		/**
+		 * 删除一个节点的所有子节点。
+		 * @return {Element} this
+		 */
+		empty: function() {
+			e.empty(this.dom || this);
+			return this;
+		},
+
+		/**
+		 * 释放节点所有资源。
+		 * @method dispose
+		 */
+		dispose: function() {
+			e.dispose(this.dom || this);
+		}
+
+	});
+
+	/**
+	 * @class
+	 */
+
+	/**
+	 * 返回元素指定节点。
+	 * @param {Element} elem 节点。
+	 * @param {Number/Function/undefined/undefined} fn 过滤函数。
+	 * @param {String} walk 路径。
+	 * @param {String} first 第一个节点。
+	 * @return {Element} 节点。
+	 */
+	function walk(elem, fn, walk, first) {
+		elem = elem[first];
+		while (elem) {
+			if (elem.nodeType == 1 && fn(elem)) {
+				return p.$(elem);
+			}
+			elem = elem[walk];
+		}
+		return null;
+	}
+
+	/**
+	 * 返回元素满足条件的节点的列表。
+	 * @param {Element} elem 节点。
+	 * @param {Function} fn 过滤函数。
+	 * @param {String} walk 路径。
+	 * @param {String} first 第一个节点。
+	 * @return {ElementList} 集合。
+	 */
+	function dir(elem, fn, walk, first) {
+		elem = elem[first || walk];
+		var es = [];
+		while (elem) {
+			if (elem.nodeType == 1 && fn(elem)) {
+				es.push(elem);
+			}
+			elem = elem[walk];
+		}
+		return new ElementList(es);
+	}
+
+	/**
+	 * 删除由于拷贝导致的杂项。
+	 * @param {Element} srcElem 源元素。
+	 * @param {Element} destElem 目的元素。
+	 * @param {Boolean} copyDataAndEvent=true 是否复制数据。
+	 * @param {Boolean} keepid=false 是否留下ID。
+	 * @return {Element} 元素。
+	 */
+	function clean(srcElem, destElem, copyDataAndEvent, keepid) {
+		if (!keepid)
+			destElem.removeAttribute('id');
+
+		/// #ifdef SupportIE8
+
+		if( destElem.mergeAttributes) {
+
+			destElem.clearAttributes();
+			destElem.mergeAttributes(srcElem);
+			// 在 IE delete destElem.$data  出现异常。
+			destElem.removeAttribute("$data");
+
+
+			if (srcElem.options) {
+				o.update(srcElem.options, 'selected', destElem.options, true);
+			}
+		}
+
+		/// #endif
+
+		if (copyDataAndEvent) {
+			p.cloneData(destElem, srcElem);
+		}
+
+
+		var prop = e.properties[srcElem.tagName];
+		if (prop)
+			destElem[prop] = srcElem[prop];
+	}
+
+	/**
+	 * 执行简单的选择器。
+	 * @param {Element} elem 元素。
+	 * @param {String} selector 选择器。
+	 * @return {JPlus.ElementList} 元素集合。
+	 */
+	function findBy(elem, selector) {
+		switch(selector.charAt(0)) {
+			case '.':
+				elem = elem.getElementsByClassName(selector.replace(/\./g, ' '));
+				break;
+			case '[':
+				var s = rAttr.exec(selector);
+				assert(s && s[1], "Element.prototype.find(selector): 参数 {selector} 不是合法的选择器。 属性选择器如: [checked='checked']", selector);
+				elem = elem.getElementsByAttribute(s[1], s[4]);
+				break;
+			default:
+				elem = elem.getElementsByTagName(selector);
+				break;
+		}
+
+		return elem;
+	}
+
+	/**
+	 * 获取一个选择器。
+	 * @param {Number/Function/String} fn
+	 * @return {Funtion} 函数。
+	 */
+	function getFilter(fn) {
+		var t;
+		switch(typeof fn){
+			case 'number':
+				t = fn;
+				fn = function(elem) {
+					return --t < 0;
+				};
+				break;
+			case 'string':
+				t = fn.toUpperCase();
+				fn = function(elem) {
+					return elem.tagName === t;
+				};
+		}
+		
+		assert.isFunction(fn, "Element.prototype.get(type, fn): 参数 {fn} 必须是一个函数、数字或字符串。", fn);
+		return fn;
+	}
+
 	/// #endregion
 
 	/// #region Event
@@ -739,17 +1423,17 @@
 		};
 
 		// mouseEvent
-		initMouseEvent = function(e) {
+		initMouseEvent = function(event) {
 			if(!e.preventDefault){
-				initUIEvent(e);
-				e.relatedTarget = e.fromElement === e.target ? e.toElement : e.fromElement;
-				var dom = getDocument(e.target).dom;
-				e.pageX = e.clientX + dom.scrollLeft;
-				e.pageY = e.clientY + dom.scrollTop;
-				e.layerX = e.x;
-				e.layerY = e.y;
+				initUIEvent(event);
+				event.relatedTarget = event.fromElement === event.target ? event.toElement : event.fromElement;
+				var dom = e.getDocument(event.target).dom;
+				event.pageX = event.clientX + dom.scrollLeft;
+				event.pageY = event.clientY + dom.scrollTop;
+				event.layerX = event.x;
+				event.layerY = event.y;
 				//  1 ： 单击  2 ：  中键点击 3 ： 右击
-				e.which = (e.button & 1 ? 1 : (e.button & 2 ? 3 : (e.button & 4 ? 2 : 0)));
+				event.which = (event.button & 1 ? 1 : (event.button & 2 ? 3 : (event.button & 4 ? 2 : 0)));
 			
 			}
 		};
@@ -1612,6 +2296,7 @@
 		/**
 		 * 切换类名。
 		 * @param {String} className 类名。
+		 * @param {Boolean} [toggle] 自定义切换的方式。如果为 true， 则加上类名，否则删除。
 		 * @return {Element} this
 		 */
 		toggleClass: function(className, toggle) {
@@ -1791,706 +2476,6 @@
 		}
 		
 		return value;
-	}
-
-	/// #endregion
-
-	/// #region Node
-
-	/**
-	 * 属性。
-	 * @type RegExp
-	 */
-	var rAttr = /^\[\s*([^=]+?)(\s*=\s*(['"])([\s\S]*)\3)?\s*\]$/,
-	
-		/**
-		 * @type Object
-		 */
-		childMap = 'firstElementChild' in div ?
-			[walk, 'nextElementSibling', 'firstElementChild', 'parentNode', 'previousElementSibling', 'lastElementChild'] :
-			[walk, 'nextSibling', 'firstChild', 'parentNode', 'previousSibling', 'lastChild'],
-	
-		/**
-		 * 查找一个节点。
-		 * @param {Element} elem 父节点。
-		 * @param {undefined/String/Function} fn 查找函数。
-		 * @param {Boolean} childOnly 是否只搜索相邻的节点。
-		 * @return {Array/Element} 节点。
-		 */
-		find = 'all' in div ? function(elem, fn) { // 返回数组
-			assert.isFunction(fn, "Element.prototype.find(elem, fn): 参数 {fn} ~。");
-			return  ap.filter.call(elem.all, fn);
-		} : function(elem, fn) {
-			assert.isFunction(fn, "Element.prototype.find(elem, fn): 参数 {fn} ~。");
-			if(!elem.firstChild) return [];
-			var ds = [], doms = [elem], p, nx;
-			while (doms.length) {
-				p = doms.pop();
-				nx = p.firstChild;
-				do {
-					if (nx.nodeType != 1)
-						continue;
-					if (fn(nx)) {
-						ds.push(nx);
-					}
-	
-					if(nx.firstChild)
-						doms.push(nx);
-				} while(nx = nx.nextSibling);
-			}
-	
-			return ds;
-		};
-
-	/**
-	 * @class Element
-	 */
-	
-	apply(e, {
-	
-		/**
-		 * 判断指定节点之后有无存在子节点。
-		 * @param {Element} elem 节点。
-		 * @param {Element} child 子节点。
-		 * @return {Boolean} 如果确实存在子节点，则返回 true ， 否则返回 false 。
-		 * @static
-		 */
-		hasChild: !div.compareDocumentPosition ? function(elem, child) {
-			assert.isNode(elem, "Element.hasChild(elem, child): 参数 {elem} ~。");
-			assert.isNode(child, "Element.hasChild(elem, child): 参数 {child} ~。");
-			while(child = child.parentNode) {
-				if(elem === child)
-					return true;
-			}
-			return false;
-		} : function(elem, child) {
-			assert.isNode(elem, "Element.hasChild(elem, child): 参数 {elem} ~。");
-			assert.isNode(child, "Element.hasChild(elem, child): 参数 {child} ~。");
-			return !!(elem.compareDocumentPosition(child) & 16);
-		},
-
-		/**
-		 * 删除一个节点的所有子节点。
-		 * @param {Element} elem 节点。
-		 * @static
-		 */
-		empty: function (elem) {
-			assert.isNode(elem, "Element.empty(elem): 参数 {elem} ~。");
-			while(elem.lastChild)
-				e.dispose(elem.lastChild);
-		},
-
-		/**
-		 * 释放节点所有资源。
-		 * @param {Element} elem 节点。
-		 * @static
-		 */
-		dispose: function (elem) {
-			assert.isNode(elem, "Element.dispose(elem): 参数 {elem} ~。");
-			
-			//删除事件
-			if (elem.clearAttributes) {
-				elem.clearAttributes();
-			}
-
-			p.IEvent.un.call(elem);
-			
-			if(elem.$data)
-				elem.$data = null;
-
-			e.empty(elem);
-
-			elem.parentNode && elem.parentNode.removeChild(elem);
-
-		},
-	
-		/**
-		 * 特殊属性集合。
-		 * @type Object
-		 */
-		properties: {
-			INPUT: 'checked',
-			OPTION: 'selected',
-			TEXTAREA: 'value'
-		},
-		
-		/**
-		 * 用于 get 的名词对象。
-		 * @type String
-		 */
-		nodeMaps: {
-	
-			// 全部子节点。
-			children: [function(elem, fn) {
-				return new ElementList(find(elem,  fn));
-			}],
-	
-			// 上级节点。
-			parent: [walk, childMap[3], childMap[3]],
-	
-			// 直接的子节点。
-			child: [dir, childMap[1], childMap[2]],
-	
-			// 后面的节点。
-			next: [walk, childMap[1]],
-	
-			// 前面的节点。
-			previous: [walk, childMap[4], childMap[4]],
-	
-			// 第一个节点。
-			first: childMap,
-	
-			// 最后的节点。
-			last: [walk, childMap[4], childMap[5]],
-	
-			// 全部上级节点。
-			parents: [dir, childMap[3]],
-	
-			// 前面的节点。
-			previouses: [dir, childMap[4]],
-	
-			// 后面的节点。
-			nexts: [dir, childMap[1]],
-	
-			// 奇数或偶数个。
-			odd: [function(elem, fn) {
-				return dir(elem, function() {
-					return fn = fn === false;
-				}, childMap[1], childMap[2]);
-			}],
-	
-			// 兄弟节点。
-			siblings: [function(elem, fn) {
-				return dir(elem, function(node) {
-					return node != elem && fn(elem);
-				}, childMap[1], childMap[2]);
-	
-			}]
-	
-		}
-
-	})
-
-	.implementIf({
-
-		/**
-		 * 根据属性获得元素内容。
-		 * @param {Strung} name 属性名。
-		 * @param {Strung} value 属性值。
-		 * @return {Array} 节点集合。
-		 */
-		getElementsByAttribute: function(name, value) {
-			return find(this.dom || this, value === undefined ? function(elem){
-				return !!e.getAttr(elem, name);
-			} : function(elem) {
-
-				// 或者属性值 == value 且 value 非空
-				// 或者 value空， 属性值非空
-				return e.getAttr(elem, name) === value;
-			});
-
-		},
-
-		/// #ifdef SupportIE6
-
-		/**
-		 * 根据类名返回子节点。
-		 * @param {Strung} className 类名。
-		 * @return {Array} 节点集合。
-		 */
-		getElementsByClassName: function(className) {
-			assert.isString(className, "Element.prototype.getElementsByClassName(classname): 参数 {classname} ~。");
-			className = className.split(/\s/); 
-			return find(this.dom || this, function(elem) {
-				var i = className.length;
-				while(i--) if(!e.hasClass(elem, className[i])) return false;
-                return true;
-			});
-
-		},
-
-		/// #else
-
-		/// getElementsByClassName:  function(name) {
-		/// 	return this.getElementsByClassName(name);
-		/// },
-
-		/// #endif
-
-		// 使     ElementList 支持此函数
-		
-		/**
-		 * 根据标签返回子节点。
-		 * @param {Strung} name 类名。
-		 * @return {Array} 节点集合。
-		 */
-		getElementsByTagName: function(name) {
-			return this.getElementsByTagName(name);
-		},
-
-		/**
-		 * 根据名字返回子节点。
-		 * @param {Strung} classname 类名。
-		 * @return {Array} 节点集合。
-		 */
-		getElementsByName: function(name) {
-			return this.getElementsByAttribute('name', name);
-		},
-
-		/// #ifdef SupportIE6
-
-		/**
-		 * 执行一个简单的选择器。
-		 * @method
-		 * @param {String} selecter 选择器。 如 h2 .cls attr=value 。
-		 * @return {Element/undefined} 节点。
-		 */
-		findAll: div.querySelectorAll ? function(selecter) {
-			assert.isString(selecter, "Element.prototype.findAll(selecter): 参数 {selecter} ~。");
-			return new ElementList((this.dom || this).querySelectorAll(selecter));
-		} : function(selecter) {
-			assert.isString(selecter, "Element.prototype.findAll(selecter): 参数 {selecter} ~。");
-			var current = new ElementList([this.dom || this]);
-			selecter.split(' ').forEach( function(v) {
-				current = findBy(current, v);
-			});
-
-			return current;
-		},
-
-		/// #else
-
-		/// findAll: div.querySelectorAll,
-
-		/// #endif
-
-		/**
-		 * 获得相匹配的节点。
-		 * @param {String} type 类型。
-		 * @param {Function/Number} fn 过滤函数或索引或标签。
-		 * @return {Element} 元素。
-		 */
-		get: function(type, fn) {
-
-			// 如果 type 为函数， 表示 默认所有子节点。
-			switch (typeof type) {
-				case 'string':
-					fn = fn ? getFilter(fn) : Function.returnTrue;
-					break;
-				case 'function':
-					fn = type;
-					type = 'children';
-					break;
-				case 'number':
-					fn = getFilter(type);
-					type = 'first';
-			}
-
-			var n = e.nodeMaps[type];
-			assert(n, 'Element.prototype.get(type, fn): 函数不支持 {0}类型 的节点关联。', type);
-			return n[0](this.dom || this, fn, n[1], n[2]);
-		}
-
-	}, 4)
-
-	.implement({
-
-		/**
-		 * 判断一个节点是否包含一个节点。 一个节点包含自身。
-		 * @param {Element} child 子节点。
-		 * @return {Boolean} 有返回true 。
-		 */
-		contains: function(child) {
-			var me = this.dom || this;
-			assert.isNode(me, "Element.prototype.contains(child): this.dom || this 返回的必须是 DOM 节点。");
-			assert.notNull(child, "Element.prototype.contains(child):参数 {child} ~。");
-			child = child.dom || child;
-			return child == me || e.hasChild(me, child);
-		},
-
-		/**
-		 * 判断一个节点是否有子节点。
-		 * @param {Element} child 子节点。
-		 * @return {Boolean} 有返回true 。
-		 */
-		hasChild: function(child) {
-			var me = this.dom || this;
-			return child ? e.hasChild(me, child.dom || child) : me.firstChild !== null;
-		}
-
-	}, 2)
-
-	.implement({
-
-		/// #ifdef SupportIE6
-
-		/**
-		 * 执行一个简单的选择器。
-		 * @param {String} selecter 选择器。 如 h2 .cls attr=value 。
-		 * @return {Element/undefined} 节点。
-		 */
-		find: div.querySelector ? function(selecter) {
-			assert.isString(selecter, "Element.prototype.find(selecter): 参数 {selecter} ~。");
-			return (this.dom || this).querySelector(selecter);
-		} : function(selecter) {
-			var current = this.dom || this;
-			assert.isString(selecter, "Element.prototype.find(selecter): 参数 {selecter} ~。");
-			if(selecter.split(' ').each(function(v) {
-				return !!(current = findBy(current, v)[0]);
-			}))
-				return p.$(current);
-		},
-
-		/// #else
-
-		/// find: div.querySelector,
-
-		/// #endif
-
-		/**
-		 * 复制节点。
-		 * @param {Boolean} copyDataAndEvent=false 是否复制事件。
-		 * @param {Boolean} contents=true 是否复制子元素。
-		 * @param {Boolean} keepid=false 是否复制 id 。
-		 * @return {Element} 元素。
-		 */
-		clone: function(copyDataAndEvent, contents, keepid) {
-
-			assert.isNode(this.dom || this, "Element.prototype.clone(copyDataAndEvent, contents, keepid): this.dom || this 返回的必须是 DOM 节点。");
-
-			var elem = this.dom || this,
-			clone = elem.cloneNode(contents = contents !== false);
-
-			if (contents) {
-				for (var ce = clone.getElementsByTagName('*'), te = elem.getElementsByTagName('*'), i = ce.length; i--;)
-					clean(ce[i], te[i], copyDataAndEvent, keepid);
-			}
-
-			clean(elem, clone, copyDataAndEvent, keepid);
-
-			/// #ifdef SupportIE6
-
-			if (navigator.isQuirks) {
-				o.update(elem.getElementsByTagName('object'), 'outerHTML', clone.getElementsByTagName('object'), true);
-			}
-
-			/// #endif
-
-			return clone;
-		},
-
-		/**
-		 * 在某个位置插入一个HTML 。
-		 * @param {String/Element} html 内容。
-		 * @param {String} [swhere] 插入地点。 beforeBegin   节点外    beforeEnd   节点里
-		 * afterBegin    节点外  afterEnd     节点里
-		 * @return {Element} 插入的节点。
-		 */
-		insert: 'insertAdjacentElement' in div ? function(html, swhere) {
-			var me = this.dom || this;
-			assert.isNode(me, "Element.prototype.insert(html, swhere): this.dom || this 返回的必须是 DOM 节点。");
-			assert.notNull(html, "Element.prototype.insert(html, swhere): 参数  {html} ~。");
-			assert(!swhere || 'afterEnd beforeBegin afterBegin beforeEnd '.indexOf(swhere + ' ') != -1, "Element.prototype.insert(html, swhere): 参数  {swhere} 必须是 beforeBegin、beforeEnd、afterBegin 或 afterEnd 。", swhere);
-			if(typeof html === 'string')
-				me.insertAdjacentHTML(swhere, html);
-			else
-				me.insertAdjacentElement(swhere, html.dom || html);
-			switch (swhere) {
-				case "afterEnd":
-					html = me.nextSibling;
-					break;
-				case "beforeBegin":
-					html = me.previousSibling;
-					break;
-				case "afterBegin":
-					html = me.firstChild;
-					break;
-				default:
-					html = me.lastChild;
-					break;
-			}
-
-			return p.$(html);
-		} : function(html, swhere) {
-
-			var me = this.dom || this;
-
-			assert.notNull(html, "Element.prototype.insert(html, swhere): 参数 {html} ~。");
-			assert.isNode(me, "Element.prototype.insert(html, swhere): this.dom || this 返回的必须是 DOM 节点。");
-			assert(!swhere || 'afterEnd beforeBegin afterBegin beforeEnd '.indexOf(swhere + ' ') != -1, "Element.prototype.insert(html, swhere): 参数 {swhere} 必须是 beforeBegin、beforeEnd、afterBegin 或 afterEnd 。", swhere);
-			if (!html.nodeType) {
-				html = html.dom || e.parse(html, getDocument(me));
-			}
-
-			switch (swhere) {
-				case "afterEnd":
-					if(!me.nextSibling) {
-
-						assert(me.parentNode != null, "Element.prototype.insert(html, swhere): 节点无父节点时无法插入 {this}", me);
-
-						me.parentNode.appendChild(html);
-						break;
-					}
-
-					me = me.nextSibling;
-				case "beforeBegin":
-					assert(me.parentNode != null, "Element.prototype.insert(html, swhere): 节点无父节点时无法插入 {this}", me);
-					me.parentNode.insertBefore(html, me);
-					break;
-				case "afterBegin":
-					if (me.firstChild) {
-						me.insertBefore(html, me.firstChild);
-						break;
-					}
-				default:
-					assert(arguments.length == 1 || !swhere || swhere == 'beforeEnd' || swhere == 'afterBegin', 'Element.prototype.insert(html, swhere): 参数 {swhere} 必须是 beforeBegin、beforeEnd、afterBegin 或 afterEnd 。', swhere);
-					me.appendChild(html);
-					break;
-			}
-
-			return html;
-		},
-
-		/**
-		 * 插入一个HTML 。
-		 * @param {String/Element} html 内容。
-		 * @return {Element} 元素。
-		 */
-		append: function(html) {
-			var me = this;
-
-
-			assert.notNull(html, "Element.prototype.append(html, escape): 参数 {html} ~。");
-
-			if(!html.nodeType) {
-				html = html.dom || e.parse(html, getDocument(me.dom || me));
-			}
-
-			assert.isNode(html, "Element.prototype.append(html, escape): 参数 {html} 不是合法的 节点或 HTML 片段。");
-			return me.appendChild(html);
-		},
-
-		/**
-		 * 将一个节点用html包围。
-		 * @param {String} html 内容。
-		 * @return {Element} 元素。
-		 */
-		wrapWith: function(html) {
-			html = this.replaceWith(html);
-			while(html.lastChild)
-				html = html.lastChild;
-			html.appendChild(this.dom || this);
-			return html;
-		},
-
-		/**
-		 * 将一个节点用另一个节点替换。
-		 * @param {String} html 内容。
-		 * @return {Element} 元素。
-		 */
-		replaceWith: function(html) {
-			var me = this.dom || this;
-
-			assert.notNull(html, "Element.prototype.replaceWith(html): 参数 {html} ~。");
-			if (!html.nodeType) {
-				html = html.dom || e.parse(html, getDocument(me));
-			}
-
-
-			assert(me.parentNode, 'Element.prototype.replaceWith(html): 当前节点无父节点，不能执行此方法 {this}', me);
-			assert.isNode(html, "Element.prototype.replaceWith(html, escape): 参数 {html} ~或 HTM 片段。");
-			me.parentNode.replaceChild(html, me);
-			return html;
-		}
-
-	}, 3)
-
-	.implement({
-
-		/**
-		 * 设置节点的父节点。
-		 * @method renderTo
-		 * @param {Element} elem 节点。
-		 * @return {Element} this
-		 */
-		renderTo: function(elem) {
-
-			elem = elem && elem !== true ? p.$(elem) : document.body;
-
-			assert(elem.appendChild, 'Element.prototype.renderTo(elem): 参数 {elem} ~ 必须是 DOM 节点或控件。');
-			
-			var me = this.dom || this;
-			
-			if (me.parentNode !== elem) {
-
-				// 插入节点
-				elem.appendChild(me);
-			}
-
-			// 返回
-			return this;
-		},
-
-		/**
-		 * 删除元素子节点或本身。
-		 * @param {Object/undefined} child 子节点。
-		 * @return {Element} this
-		 */
-		remove: function(child) {
-			var me = this.dom || this;
-			assert(!child || this.hasChild(child.dom || child), 'Element.prototype.remove(child): 参数 {child} 不是当前节点的子节点', child);
-			child ? this.removeChild(child.dom || child) : ( me.parentNode && me.parentNode.removeChild(me) );
-			return this;
-		},
-
-		/**
-		 * 删除一个节点的所有子节点。
-		 * @return {Element} this
-		 */
-		empty: function() {
-			e.empty(this.dom || this);
-			return this;
-		},
-
-		/**
-		 * 释放节点所有资源。
-		 * @method dispose
-		 */
-		dispose: function() {
-			e.dispose(this.dom || this);
-		}
-
-	});
-
-	/**
-	 * @class
-	 */
-
-	/**
-	 * 返回元素指定节点。
-	 * @param {Element} elem 节点。
-	 * @param {Number/Function/undefined/undefined} fn 过滤函数。
-	 * @param {String} walk 路径。
-	 * @param {String} first 第一个节点。
-	 * @return {Element} 节点。
-	 */
-	function walk(elem, fn, walk, first) {
-		elem = elem[first];
-		while (elem) {
-			if (elem.nodeType == 1 && fn(elem)) {
-				return p.$(elem);
-			}
-			elem = elem[walk];
-		}
-		return null;
-	}
-
-	/**
-	 * 返回元素满足条件的节点的列表。
-	 * @param {Element} elem 节点。
-	 * @param {Function} fn 过滤函数。
-	 * @param {String} walk 路径。
-	 * @param {String} first 第一个节点。
-	 * @return {ElementList} 集合。
-	 */
-	function dir(elem, fn, walk, first) {
-		elem = elem[first || walk];
-		var es = [];
-		while (elem) {
-			if (elem.nodeType == 1 && fn(elem)) {
-				es.push(elem);
-			}
-			elem = elem[walk];
-		}
-		return new ElementList(es);
-	}
-
-	/**
-	 * 删除由于拷贝导致的杂项。
-	 * @param {Element} srcElem 源元素。
-	 * @param {Element} destElem 目的元素。
-	 * @param {Boolean} copyDataAndEvent=true 是否复制数据。
-	 * @param {Boolean} keepid=false 是否留下ID。
-	 * @return {Element} 元素。
-	 */
-	function clean(srcElem, destElem, copyDataAndEvent, keepid) {
-		if (!keepid)
-			destElem.removeAttribute('id');
-
-		/// #ifdef SupportIE8
-
-		if( destElem.mergeAttributes) {
-
-			destElem.clearAttributes();
-			destElem.mergeAttributes(srcElem);
-			// 在 IE delete destElem.$data  出现异常。
-			destElem.removeAttribute("$data");
-
-
-			if (srcElem.options) {
-				o.update(srcElem.options, 'selected', destElem.options, true);
-			}
-		}
-
-		/// #endif
-
-		if (copyDataAndEvent) {
-			p.cloneData(destElem, srcElem);
-		}
-
-
-		var prop = e.properties[srcElem.tagName];
-		if (prop)
-			destElem[prop] = srcElem[prop];
-	}
-
-	/**
-	 * 执行简单的选择器。
-	 * @param {Element} elem 元素。
-	 * @param {String} selector 选择器。
-	 * @return {JPlus.ElementList} 元素集合。
-	 */
-	function findBy(elem, selector) {
-		switch(selector.charAt(0)) {
-			case '.':
-				elem = elem.getElementsByClassName(selector.replace(/\./g, ' '));
-				break;
-			case '[':
-				var s = rAttr.exec(selector);
-				assert(s && s[1], "Element.prototype.find(selector): 参数 {selector} 不是合法的选择器。 属性选择器如: [checked='checked']", selector);
-				elem = elem.getElementsByAttribute(s[1], s[4]);
-				break;
-			default:
-				elem = elem.getElementsByTagName(selector);
-				break;
-		}
-
-		return elem;
-	}
-
-	/**
-	 * 获取一个选择器。
-	 * @param {Number/Function/String} fn
-	 * @return {Funtion} 函数。
-	 */
-	function getFilter(fn) {
-		var t;
-		switch(typeof fn){
-			case 'number':
-				t = fn;
-				fn = function(elem) {
-					return --t < 0;
-				};
-				break;
-			case 'string':
-				t = fn.toUpperCase();
-				fn = function(elem) {
-					return elem.tagName === t;
-				};
-		}
-		
-		assert.isFunction(fn, "Element.prototype.get(type, fn): 参数 {fn} 必须是一个函数、数字或字符串。", fn);
-		return fn;
 	}
 
 	/// #endregion
@@ -3046,5 +3031,5 @@
 	/// #endregion
 
 
-})(this, true);
+})(this);
 

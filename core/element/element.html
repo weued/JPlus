@@ -36,8 +36,6 @@
 		
 		<object id="o"></object>
 		
-		<iframe id="iframe"></iframe>
-		
 		<script>
 			
 			
@@ -77,19 +75,6 @@
 			};
 			
 			initTestCases(testcases);
-			
-			// iframe
-			
-			
-			$('iframe').src = '../index.html';
-			 $('iframe').onload = function() {
-			 	if($('iframe').contentWindow.document.readyState === 'complete'    ) {
-					window.iframeWindow = $('iframe').contentWindow;
-					//JPlus.setupWindow(window.iframeWindow);
-					console.log("iframe ready");
-					//assert.isTrue(window.iframeWindow.document.getDom);
-				}
-			};
 		</script>
 	</body>
 </html>

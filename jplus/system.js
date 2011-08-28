@@ -319,9 +319,9 @@ var JPlus = {
 					if(evt) {
 						delete dest.data.event;
 						for (i in evt) {
-							evt[i].handlers.forEach( function(fn) {
-								IEvent.on.call(dest, i, fn);
-							});
+							evt[i].handlers.forEach( function(fn, j) {
+								IEvent.on.call(dest, i, fn, this[j] === dest ? src : this[j]);
+							}, evt[i].scopes);
 						}
 					}
 				}
@@ -667,9 +667,9 @@ var JPlus = {
 				 * });
 				 * </code>
 				 */
-				on: function(type, listener) {
+				on: function(type, listener, bind) {
 					
-					assert.isFunction(listener, 'IEvent.on(type, listener): 参数 {listener} ~。');
+					assert.isFunction(listener, 'IEvent.on(type, listener, bind): 参数 {listener} ~。');
 					
 					// 获取本对象     本对象的数据内容   本事件值
 					var me = this, d = p.data(me, 'event'), evt = d[type], eMgr;
@@ -694,14 +694,14 @@ var JPlus = {
 						// 支持自定义安装。
 						evt = function(e) {
 							var listener = arguments.callee,
-								target = listener.target,
+								scopes = listener.scopes,
 								handlers = listener.handlers.slice(0), 
 								i = -1,
 								len = handlers.length;
 							
 							// 循环直到 return false。 
 							while (++i < len) 
-								if (handlers[i].call(target, e) === false) 										
+								if (handlers[i].call(scopes[i], e) === false) 										
 									return false;
 							
 							return true;
@@ -710,18 +710,23 @@ var JPlus = {
 						// 绑定事件对象，用来删除和触发。
 						evt.event = eMgr;
 						
-						//指定当然事件的全部函数。
-						evt.handlers = [eMgr.initEvent, listener];
+						// 当前事件的全部函数。
+						evt.handlers = [eMgr.initEvent];
+						
+						// 当前事件的作用域。
+						evt.scopes = [me];
 						
 						// 保存全部内容。
 						d[type] = evt;
 						
 						// 添加事件。
-						eMgr.add(evt.target = me, type, evt);
+						eMgr.add(me, type, evt);
 						
-					} else {
-						evt.handlers.push(listener);
 					}
+					
+					evt.handlers.push(listener);
+					
+					evt.scopes.push(bind || me);
 						
 					return me;
 				},
@@ -757,8 +762,13 @@ var JPlus = {
 					var me = this, d = p.getData(me, 'event'), evt;
 					if (d) {
 						 if (evt = d[type]) {
-							if (listener) 
-								evt.handlers.remove(listener);
+							if (listener) {
+								var i = evt.handlers.indexOf(listener, 1);
+								if(i !== -1){
+									evt.handlers.splice(i, 1);
+									evt.scopes.splice(i, 1);
+								}
+							}
 								
 							// 检查是否存在其它函数或没设置删除的函数。
 							if (!listener || evt.handlers.length < 2) {
@@ -812,7 +822,7 @@ var JPlus = {
 				 * elem.trigger('click');   //  没有输出 
 				 * </code>
 				 */
-				one: function(type, listener) {
+				one: function(type, listener, bind) {
 					
 					assert.isFunction(listener, 'IEvent.one(type, listener): 参数 {listener} ~。');
 					
@@ -824,7 +834,7 @@ var JPlus = {
 						
 						// 然后调用。
 						return listener.apply(this, arguments);
-					});
+					}, bind);
 				}
 				
 				
