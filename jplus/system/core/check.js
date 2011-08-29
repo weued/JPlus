@@ -12,7 +12,7 @@ namespace(".Check.", {
 	 * @return {Boolean}
 	 */
     isNumber: function(value) {
-        
+        return typeof value ==="number" && isFinite(value);
     },
     
 	/**
@@ -34,11 +34,11 @@ namespace(".Check.", {
 	/**
 	 * 判断一个值是否为无符整数。
 	 * @param {Object} value
-	 */
+	 
 	isInteger:function(value){
     	return /\d+/.test(val);
 	},
-	
+	*/
 	isDate: function (value){
    		var result=str.match(/^(\d{4})(-|\/)(\d{1,2})\2(\d{1,2})$/);
    		if(result==null) return false;

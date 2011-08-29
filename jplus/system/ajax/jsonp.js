@@ -3,11 +3,18 @@
 //===========================================
 
 namespace(".JSONP", Class({
+	/*
+	 * 
+	 */
 	constructor: function(obj) {
 		if (obj) Object.extend(this, obj);
 	},parseJSON:function(response){
 		return eval("(" + response + ")");
-	},setEncoding: function(value){
+	}
+	/*
+	 * 
+	 */
+	,setEncoding: function(value){
 		if(value)
 			this.setHeader("Accept-Charset", value);
 		return this.setHeader('contentType', 'application/x-www-form-urlencoded' + (value ? '; charset=' + value : ''));
@@ -15,9 +22,14 @@ namespace(".JSONP", Class({
 		var me = this;
 		window["jsonp"+time] = function(){
 			me.success(arguments[0]);
+			
 		};
-	},getId:function(){
-		return +new Date();
+	},
+	/*
+	 * 
+	 */
+	getId:function(){
+		return Date.now();
 	},parseData:function(){
 		var data = this.data ,query = "";
 		for(var name in data){
