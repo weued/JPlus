@@ -45,7 +45,7 @@
 				'document.create': '"div", "a" => assert.isTrue(value.tagName === "DIV")',
 				'document.getDom': '"a", "c" => assert.areEqual(value.doms, [a, c])',
 				'Element.prototype.xType': {doCall: false, overrides: '@o'},   
-				'Element.parse': '"<div/>" ; "<div><div />a</div>"; "   <div/> f <div/>"; "<object />"; "<input type=\'radio\' checked=\'checked\'"'
+				'Element.parse': '"<div/>" ; "<div><div />a</div>"; "   <div/> f <div/>"; "<object />"; "<input type=\'radio\' checked=\'checked\'>"'
 			};
 			
 			initTestCases(testcases);

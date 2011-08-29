@@ -1,29 +1,28 @@
 ﻿//===========================================
-//  元素: 提供最底层的 DOM 辅助函数。       A
+//  元素: 提供最底层的 DOM 辅助函数。  
+//  A xuld
 //===========================================
 
 (function(w) {
 	
 	
-	/// #region Core
+	//  可用的宏     
+	// ElementCore - 核心部分
+	// ElementCreate - 生成节点
+	// ElementNode - 节点部分
+	// ElementAttribute - 属性部分
+	// ElementStyle - 样式部分
+	// ElementEvent - 事件部分
+	// ElementDimension - 定位部分
+	// 
+	// 
+	// 
 	
 	/**
-	 * JPlus 简写。
+	 * Object  简写。
 	 * @type Object
 	 */
-	var p = JPlus,
-		
-		/**
-		 * document 简写。
-		 * @type Document
-		 */
-		document = w.document,
-	
-		/**
-		 * Object  简写。
-		 * @type Object
-		 */
-		o = Object,
+	var o = Object,
 	
 		/**
 		 * Object.extend
@@ -35,46 +34,53 @@
 		 * 数组原型。
 		 * @type Object
 		 */
-		ap = Array.prototype;
-
-	assert.isNode(document.documentElement, "在 element.js 执行时，必须存在 document.documentElement 属性。请确认浏览器为标准浏览器， 且未使用  Quirks 模式。");
-	
-	/**
-	 * @namespace JPlus
-	 */
-	apply(p, {
+		ap = Array.prototype,
+		
+		/**
+		 * document 简写。
+		 * @type Document
+		 */
+		document = w.document,
+		
+		/**
+		 * JPlus 简写。
+		 * @namespace JPlus
+		 */
+		p = apply(JPlus, {
+			
+			/**
+			 * 元素。
+			 */	
+			Element: Class(function(dom){this.dom = dom;}),
+			
+			/**
+			 * 文档。
+			 */
+			Document: document.constructor || {prototype: document},
+			
+			/**
+			 * 根据一个 id 或 对象获取节点。
+			 * @param {String/Element} id 对象的 id 或对象。
+			 */
+			$: getElementById
+			
+		}),
 		
 		/**
 		 * 元素。
-		 */	
-		Element: Class(function(dom){this.dom = dom;}),
-		
-		/**
-		 * 文档。
+		 * @type Function
+		 * 如果页面已经存在 Element， 不管是不是用户自定义的，都直接使用。只需保证 Element 是一个函数即可。
 		 */
-		Document: p.Native(document.constructor || {prototype: document}),
+		e = w.Element || p.Element,
 		
-		/**
-		 * 根据一个 id 或 对象获取节点。
-		 * @param {String/Element} id 对象的 id 或对象。
-		 */
-		$: getElementById
-		
-	});
-	
-	/**
-	 * 元素。
-	 * @type Function
-	 * 如果页面已经存在 Element， 不管是不是用户自定义的，都直接使用。只需保证 Element 是一个函数即可。
-	 */
-	var e = w.Element || p.Element,
-	
 		/**
 		 * 元素原型。
 		 * @type Object
 		 */
 		ep = e.prototype;
 
+	assert.isNode(document.documentElement, "在 element.js 执行时，必须存在 document.documentElement 属性。请确认浏览器为标准浏览器， 且未使用  Quirks 模式。");
+	
 	/// #ifdef SupportIE8
 
 	if (!navigator.isStd) {
@@ -249,6 +255,8 @@
 				}
 				
 				
+				
+				
 			}, [ElementList, p.Document, p.Element, e != p.Element && e]);
 			
 			/// #ifdef SupportIE8
@@ -272,7 +280,14 @@
 		 */
 		implementIf: function (obj, listType) {
 			return this.implement(obj, listType, true);
-		}
+		},
+		
+		/**
+		 * 获取元素的文档。
+		 * @param {Element} elem 元素。
+		 * @return {Document} 文档。
+		 */
+		getDocument: getDocument
 		
 	});
 
@@ -284,6 +299,17 @@
 	function getElementById(id) {
 		return typeof id == "string" ? document.getElementById(id) : id;
 	}
+	
+	/**
+	 * 获取元素的文档。
+	 * @param {Element} elem 元素。
+	 * @return {Document} 文档。
+	 */
+	function getDocument(elem) {
+		assert.isNode(elem, 'Element.getDocument(elem): 参数 {elem} ~。');
+		return elem.ownerDocument || elem.document || elem;
+	}
+	
 
 	/// #endregion
 	
@@ -450,7 +476,8 @@
 						div = p.$(div.lastChild);
 
 						/// #endif
-
+						
+						assert(div, "Element.parse(html, context, cachable): 无法根据 {html} 创建节点。", html);
 					}
 
 				} else {
@@ -468,15 +495,7 @@
 
 		},
 		
-		/**
-		 * 获取元素的文档。
-		 * @param {Element} elem 元素。
-		 * @return {Document} 文档。
-		 */
-		getDocument: function (elem) {
-			assert.isNode(elem, 'Element.getDocument(elem): 参数 {elem} ~。');
-			return elem.ownerDocument || elem.document || elem;
-		}
+		
 		
 	}).implementIf({
 
@@ -1298,9 +1317,13 @@
 	 *
 	 * </code>
 	 */
-	e.defineEvents = function(events, baseEvent, initEvent) {
+	e.addEvents = function(events, baseEvent, initEvent) {
 		
 		var ee = p.Events.element;
+		
+		if(Object.isObject(events)){
+			return p.Object.addEvents.call(e, events);	
+		}
 
 		// 删除已经创建的事件。
 		delete ee[events];
@@ -1327,7 +1350,7 @@
 
 		}, ee.$default)), ee);
 
-		return e.defineEvents;
+		return e.addEvents;
 	};
 
 	/**
@@ -1450,7 +1473,7 @@
 
 	/// #endif
 
-	e.defineEvents
+	e.addEvents
 		("click dblclick mouseup mousedown contextmenu mouseover mouseout mousemove selectstart selectend mouseenter mouseleave", initMouseEvent)
 		("mousewheel DOMMouseScroll blur focus focusin focusout scroll change select submit error", initUIEvent)
 		("keydown keypress keyup", initKeyboardEvent)
@@ -1459,7 +1482,7 @@
 		});
 
 	if (navigator.isFirefox)
-		e.defineEvents('mousewheel', 'DOMMouseScroll');
+		e.addEvents('mousewheel', 'DOMMouseScroll');
 	if (!navigator.isIE) {
 		function checkMouseEnter(e) {
 
@@ -1469,9 +1492,9 @@
 			}
 
 			return this != parent;
-		};
+		}
 
-		e.defineEvents
+		e.addEvents
 			('mouseenter', 'mouseover', checkMouseEnter)
 			('mouseleave', 'mouseout', checkMouseEnter);
 	}
@@ -2849,11 +2872,11 @@
 		setPosition: function(x, y) {
 			var me = this, offset = me.getOffset().minus(me.getPosition()), p = getXY(x,y);
 
-			if (p.x)
-				offset.x += p.x;
-
 			if (p.y)
 				offset.y += p.y;
+				
+			if (p.x)
+				offset.x += p.x;
 
 			e.setMovable(me.dom || me);
 
@@ -3008,7 +3031,7 @@
 		if(p.x == null)
 			p.x = obj[method]().x;
 		if(p.y == null)
-			p.x = obj[method]().y;
+			p.y = obj[method]().y;
 		assert(!isNaN(p.x) && !isNaN(p.y), "adaptXY(x, y, obj, method): 参数 {x}或{y} 不是合法的数字。(method = {method})", x, y, method);
 		return p;
 	}

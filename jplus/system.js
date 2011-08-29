@@ -3,7 +3,7 @@
 //===========================================
 
 
-//
+//  可用的宏     
 // SupportIE10 - 支持 IE10+ FF5+ Chrome12+ Opera12+ Safari6+ 。
 // SupportIE9 - 支持 IE9+ FF4+ Chrome10+ Opera10+ Safari4+ 。
 // SupportIE8  -   支持 IE8+ FF3+ Chrome10+ Opera10+ Safari4+ 。
@@ -446,7 +446,7 @@ var JPlus = {
 				
 				// 新建请求。
 				var xmlHttp = new XMLHttpRequest();
-	
+				
 				try {
 					
 					// 打开请求。
