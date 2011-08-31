@@ -7,15 +7,6 @@
 namespace(".Check.", {
 	
 	/**
-	 * 测试是否为数字
-	 * @param {String} value
-	 * @return {Boolean}
-	 */
-    isNumber: function(value) {
-        return typeof value ==="number" && isFinite(value);
-    },
-    
-	/**
 	 * 测试字符串是否为邮箱格式.
 	 * @param {String} value
 	 * @return {Boolean}
@@ -25,20 +16,13 @@ namespace(".Check.", {
     },
 	
 	/**
-	 * 判断一个值是否为 int32 表示范围内的值。
-	 */
-	isInt: function(){
-		
-	},
-	
-	/**
 	 * 判断一个值是否为无符整数。
 	 * @param {Object} value
-	 
+	 */
 	isInteger:function(value){
-    	return /\d+/.test(val);
+    	return /^[-]?\d+$/.test(val);
 	},
-	*/
+	
 	isDate: function (value){
    		var result=str.match(/^(\d{4})(-|\/)(\d{1,2})\2(\d{1,2})$/);
    		if(result==null) return false;
@@ -53,7 +37,18 @@ namespace(".Check.", {
 	},
 	
 	isUrl: function(){
-		
+		var strRegex = "/^((https|http|ftp|rtsp|mms)?://)" 
+			+ "?(([0-9a-z_!~*'().&=+$%-]+: )?[0-9a-z_!~*'().&=+$%-]+@)?"
+			+ "(([0-9]{1,3}.){3}[0-9]{1,3}"  
+			+ "|" 
+			+ "([0-9a-z_!~*'()-]+.)*" 
+			+ "([0-9a-z][0-9a-z-]{0,61})?[0-9a-z]." 
+			+ "[a-z]{2,6})" 
+			+ "(:[0-9]{1,4})?" 
+			+ "((/?)|" 
+			+ "(/[0-9a-z_!~*'().;?:@&=+$,%#-]+)+/?)$/";
+		var re=new RegExp(strRegex);
+		return re.test(value); 
 	},
 	
 	/**
@@ -64,18 +59,38 @@ namespace(".Check.", {
 	checkPasswordLevel: function(value){
 		return value.replace(/^(?:(?=.{4})(?=.*([a-z])|.)(?=.*([A-Z])|.)(?=.*(\d)|.)(?=.*(\W)|.).*|.*)$/, "$1$2$3$4").length;
 	},
-	
+	/**
+	 * 检查一个字符串是否为空。 
+	 * @param {String} value
+	 */
 	isNotEmpty: function(value){
 		return value.length > 0;
 	},
-	
+	//检查是否为中文
+	isChinese:function(value){
+		return /^([\u4E00-\u9FA5]|[\uFE30-\uFFA0])+$/gi.test(value);
+	},
 	/**
 	 * 判断是否为合法用户名。合法的用户名必须是非数字开头的 字母、_、数字、中文。
 	 * @param {Object} value
 	 */
 	isUserName: function(value){
-		
-	}
+		return /^[a-zA-Z]{1}([a-zA-Z0-9]|[._]){4,19}$/.test(value);
+	},
 	
+	isIP:function (value) { 
+		if(/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/g.test(value)){ 
+			if( RegExp.$1 <256 && RegExp.$2<256 && RegExp.$3<256 && RegExp.$4<256) return true; 
+		} 
+		return false; 
+	},
+	
+	isMobile:function(value){
+		return /^1[358]\d{9}$/.test(value);
+	},
+	
+	isPhonenumber:function(value){
+		return /^(\d{3,4}-)?\d{7,8}$/.test(value);
+	}
 		
 }); 

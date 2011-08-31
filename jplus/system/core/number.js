@@ -4,10 +4,11 @@
 
 
 Number.implementIf({
-	
-	isNumber: function (value) {
-		return typeof value === 'string';
-	},
+	//#author cc
+	//之所以不用isNaN是因为isNaN(NaN)===true
+	isNumber: function(value) {
+        return typeof value ==="number" && isFinite(value);
+    },
 	
 	toString: (function(){
 		var toString = Number.prototype.toString;
