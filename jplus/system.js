@@ -312,7 +312,9 @@ var JPlus = {
 				var data = src.$data;
 				
 				if(data) {
-					dest.$data = o.clone.call(1, data);
+					
+					// 复制一份 data。
+					dest.$data = o.clone.call(2, data);
 					
 					// event 作为系统内部对象。事件的拷贝必须重新进行 on 绑定。
 					var evt = src.$data.event, i  ;
@@ -320,7 +322,9 @@ var JPlus = {
 						delete dest.data.event;
 						for (i in evt) {
 							evt[i].handlers.forEach( function(fn, j) {
-								IEvent.on.call(dest, i, fn, this[j] === dest ? src : this[j]);
+								
+								// 如果源数据的 target 是 src， 则改 dest 。
+								IEvent.on.call(dest, i, fn, this[j] === src ? dest : this[j]);
 							}, evt[i].scopes);
 						}
 					}
@@ -381,11 +385,17 @@ var JPlus = {
 			Object: Object,
 			
 			/**
-			 * 本地化已有的类。
+			 * 由存在的类修改创建类。
 			 * @param {Function/Class} constructor 将创建的类。
-	 		 * @return {Class} 生成的类。
+			 * @return {Class} 生成的类。
 			 */
-			Native: Class,
+			Native: function (constructor) {
+				
+				// 简单拷贝  Object 的成员，即拥有类的特性。
+				// 在 JavaScript， 一切函数都可作为类，故此函数存在。
+				// Object 的成员一般对当前类构造函数原型辅助。
+				return applyIf(constructor, Object);
+			},
 			
 			/// #ifdef SupportUsing
 		
@@ -420,7 +430,9 @@ var JPlus = {
 			 * </code>
 			 */
 			loadStyle: function(url) {
-				document.getElementsByTagName("HEAD")[0].appendChild(apply(document.createElement('link'), {
+				
+				// 在顶部插入一个css，但这样肯能导致css没加载就执行 js 。所以，要保证样式加载后才能继续执行计算。
+				return document.getElementsByTagName("HEAD")[0].appendChild(apply(document.createElement('link'), {
 					href: url,
 					rel: 'stylesheet',
 					type: 'text/css'
@@ -445,6 +457,7 @@ var JPlus = {
 				//     assert(window.location.protocol != "file:", "JPlus.loadText(uri, callback):  当前正使用 file 协议，请使用 http 协议。 \r\n请求地址: {0}",  uri);
 				
 				// 新建请求。
+				// 下文对 XMLHttpRequest 对象进行兼容处理。
 				var xmlHttp = new XMLHttpRequest();
 				
 				try {
@@ -454,9 +467,9 @@ var JPlus = {
 	
 					// 发送请求。
 					xmlHttp.send(null);
-	
+
 					// 检查当前的 XMLHttp 是否正常回复。
-					if (!XMLHttpRequest.isOk(xmlHttp)) {
+					if (!p.checkStatusCode(xmlHttp.status)) {
 						//载入失败的处理。
 						throw String.format("请求失败:  \r\n   地址: {0} \r\n   状态: {1}   {2}  {3}", url, xmlHttp.status, xmlHttp.statusText, window.location.protocol == "file:" ? '\r\n原因: 当前正使用 file 协议打开文件，请使用 http 协议。' : '');
 					}
@@ -475,8 +488,6 @@ var JPlus = {
 					// 释放资源。
 					xmlHttp = null;
 				}
-				
-				return null;
 	
 			},
 	
@@ -500,6 +511,7 @@ var JPlus = {
 				if(p.namespaces.include(ns))
 					return;
 				
+				// 如果名字空间本来就是一个地址，则不需要转换，否则，将 . 替换为 / ,并在末尾加上 文件后缀。
 				if(ns.indexOf('/') === -1) {
 					ns = ns.toLowerCase().replace(rPoint, '/') + (isStyle ? '.css' : '.js');
 				}
@@ -516,7 +528,7 @@ var JPlus = {
 					src = 'src';
 				 }
 				 
-				 // 如果在节点找到符合的就返回，找不到，调用 callback
+				 // 如果在节点找到符合的就返回，找不到，调用 callback 进行真正的 加载处理。
 				 each.call(doms, function(dom) {
 				 	return !dom[src] || dom[src].toLowerCase().indexOf(ns) === -1;
 				 }) && callback(p.rootPath + ns);
@@ -578,6 +590,27 @@ var JPlus = {
 			 * </code>
 			 */
 			namespace: namespace,
+			
+			/**
+			 * 判断一个状态码是否为正确的返回。
+			 * @param {Number} statusCode 请求。
+			 * @return {Boolean} 正常返回true 。
+			 */
+			checkStatusCode: function(statusCode) {
+				
+				// 获取状态。
+				if (!statusCode) {
+					
+					// 获取协议。
+					var protocol = window.location.protocol;
+					
+					// 对谷歌浏览器, 在有些协议，  statusCode 不存在。
+					return (protocol == "file: " || protocol == "chrome: " || protocol == "app: ");
+				}
+				
+				// 检查， 各浏览器支持不同。
+				return (statusCode >= 200 && statusCode < 300) || statusCode == 304 || statusCode == 1223;
+			},
 	
 			/**
 			 * 默认的全局名字空间。
@@ -585,56 +618,6 @@ var JPlus = {
 			 * @value window
 			 */
 			defaultNamespace: 'JPlus',
-			
-			/// #ifdef SupportIE8
-								
-			/**
-			 * 绑定一个监听器。
-			 * @method
-			 * @static
-			 * @param {Element} elem 元素。
-			 * @param {String} type 类型。
-			 * @param {Function} listener 函数。
-			 * @seeAlso JPlus.removeListener
-			 * @example
-			 * <code>
-			 * JPlus.addEventListener.call(document, 'click', function() {
-			 * 	
-			 * });
-			 * </code>
-			 */
-			addEventListener: document.addEventListener ? function(type, listener) {
-				this.addEventListener(type, listener, false);
-			} : function(type, listener) {
-				
-				// IE8- 使用 attachEvent 。
-				this.attachEvent('on' + type, listener);
-			},
-			
-			/**
-			 * 移除一个监听器。
-			 * @method
-			 * @static
-			 * @param {Element} elem 元素。
-			 * @param {String} type 类型。
-			 * @param {Function} listener 函数。
-			 * @seeAlso JPlus.addListener
-			 * @example
-			 * <code>
-			 * JPlus.removeEventListener.call(document, 'click', function() {
-			 * 	
-			 * });
-			 * </code>
-			 */
-			removeEventListener: document.removeEventListener ? function(type, listener) {
-				this.removeEventListener(type, listener, false);
-			} : function(type, listener) {
-				
-				// IE8- 使用 detachEvent 。
-				this.detachEvent('on' + type, listener);
-			},
-			
-			/// #endif
 			
 			/**
 			 * 管理所有事件类型的工具。
@@ -674,7 +657,7 @@ var JPlus = {
 					// 获取本对象     本对象的数据内容   本事件值
 					var me = this, d = p.data(me, 'event'), evt = d[type], eMgr;
 					
-					// 如果未绑定
+					// 如果未绑定过这个事件。
 					if (!evt) {
 						
 						evt = (eMgr = me).constructor;
@@ -724,8 +707,10 @@ var JPlus = {
 						
 					}
 					
+					// 添加到 handlers 。
 					evt.handlers.push(listener);
 					
+					// 保存作用域。
 					evt.scopes.push(bind || me);
 						
 					return me;
@@ -763,6 +748,8 @@ var JPlus = {
 					if (d) {
 						 if (evt = d[type]) {
 							if (listener) {
+								
+								// 同时删掉句柄和作用域。
 								var i = evt.handlers.indexOf(listener, 1);
 								if(i !== -1){
 									evt.handlers.splice(i, 1);
@@ -773,7 +760,7 @@ var JPlus = {
 							// 检查是否存在其它函数或没设置删除的函数。
 							if (!listener || evt.handlers.length < 2) {
 								
-								evt.handlers = null;
+								// 删除对事件处理句柄的全部引用，以允许内容回收。
 								delete d[type];
 								
 								// 内部事件管理的删除。
@@ -800,9 +787,10 @@ var JPlus = {
 				 */
 				trigger: function (type, e) {
 					
-					// 获取本对象     本对象的数据内容   本事件值
+					// 获取本对象     本对象的数据内容   本事件值 。
 					var me = this, evt = p.getData(me, 'event');
-					   
+					
+					// 执行事件。
 					return !evt || !(evt = evt[type]) || ( evt.event.trigger ? evt.event.trigger(me, type, evt, e) : evt(e) );
 					
 				},
@@ -826,10 +814,10 @@ var JPlus = {
 					
 					assert.isFunction(listener, 'IEvent.one(type, listener): 参数 {listener} ~。');
 					
-					
+					// one 本质上是 on ,  只是自动为 listener 执行 un 。
 					return this.on(type, function() {
 						
-						// 删除。
+						// 删除，避免闭包。
 						this.un( type, arguments.callee);
 						
 						// 然后调用。
@@ -871,7 +859,7 @@ var JPlus = {
 		implement: function (members) {
 
 			assert(members && this.prototype, "Class.implement(members): 无法扩展类，因为 {members} 或 this.prototype 为空。", members);
-			// 复制到原型
+			// 复制到原型 。
 			o.extend(this.prototype, members);
 	        
 			return this;
@@ -1016,7 +1004,7 @@ var JPlus = {
 			assert(!events || o.isObject(events), "Class.addEvents(events): 参数 {event} 必须是一个包含事件的对象。 如 {click: { add: ..., remove: ..., initEvent: ..., trigger: ... } ", events);
 			
 			// 实现 事件 接口。
-			applyIf(ep, IEvent);
+			applyIf(ep, p.IEvent);
 			
 			// 如果有自定义事件，则添加。
 			if (events) {
@@ -1107,7 +1095,7 @@ var JPlus = {
 			subClass.prototype.constructor = subClass;
 
 			// 指定Class内容 。
-			return Class(subClass);
+			return p.Native(subClass);
 
 		}
 
@@ -1840,7 +1828,7 @@ var JPlus = {
 	
 	
 	// 把所有内建对象本地化
-	each.call([String, Array, Function, Date, Number], Class);
+	each.call([String, Array, Function, Date, Number], p.Native);
 	
 	/**
 	 * @class JPlus.Object
@@ -2162,50 +2150,19 @@ var JPlus = {
 	 * @return {XMLHttpRequest} 请求的对象。
 	 */
 	
-	if(navigator.isQuirks) {
-		
-		try{
-			(window.XMLHttpRequest = function() {
-				return new ActiveXObject("MSXML2.XMLHTTP");
-			})();
-		} catch(e) {
-			try {
-				(window.XMLHttpRequest = function() {
-					return new ActiveXObject("Microsoft.XMLHTTP");
+	if(!window.XMLHttpRequest) {
+		each.call(["MSXML2.XMLHTTP", "Microsoft.XMLHTTP"], function(xmlHttpType){
+			try{
+				(window.XMLHttpRequest = function(){
+					return new ActiveXObject(xmlHttpType);
 				})();
-			} catch (e) {
-				
-			}
-		}
+			}catch(e){}
+			return false;
+		});
 	}
 	
 	
 	/// #endif
-	
-	/**
-	 * 判断当前请求是否有正常的返回。
-	 * @param {XMLHttpRequest} xmlHttpRequest 请求。
-	 * @return {Boolean} 正常返回true 。
-	 * @static
-	 */
-	window.XMLHttpRequest.isOk = function(xmlHttpRequest) {
-		
-		assert.isObject(xmlHttpRequest, 'XMLHttpRequest.isOk(xmlHttpRequest): 参数 {xmlHttpRequest} 不是合法的 XMLHttpRequest 对象');
-		
-		// 获取状态。
-		var status = xmlHttpRequest.status;
-		if (!status) {
-			
-			// 获取协议。
-			var protocol = window.location.protocol;
-			
-			// 对谷歌浏览器，  status 不存在。
-			return (protocol == "file: " || protocol == "chrome: " || protocol == "app: ");
-		}
-		
-		// 检查， 各浏览器支持不同。
-		return (status >= 200 && status < 300) || status == 304 || status == 1223;
-	};
 	
 	/**
 	 * @class
@@ -2309,19 +2266,6 @@ var JPlus = {
 	}
 	
 	/**
-	 * 由存在的类修改创建类。
-	 * @param {Function/Class} constructor 将创建的类。
-	 * @return {Class} 生成的类。
-	 */
-	function Class(constructor) {
-		
-		// 简单拷贝  Object 的成员，即拥有类的特性。
-		// 在 JavaScript， 一切函数都可作为类，故此函数存在。
-		// Object 的成员一般对当前类构造函数原型辅助。
-		return applyIf(constructor, Object);
-	}
-	
-	/**
 	 * 所有自定义类的基类。
 	 */
 	function Object() {
@@ -2392,21 +2336,25 @@ var JPlus = {
 		// 取值，创建。
 		ns = ns.split('.');
 		
-		var current = window, i = -1, len = ns.length - 1;
+		var current = window, i = -1, len = ns.length - 1, dft = !ns[0];
 		
+		// 如果第一个字符是 . 则补上默认的名字空间。
 		ns[0] = ns[0] || p.defaultNamespace;
 		
 		while(++i < len)
 			current = current[ns[i]] || (current[ns[i]] = {});
 
 		if(i = ns[len])
-			current[i] = obj;
+			current[i] = applyIf(obj, current[i] || {});
 		else {
 			obj = applyIf(current, obj);
 			i = ns[--len];
 		}
 		
-		return window[i] = obj;
+		if(dft)
+			window[i] = obj;
+		
+		return obj;
 		
 		
 		
