@@ -61,7 +61,11 @@
 			var a = $('a'), b = $('b'), c = $('c'), d = $('d'), o = $('o'), abcd = new ElementList($('all').getElementsByTagName("div"));
 			
 			var testcases = {
-				'Element.prototype.a': {overrides: '@o; => 1'},
+				'Element': '-',
+				'$': '"o" => assert.isTrue(value.a)',
+				'Element.prototype.xType': {doCall: false, overrides: '@o; =>   "element"'},
+				'Element.parse': '"<div/>" ; "<div><div />a<\/div>"; "   <div/> f <div/>"; "<object />"; "<input type=\'radio\' checked=\'checked\'>"', 
+				'ElementList': '-',
 				'ElementList.prototype.each': '@abcd; function(value){ assert.log(value.id)} => assert.logged("abcd")',
 				'ElementList.prototype.filter': '@abcd; function(value) {return value === a || value === c} => assert.areEqual(value.doms, [a, c])',
 				'ElementList.prototype.invoke': '@abcd; "setAttribute", ["ff", 1] => assert.isTrue(a.getAttribute("ff") == 1),  assert.isTrue(d.getAttribute("ff") == 1) ',
@@ -69,9 +73,10 @@
 				'ElementList.prototype.a': '@abcd; => abcd',
 				'ElementList.prototype.b': '@abcd; => [1,1,1,1]',
 				'ElementList.prototype.c': '@abcd; => assert.areEqual(value.doms, [a, b,c, d])',
-				'ElementList.prototype.d': '@abcd; => assert.areEqual(value.doms, [a, b,c, d])'
-			//	'Element.prototype.xType': {doCall: false, overrides: '@o'},   
-			//	'Element.parse': '"<div/>" ; "<div><div />a</div>"; "<div/> f <div/>"'
+				'ElementList.prototype.d': '@abcd; => assert.areEqual(value.doms, [a, b,c, d])',
+				'Document': '-',
+				'Document.prototype.create': '@document; "div", "a" => assert.isTrue(value.tagName === "DIV")',
+				'Document.prototype.getDom': '@document;"a", "c" => assert.areEqual(value.doms, [a, c])'
 			};
 			
 			initTestCases(testcases);
