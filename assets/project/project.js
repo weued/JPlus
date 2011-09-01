@@ -28,8 +28,9 @@ var notes = {
 	},
 	
 	'教程': {
-		'DOM 基础': 'notes/javascript/dom.html',
+		'Javascript 学习方法': 'notes/javascript/studymethod.html',
 		'Javascript 基础教程': 'notes/javascript/basic.html',
+		'DOM 基础': 'notes/javascript/dom.html',
 		'Javascript 高级教程': 'notes/javascript/advance.html',
 		'使用 Eclipse下载项目': 'notes/git/guide.html',
 		'使用 TortoiseGit下载项目': 'notes/git/tortoisegit.html',
@@ -53,15 +54,15 @@ var users = '+aki +xuld +qingtian';//新增账户第2个加号记得加上空格
 
 var resources = {
 	
-	'users': users,
+	'Users': users,
 	'工具': {
 		'格式化': 'tools/format/index.html',
 		'加密': 'tools/pack/index.html',
 		'压缩': 'tools/compact/index.html',
 		'速度测试': 'tools/speedmatch/index.html'	
 	},
-	'javascript 基础能力自测': {
-		'B 等级 - 语法': 'resources/javascript/level-B.html'
+	'技术能力自测': {
+		'B 等级 - 语法': 'resources/quiz/javascript-b.html'
 	}
 };
 

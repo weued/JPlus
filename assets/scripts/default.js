@@ -501,9 +501,9 @@
 				r.push(this.prefix);
 				r.push('assert.clearLog();\r\n');
 				r.push('console.log("');
-				r.push(this.methodName.replace(/"/g, '\\\"'));
+				r.push(this.methodName.replace(/\\/g, '\\\\').replace(/"/g, '\\\"'));
 				r.push('(');
-				r.push(override.replace(/\"/g, "\\\""));
+				r.push(override.replace(/\\/g, '\\\\').replace(/"/g, "\\\""));
 				r.push(') => ", ');
 				r.push('value = ');
 				r.push(this.method);
