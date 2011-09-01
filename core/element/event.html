@@ -34,17 +34,15 @@
 		
 		<script>
 			
+			
+			var a = $('a'), b = $('b'), c = $('c'), d = $('d'), o = $('o'), abcd = new ElementList([a, b, c, d]);
+			
+			
 			var testcases = {
-				'testcase': '-',
-				'add': '1=>3',
-				'sample': {  				 // 测试的函数名
-					name: 'name',       	 // 名字
-					summary: 'summary',  	 //  功能的说明
-					init: 'var a = 1;', 	 // 初始化的时候执行
-					overrides: '@me = this; 1 => 2; 2, a => 3',  // 重载的参数列表
-					uninit: 'a = null;', // 执行结束后执行
-					time: 1000  // 测试速度时执行才次数
-				}
+				'Element.prototype.on': '@a; "click", function(){console.log("clicked") }',
+				'Element.prototype.un': '@a; "click"',
+				'Element.prototype.trigger': '@a; "click"',
+				'Element.prototype.one': '@a; "click", function(){console.log("clicked - once") }'
 			};
 			
 			initTestCases(testcases);

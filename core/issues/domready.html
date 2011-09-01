@@ -1,0 +1,85 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>专题： DomReady</title>
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+		<script type="text/javascript" src="../../jplus/system.js" ></script>
+		<script type="text/javascript" src="../../jplus/system/dom/element.js" ></script>
+	</head>
+	<body>
+		<h2>专题： DomReady</h2>
+		<p>文/xuld</p>
+		<h4>背景</h4>
+		<p class="content">DomReady 是指 DOM 树加载完成后的事件。load事件则是在所有资源都载入完成后执行的事件。比如在网页里使用的
+		图片资源在没有加载之前，就已经触发了 DomReady 事件， 而 load 事件则在等待图片加载完成后触发。 </p>
+		<h4>问题描述</h4>
+		<p class="content">因为load事件出现较早，所以load事件没有大的兼容性问题，各个浏览器可以方便地使用这个事件。
+		然而 DomReady 就没这么幸运了。新的标准浏览器使用 DomContentLoaded 事件以支持 DomReady 。IE 老版本浏览器未支持这个事件，
+		但它有一个类似的事件： readystatechange 。 然而这个事件的本意不是 DomReady ，因此需要额外处理。</p>
+		<p class="content">作为一个基础库，解决各浏览器在 DomReady 上的差异问题是理所当然的。</p>
+		<h4>解决目标</h4>
+		<ol>
+			<li>
+				实现各个浏览器兼容的 DomReady 事件。
+			</li>
+			<li>
+				无论在绑定脚本加载时，是否已经发生了  DomReady 事件。都要确保 DomReady 函数被触发。
+			</li>
+			<li>
+				允许动态 js 加载器修改 DomReady，并在所有脚本加载完成后触发 DomReady 事件。
+			</li>
+		</ol>
+		<h4>解决方案</h4>
+		<p class="content">J+ 提供了2个 API: document.onReady , document.onLoad 分别绑定在 DomReady 和 load 事件上的函数。这2个函数如何实现呢?</p>
+		<p class="content">首先肯定的是所有浏览器都支持 load 事件， 且这个事件可以无错触发。</p>
+		<p  class="content">定义一个 doLoad 函数， 在 load 执行，它会同时执行 doReady 函数</p>
+		
+		
+		<h4>测试</h4>
+		(请查看源代码)
+		<script>
+		
+			// 动态创建了 <script>   。
+			var script = document.createElement('script');
+			script.src = '../../jplus/system/ajax/ajax.js';
+			var head = document.getElementsByTagName('head')[0];
+			head.insertBefore(script, head.firstChild);
+			
+			var readyWait = 1;
+			
+			//  增加一个 hook， 如果 readyWait > 0， 说明还有脚本正在载入，停止 ready 事件的触发。
+			Element.addEvents('ready', function (e) {
+				
+				// return false， 则阻止事件其它函数执行。
+				
+				// ==================================================
+				// TRY: 把下面这条语句注释后，  则 domReady 会在 script 载入前执行。
+				return readyWait == 0;
+			});
+			
+			//  在脚本载入的时候，减少一个等待，并手动触发 ready 事件。
+			script.onload = function(){
+				readyWait--;
+				document.onReady();
+			};
+			
+			//  这时没有载入脚本，所以第一次执行时下面的 onReady 执行时 没有 Ajax。
+		
+			document.onReady(function(){
+				console.log(document.body ? 'ok' : 'ready event is triggered too early');
+				console.log(!window.Ajax ? ' ready event before js loaded' : 'ready event after js load event');
+			});
+			
+			// 在执行 document.onReady 时， 页面已经加载，所以内部的 document.onReady 直接调用函数。
+			
+			document.onReady(function(){
+				document.onReady(function(){
+					console.log('called when ready');    
+				});
+			});
+			
+		</script>
+		
+	</body>
+</html>

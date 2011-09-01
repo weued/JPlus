@@ -284,7 +284,7 @@ var JPlus = {
 			 * JPlus.setData(obj, 'a', 5);    //     5
 			 * </code>
 			 */
-			setData: function(obj, dataType, data) {
+			setData: function (obj, dataType, data) {
 				
 				assert.isObject(obj, "JPlus.setData(obj, dataType): 参数 {obj} ~。");
 				
@@ -304,7 +304,7 @@ var JPlus = {
 			 * JPlus.cloneData(obj2, obj);
 			 * </code>
 			 */
-			cloneData: function(dest, src) {
+			cloneData: function (dest, src) {
 				
 				assert.isObject(src, "JPlus.cloneData(dest, src): 参数 {src} ~。");
 				assert.isObject(dest, "JPlus.cloneData(dest, src): 参数 {dest} ~。");
@@ -321,7 +321,7 @@ var JPlus = {
 					if(evt) {
 						delete dest.data.event;
 						for (i in evt) {
-							evt[i].handlers.forEach( function(fn, j) {
+							evt[i].handlers.forEach( function (fn, j) {
 								
 								// 如果源数据的 target 是 src， 则改 dest 。
 								IEvent.on.call(dest, i, fn, this[j] === src ? dest : this[j]);
@@ -344,7 +344,7 @@ var JPlus = {
 			 * JPlus.eval('alert("hello")');
 			 * </code>
 			 */
-			eval: window.execScript || function(statement) {
+			eval: window.execScript || function (statement) {
 				
 				// 如果正常浏览器，使用 window.eval  。
 				return window.eval(statement);
@@ -362,7 +362,7 @@ var JPlus = {
 			 * <code>
 			 * var MyCls = Class({
 			 * 
-			 *    constructor: function(g, h) {
+			 *    constructor: function (g, h) {
 			 * 	      alert('构造函数' + g + h)
 			 *    }	
 			 * 
@@ -416,7 +416,7 @@ var JPlus = {
 			 * JPlus.loadScript('./v.js');
 			 * </code>
 			 */
-			loadScript: function(url) {
+			loadScript: function (url) {
 				return p.loadText(url, p.eval);
 			},
 			
@@ -429,7 +429,7 @@ var JPlus = {
 			 * JPlus.loadStyle('./v.css');
 			 * </code>
 			 */
-			loadStyle: function(url) {
+			loadStyle: function (url) {
 				
 				// 在顶部插入一个css，但这样肯能导致css没加载就执行 js 。所以，要保证样式加载后才能继续执行计算。
 				return document.getElementsByTagName("HEAD")[0].appendChild(apply(document.createElement('link'), {
@@ -450,7 +450,7 @@ var JPlus = {
 			 * trace(  JPlus.loadText('./v.html')  );
 			 * </code>
 			 */
-			loadText: function(url, callback) {
+			loadText: function (url, callback) {
 				
 				assert.notNull(url, "JPlus.loadText(url, callback): 参数 {url} ~。");
 	
@@ -503,7 +503,7 @@ var JPlus = {
 			 * using("System.Dom.Keys");
 			 * </code>
 			 */
-			using: function(ns, isStyle) {
+			using: function (ns, isStyle) {
 				
 				assert.isString(ns, "using(ns): 参数 {ns} 不是合法的名字空间。");
 				
@@ -529,7 +529,7 @@ var JPlus = {
 				 }
 				 
 				 // 如果在节点找到符合的就返回，找不到，调用 callback 进行真正的 加载处理。
-				 each.call(doms, function(dom) {
+				 each.call(doms, function (dom) {
 				 	return !dom[src] || dom[src].toLowerCase().indexOf(ns) === -1;
 				 }) && callback(p.rootPath + ns);
 			},
@@ -596,7 +596,7 @@ var JPlus = {
 			 * @param {Number} statusCode 请求。
 			 * @return {Boolean} 正常返回true 。
 			 */
-			checkStatusCode: function(statusCode) {
+			checkStatusCode: function (statusCode) {
 				
 				// 获取状态。
 				if (!statusCode) {
@@ -645,73 +645,49 @@ var JPlus = {
 				 * @return Object this
 				 * @example
 				 * <code>
-				 * elem.on('click', function(e) {
+				 * elem.on('click', function (e) {
 				 * 		return true;
 				 * });
 				 * </code>
 				 */
-				on: function(type, listener, bind) {
+				on: function (type, listener, bind) {
 					
 					assert.isFunction(listener, 'IEvent.on(type, listener, bind): 参数 {listener} ~。');
 					
 					// 获取本对象     本对象的数据内容   本事件值
-					var me = this, d = p.data(me, 'event'), evt = d[type], eMgr;
+					var me = this, d = p.data(me, 'event'), evt = d[type];
 					
 					// 如果未绑定过这个事件。
 					if (!evt) {
 						
-						evt = (eMgr = me).constructor;
-						
-						// 遍历父类， 找到适合的 eMgr	
-						while(!(eMgr = eventMgr[eMgr.xType]) || !(eMgr = eMgr[type])) {
-							
-							if(evt && (evt = evt.base)) {
-								eMgr = evt.prototype;
-							} else {
-								eMgr = eventMgr.$default;
-								break;
-							}
-						
-						}
-						
 						// 支持自定义安装。
-						evt = function(e) {
+						d[type] = evt = function (e) {
 							var listener = arguments.callee,
-								scopes = listener.scopes,
 								handlers = listener.handlers.slice(0), 
 								i = -1,
 								len = handlers.length;
 							
 							// 循环直到 return false。 
 							while (++i < len) 
-								if (handlers[i].call(scopes[i], e) === false) 										
+								if (handlers[i][0].call(handlers[i][1], e) === false) 										
 									return false;
 							
 							return true;
 						};
 						
-						// 绑定事件对象，用来删除和触发。
-						evt.event = eMgr;
+						// 获取事件管理对象。 
+						d = getMgr(me, type);
 						
 						// 当前事件的全部函数。
-						evt.handlers = [eMgr.initEvent];
-						
-						// 当前事件的作用域。
-						evt.scopes = [me];
-						
-						// 保存全部内容。
-						d[type] = evt;
+						evt.handlers = [[d.initEvent, me]];
 						
 						// 添加事件。
-						eMgr.add(me, type, evt);
+						d.add(me, type, evt);
 						
 					}
 					
 					// 添加到 handlers 。
-					evt.handlers.push(listener);
-					
-					// 保存作用域。
-					evt.scopes.push(bind || me);
+					evt.handlers.push([listener, bind || me]);
 						
 					return me;
 				},
@@ -721,20 +697,20 @@ var JPlus = {
 				 * @param {String} [type] 监听名字。
 				 * @param {Function/undefined} listener 回调器。
 				 * @return Object this
-				 * 注意: function() {} !== function() {}, 这意味着这个代码有问题:
+				 * 注意: function () {} !== function () {}, 这意味着这个代码有问题:
 				 * <code>
-				 * elem.on('click', function() {});
-				 * elem.un('click', function() {});
+				 * elem.on('click', function () {});
+				 * elem.un('click', function () {});
 				 * </code>
 				 * 你应该把函数保存起来。
 				 * <code>
-				 * var c =  function() {};
+				 * var c =  function () {};
 				 * elem.on('click', c);
 				 * elem.un('click', c);
 				 * </code>
 				 * @example
 				 * <code>
-				 * elem.un('click', function(e) {
+				 * elem.un('click', function (e) {
 				 * 		return true;
 				 * });
 				 * </code>
@@ -744,27 +720,32 @@ var JPlus = {
 					assert(!listener || Function.isFunction(listener), 'IEvent.un(type, listener): 参数 {listener} 必须是可执行的函数或空参数。', listener);
 					
 					// 获取本对象     本对象的数据内容   本事件值
-					var me = this, d = p.getData(me, 'event'), evt;
+					var me = this, d = p.getData(me, 'event'), evt, handlers, i;
 					if (d) {
 						 if (evt = d[type]) {
+						 	
+						 	handlers = evt.handlers;
+						 	
 							if (listener) {
 								
-								// 同时删掉句柄和作用域。
-								var i = evt.handlers.indexOf(listener, 1);
-								if(i !== -1){
-									evt.handlers.splice(i, 1);
-									evt.scopes.splice(i, 1);
-								}
+								// 搜索符合的句柄。
+								for(i = handlers.length - 1; i; i--) {
+									if(handlers[i][0] === listener)	{
+										handlers.splice(i, 1);
+										break;
+									}
+								} 
+								
 							}
 								
 							// 检查是否存在其它函数或没设置删除的函数。
-							if (!listener || evt.handlers.length < 2) {
+							if (!listener || handlers.length < 2) {
 								
 								// 删除对事件处理句柄的全部引用，以允许内容回收。
 								delete d[type];
 								
 								// 内部事件管理的删除。
-								evt.event.remove(me, type, evt);
+								getMgr(me, type).remove(me, type, evt);
 							}
 						}else if (!type) {
 							for (evt in d) 
@@ -788,10 +769,10 @@ var JPlus = {
 				trigger: function (type, e) {
 					
 					// 获取本对象     本对象的数据内容   本事件值 。
-					var me = this, evt = p.getData(me, 'event');
+					var me = this, evt = p.getData(me, 'event'), eMgr;
 					
 					// 执行事件。
-					return !evt || !(evt = evt[type]) || ( evt.event.trigger ? evt.event.trigger(me, type, evt, e) : evt(e) );
+					return !evt || !(evt = evt[type]) || ((eMgr = getMgr(me, type)).trigger ? eMgr.trigger(me, type, evt, e) : evt(e) );
 					
 				},
 				
@@ -802,7 +783,7 @@ var JPlus = {
 				 * @return Object this
 				 * @example
 				 * <code>
-				 * elem.one('click', function(e) {
+				 * elem.one('click', function (e) {
 				 * 		trace('a');  
 				 * });
 				 * 
@@ -810,12 +791,12 @@ var JPlus = {
 				 * elem.trigger('click');   //  没有输出 
 				 * </code>
 				 */
-				one: function(type, listener, bind) {
+				one: function (type, listener, bind) {
 					
 					assert.isFunction(listener, 'IEvent.one(type, listener): 参数 {listener} ~。');
 					
 					// one 本质上是 on ,  只是自动为 listener 执行 un 。
-					return this.on(type, function() {
+					return this.on(type, function () {
 						
 						// 删除，避免闭包。
 						this.un( type, arguments.callee);
@@ -848,7 +829,7 @@ var JPlus = {
 		 * @example
 		 * <code>
 		 * Number.implement({
-		 *   sin: function() {
+		 *   sin: function () {
 		 * 	    return Math.sin(this);
 		 *  }
 		 * });
@@ -872,7 +853,7 @@ var JPlus = {
 		 * @return this
 		 * @seeAlso JPlus.Object.implement
 		 */
-		implementIf: function(members) {
+		implementIf: function (members) {
 		
 			assert(members && this.prototype, "Class.implementIf(members): 无法扩展类，因为 {members} 或 this.prototype 为空。", members);
 	
@@ -976,11 +957,11 @@ var JPlus = {
 		 * 
 		 *     click: {
 		 * 			
-		 * 			add:  function(elem, type, fn) {
+		 * 			add:  function (elem, type, fn) {
 		 * 	   			alert("为  elem 绑定 事件 " + type );
 		 * 			},
 		 * 
-		 * 			initEvent: function(e) {
+		 * 			initEvent: function (e) {
 		 * 	   			alert("初始化 事件参数  " + e );
 		 * 			}
 		 * 
@@ -989,7 +970,7 @@ var JPlus = {
 		 * });
 		 * 
 		 * var m = new MyCls;
-		 * m.on('click', function() {
+		 * m.on('click', function () {
 		 * 	  alert(' 事件 触发 ');
 		 * });
 		 * 
@@ -1012,7 +993,7 @@ var JPlus = {
 				var xType = hasOwnProperty.call(ep, 'xType') ? ep.xType : ( ep.xType = (p.id++).toString() );
 				
 				// 更新事件对象。
-				o.update(events, function(e) {
+				o.update(events, function (e) {
 					return applyIf(e, eventMgr.$default);
 					
 					// 添加 JPlus.Events 中事件。
@@ -1071,14 +1052,14 @@ var JPlus = {
 		 * 这是最好的解决方案。
 		 * </p>
 		 */
-	 	extend: function(members) {
+	 	extend: function (members) {
 	
 			// 未指定函数   使用默认构造函数(Object.prototype.constructor);
 			
 			// 生成子类 。
 			var subClass = hasOwnProperty.call(members =  members instanceof Function ? {
 					constructor: members
-				} : (members || {}), "constructor") ? members.constructor : function() {
+				} : (members || {}), "constructor") ? members.constructor : function () {
 					
 					// 调用父类构造函数 。
 					arguments.callee.base.apply(this, arguments);
@@ -1128,7 +1109,7 @@ var JPlus = {
 			
 			p.enumerables = "toString hasOwnProperty valueOf constructor isPrototypeOf".split(' ');
 			// IE6  不会遍历系统对象需要复制，所以强制去测试，如果改写就复制 。
-			return function(dest, src) {
+			return function (dest, src) {
 				for (var i = p.enumerables.length, value; i--;)
 					if(hasOwnProperty.call(src, value = p.enumerables[i]))
 						dest[value] = src[value];
@@ -1161,13 +1142,13 @@ var JPlus = {
 		 * @return {Boolean} 如果已经遍历完所传的所有值， 返回 true， 如果遍历被中断过，返回 false。
 		 * @example
 		 * <code> 
-		 * Object.each({a: '1', c: '3'}, function(value, key) {
+		 * Object.each({a: '1', c: '3'}, function (value, key) {
 		 * 		trace(key + ' : ' + value);
 		 * });
 		 * // 输出 'a : 1' 'c : 3'
 		 * </code>
 		 */
-		each: function(iterable, fn, bind) {
+		each: function (iterable, fn, bind) {
 
 			assert(!Function.isFunction(iterable), "Object.each(iterable, fn, bind): 参数 {iterable} 不能是可执行的函数。 ", iterable);
 			assert(Function.isFunction(fn), "Object.each(iterable, fn, bind): 参数 {fn} 必须是可执行的函数。 ", fn);
@@ -1207,13 +1188,13 @@ var JPlus = {
 		 * Object.update([{a: 1},{a: 4}], "a", [{},{}], true); // => [{a: 1},{a: 4}];
 		 * </code>
 		 * */
-		update: function(iterable, fn, dest, args) {
+		update: function (iterable, fn, dest, args) {
 			
 			// 如果没有目标，源和目标一致。
 			dest = dest || iterable;
 			
 			// 遍历源。
-			o.each(iterable, Function.isFunction(fn) ? function(value, key) {
+			o.each(iterable, Function.isFunction(fn) ? function (value, key) {
                 
 				// 执行函数获得返回。
 				value = fn.call(args, value, key);
@@ -1221,7 +1202,7 @@ var JPlus = {
 				// 只有不是 undefined 更新。
                 if(value !== undefined)
 				    dest[key] = value;
-			} : function(value, key) {
+			} : function (value, key) {
 				
 				// 如果存在这个值。即源有 fn 内容。
 				if(value != undefined) {
@@ -1256,7 +1237,7 @@ var JPlus = {
 		 * Object.isObject(null); // false
 		 * </code>
 		 */
-		isObject: function(obj) {
+		isObject: function (obj) {
 			
 			// 只检查 null 。
 			return obj !== null && typeof obj == "object";
@@ -1278,7 +1259,7 @@ var JPlus = {
 		 * 
 		 * @example
 		 * <code>
-		 * document.setA = function(value) {
+		 * document.setA = function (value) {
 		 * 	  this._a = value;
 		 * };
 		 * 
@@ -1288,7 +1269,7 @@ var JPlus = {
 		 * 
 		 * </code>
 		 */
-		set: function(obj, configs) {
+		set: function (obj, configs) {
 			
 			if(configs) 
 				for(var key in configs) {
@@ -1340,7 +1321,7 @@ var JPlus = {
 		 *
 		 * </code>
 		 */
-		clone: function(obj) {
+		clone: function (obj) {
 			
 			// 内部支持深度。
 			// 用法:  Object.clone.call(1, val);
@@ -1379,7 +1360,7 @@ var JPlus = {
 		 * Object.type([]); // "array"
 		 * </code>
 		 * */
-		type: function(obj) {
+		type: function (obj) {
 			
 			//获得类型  。
 			var b = typeof obj;
@@ -1411,7 +1392,7 @@ var JPlus = {
 		 * Object.addCallback(window, "onload",trace.empty);
 		 * </code>
 		 */
-		addCallback: function(obj, propertyName, fn) {
+		addCallback: function (obj, propertyName, fn) {
 			
 			assert.notNull(obj, 'Object.addCallback(obj, propertyName, fn): 参数 obj ~。');
 			
@@ -1421,7 +1402,7 @@ var JPlus = {
 			var f = obj[propertyName];
 			
 			// 如果不存在则直接拷贝，否则重新拷贝。新函数对原函数调用。
-			obj[propertyName] = typeof f === 'function' ? function() {
+			obj[propertyName] = typeof f === 'function' ? function () {
 				
 				// 获取上次的函数。
 				var v = f.apply(this, arguments);
@@ -1456,7 +1437,7 @@ var JPlus = {
 		 * Array.isArray(new Array); // true
 		 * </code>
 		 */
-		isArray: function(obj) {
+		isArray: function (obj) {
 			
 			// 检查原型。
 			return toString.call(obj) === "[object Array]";
@@ -1473,7 +1454,7 @@ var JPlus = {
 		 * Array.create([4,6], 1); // [6]
 		 * </code>
 		 */
-		create: function(iterable, startIndex) {
+		create: function (iterable, startIndex) {
 			if(!iterable)
 				return [];
 				
@@ -1508,15 +1489,15 @@ var JPlus = {
 		 * 注意，未来 Function.prototype.bind 是系统函数， 因此这个函数将在那个时候被 替换掉。
 		 * @example
 		 * <code>
-		 * Function.bind(function() {return this}, 0)()    ; // 0
+		 * Function.bind(function () {return this}, 0)()    ; // 0
 		 * </code>
 		 */
-		bind: function(fn, bind) {
+		bind: function (fn, bind) {
 					
 			assert.isFunction(fn, 'Function.bind(fn): 参数 {fn} ~。');
 			
 			// 返回对 bind 绑定。
-			return function() {
+			return function () {
 				return fn.apply(bind, arguments);
 			}
 		},
@@ -1553,12 +1534,12 @@ var JPlus = {
 		 * @return {Boolean} 如果是函数，返回 true， 否则返回 false。
 		 * @example
 		 * <code>
-		 * Function.isFunction(function() {}); // true
+		 * Function.isFunction(function () {}); // true
 		 * Function.isFunction(null); // false
 		 * Function.isFunction(new Function); // true
 		 * </code>
 		 */
-		isFunction: function(obj) {
+		isFunction: function (obj) {
 			
 			// 检查原型。
 			return toString.call(obj) === "[object Function]";
@@ -1602,7 +1583,7 @@ var JPlus = {
 		 *  不要出现{{{ 和  }}} 这样将获得不可预知的结果。
 		 * </code>
 		 */
-		format: function(format, args) {
+		format: function (format, args) {
 
 			if (!format) return "";
 					
@@ -1613,7 +1594,7 @@ var JPlus = {
 				arr = o.isObject(args) && arguments.length === 2 ? args: ap.slice.call(arguments, 1);
 
 			//通过格式化返回
-			return format.replace(rFormat, function(match, name) {
+			return format.replace(rFormat, function (match, name) {
 				var start = match.charAt(1) == '{',
 					end = match.charAt(match.length - 2) == '}';
 				if (start || end) return match.slice(start, match.length - end);
@@ -1632,16 +1613,16 @@ var JPlus = {
 		 * @example
 		 * <code>
 		 * String.map("aaa bbb ccc", trace); //  aaa bbb ccc
-		 * String.map("aaa bbb ccc", function(v) { return v; }, {});    //    {aaa:aaa, bbb:bbb, ccc:ccc};
+		 * String.map("aaa bbb ccc", function (v) { return v; }, {});    //    {aaa:aaa, bbb:bbb, ccc:ccc};
 		 * </code>
 		 */
-		map: function(str, src, dest, copyIf) {
+		map: function (str, src, dest, copyIf) {
 					
 			assert(typeof str == 'string', 'String.map(str, src, dest, copyIf): 参数 {str} 必须是字符串。', str);
 			
 			var isFn = Function.isFunction(src);
 			// 使用 ' '、分隔, 这是约定的。
-			str.split(' ').forEach(function(value, index, array) {
+			str.split(' ').forEach(function (value, index, array) {
 				
 				// 如果是函数，调用函数， 否则是属性。
 				var val = isFn ? src(value, index, array) : src[value];
@@ -1663,10 +1644,10 @@ var JPlus = {
 		 * String.param({a: 4, g: 7}); //  a=4&g=7
 		 * </code>
 		 */
-		param: function(obj) {
+		param: function (obj) {
 			if(!obj) return "";
 			var s = [], e = encodeURIComponent;
-			o.each(obj, function( value, key ) {
+			o.each(obj, function ( value, key ) {
 				s.push(e(key) + '=' + e(value));
 			});
 			
@@ -1683,7 +1664,7 @@ var JPlus = {
 		 * String.ellipsis("123", 2); //   '1...'
 		 * </code>
 		 */
-		ellipsis: function(value, len) {
+		ellipsis: function (value, len) {
 			assert.isString(value, "String.ellipsis(value, len): 参数  {value} ~。");
 			assert.isNumber(len, "String.ellipsis(value, len): 参数  {len} ~。");
 			return value.length > len ?  value.substr(0, len - 3) + "..." : value;
@@ -1708,7 +1689,7 @@ var JPlus = {
 		 * Date.now(); //   相当于 new Date().getTime()
 		 * </code>
 		 */
-		now: function() {
+		now: function () {
 			return +new Date;
 		}
 		
@@ -1725,7 +1706,7 @@ var JPlus = {
 	 * 浏览器。
 	 * @namespace navigator
 	 */
-	applyIf(navigator, (function(ua) {
+	applyIf(navigator, (function (ua) {
 
 		//检查信息
 		var match = ua.match(/(IE|Firefox|Chrome|Safari|Opera|Navigator).((\d+)\.?[\d.]*)/i) || ["", "Other", 0, 0],
@@ -1790,7 +1771,7 @@ var JPlus = {
 			 * 是否为标准浏览器事件。
 			 * @type Boolean
 			 */
-			isStd: !!-[1,],
+			isStandard: !!-[1,],
 			
 			/// #endif
 			
@@ -1846,13 +1827,13 @@ var JPlus = {
 		 * <code>
 		 * 
 		 * var MyBa = new Class({
-		 *    a: function(g, b) {
+		 *    a: function (g, b) {
 		 * 	    alert(g + b);
 		 *    }
 		 * });
 		 * 
 		 * var MyCls = MyBa.extend({
-		 * 	  a: function(g, b) {
+		 * 	  a: function (g, b) {
 		 * 	    this.base('a', g, b);   // 或   this.base('a', arguments);
 		 *    }
 		 * });
@@ -1860,7 +1841,7 @@ var JPlus = {
 		 * new MyCls().a();   
 		 * </code>
 		 */
-		base: function(methodName, args) {
+		base: function (methodName, args) {
 			
 			var me = this.constructor,
 			
@@ -1911,7 +1892,7 @@ var JPlus = {
 		 * "font-size".toCamelCase(); //     "fontSize"
 		 * </code>
 	     */
-		toCamelCase: function() {
+		toCamelCase: function () {
 	        return this.replace(rToCamelCase, toCamelCase);
 	    },
 
@@ -1925,7 +1906,7 @@ var JPlus = {
 		 * "   g h   ".trim(); //     "g h"
 		 * </code>
 		 */
-		trim: function() {
+		trim: function () {
 			
 			// 使用正则实现。
 			return this.replace(rSpace, "");
@@ -1941,7 +1922,7 @@ var JPlus = {
 		 * "bb".capitalize(); //     "Bb"
 		 * </code>
 		 */
-		capitalize: function() {
+		capitalize: function () {
 			
 			// 使用正则实现。
 			return this.replace(rFirstChar, toUpperCase);
@@ -1983,7 +1964,7 @@ var JPlus = {
 		 * @seeAlso Array.prototype.forEach
 		 * @example
 		 * <code> 
-		 * [2, 5].each(function(value, key) {
+		 * [2, 5].each(function (value, key) {
 		 * 		trace(value);
 		 * 		return false
 		 * });
@@ -2002,12 +1983,12 @@ var JPlus = {
 		 * @seeAlso Array.prototype.select
 		 * @example
 		 * <code> 
-		 * [1, 7, 2].filter(function(key) {return key &lt; 5 })   [1, 2]
+		 * [1, 7, 2].filter(function (key) {return key &lt; 5 })   [1, 2]
 		 * </code>
 		 */
-		filter: function(fn, bind) {
+		filter: function (fn, bind) {
 			var r = [];
-			ap.forEach.call(this, function(value, i, array) {
+			ap.forEach.call(this, function (value, i, array) {
 				
 				// 过滤布存在的成员。
 				if(fn.call(this, value, i, array))
@@ -2026,7 +2007,7 @@ var JPlus = {
 		 * @seeAlso Array.prototype.each
 		 * @example
 		 * <code> 
-		 * [2, 5].forEach(function(value, key) {
+		 * [2, 5].forEach(function (value, key) {
 		 * 		trace(value);
 		 * });
 		 * // 输出 '2' '5'
@@ -2046,7 +2027,7 @@ var JPlus = {
 		 * [false].include(0);	//   false
 		 * </code>
 		 */
-		include: function(value) {
+		include: function (value) {
 			
 			//未包含，则加入。
 			var b = this.indexOf(value) !== -1;
@@ -2064,7 +2045,7 @@ var JPlus = {
 		 * ["", "aaa", "zzz", "qqq"].insert(3, 4); //   ["", "aaa", "zzz", 4, "qqq"]
 		 * </code>
 		 */
-		insert: function(index, value) {
+		insert: function (index, value) {
 			
 			assert.isNumber(index, "Array.prototype.insert(index, value): 参数 index ~。");
 			var me = this,
@@ -2086,10 +2067,10 @@ var JPlus = {
 		 * ["vhd"].invoke('charAt', [0]); //    ['v']
 		 * </code>
 		 */
-		invoke: function(func, args) {
+		invoke: function (func, args) {
 			assert(args && typeof args.length === 'number', "Array.prototype.invoke(func, args): 参数 {args} 必须是数组, 无法省略。", args);
 			var r = [];
-			ap.forEach.call(this, function(value) { 
+			ap.forEach.call(this, function (value) { 
 				assert(value != null && value[func] && value[func].apply, "Array.prototype.invoke(func, args): {value} 不包含可执行的函数 {func}。", value, func);
 				r.push(value[func].apply(value, args));
 			});
@@ -2105,7 +2086,7 @@ var JPlus = {
 		 * [1,7,8,8].unique(); //    [1, 7, 8]
 		 * </code>
 		 */
-		unique: function() {
+		unique: function () {
 			
 			// 删除从 i + 1 之后的当前元素。
 			for(var i = 0; i < this.length; ap.remove.call(this, this[i], ++i)) ;
@@ -2122,7 +2103,7 @@ var JPlus = {
 		 * [1,7,8,8].remove(7); //   1
 		 * </code>
 		 */
-		remove: function(value, startIndex) {
+		remove: function (value, startIndex) {
 			
 			// 找到位置， 然后删。
 			var i = ap.indexOf.call(this, value, startIndex);
@@ -2151,12 +2132,12 @@ var JPlus = {
 	 */
 	
 	if(!window.XMLHttpRequest) {
-		each.call(["MSXML2.XMLHTTP", "Microsoft.XMLHTTP"], function(xmlHttpType){
+		each.call(["MSXML2.XMLHTTP", "Microsoft.XMLHTTP"], function (xmlHttpType) {
 			try{
-				(window.XMLHttpRequest = function(){
+				(window.XMLHttpRequest = function () {
 					return new ActiveXObject(xmlHttpType);
 				})();
-			}catch(e){}
+			}catch(e) {}
 			return false;
 		});
 	}
@@ -2185,7 +2166,7 @@ var JPlus = {
 	 * JPlus 安装的根目录, 可以为相对目录。
 	 * @config {String}
 	 */
-	if(!p.rootPath){
+	if(!p.rootPath) {
 		try {
 			var scripts = document.getElementsByTagName("script");
 			
@@ -2279,7 +2260,7 @@ var JPlus = {
 	 */
 	function from(obj) {
 		
-		return function() {
+		return function () {
 			return obj;
 		}
 	}
@@ -2306,6 +2287,23 @@ var JPlus = {
 	 */
 	function emptyFn() {
 		
+	}
+	
+	function getMgr(eMgr, type) {
+		var evt = eMgr.constructor;
+		
+		// 遍历父类， 找到适合的 eMgr	
+		while(!(eMgr = eventMgr[eMgr.xType]) || !(eMgr = eMgr[type])) {
+			
+			if(evt && (evt = evt.base)) {
+				eMgr = evt.prototype;
+			} else {
+				return eventMgr.$default;
+			}
+		
+		}
+		
+		return eMgr;
 	}
 
 	/**
@@ -2384,8 +2382,8 @@ Object.extend(String, {
 	 * @param {String} s 字符串。
 	 * @return {String} 返回的字符串。
 	 */
-	toUTF8:function(s) {
-		return s.replace(/[^\x00-\xff]/g, function(a,b) {
+	toUTF8:function (s) {
+		return s.replace(/[^\x00-\xff]/g, function (a,b) {
 			return '\\u' + ((b=a.charCodeAt()) < 16 ? '000' : b<256 ? '00' : b<4096 ? '0' : '') + b.toString(16);
 		});
 	},
@@ -2395,8 +2393,8 @@ Object.extend(String, {
 	 * @param {String} s   字符串。
 	 * @return {String} 返回的字符串。
 	 */
-	fromUTF8:function(s) {
-		return s.replace(/\\u([0-9a-f]{3})([0-9a-f])/gi,function(a,b,c) {return String.fromCharCode((parseInt(b,16)*16+parseInt(c,16)))})
+	fromUTF8:function (s) {
+		return s.replace(/\\u([0-9a-f]{3})([0-9a-f])/gi,function (a,b,c) {return String.fromCharCode((parseInt(b,16)*16+parseInt(c,16)))})
 	}
 		
 });
@@ -2438,7 +2436,7 @@ Object.extendIf(trace, {
 	 * 输出方式。  {@param {String} message 信息。}
 	 * @type Function
 	 */
-	write: function(message) {
+	write: function (message) {
 		alert(message);
 	},
 	
@@ -2447,7 +2445,7 @@ Object.extendIf(trace, {
 	 * @param {Object} [obj] 要查看成员的对象。如果未提供这个对象，则显示全局的成员。
 	 * @param {Boolean} showPredefinedMembers=true 是否显示内置的成员。
 	 */
-	api: (function(){
+	api: (function () {
 		
 		var nodeTypes = 'Window Element Attr Text CDATASection Entity EntityReference ProcessingInstruction Comment HTMLDocument DocumentType DocumentFragment Document Node'.split(' '),
 		
@@ -2469,7 +2467,7 @@ Object.extendIf(trace, {
 				'Date': 'now parse UTC'
 			},
 			
-			APIInfo = window.aPIInfo = Class({
+			APIInfo = Class({
 				
 				memberName: '',
 				
@@ -2478,7 +2476,7 @@ Object.extendIf(trace, {
 				prefix: '',
 				
 				getPrefix: function (obj) {
-					for(var i = 0; i < definedClazz.length; i++){
+					for(var i = 0; i < definedClazz.length; i++) {
 						if(window[definedClazz[i]] === obj) {
 							return this.memberName = definedClazz[i];
 						}
@@ -2487,24 +2485,24 @@ Object.extendIf(trace, {
 					return this.getTypeName(obj, window, "", 3);
 				},
 				
-				getTypeName: function (obj, base, baseName, deep){
+				getTypeName: function (obj, base, baseName, deep) {
 								
-					for(var memberName in base){
-						if(base[memberName] === obj){
+					for(var memberName in base) {
+						if(base[memberName] === obj) {
 							this.memberName = memberName;
 							return baseName + memberName;
 						}
 					}
 				           
 					if(deep-- > 0) {
-						for(var memberName in base){
+						for(var memberName in base) {
 							try{
 								if(base[memberName] && isUpper(memberName, 0)) {
 									memberName = this.getTypeName(obj, base[memberName], baseName + memberName + ".", deep);
 									if(memberName) 
 										return memberName;
 								}
-							}catch(e){}
+							}catch(e) {}
 						}
 					}
 					
@@ -2529,7 +2527,7 @@ Object.extendIf(trace, {
 						this.baseClasses = [];
 						while(clazz && clazz.prototype) {
 							var name = this.getPrefix(clazz);
-							if(name){
+							if(name) {
 								this.baseClasses.push(clazz);
 								this.baseClassNames.push(name);	
 							}
@@ -2541,7 +2539,7 @@ Object.extendIf(trace, {
 					
 				},
 				
-				constructor: function(obj, showPredefinedMembers){
+				constructor: function (obj, showPredefinedMembers) {
 					this.members = {};
 					this.sortInfo = {};
 				
@@ -2556,7 +2554,7 @@ Object.extendIf(trace, {
 							var nodeType = obj.replaceChild ? obj.nodeType : obj.setInterval && obj.clearTimeout ? 0 : null;
 							if(nodeType) {
 								this.prefix = this.memberName = nodeTypes[nodeType];
-								if(this.prefix){
+								if(this.prefix) {
 									this.baseClassNames = ['Node', 'Element', 'HTMLElement', 'Document'];
 									this.baseClasses = [window.Node, window.Element, window.HTMLElement, window.HTMLDocument];
 								}
@@ -2577,7 +2575,7 @@ Object.extendIf(trace, {
 							
 					}
 					
-					if(!this.prefix){
+					if(!this.prefix) {
 						
 						this.prefix = this.getPrefix(obj);
 						 
@@ -2623,9 +2621,9 @@ Object.extendIf(trace, {
 				},
 				
 				addPredefinedMembers: function (clazz, obj, staticOrNonStatic, nonStatic) {
-					for(var type in staticOrNonStatic){
+					for(var type in staticOrNonStatic) {
 						if(clazz === window[type]) {
-							staticOrNonStatic[type].forEach(function(memberName){
+							staticOrNonStatic[type].forEach(function (memberName) {
 								this.addMember(obj, memberName, 5, nonStatic);
 							}, this);
 						}
@@ -2636,15 +2634,15 @@ Object.extendIf(trace, {
 					
 					if(clazz !== Object) {
 						
-						predefinedNonStatic.Object.forEach(function(memberName){
-							if(clazz.prototype[memberName] !== Object.prototype[memberName]){
+						predefinedNonStatic.Object.forEach(function (memberName) {
+							if(clazz.prototype[memberName] !== Object.prototype[memberName]) {
 								this.addMember(obj, memberName, 5, nonStatic);
 							}
 						}, this);
 					
 					}
 						
-					if(clazz === Object && !this.isClass){
+					if(clazz === Object && !this.isClass) {
 						return;	
 					}
 					
@@ -2670,8 +2668,8 @@ Object.extendIf(trace, {
 					} else {
 						
 						// 搜索包含当前成员的父类。
-						this.baseClasses.each(function(baseClass, i){
-							if(baseClass.prototype[memberName] === base[memberName] && hasOwnProperty.call(baseClass.prototype, memberName)){
+						this.baseClasses.each(function (baseClass, i) {
+							if(baseClass.prototype[memberName] === base[memberName] && hasOwnProperty.call(baseClass.prototype, memberName)) {
 								prefix = this.baseClassNames[i] + ".prototype.";
 								return  false;
 							}
@@ -2692,13 +2690,13 @@ Object.extendIf(trace, {
 				},
 				
 				copyTo: function (value) {
-					for(var member in this.members){
+					for(var member in this.members) {
 						value.push(this.members[member]);
 					}
 					
 					if(value.length) {
 						var sortInfo = this.sortInfo;
-						value.sort(function(a, b){return sortInfo[a] < sortInfo[b] ? -1 : 1;});
+						value.sort(function (a, b) {return sortInfo[a] < sortInfo[b] ? -1 : 1;});
 						value.unshift(this.title);
 					} else {
 						value.push(this.title + '没有可用的 API 信息。');
@@ -2715,7 +2713,7 @@ Object.extendIf(trace, {
 		initPredefined(predefinedNonStatic);
 		initPredefined(predefinedStatic);
 	
-		function initPredefined(predefined){
+		function initPredefined(predefined) {
 			for(var obj in predefined)
 				predefined[obj] = predefined[obj].split(' ');
 		}
@@ -2762,12 +2760,12 @@ Object.extendIf(trace, {
 			return name + ' ' + getMemberType(base[name], name);
 		}
 	
-		return function(obj, showPredefinedMembers) {
+		return function (obj, showPredefinedMembers) {
 			var r = [];
 			
 			// 如果没有参数，显示全局对象。
 			if(arguments.length === 0) {
-				for(var i = 0; i < 7; i++){
+				for(var i = 0; i < 7; i++) {
 					r.push(getDescription(window, definedClazz[i]));	
 				}
 	
@@ -2794,8 +2792,8 @@ Object.extendIf(trace, {
 	 * 得到输出指定内容的函数。
 	 * @return {Function}
 	 */
-	from: function(msg) {
-		return function() {
+	from: function (msg) {
+		return function () {
 			trace(msg, arguments);
 			return msg;
 		};
@@ -2805,7 +2803,7 @@ Object.extendIf(trace, {
 	 * 遍历对象每个元素。
 	 * @param {Object} obj 对象。
 	 */
-	dir: function(obj) {
+	dir: function (obj) {
 		if (JPlus.trace) {
 			if (window.console && console.dir) 
 				console.dir(obj);
@@ -2826,7 +2824,7 @@ Object.extendIf(trace, {
 	 * @param {Number/undefined} deep=0 递归的层数。
 	 * @return String 成员。
 	 */
-	inspect: function(obj, deep) {
+	inspect: function (obj, deep) {
 		
 		if( deep == null ) deep = 0;
 		switch (typeof obj) {
@@ -2842,7 +2840,7 @@ Object.extendIf(trace, {
 				}
 				
 				//  函数
-				return deep == 0 ? String.fromUTF8(obj.toString()) : "function()";
+				return deep == 0 ? String.fromUTF8(obj.toString()) : "function ()";
 				
 			case "object":
 				if (obj == null) return "null";
@@ -2898,7 +2896,7 @@ Object.extendIf(trace, {
 	 * 输出信息。
 	 * @param {Object} ... 内容。
 	 */
-	log: function() {
+	log: function () {
 		if (JPlus.trace) {
 			if (window.console && console.log && console.log.apply) {
 				console.log.apply(console, arguments);
@@ -2912,7 +2910,7 @@ Object.extendIf(trace, {
 	 * 输出一个错误信息。
 	 * @param {Object} msg 内容。
 	 */
-	error: function(msg) {
+	error: function (msg) {
 		if (JPlus.trace) {
 			if (window.console && console.error) 
 				console.error(msg); //   如果错误在此行产生，说明这是预知错误。
@@ -2927,7 +2925,7 @@ Object.extendIf(trace, {
 	 * 输出一个警告信息。
 	 * @param {Object} msg 内容。
 	 */
-	warn: function(msg) {
+	warn: function (msg) {
 		if (JPlus.trace) {
 			if (window.console && console.warn) 
 				console.warn(msg);
@@ -2940,7 +2938,7 @@ Object.extendIf(trace, {
 	 * 输出一个信息。
 	 * @param {Object} msg 内容。
 	 */
-	info: function(msg) {
+	info: function (msg) {
 		if (JPlus.trace) {
 			if (window.console && console.info) 
 				console.info(msg);
@@ -2954,7 +2952,7 @@ Object.extendIf(trace, {
 	 * @param {Function} f 函数。
 	 * @return String 返回运行的错误。如无错, 返回空字符。
 	 */
-	ifDebug: function(f) {
+	ifDebug: function (f) {
 		if (!JPlus.debug) return;
 		try {
 			f();
@@ -2967,7 +2965,7 @@ Object.extendIf(trace, {
 	/**
 	 * 清除调试信息。  (没有控制台时，不起任何作用)
 	 */
-	clear: function() {
+	clear: function () {
 		if( window.console && console.clear)
 			console.clear();
 	},
@@ -2975,7 +2973,7 @@ Object.extendIf(trace, {
 	/**
 	 * 空函数，用于证明函数已经执行过。
 	 */
-	count: function() {
+	count: function () {
 		trace(JPlus.id++);
 	},
 
@@ -2984,7 +2982,7 @@ Object.extendIf(trace, {
 	 * @param {Boolean} condition 字段。
 	 * @return {String} msg  输出的内容。
 	 */
-	ifNot: function(condition, msg) {
+	ifNot: function (condition, msg) {
 		if (!condition) trace.warn(msg);
 	},
 	
@@ -2993,7 +2991,7 @@ Object.extendIf(trace, {
 	 * @param {Function} fn 函数。
 	 * @param {Number} times=1000 运行次数。
 	 */
-	time: function(fn, times) {
+	time: function (fn, times) {
 		trace("[时间] " + trace.runTime(fn, times));
 	},
 	
@@ -3003,7 +3001,7 @@ Object.extendIf(trace, {
 	 * @param {Number} times=1000 运行次数。
 	 * @return {Number} 运行的时间 。
 	 */
-	runTime: function(fn, times) {
+	runTime: function (fn, times) {
 		times = times || 1000;
 		var d = Date.now();
 		while (times-- > 0)
@@ -3031,7 +3029,7 @@ function assert(bValue, msg) {
 		// 如果启用 [参数] 功能
 		if (val.length > 2) {
 			var i = 2;
-			msg = msg.replace(/\{([\w\.\(\)]*?)\}/g, function(s, x) {
+			msg = msg.replace(/\{([\w\.\(\)]*?)\}/g, function (s, x) {
 				return val.length <= i ? s : x + " = " + String.ellipsis(trace.inspect(val[i++]), 200);
 			});
 		}else {
@@ -3060,7 +3058,7 @@ function assert(bValue, msg) {
 	return !!bValue;
 }
 
-(function() {
+(function () {
 	
 	function  assertInternal(asserts, msg, value, dftMsg) {
 		return assert(asserts, msg ?  msg.replace('~', dftMsg) : dftMsg, value);
@@ -3085,7 +3083,7 @@ function assert(bValue, msg) {
 		 * assert.isFunction(a, "a ~");
 		 * </code>
 		 */
-		isFunction: function() {
+		isFunction: function () {
 			return assertInternal2(Function.isFunction, "必须是可执行的函数", arguments);
 		},
 		
@@ -3095,7 +3093,7 @@ function assert(bValue, msg) {
 		 * @param {String} msg="断言失败" 错误后的提示。
 		 * @return {Boolean} 返回 bValue 。
 		 */
-		isArray: function() {
+		isArray: function () {
 			return assertInternal2(Array.isArray, "必须是数组", arguments);
 		},
 		
@@ -3105,7 +3103,7 @@ function assert(bValue, msg) {
 		 * @param {String} msg="断言失败" 错误后的提示。
 		 * @return {Boolean} 返回 bValue 。
 		 */
-		isObject: function(value, msg) {
+		isObject: function (value, msg) {
 			return assertInternal(Object.isObject(value) || Function.isFunction(value), msg, value,  "必须是引用的对象", arguments);
 		},
 		
@@ -3115,7 +3113,7 @@ function assert(bValue, msg) {
 		 * @param {String} msg="断言失败" 错误后的提示。
 		 * @return {Boolean} 返回 bValue 。
 		 */
-		isNumber: function(value, msg) {
+		isNumber: function (value, msg) {
 			return assertInternal(typeof value == 'number' || value instanceof Number, msg, value, "必须是数字");
 		},
 		
@@ -3125,7 +3123,7 @@ function assert(bValue, msg) {
 		 * @param {String} msg="断言失败" 错误后的提示。
 		 * @return {Boolean} 返回 bValue 。
 		 */
-		isNode: function(value, msg) {
+		isNode: function (value, msg) {
 			return assertInternal(value && value.nodeType, msg, value, "必须是 DOM 节点");
 		},
 		
@@ -3135,7 +3133,7 @@ function assert(bValue, msg) {
 		 * @param {String} msg="断言失败" 错误后的提示。
 		 * @return {Boolean} 返回 bValue 。
 		 */
-		isElement: function(value, msg) {
+		isElement: function (value, msg) {
 			return assertInternal(value && value.style, msg, value, "必须是 Element 对象");
 		},
 		
@@ -3145,7 +3143,7 @@ function assert(bValue, msg) {
 		 * @param {String} msg="断言失败" 错误后的提示。
 		 * @return {Boolean} 返回 bValue 。
 		 */
-		isString: function(value, msg) {
+		isString: function (value, msg) {
 			return assertInternal(typeof value == 'string' || value instanceof String, msg, value, "必须是字符串");
 		},
 		
@@ -3155,7 +3153,7 @@ function assert(bValue, msg) {
 		 * @param {String} msg="断言失败" 错误后的提示。
 		 * @return {Boolean} 返回 bValue 。
 		 */
-		isDate: function(value, msg) {
+		isDate: function (value, msg) {
 			return assertInternal(Object.type(value) == 'date' || value instanceof Date, msg, value, "必须是日期");
 		},
 		
@@ -3165,7 +3163,7 @@ function assert(bValue, msg) {
 		 * @param {String} msg="断言失败" 错误后的提示。
 		 * @return {Boolean} 返回 bValue 。
 		 */
-		isRegExp: function(value, msg) {
+		isRegExp: function (value, msg) {
 			return assertInternal(Object.type(value) == 'regexp' || value instanceof RegExp, msg, value, "必须是正则表达式");
 		},
 	
@@ -3175,7 +3173,7 @@ function assert(bValue, msg) {
 		 * @param {String} argsName 变量的名字字符串。
 		 * @return {Boolean} 返回 assert 是否成功 。
 		 */
-		notNull: function(value, msg) {
+		notNull: function (value, msg) {
 			return assertInternal(value != null, msg, value, "不可为空");
 		},
 	
@@ -3187,7 +3185,7 @@ function assert(bValue, msg) {
 		 * @param {String} argsName 变量的米各庄。
 		 * @return {Boolean} 返回 assert 是否成功 。
 		 */
-		between: function(value, min, max, msg) {
+		between: function (value, min, max, msg) {
 			return assertInternal(value >= min && !(value >= max), msg, value, "超出索引, 它必须在 [" + min + ", " + (max === undefined ? "+∞" : max) + ") 间");
 		},
 	
@@ -3198,11 +3196,11 @@ function assert(bValue, msg) {
 		 * @param {String} message 错误的提示信息。
 		 * @return {Boolean} 返回 assert 是否成功 。
 		 */
-		instanceOf: function(v, types, msg) {
+		instanceOf: function (v, types, msg) {
 			if (!Array.isArray(types)) types = [types];
 			var ty = typeof v,
 				iy = Object.type(v);
-			return assertInternal(types.filter(function(type) {
+			return assertInternal(types.filter(function (type) {
 				return type == ty || type == iy;
 			}).length, msg, v, "类型错误。");
 		},
@@ -3213,7 +3211,7 @@ function assert(bValue, msg) {
 		 * @param {String} argsName 变量的参数名。
 		 * @return {Boolean} 返回 assert 是否成功 。
 		 */
-		notEmpty: function(value, msg) {
+		notEmpty: function (value, msg) {
 			return assertInternal(value && value.length, msg, value, "为空");
 		}
 

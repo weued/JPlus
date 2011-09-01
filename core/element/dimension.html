@@ -11,16 +11,40 @@
 		<script>
 			
 			var testcases = {
-				'testcase': '-',
-				'add': '1=>3',
-				'sample': {  				 // 测试的函数名
-					name: 'name',       	 // 名字
-					summary: 'summary',  	 //  功能的说明
-					init: 'var a = 1;', 	 // 初始化的时候执行
-					overrides: '@me = this; 1 => 2; 2, a => 3',  // 重载的参数列表
-					uninit: 'a = null;', // 执行结束后执行
-					time: 1000  // 测试速度时执行才次数
-				}
+				"basic element",
+				'Element.prototype.getOffsetParent': 'a.getOffsetParent(); ',
+				'Element.prototype.getOffsets': 'showInfo(a.getOffsets(), a); ',
+				'Element.prototype.getPosition': 'showInfo(a.getPosition(), a); ',
+				'Element.prototype.getPosition(true)': 'showInfo(a.getPosition(a.getOffsetParent()), a); ',
+				"inner element",
+				'Element.prototype.getOffsetParent': 'b.getOffsetParent(); ',
+				'Element.prototype.getOffsets': 'showInfo(b.getOffsets(), b); ',
+				'Element.prototype.getPosition': 'showInfo(b.getPosition(), b); ',
+				'Element.prototype.getPosition(true)': 'showInfo(b.getPosition(b.getOffsetParent()), b); ',
+				"document",
+				'document.getOffsetParent': 'document.getOffsetParent(); ',
+				'document.getOffsets': 'document.getOffsets(); ',
+				'document.getPosition': 'document.getPosition(); ',
+				'document.getPosition(value)': 'document.getPosition(document.getOffsetParent()); ',
+				"document.body",
+				'document.body.getOffsetParent': 'document.body.getOffsetParent(); ',
+				'document.body.getOffsets': 'document.body.getOffsets(); ',
+				'document.body.getPosition': 'document.body.getPosition(); ',
+				'document.body.getPosition(value)': 'document.body.getPosition(document.getOffsetParent()); ',
+				"extra",
+				'Element.prototype.getOffset': 'a.getOffset(); ',
+				'Element.prototype.setOffset", function(){ a.setOffset({
+					x: 3,
+					y: 7
+				}); ',
+				'Element.prototype.setPosition", function(){ a.setPosition({
+					x: 3,
+					y: 7
+				}); ',
+				'document.setPosition': 'document.setPosition({
+					x: 3,
+					y: 7
+				}); }]
 			};
 			
 			initTestCases(testcases);
