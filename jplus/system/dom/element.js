@@ -123,7 +123,7 @@
 			/**
 			 * 文档。
 			 */
-			Document: document.constructor || {prototype: document}
+			Document: navigator.isStandard && document.constructor || {prototype: document}
 			
 		}),
 		
@@ -197,44 +197,6 @@
 		 */
 		rAttr = /^\[\s*([^=]+?)(\s*=\s*(['"])([\s\S]*)\3)?\s*\]$/,
 	
-		/**
-		 * @type Object
-		 */
-		childMap = 'firstElementChild' in div ?
-			[walk, 'nextElementSibling', 'firstElementChild', 'parentNode', 'previousElementSibling', 'lastElementChild'] :
-			[walk, 'nextSibling', 'firstChild', 'parentNode', 'previousSibling', 'lastChild'],
-	
-		/**
-		 * 查找一个节点。
-		 * @param {Element} elem 父节点。
-		 * @param {Function} fn 查找函数。
-		 * @return {Element} 节点。
-		 */
-		find = 'all' in div ? function (elem, fn) { // 返回数组
-			assert.isFunction(fn, "Element.prototype.find(elem, fn): 参数 {fn} ~。");
-			return  ap.filter.call(elem.all, fn);
-		} : function (elem, fn) {
-			assert.isFunction(fn, "Element.prototype.find(elem, fn): 参数 {fn} ~。");
-			if(!elem.firstChild) return [];
-			var ds = [], doms = [elem], p, nx;
-			while (doms.length) {
-				p = doms.pop();
-				nx = p.firstChild;
-				do {
-					if (nx.nodeType != 1)
-						continue;
-					if (fn(nx)) {
-						ds.push(nx);
-					}
-	
-					if(nx.firstChild)
-						doms.push(nx);
-				} while(nx = nx.nextSibling);
-			}
-	
-			return ds;
-		},
-		
 		/// #endif
 
 		/// #ifdef ElementAttribute
@@ -268,18 +230,6 @@
 		 * @type RegExp
 		 */
 		rStyle = /\-|float/,
-	
-		/**
-		 * borderTopWidth 简写。
-		 * @type String
-		 */
-		borderTopWidth = 'borderTopWidth',
-	
-		/**
-		 * borderLeftWidth 简写。
-		 * @type String
-		 */
-		borderLeftWidth = 'borderLeftWidth',
 	
 		/// #ifdef SupportIE8
 	
@@ -800,6 +750,37 @@
 		/// #endif
 		
 		/// #ifdef ElementNode
+		
+		/**
+		 * 查找一个节点。
+		 * @param {Element} elem 父节点。
+		 * @param {Function} fn 查找函数。
+		 * @return {Element} 节点。
+		 */
+		find: 'all' in div ? function (elem, fn) { // 返回数组
+			assert.isFunction(fn, "Element.prototype.find(elem, fn): 参数 {fn} ~。");
+			return  ap.filter.call(elem.all, fn);
+		} : function (elem, fn) {
+			assert.isFunction(fn, "Element.prototype.find(elem, fn): 参数 {fn} ~。");
+			if(!elem.firstChild) return [];
+			var ds = [], doms = [elem], p, nx;
+			while (doms.length) {
+				p = doms.pop();
+				nx = p.firstChild;
+				do {
+					if (nx.nodeType !== 1)
+						continue;
+					if (fn(nx)) {
+						ds.push(nx);
+					}
+	
+					if(nx.firstChild)
+						doms.push(nx);
+				} while(nx = nx.nextSibling);
+			}
+	
+			return ds;
+		},
 			
 		/**
 		 * 判断指定节点之后有无存在子节点。
@@ -808,18 +789,18 @@
 		 * @return {Boolean} 如果确实存在子节点，则返回 true ， 否则返回 false 。
 		 * @static
 		 */
-		hasChild: !div.compareDocumentPosition ? function (elem, child) {
-			assert.isNode(elem, "Element.hasChild(elem, child): 参数 {elem} ~。");
-			assert.isNode(child, "Element.hasChild(elem, child): 参数 {child} ~。");
-			while(child = child.parentNode) {
-				if(elem === child)
-					return true;
-			}
-			return false;
-		} : function (elem, child) {
+		hasChild: div.compareDocumentPosition ? function (elem, child) {
 			assert.isNode(elem, "Element.hasChild(elem, child): 参数 {elem} ~。");
 			assert.isNode(child, "Element.hasChild(elem, child): 参数 {child} ~。");
 			return !!(elem.compareDocumentPosition(child) & 16);
+		} : function (elem, child) {
+			assert.isNode(elem, "Element.hasChild(elem, child): 参数 {elem} ~。");
+			assert.isNode(child, "Element.hasChild(elem, child): 参数 {child} ~。");
+			while(child = child.parentNode)
+				if(elem === child)
+					return true;
+					
+			return false;
 		},
 
 		/**
@@ -871,54 +852,53 @@
 		 * 用于 get 的名词对象。
 		 * @type String
 		 */
-		nodeMaps: {
+		treeWalkers: {
 	
 			// 全部子节点。
-			children: [function (elem, fn) {
-				return new el(find(elem,  fn));
-			}],
+			children: function (elem, fn) {
+				return new el(e.find(elem,  fn));
+			},
 	
 			// 上级节点。
-			parent: [walk, childMap[3], childMap[3]],
-	
-			// 直接的子节点。
-			child: [dir, childMap[1], childMap[2]],
+			parent: createTreeWalker(true, 'parentNode'),
 	
 			// 后面的节点。
-			next: [walk, childMap[1]],
+			next: createTreeWalker(true, 'nextSibling'),
 	
 			// 前面的节点。
-			previous: [walk, childMap[4], childMap[4]],
+			previous: createTreeWalker(true, 'previousSibling'),
 	
 			// 第一个节点。
-			first: childMap,
+			first: createTreeWalker(true, 'firstChild', 'nextSibling'),
 	
 			// 最后的节点。
-			last: [walk, childMap[4], childMap[5]],
+			last: createTreeWalker(true, 'lastChild', 'previousSibling'),
 	
 			// 全部上级节点。
-			parents: [dir, childMap[3]],
+			parents: createTreeWalker(false, 'parentNode'),
 	
 			// 前面的节点。
-			previouses: [dir, childMap[4]],
+			previouses: createTreeWalker(false, 'previousSibling'),
 	
 			// 后面的节点。
-			nexts: [dir, childMap[1]],
+			nexts: createTreeWalker(false, 'nextSibling'),
+			
+			// 选中的节点。
+			checked: createTreeWalker(false, function (elem) {
+				return elem.checked;
+			}),
 	
 			// 奇数或偶数个。
-			odd: [function (elem, fn) {
-				return dir(elem, function () {
+			odd: function(elem, fn){
+				return dir(elem, function (elem) {
 					return fn = fn === false;
-				}, childMap[1], childMap[2]);
-			}],
+				}, 'nextSibling', 'firstChild');
+			},
 	
 			// 兄弟节点。
-			siblings: [function (elem, fn) {
-				return dir(elem, function (node) {
-					return node != elem && fn(elem);
-				}, childMap[1], childMap[2]);
-	
-			}]
+			siblings: createTreeWalker(false, function (elem) {
+				return this != elem;
+			})
 	
 		},
 		
@@ -1080,9 +1060,9 @@
 			if(name in attributes) {
 				
 				/// #ifdef SupportIE6
-				if(navigator.isQuirks && /^(href|src)$/.test(name)) {
+				if(navigator.isQuirks && /^(href|src)$/.test(name))
 					return elem.getAttribute(name, 2);
-				}
+
 				/// #endif
 				
 				// if(navigator.isSafari && name === 'selected' && elem.parentNode) { elem.parentNode.selectIndex; if(elem.parentNode.parentNode) elem.parentNode.parentNode.selectIndex; }
@@ -1382,24 +1362,20 @@
 		/// #ifdef ElementNode
 
 		/**
-		 * 设置节点的父节点。
-		 * @method renderTo
-		 * @param {Element} elem 节点。
+		 * 将当前节点添加到其它节点。
+		 * @param {Element/String} elem=document.body 节点、控件或节点的 id 字符串。
 		 * @return {Element} this
+		 * this.appendTo(elem)  相当于 elem.appendChild(this) 。
 		 */
-		renderTo: function (elem) {
-
+		appendTo: function (elem) {
+			
+			// 切换到节点。
 			elem = elem && elem !== true ? p.$(elem) : document.body;
 
-			assert(elem.appendChild, 'Element.prototype.renderTo(elem): 参数 {elem} ~ 必须是 DOM 节点或控件。');
+			assert(elem.appendChild, 'Element.prototype.appendTo(elem): 参数 {elem} ~ 必须是 DOM 节点或控件。');
 			
-			var me = this.dom || this;
-			
-			if (me.parentNode !== elem) {
-
-				// 插入节点
-				elem.appendChild(me);
-			}
+			// 插入节点
+			elem.appendChild(this.dom || this);
 
 			// 返回
 			return this;
@@ -1407,12 +1383,14 @@
 
 		/**
 		 * 删除元素子节点或本身。
-		 * @param {Object/undefined} child 子节点。
+		 * @param {Object/Undefined} child 子节点。
 		 * @return {Element} this
 		 */
 		remove: function (child) {
 			var me = this.dom || this;
 			assert(!child || this.hasChild(child.dom || child), 'Element.prototype.remove(child): 参数 {child} 不是当前节点的子节点', child);
+			
+			// 如果指明 child ,则删除 这个子节点， 否则删除自己。
 			child ? this.removeChild(child.dom || child) : ( me.parentNode && me.parentNode.removeChild(me) );
 			return this;
 		},
@@ -1428,7 +1406,6 @@
 
 		/**
 		 * 释放节点所有资源。
-		 * @method dispose
 		 */
 		dispose: function () {
 			e.dispose(this.dom || this);
@@ -1440,8 +1417,8 @@
 
 		/**
 		 * 设置内容样式。
-		 * @param {String} name 键。
-		 * @param {String/Number} value 值。
+		 * @param {String} name CSS 属性名或 CSS 字符串。
+		 * @param {String/Number} [value] CSS属性值， 数字如果不加单位，则自动转为像素。
 		 * @return {Element} this
 		 */
 		setStyle: function (name, value) {
@@ -1449,20 +1426,22 @@
 			assert.isString(name, "Element.prototype.setStyle(name, value): 参数 {name} ~。");
 
 			// 获取样式
-			var me = this, style = (me.dom || me).style;
+			var me = this;
 
 			//没有键  返回  cssText
 			if (arguments.length == 1) {
-				style.cssText = name;
+				value = name;
+				name = 'cssText';
 			} else {
 
+				// 特殊属性。
 				if(name in styles) {
-
+					
 					name = styles[name];
 					
-					if(me[name]) {
+					// setHeight , setWidth, setOpacity
+					if(me[name])
 						return me[name](value);
-					}
 
 				} else {
 					name = name.toCamelCase();
@@ -1472,10 +1451,10 @@
 						value += "px";
 					
 				}
-
-				// 指定值
-				style[name] = value;
 			}
+
+			// 指定值。
+			(me.dom || me).style[name] = value;
 
 			return me;
 		},
@@ -1549,14 +1528,20 @@
 				assert(name != 'type' || me.nodeName != "INPUT" || !me.parentNode, "此元素 type 属性不能修改");
 
 				/// #endif
-
+				
+				// 首先设置 Property 属性。 IE 总是会进入。
 				me[name] = value;
+				
+			} else if (value === null){
+				
+				// 删除 属性。
+				me.removeAttribute(name);
+				
 			} else {
-				if (value === null)
-					me.removeAttribute(name);
-				else
-					// 使用DOM设置属性
-					me.setAttribute(name, value);
+				
+				// 设置 Attribute 属性。
+				me.setAttribute(name, value);
+				
 			}
 
 			return this;
@@ -1612,11 +1597,9 @@
 		 */
 		addClass: function (className) {
 			var me = this.dom || this;
-
-			if(!me.className)
-				me.className = className;
-			else
-				me.className += ' ' + className;
+			
+			me.className = me.className ? me.className + ' ' + className : className;
+			
 			return this;
 		},
 
@@ -1626,10 +1609,10 @@
 		 * @return {Element} this
 		 */
 		removeClass: function (className) {
-			
 			var me = this.dom || this;
 
 			me.className = className ? me.className.replace(new RegExp('\\b' + className + '\\b\\s*', "g"), '') : '';
+			
 			return this;
 		},
 
@@ -1760,6 +1743,7 @@
 			var me = this.dom || this;
 
 			me.style.zIndex = Math.max(parseInt(styleString(me, 'zIndex')) || 0, elem && (parseInt(styleString(elem.dom || elem, 'zIndex')) + 1) || e.zIndex++);
+			
 			return this;
 		},
 	
@@ -2163,11 +2147,11 @@
 				elem = elem.offsetParent;
 			}
 			if (navigator.isFirefox && nborderBox(me)) {
-				p.add(-styleNumber(me, borderLeftWidth), -styleNumber(me, borderTopWidth));
+				p.add(-styleNumber(me, 'borderLeftWidth'), -styleNumber(me, 'borderTopWidth'));
 			}
 			
 			function add(elem) {
-				p.add(styleNumber(elem, borderLeftWidth),  styleNumber(elem, borderTopWidth));
+				p.add(styleNumber(elem, 'borderLeftWidth'),  styleNumber(elem, 'borderTopWidth'));
 			}
 			return p;
 		},
@@ -2188,7 +2172,7 @@
 
 				assert.isElement(relative, "Element.prototype.getOffsets(relative): 参数 {relative} ~。");
 
-				pos.minus(relative.getOffsets()).add( -styleNumber(me, 'marginLeft') - styleNumber(relative, borderLeftWidth) ,-styleNumber(me, 'marginTop') - styleNumber(relative,  borderTopWidth) );
+				pos.minus(relative.getOffsets()).add( -styleNumber(me, 'marginLeft') - styleNumber(relative, 'borderLeftWidth') ,-styleNumber(me, 'marginTop') - styleNumber(relative,  'borderTopWidth') );
 			}
 			return pos;
 		},
@@ -2250,14 +2234,14 @@
 			assert.isNode(this.dom || this, "Element.prototype.clone(copyDataAndEvent, contents, keepid): this.dom || this 返回的必须是 DOM 节点。");
 
 			var elem = this.dom || this,
-			clone = elem.cloneNode(contents = contents !== false);
+				clone = elem.cloneNode(contents = contents !== false);
 
 			if (contents) {
 				for (var ce = clone.getElementsByTagName('*'), te = elem.getElementsByTagName('*'), i = ce.length; i--;)
-					clean(ce[i], te[i], copyDataAndEvent, keepid);
+					cleanClone(ce[i], te[i], copyDataAndEvent, keepid);
 			}
 
-			clean(elem, clone, copyDataAndEvent, keepid);
+			cleanClone(elem, clone, copyDataAndEvent, keepid);
 
 			/// #ifdef SupportIE6
 
@@ -2286,22 +2270,13 @@
 				me.insertAdjacentHTML(swhere, html);
 			else
 				me.insertAdjacentElement(swhere, html.dom || html);
-			switch (swhere) {
-				case "afterEnd":
-					html = me.nextSibling;
-					break;
-				case "beforeBegin":
-					html = me.previousSibling;
-					break;
-				case "afterBegin":
-					html = me.firstChild;
-					break;
-				default:
-					html = me.lastChild;
-					break;
-			}
-
-			return p.$(html);
+			
+			return p.$(me[{
+				afterEnd: 'nextSibling',
+				beforeBegin: 'previousSibling',
+				afterBegin: 'firstChild'
+			}[swhere] || 'lastChild']);
+			
 		} : function (html, swhere) {
 
 			var me = this.dom || this;
@@ -2309,9 +2284,7 @@
 			assert.notNull(html, "Element.prototype.insert(html, swhere): 参数 {html} ~。");
 			assert.isNode(me, "Element.prototype.insert(html, swhere): this.dom || this 返回的必须是 DOM 节点。");
 			assert(!swhere || 'afterEnd beforeBegin afterBegin beforeEnd '.indexOf(swhere + ' ') != -1, "Element.prototype.insert(html, swhere): 参数 {swhere} 必须是 beforeBegin、beforeEnd、afterBegin 或 afterEnd 。", swhere);
-			if (!html.nodeType) {
-				html = html.dom || e.parse(html, getDocument(me));
-			}
+			html = e.parse(html, me);
 
 			switch (swhere) {
 				case "afterEnd":
@@ -2348,17 +2321,10 @@
 		 * @return {Element} 元素。
 		 */
 		append: function (html) {
-			var me = this;
-
 
 			assert.notNull(html, "Element.prototype.append(html, escape): 参数 {html} ~。");
 
-			if(!html.nodeType) {
-				html = html.dom || e.parse(html, getDocument(me.dom || me));
-			}
-
-			assert.isNode(html, "Element.prototype.append(html, escape): 参数 {html} 不是合法的 节点或 HTML 片段。");
-			return me.appendChild(html);
+			return this.appendChild(e.parse(html, this.dom || this));
 		},
 
 		/**
@@ -2383,9 +2349,7 @@
 			var me = this.dom || this;
 
 			assert.notNull(html, "Element.prototype.replaceWith(html): 参数 {html} ~。");
-			if (!html.nodeType) {
-				html = html.dom || e.parse(html, getDocument(me));
-			}
+			html = e.parse(html, me);
 
 
 			assert(me.parentNode, 'Element.prototype.replaceWith(html): 当前节点无父节点，不能执行此方法 {this}', me);
@@ -2409,7 +2373,7 @@
 		 * @return {Array} 节点集合。
 		 */
 		getElementsByAttribute: function (name, value) {
-			return find(this.dom || this, value === undefined ? function (elem) {
+			return e.find(this.dom || this, value === undefined ? function (elem) {
 				return !!e.getAttr(elem, name);
 			} : function (elem) {
 
@@ -2430,7 +2394,7 @@
 		getElementsByClassName: function (className) {
 			assert.isString(className, "Element.prototype.getElementsByClassName(className): 参数 {className} ~。");
 			className = className.split(/\s/); 
-			return find(this.dom || this, function (elem) {
+			return e.find(this.dom || this, function (elem) {
 				var i = className.length;
 				while(i--) if(!e.hasClass(elem, className[i])) return false;
                 return true;
@@ -2504,7 +2468,7 @@
 			// 如果 type 为函数， 表示 默认所有子节点。
 			switch (typeof type) {
 				case 'string':
-					fn = fn ? getFilter(fn) : Function.returnTrue;
+					fn = fn ? getFilter(fn) : isElement;
 					break;
 				case 'function':
 					fn = type;
@@ -2514,10 +2478,9 @@
 					fn = getFilter(type);
 					type = 'first';
 			}
-
-			var n = e.nodeMaps[type];
-			assert(n, 'Element.prototype.get(type, fn): 函数不支持 {0}类型 的节点关联。', type);
-			return n[0](this.dom || this, fn, n[1], n[2]);
+			
+			assert(e.treeWalkers[type], 'Element.prototype.get(type, fn): 函数不支持 {0}类型 的节点关联。', type);
+			return e.treeWalkers[type](this.dom || this, fn);
 		}
 		
 		/// #endif
@@ -2883,12 +2846,11 @@
 	 * @return {Element} 节点。
 	 */
 	function walk(elem, fn, walk, first) {
-		elem = elem[first];
-		while (elem) {
-			if (elem.nodeType == 1 && fn(elem)) {
-				return p.$(elem);
-			}
-			elem = elem[walk];
+		first = elem[first];
+		while (first) {
+			if (fn.call(elem, first))
+				return p.$(first);
+			first = first[walk];
 		}
 		return null;
 	}
@@ -2902,15 +2864,32 @@
 	 * @return {ElementList} 集合。
 	 */
 	function dir(elem, fn, walk, first) {
-		elem = elem[first || walk];
-		var es = [];
-		while (elem) {
-			if (elem.nodeType == 1 && fn(elem)) {
-				es.push(elem);
-			}
-			elem = elem[walk];
+		first = elem[first || walk];
+		var r = [];
+		while (first) {
+			if (fn.call(elem, first))
+				r.push(first);
+			first = first[walk];
 		}
-		return new el(es);
+		return new el(r);
+	}
+	
+	function isElement(elem){
+		return 	elem.nodeType === 1;
+	}
+	
+	function createTreeWalker(getFirst, next, first) {
+		getFirst = getFirst ? walk : dir;
+		if(Function.isFunction(next) {
+			return function (elem, fn) {
+				return getFirst(elem, next, 'firstChild', 'nextSibling', fn);
+			}
+		} else {
+			first = first || walk;
+			return function(elem, fn){
+				return getFirst(elem, fn, next, first);
+			};
+		}
 	}
 
 	/**
@@ -2918,16 +2897,16 @@
 	 * @param {Element} srcElem 源元素。
 	 * @param {Element} destElem 目的元素。
 	 * @param {Boolean} copyDataAndEvent=true 是否复制数据。
-	 * @param {Boolean} keepid=false 是否留下ID。
+	 * @param {Boolean} keepId=false 是否留下ID。
 	 * @return {Element} 元素。
 	 */
-	function clean(srcElem, destElem, copyDataAndEvent, keepid) {
-		if (!keepid)
+	function cleanClone(srcElem, destElem, copyDataAndEvent, keepId) {
+		if (!keepId)
 			destElem.removeAttribute('id');
 
 		/// #ifdef SupportIE8
 
-		if( destElem.mergeAttributes) {
+		if(destElem.clearAttributes) {
 
 			destElem.clearAttributes();
 			destElem.mergeAttributes(srcElem);
@@ -2987,14 +2966,21 @@
 			case 'number':
 				t = fn;
 				fn = function (elem) {
-					return --t < 0;
+					return elem.nodeType === 1 && --t < 0;
 				};
 				break;
 			case 'string':
-				t = fn.toUpperCase();
-				fn = function (elem) {
-					return elem.tagName === t;
-				};
+				if(fn.charAt(0) === '.') {
+					t = fn.substring(1);
+					fn = function (elem) {
+						return e.hasClass(elem, t);
+					};
+				} else {
+					t = fn.toUpperCase();
+					fn = function (elem) {
+						return elem.tagName === t;
+					};
+				}
 		}
 		
 		assert.isFunction(fn, "Element.prototype.get(type, fn): 参数 {fn} 必须是一个函数、数字或字符串。", fn);
@@ -3042,16 +3028,16 @@
 		var value = parseFloat(elem.style[name]);
 		if(!value && value !== 0) {
 			value = parseFloat(getStyle(elem, name));
-		}
-		
-		if(!value && value !== 0) {
-			if(name in styles) {
-				var style = e.getStyles(elem, e.display);
-				e.setStyles(elem, e.display);
-				value= parseFloat(getStyle(elem, name)) || 0;
-				e.setStyles(elem, style);
-			} else {
-				value = 0;
+			
+			if(!value && value !== 0) {
+				if(name in styles) {
+					var style = e.getStyles(elem, e.display);
+					e.setStyles(elem, e.display);
+					value= parseFloat(getStyle(elem, name)) || 0;
+					e.setStyles(elem, style);
+				} else {
+					value = 0;
+				}
 			}
 		}
 		
