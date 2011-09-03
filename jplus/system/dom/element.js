@@ -1,6 +1,6 @@
 ﻿//===========================================
-//  元素: 提供最底层的 DOM 辅助函数。  
-//  A xuld
+//  元素。 提供最底层的 DOM 辅助函数。  
+//  A: xuld
 //===========================================
 
 (function (window) {
@@ -277,7 +277,7 @@
 			// 来自 jQuery
 	
 			// 如果返回值不是一个带px的 数字。 转换为像素单位
-			if (!rNumPx.test(r) && rNum.test(r)) {
+			if (rNum.test(r) && !rNumPx.test(r)) {
 	
 				// 保存初始值
 				var style = elem.style,  left = style.left, rsLeft = elem.runtimeStyle.left;
@@ -2880,7 +2880,7 @@
 	
 	function createTreeWalker(getFirst, next, first) {
 		getFirst = getFirst ? walk : dir;
-		if(Function.isFunction(next) {
+		if(Function.isFunction(next)) {
 			return function (elem, fn) {
 				return getFirst(elem, next, 'firstChild', 'nextSibling', fn);
 			}
