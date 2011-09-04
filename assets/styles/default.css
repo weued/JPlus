@@ -150,7 +150,7 @@ pre {
 
 #sidebar .menu li a.removed{
 	color: gray!important;
-	text-decoration: overline;
+	text-decoration: line-through;
 }
 
 #sidebar .break-line li {

@@ -8,6 +8,7 @@
 	var root = getRoot(),
 		moduleName = location.href.replace(root, '') + '/',
 		current = {},
+		defaultTimes = getMinTimesFor1ms (),
 		params = [
 		     '', '0', 'null', 'NaN', '""', '"<div />"', '[]', '{a:1}', 'false', 'document.body', 'function(){return false}',
 		     '0, 0', 'null, null', '[], []', '{}, {}',
@@ -148,7 +149,7 @@
 			
 		},
 
-		initTestCases: function (testcases) {
+		initTestCases: function (testcases, dftOptions) {
 			document.write('<div class="right small"><a href="javascript:;" onclick="doRunAll();">全部测试</a> | <a href="javascript:;" onclick="doTimeAll();">全部时间</a> | <a href="javascript:;" onclick="doTestAll();">恶意测试</a></div>');
 			
 			document.write('<div id="testcases" class="clear">');
@@ -156,9 +157,9 @@
 			current.testCases = {};
 			
 			for(var name in testcases){
-				var testcase = testcases[name];
+				var testcase = testcases[name], type = typeof testcase;
 				
-				if(typeof testcase === 'string') {
+				if(type === 'string' || type === 'function') {
 					if(testcase === '-'){
 						document.write('<h2 class="testcasegroup">' + encodeHTML(name) + '</h2>');
 						continue ;
@@ -166,6 +167,9 @@
 					
 					testcase = {overrides: testcase};
 				}
+				
+				if(dftOptions)
+					apply(testcase, dftOptions);
 				
 				current.testCases[name] = new TestCase(testcase, name);
 				document.write(current.testCases[name].toHTML());
@@ -407,7 +411,14 @@
 		
 		this.id = name;
 		
-		var overrides = (info.overrides || "").split(';');
+		if(typeof this.overrides === 'function') {
+			window.TestCases = window.TestCases || {};
+			window.TestCases[name] = this.overrides;
+			this.method = 'TestCases.' + name;
+			this.overrides = null;
+		}
+		
+		var overrides = (this.overrides || "").split(';');
 		if(/^\s*@/.test(overrides[0])){
 			var t = name.indexOf('.prototype.');
 			
@@ -469,7 +480,7 @@
 			    '\');">测试</a> | <a href="javascript://测试速度" onclick="doTime(\'',
 			    this.id,
 			    '\');">执行   ',
-			    this.time || 1000,
+			    this.times || defaultTimes,
 			    ' 次</a> | <a href="javascript://使用多个不同类型的参数进行测试" onclick="doTest(\'',
 			    this.id,
 			    '\');">恶意测试</a></span>',
@@ -542,7 +553,7 @@
 				r.push('\r\n');
 			}
 			
-			var time = this.time || 1000, c = 0;
+			var times = this.times || defaultTimes, c = 0;
 			r.push(this.prefix);
 			r.push('console.time("');
 			r.push(this.name || this.id);
@@ -563,7 +574,7 @@
 			r.push(this.name || this.id);
 			r.push('");\r\n');
 			
-			r[0] = 'var i = ' + ((time / c) || 0) + ';\r\n';
+			r[0] = 'var i = ' + ((times / c) || 0) + ';\r\n';
 				
 			if(this.uninit) {
 				r.push(this.uninit);
@@ -687,6 +698,19 @@
 			console.info(fn.toString());
 		}
 		
+	}
+	
+	function getMinTimesFor1ms () {
+		var date = new Date(), i = 1;
+		while(new Date() - date < 4) {
+			areEqual([[[[[]]]]], [[[[[]]]]]);
+			i++;	
+		}
+		
+		if(i > 1000) return 100000;
+		if(i > 100) return 10000;
+		if(i > 10) return 1000;
+		return 100;
 	}
 	
 	function areEqual(value1, value2) {
