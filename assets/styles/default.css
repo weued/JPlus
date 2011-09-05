@@ -29,6 +29,11 @@ a:hover {
 	color: #F4C369;
 }
 
+hr {
+	border-bottom: none;
+	border-top: 1px solid   #DDDDDD;
+}
+
 
 code {
 	border:1px solid #EB9100;

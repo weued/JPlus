@@ -2,7 +2,7 @@ var core = {
 	'System': '+Object +Navigator +Class +Namespace +Trace',
 	'Element': '+Core #Node +DomReady #Attribute #Event #Dimension',
 	'Ajax': 'Ajax Json Jsonp',
-	'Fx': 'Base Element -Multifade -ShowHide -Transitions -Color'
+	'Fx': 'Base Element -Multifade -Transitions -Color'
 };
 
 
@@ -10,22 +10,6 @@ var core = {
 
 
 var notes = {
-	'俱乐部': {
-		'注册': 'notes/club/register.html',
-		'新人必读': 'notes/club/parter.html',
-		'参与': 'notes/club/division.html',
-		'正式开发': 'notes/club/develop.html',
-		'文档注释': 'notes/club/doccomment.html',
-		'测试': 'notes/club/test.html',
-		'用户界面设计': 'notes/club/ui.html'
-	},
-	
-	'库': {
-		'J+ 介绍': 'notes/library/introduction.html',
-		'J+ 相对于其它库的最大不同点': 'notes/library/features.html',
-		'为什么 J+': 'notes/library/whyjplus.html',
-		'J+ 最快入门': 'notes/library/helloworld.html'
-	},
 	
 	'教程': {
 		'Javascript 学习方法': 'notes/javascript/studymethod.html',
@@ -43,6 +27,13 @@ var notes = {
 		'系统构架': 'notes/standards/architecture.html',
 		'项目文件夹结构': 'notes/standards/struct.html',
 		'Javascript 编码规范': 'notes/standards/javascript.html'
+	},
+	
+	'库': {
+		'J+ 介绍': 'notes/library/introduction.html',
+		'J+ 相对于其它库的最大不同点': 'notes/library/features.html',
+		'为什么 J+': 'notes/library/whyjplus.html',
+		'J+ 最快入门': 'notes/library/helloworld.html'
 	}
 };
 
@@ -55,6 +46,15 @@ var users = '+aki +xuld +qingtian';//新增账户第2个加号记得加上空格
 var resources = {
 	
 	'Users': users,
+	'俱乐部': {
+		'注册': 'resources/club/register.html',
+		'新人必读': 'resources/club/parter.html',
+		'参与': 'resources/club/division.html',
+		'正式开发': 'resources/club/develop.html',
+		'文档注释': 'resources/club/doccomment.html',
+		'测试': 'resources/club/test.html',
+		'用户界面设计': 'resources/club/ui.html'
+	},
 	'工具': {
 		'格式化': 'tools/format/index.html',
 		'加密': 'tools/pack/index.html',
