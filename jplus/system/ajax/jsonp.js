@@ -2,7 +2,11 @@
 //  请求处理JSON-P数据            A
 //===========================================
 
-namespace(".JSONP", Class({
+
+namespace(".Ajax.", {});
+
+
+Ajax.JSONP = Class({
 	/*
 	 * 
 	 */
@@ -59,10 +63,15 @@ namespace(".JSONP", Class({
 			}
 		}
 	}
-}));
-namespace(".getJSONP",function(json){
-	new JSONP({url:json.url,success:json.success}).send();
 });
+
+
+
+
+
+Ajax.JSONP.getJSONP = function(json){
+	new JSONP({url:json.url,success:json.success}).send();
+};
 
 
 // 

@@ -8,7 +8,7 @@ using("System.Ajax.Ajax");
 
 
 
-JPlus.Ajax.JSON = JPlus.Ajax.extend({
+Ajax.JSON = Ajax.extend({
 
 	/**
 	 * 获取请求头。
