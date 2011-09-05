@@ -30,102 +30,116 @@
 	 */
 	var o = Object,
 	
-		/**
-		 * Object.extend
-		 * @type Function
-		 */
-		apply = o.extend,
+	/**
+	 * Object.extend
+	 * @type Function
+	 */
+	apply = o.extend,
+
+	/**
+	 * 数组原型。
+	 * @type Object
+	 */
+	ap = Array.prototype,
 	
-		/**
-		 * 数组原型。
-		 * @type Object
-		 */
-		ap = Array.prototype,
-		
-		/**
-		 * document 简写。
-		 * @type Document
-		 */
-		document = window.document,
+	/**
+	 * document 简写。
+	 * @type Document
+	 */
+	document = window.document,
+
+	/**
+	 * 被测元素。
+	 * @type Element
+	 */
+	div = document.createElement('DIV'),
 	
-		/**
-		 * 被测元素。
-		 * @type Element
-		 */
-		div = document.createElement('DIV'),
+	/**
+	 * JPlus 简写。
+	 * @namespace JPlus
+	 */
+	p = apply(JPlus, {
 		
 		/**
-		 * JPlus 简写。
-		 * @namespace JPlus
+		 * 根据一个 id 或 对象获取节点。
+		 * @param {String/Element} id 对象的 id 或对象。
 		 */
-		p = apply(JPlus, {
-			
+		$: getElementById,
+		
+		/// #ifdef ElementEvent
+		
+		/**
+		 * 表示事件的参数。
+		 * @class JPlus.Event
+		 */
+		Event: Class({
+	
 			/**
-			 * 根据一个 id 或 对象获取节点。
-			 * @param {String/Element} id 对象的 id 或对象。
+			 * 构造函数。
+			 * @param {Object} target
+			 * @constructor
 			 */
-			$: getElementById,
-			
-			/// #ifdef ElementEvent
-			
+			constructor: function (target, type, e) {
+				var me = this;
+				me.target = target;
+				me.srcElement = target.dom || target;
+				me.type = type;
+				if(e)
+					apply(me, e);
+			},
+
 			/**
-			 * 表示事件的参数。
-			 * @class JPlus.Event
+			 * 阻止事件的冒泡。
 			 */
-			Event: Class({
-		
-				/**
-				 * 构造函数。
-				 * @param {Object} target
-				 * @constructor
-				 */
-				constructor: function (target, type, e) {
-					var me = this;
-					me.target = target;
-					me.srcElement = target.dom || target;
-					me.type = type;
-		
-					if(e)
-						apply(me, e);
-				},
-		
-				/**
-				 * 阻止事件的冒泡。
-				 */
-				stopPropagation : function () {
+//			stopPropagation : function () {
+//				this.cancelBubble = true;
+//			},
+			//# CC
+			stopEvent:function(){
+				if(this.srcElement){
 					this.cancelBubble = true;
-				},
-		
-				/**
-				 * 取消默认事件发生。
-				 */
-				preventDefault : function () {
-					this.returnValue = false;
-				},
-				
-				/**
-				 * 停止默认事件和冒泡。
-				 */
-				stop: function () {
-					this.stopPropagation();
-					this.preventDefault();
+					this.returnValue  = false;
+				}else{
+					this.stopProgation();
+					this.preventDefault;					
 				}
-		
-			}),
-			
-			/// #endif
-			
+			},			
 			/**
-			 * 元素。
-			 */	
-			Element: Class(function (dom) {this.dom = dom;}),
-			
-			/**
-			 * 文档。
+			 * 取消默认事件发生。
 			 */
-			Document: navigator.isStandard && document.constructor || {prototype: document}
+			//# CC  del
+//			preventDefault : function () {
+//				this.returnValue = false;
+//			},
+//			
+//			/**
+//			 * 停止默认事件和冒泡。
+//			 */
+//			stop: function () {
+//				this.stopPropagation();
+//				this.preventDefault();
+//			},
+			
+			//#CC 获取目标对象
+			getTarget:function(){
+				return this.srcElement||this.target;
+			}
 			
 		}),
+		
+		/// #endif
+		
+		/**
+		 * 元素。
+		 */	
+		Element: Class(function (dom) {this.dom = dom;}),
+		
+		/**
+		 * 文档。
+		 */
+		Document: navigator.isStandard && document.constructor || {prototype: document}
+			
+	}),
 		
 		/// #ifdef SupportIE6
 		
@@ -205,6 +219,7 @@
 		 * 透明度的正则表达式。
 		 * @type RegExp
 		 */
+		
 		rOpacity = /opacity=([^)]*)/,
 	
 		/**
@@ -217,6 +232,7 @@
 		 * 是否为数字的正则表达式。
 		 * @type RegExp
 		 */
+		
 		rNum = /^-?\d/,
 	
 		/**
@@ -373,16 +389,16 @@
 			 * });
 			 * </code>
 			 */
-			addEventListener: document.addEventListener ? function (type, listener) {
+			addEventListener: document.addEventListener ? function (type, listener,state) {
 				
-				//  因为 IE 不支持，所以忽略 第三个参数。
-				this.addEventListener(type, listener, false);
+				//  因为 IE 不支持，所以忽略 第三个参数。\
+				//CC  false指的是在目标捕获的时候处理事件。
+				//    true 指的是目标在目标阶段和冒泡阶段处理事件
+				this.addEventListener(type, listener, state|| false);
 				
 			} : function (type, listener) {
-				
 				// IE8- 使用 attachEvent 。
 				this.attachEvent('on' + type, listener);
-				
 			},
 	
 			/**
@@ -390,6 +406,7 @@
 			 * @method
 			 * @param {String} type 类型。
 			 * @param {Function} listener 函数。
+			 *  @param {Boolean} state 类型。
 			 * @seeAlso addEventListener
 			 * @example
 			 * <code>
@@ -398,15 +415,11 @@
 			 * });
 			 * </code>
 			 */
-			removeEventListener: document.removeEventListener ? function (type, listener) {
-				
-				this.removeEventListener(type, listener, false);
-				
-			} : function (type, listener) {
-				
+			removeEventListener: document.removeEventListener ? function (type, listener,state) {
+				this.removeEventListener(type, listener, state||false);
+			}:function (type, listener) {
 				// IE8- 使用 detachEvent 。
 				this.detachEvent('on' + type, listener);
-				
 			}
 		
 		},
@@ -458,7 +471,7 @@
 			 * @return {Point} this
 			 */
 			add: function (x, y) {
-	
+				//#cc Number.isNumber()会不会更好呢
 				assert(typeof x == 'number' && typeof y == 'number', "Point.prototype.add(x, y): 参数 x 和 参数 y 必须是数字。");
 				this.x += x;
 				this.y += y;
@@ -810,6 +823,7 @@
 		 */
 		empty: function (elem) {
 			assert.isNode(elem, "Element.empty(elem): 参数 {elem} ~。");
+			//从后往前删
 			while(elem.lastChild)
 				e.dispose(elem.lastChild);
 		},
@@ -1052,6 +1066,7 @@
 		 * @param {String} name 名字。
 		 * @return {String} 属性。
 		 */
+		//#CC 对表单元素尽量避免使用getAttr
 		getAttr: function (elem, name) {
 
 			assert.isNode(elem, "Element.getAttr(elem, name): 参数 {elem} ~。");
