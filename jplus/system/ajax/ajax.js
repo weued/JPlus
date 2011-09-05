@@ -9,10 +9,6 @@
  * @class Ajax
  */
 namespace(".Ajax", Class({
-
-	onAbort: function(){
-		this.trigger("abort");
-	},
 	
 	onStart: function(data){
 		this.trigger("start", data);
@@ -32,6 +28,10 @@ namespace(".Ajax", Class({
 	
 	onComplete: function(xhr, status){
 		this.trigger("complete", xhr);
+	},
+
+	onAbort: function(){
+		this.trigger("abort");
 	},
 
 	onStateChange: function(isTimeout){
