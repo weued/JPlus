@@ -32,7 +32,7 @@ namespace(".Tpl.", {
 	_blockStatck: [],
 	
 	processCommand: function(command){
-		var c = command.match(/^(if|for|end|else|eval)(\b[\s\S]*)?$/);
+		var c = command.match(/^(if|for|end|else|eval|\W+)(\b[\s\S]*)?$/);
 		if(c) {
 			command = c[2];
 			switch(c[1]) {
@@ -45,17 +45,18 @@ namespace(".Tpl.", {
 				case 'eval':
 					return command;
 				case 'else':
-					return '} else {';
+					return /^\s*if ([\s\S]*)$/.exec(command) ? '} else if(' + RegExp.$1 + ') {' : '} else {';
 				case 'for':
 					this._blockStatck.push('for');
 					command = command.split(/\s*in\s*/);
 					assert(command.length === 2 && command[0] && command[1], "Tpl.processCommand(command): 无法处理命令{for " + c[2] + " } (for 命名的格式为 {for var_name in obj}");
 					return 'Object.each(' + command[1] + ', function(' + command[0] + ', $index, $value) {';
-					
+				default:
+					return '$tpl += "' + this.encodeJs(c[0]) + '";';
 			}
 		}
 			
-		return "$tpl += " + command + ";";
+		return command ? '$tpl += ' + command + ';' : '';
 	},
 	
 	/**
@@ -84,7 +85,7 @@ namespace(".Tpl.", {
 				blockEnd = tpl.indexOf('}', blockEnd + 1);
 			} while(tpl.charAt(blockEnd - 1) === '\\');
 			
-			output += this.processCommand(tpl.substring(blockStart + 1, blockEnd).trim());
+			output += this.processCommand(tpl.substring(blockStart + 1, blockStart = blockEnd).trim());
 		}
 		
 		output += "}return $tpl";
