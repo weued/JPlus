@@ -16,6 +16,7 @@ var notes = {
 		'Javascript 基础教程': 'notes/javascript/basic.html',
 		'DOM 基础': 'notes/javascript/dom.html',
 		'Javascript 高级教程': 'notes/javascript/advance.html',
+		'Javascript 学习资源': 'notes/javascript/links.html',
 		'使用 Eclipse下载项目': 'notes/git/guide.html',
 		'使用 TortoiseGit下载项目': 'notes/git/tortoisegit.html',
 		'如何在 Eclipse 安装  Git 插件': 'notes/git/install.html',

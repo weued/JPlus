@@ -29,117 +29,112 @@
 	 * @type Object
 	 */
 	var o = Object,
-	
-	/**
-	 * Object.extend
-	 * @type Function
-	 */
-	apply = o.extend,
-
-	/**
-	 * 数组原型。
-	 * @type Object
-	 */
-	ap = Array.prototype,
-	
-	/**
-	 * document 简写。
-	 * @type Document
-	 */
-	document = window.document,
-
-	/**
-	 * 被测元素。
-	 * @type Element
-	 */
-	div = document.createElement('DIV'),
-	
-	/**
-	 * JPlus 简写。
-	 * @namespace JPlus
-	 */
-	p = apply(JPlus, {
 		
 		/**
-		 * 根据一个 id 或 对象获取节点。
-		 * @param {String/Element} id 对象的 id 或对象。
+		 * Object.extend
+		 * @type Function
 		 */
-		$: getElementById,
-		
-		/// #ifdef ElementEvent
+		apply = o.extend,
+	
+		/**
+		 * 数组原型。
+		 * @type Object
+		 */
+		ap = Array.prototype,
 		
 		/**
-		 * 表示事件的参数。
-		 * @class JPlus.Event
+		 * document 简写。
+		 * @type Document
 		 */
-		Event: Class({
+		document = window.document,
 	
+		/**
+		 * 被测元素。
+		 * @type Element
+		 */
+		div = document.createElement('DIV'),
+		
+		/**
+		 * JPlus 简写。
+		 * @namespace JPlus
+		 */
+		p = apply(JPlus, {
+			
 			/**
-			 * 构造函数。
-			 * @param {Object} target
-			 * @constructor
+			 * 根据一个 id 或 对象获取节点。
+			 * @param {String/Element} id 对象的 id 或对象。
 			 */
-			constructor: function (target, type, e) {
-				var me = this;
-				me.target = target;
-				me.srcElement = target.dom || target;
-				me.type = type;
-				if(e)
-					apply(me, e);
-			},
-
+			$: getElementById,
+			
+			/// #ifdef ElementEvent
+			
 			/**
-			 * 阻止事件的冒泡。
+			 * 表示事件的参数。
+			 * @class JPlus.Event
 			 */
-//			stopPropagation : function () {
-//				this.cancelBubble = true;
-//			},
-			//# CC
-			stopEvent:function(){
-				if(this.srcElement){
+			Event: Class({
+		
+				/**
+				 * 构造函数。
+				 * @param {Object} target
+				 * @constructor
+				 */
+				constructor: function (target, type, e) {
+					var me = this;
+					me.target = target;
+					me.srcElement = target.dom || target;
+					me.type = type;
+					if(e)
+						apply(me, e);
+				},
+	
+				/**
+				 * 阻止事件的冒泡。
+				 */
+				stopPropagation : function () {
 					this.cancelBubble = true;
-					this.returnValue  = false;
-				}else{
-					this.stopProgation();
-					this.preventDefault;					
+				},
+				
+				stopEvent:function(){
+					if(this.srcElement){
+						this.cancelBubble = true;
+						this.returnValue  = false;
+					}else{
+						this.stopProgation();
+						this.preventDefault;					
+					}
+				},
+						
+				/**
+				 * 取消默认事件发生。
+				 */
+				preventDefault : function () {
+					this.returnValue = false;
+				},
+				
+				/**
+				 * 停止默认事件和冒泡。
+				 */
+				stop: function () {
+					this.stopPropagation();
+					this.preventDefault();
 				}
-			},			
+				
+			}),
+			
+			/// #endif
+			
 			/**
-			 * 取消默认事件发生。
+			 * 元素。
+			 */	
+			Element: Class(function (dom) {this.dom = dom;}),
+			
+			/**
+			 * 文档。
 			 */
-			//# CC  del
-//			preventDefault : function () {
-//				this.returnValue = false;
-//			},
-//			
-//			/**
-//			 * 停止默认事件和冒泡。
-//			 */
-//			stop: function () {
-//				this.stopPropagation();
-//				this.preventDefault();
-//			},
-			
-			//#CC 获取目标对象
-			getTarget:function(){
-				return this.srcElement||this.target;
-			}
-			
+			Document: navigator.isStandard && document.constructor || {prototype: document}
+				
 		}),
-		
-		/// #endif
-		
-		/**
-		 * 元素。
-		 */	
-		Element: Class(function (dom) {this.dom = dom;}),
-		
-		/**
-		 * 文档。
-		 */
-		Document: navigator.isStandard && document.constructor || {prototype: document}
-			
-	}),
 		
 		/// #ifdef SupportIE6
 		
@@ -389,12 +384,10 @@
 			 * });
 			 * </code>
 			 */
-			addEventListener: document.addEventListener ? function (type, listener,state) {
+			addEventListener: document.addEventListener ? function (type, listener) {
 				
-				//  因为 IE 不支持，所以忽略 第三个参数。\
-				//CC  false指的是在目标捕获的时候处理事件。
-				//    true 指的是目标在目标阶段和冒泡阶段处理事件
-				this.addEventListener(type, listener, state|| false);
+				//  因为 IE 不支持，所以忽略 第三个参数。
+				this.addEventListener(type, listener, false);
 				
 			} : function (type, listener) {
 				// IE8- 使用 attachEvent 。
@@ -1066,7 +1059,6 @@
 		 * @param {String} name 名字。
 		 * @return {String} 属性。
 		 */
-		//#CC 对表单元素尽量避免使用getAttr
 		getAttr: function (elem, name) {
 
 			assert.isNode(elem, "Element.getAttr(elem, name): 参数 {elem} ~。");
