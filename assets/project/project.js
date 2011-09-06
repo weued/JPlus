@@ -41,12 +41,12 @@ var notes = {
 
 
 
-var users = '+aki +xuld +qingtian';//新增账户第2个加号记得加上空格
+var members = '+aki +xuld +qingtian';//新增账户第2个加号记得加上空格
 
 
 var resources = {
 	
-	'Users': users,
+	'Members': members,
 	'俱乐部': {
 		'注册': 'resources/club/register.html',
 		'新人必读': 'resources/club/parter.html',
@@ -57,17 +57,15 @@ var resources = {
 		'用户界面设计': 'resources/club/ui.html'
 	},
 	'工具': {
-		'格式化': 'tools/format/index.html',
-		'加密': 'tools/pack/index.html',
-		'压缩': 'tools/compact/index.html',
-		'速度测试': 'tools/speedmatch/index.html'	
+		'格式化': 'resources/tools/format/index.html',
+		'加密': 'resources/tools/pack/index.html',
+		'压缩': 'resources/tools/compact/index.html',
+		'速度测试': 'resources/tools/speedmatch/index.html'	
 	},
 	'技术能力自测': {
 		'B 等级 - 语法': 'resources/quiz/javascript-b.html'
 	}
 };
-
-var tools = resources;
 
 
 var navs = {
