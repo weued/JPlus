@@ -1,0 +1,26 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Javascript 临时测试 - 无框架</title>
+		<script type="text/javascript" src="../../jplus/system.js" ></script>
+		<script type="text/javascript" src="../../jplus/system/utils/tpl.js" ></script>
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+	</head>
+	<body>
+		<script>
+			
+			
+			
+			trace(  Tpl.compile("abc")  .toString()   );
+			trace(  Tpl.compile("'\"\r\n\tabc{abc}")  .toString()   );
+			trace(  Tpl.compile("abc{abc.def}")  .toString()   );
+			trace(  Tpl.compile("abc{if abc}abc{else}def{end}")  .toString()   );
+			trace(  Tpl.compile("abc{for p in path}abc{end}")  .toString()   );
+			
+			
+			trace(  Tpl.parse("{for p in path}{p}{end}", {path: [1,2,3]})   );
+			
+		</script>
+	</body>
+</html>
