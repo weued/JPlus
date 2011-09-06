@@ -1,6 +1,7 @@
 ﻿//===========================================
 //  元素。 提供最底层的 DOM 辅助函数。  
 //  A: xuld
+//  R: aki
 //===========================================
 
 (function (window) {
@@ -1102,6 +1103,7 @@
 		 */
 		hasClass: function (elem, className) {
 			assert.isNode(elem, "Element.hasClass(elem, className): 参数 {elem} ~。");
+			assert(!className.indexOf || !/[\s\r\n]/.test(className), "Element.hasClass(elem, className): 参数 {className} 不允许有空格和换行。");
 			return (" " + elem.className + " ").indexOf(" " + className + " ") >= 0;
 		},
 		
