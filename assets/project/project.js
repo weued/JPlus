@@ -16,7 +16,10 @@ var notes = {
 		'Javascript 基础教程': 'notes/javascript/basic.html',
 		'DOM 基础': 'notes/javascript/dom.html',
 		'Javascript 高级教程': 'notes/javascript/advance.html',
-		'Javascript 学习资源': 'notes/javascript/links.html',
+		'Javascript 学习资源': 'notes/javascript/links.html'
+	}, 
+	
+	'开发工具': {
 		'使用 Eclipse下载项目': 'notes/git/guide.html',
 		'使用 TortoiseGit下载项目': 'notes/git/tortoisegit.html',
 		'如何在 Eclipse 安装  Git 插件': 'notes/git/install.html',
@@ -27,12 +30,13 @@ var notes = {
 		'测试系统': 'notes/standards/system.html',
 		'系统构架': 'notes/standards/architecture.html',
 		'项目文件夹结构': 'notes/standards/struct.html',
-		'Javascript 编码规范': 'notes/standards/javascript.html'
+		'Javascript 编码规范': 'notes/standards/javascript.html',
+		'浏览器': 'notes/standards/browser.html'
 	},
 	
 	'库': {
 		'J+ 介绍': 'notes/library/introduction.html',
-		'J+ 相对于其它库的最大不同点': 'notes/library/features.html',
+		'J+ 在技术上相对于其它框架的最大不同点': 'notes/library/features.html',
 		'为什么 J+': 'notes/library/whyjplus.html',
 		'J+ 最快入门': 'notes/library/helloworld.html'
 	}
@@ -69,7 +73,7 @@ var resources = {
 
 
 var navs = {
-	'首页': 'index.html',
+	//'首页': 'index.html',
 	'核心': 'core/index.html',
 	'控件': 'controls/index.html',
 	'组件': 'components/index.html',
