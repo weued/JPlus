@@ -13,19 +13,19 @@
 			var testcases = {
 				'Object': '-',
 				'Object.type': '1 => "number"',
-				'Object.clone': {
-					params: '',
-					overrides: '[5] => [5]'
-				},
+				//'Object.clone': {
+				//	params: '',
+				//	overrides: '[5] => [5]'
+				//},
 				'Object.extendIf': '{"a":"g"}, [] => assert.areEqual(value["a"], "g")',
 				'Object.extend': '{"a":"g"}, [] => assert.areEqual(value["a"], "g")',
 				'Object.isObject': '{} => true, null => false, 2 => false',
 				'Object.each': '{a:1, b:2, c:3}, assert.log => assert.areEqual(value, true), assert.logged("123") ; [1,2,3], assert.log => assert.logged("123")',
 				'Object.set': '{a:assert.log}, {a:2, b:4} => assert.logged("2")',
-				'Object.addCallback': {
-					init: 'var a = {click: assert.log}',
-					overrides: 'a, "click", function(){assert.log(2)} =>assert, a.click(1), assert.logged("12")'
-				},
+				//'Object.addCallback': {
+				//	init: 'var a = {click: assert.log}',
+				//	overrides: 'a, "click", function(){assert.log(2)} =>assert, a.click(1), assert.logged("12")'
+				//},
 				'Object.update': '["aa","aa23"], "length", [] => [2, 4]; [{a: 1},{a: 4}], "a", [{},{}], true => [{a: 1},{a: 4}]',
 				'Array': '-',
 				'Array.isArray': '[] => true',
@@ -56,9 +56,9 @@
 				'String.prototype.capitalize': '@str = "ab"; => "Ab"',
 				'String.prototype.toCamelCase': '@str = "a-b"; => "aB"',
 				'Date': '-',
-				'Date.now': '',
+				'Date.now': '=>assert.isTrue(value > 0)',
 				'XMLHttpRequest': '-',
-				'new XMLHttpRequest': ''
+				'new XMLHttpRequest': '=>assert.isTrue(value.open)'
 			};
 			
 			initTestCases(testcases);

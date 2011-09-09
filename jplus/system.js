@@ -329,7 +329,12 @@ var JPlus = {
 			 * JPlus.eval('alert("hello")');
 			 * </code>
 			 */
-			eval: window.execScript || function (statement) {
+			eval: window.execScript ? function(statement){
+				
+				// 如果 IE，使用 window.execScript  。
+				return window.execScript(statement);
+				
+			} : function (statement) {
 				
 				// 如果正常浏览器，使用 window.eval  。
 				return window.eval(statement);
@@ -2032,9 +2037,9 @@ var JPlus = {
 	 */
 	
 	// IE 7 的  XMLHttpRequest 有错，强制覆盖。
-	if(navigator.isQuirks || !window.XMLHttpRequest) {
+	if(navigator.isQuirks|| !window.XMLHttpRequest) {
 		window.XMLHttpRequest = function () {
-			return new ActiveXObject(xmlHttpType);
+			return new ActiveXObject("Microsoft.XMLHTTP");
 		};
 	}
 	

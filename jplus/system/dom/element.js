@@ -171,7 +171,7 @@
 		 * 是否为标签名。
 		 * @type RegExp
 		 */
-		rTagName = /<([\window:]+)/,
+		rTagName = /<([\w:]+)/,
 		
 		/**
 		 * 包装。
@@ -663,6 +663,7 @@
 		/**
 		 * 转换一个HTML字符串到节点。
 		 * @param {String/Element} html 字符。
+		 * @param {Element} context 生成节点使用的文档中的任何节点。
 		 * @param {Boolean} cachable=true 是否缓存。
 		 * @return {Element/TextNode/DocumentFragment} 元素。
 		 * @static
@@ -1134,13 +1135,13 @@
 		 * @static
 		 * 对 Element 扩展，内部对 Element ElementList document 皆扩展。
 		 * 这是由于不同的函数需用不同的方法扩展，必须指明扩展类型。
-		 * 所谓的扩展，即一个类含需要的函数。
+		 * 所谓的扩展，即一个类所需要的函数。
 		 *
 		 *
 		 * DOM 方法 有 以下种
 		 *
-		 *  1, setText - 执行结果返回 this， 返回 this 。(默认)
-		 *  2      其它  getText - 执行结果是数据，返回结果数组。 
+		 *  1,   其它    setText - 执行结果返回 this， 返回 this 。(默认)
+		 *  2  getText - 执行结果是数据，返回结果数组。 
 		 *  3  getElementById - 执行结果是DOM，返回  ElementList 包装。
 		 *  4  getElementsByTagName - 执行结果是DOM数组，返回  ElementList 包装。
 		 * 
@@ -2514,17 +2515,17 @@
 		};
 
 		// mouseEvent
-		initMouseEvent = function (event) {
+		initMouseEvent = function (e) {
 			if(!e.preventDefault) {
-				initUIEvent(event);
-				event.relatedTarget = event.fromElement === event.target ? event.toElement : event.fromElement;
-				var dom = getDocument(event.target).dom;
-				event.pageX = event.clientX + dom.scrollLeft;
-				event.pageY = event.clientY + dom.scrollTop;
-				event.layerX = event.x;
-				event.layerY = event.y;
+				initUIEvent(e);
+				e.relatedTarget = e.fromElement === e.target ? e.toElement : e.fromElement;
+				var dom = getDocument(e.target).dom;
+				e.pageX = e.clientX + dom.scrollLeft;
+				e.pageY = e.clientY + dom.scrollTop;
+				e.layerX = e.x;
+				e.layerY = e.y;
 				//  1 ： 单击  2 ：  中键点击 3 ： 右击
-				event.which = (event.button & 1 ? 1 : (event.button & 2 ? 3 : (event.button & 4 ? 2 : 0)));
+				e.which = (e.button & 1 ? 1 : (e.button & 2 ? 3 : (e.button & 4 ? 2 : 0)));
 			
 			}
 		};
@@ -2560,7 +2561,7 @@
 	 * @type Object
 	 * @hide
 	 */
-	namespace(".Events.element.$default", {
+	namespace("JPlus.Events.element.$default", {
 
 		/**
 		 * 创建当前事件可用的参数。
