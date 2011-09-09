@@ -12,7 +12,7 @@
 			
 			
 			
-			trace(  Tpl.compile("abc")  .toString()   );
+			trace(  Tpl.compile("abc{\\{}")  .toString()   );
 			trace(  Tpl.compile("'\"\r\n\tabc{abc}")  .toString()   );
 			trace(  Tpl.compile("abc{abc.def}")  .toString()   );
 			trace(  Tpl.compile("abc{if abc}abc{else}def{end}")  .toString()   );
@@ -20,6 +20,7 @@
 			
 			
 			trace(  Tpl.parse("{for p in path}{p}{end}", {path: [1,2,3]})   );
+			trace(  Tpl.parse("{if a}abc{else if b.c}def{end}", {a:0 , b: {c: 4}})   );
 			
 		</script>
 	</body>
