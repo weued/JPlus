@@ -95,16 +95,6 @@
 				stopPropagation : function () {
 					this.cancelBubble = true;
 				},
-				
-				stopEvent:function(){
-					if(this.srcElement){
-						this.cancelBubble = true;
-						this.returnValue  = false;
-					}else{
-						this.stopProgation();
-						this.preventDefault;					
-					}
-				},
 						
 				/**
 				 * 取消默认事件发生。
@@ -133,7 +123,7 @@
 			/**
 			 * 文档。
 			 */
-			Document: navigator.isStandard && document.constructor || {prototype: document}
+			Document: document.constructor || {prototype: document}
 				
 		}),
 		
@@ -555,16 +545,15 @@
 	
 		}));
 
+	/**
+	 * 获取节点本身。
+	 */
+	document.dom = document.documentElement;
 		
 	/**
 	 * @namespace document
 	 */
 	p.Native(p.Document).implement({
-
-		/**
-		 * 获取节点本身。
-		 */
-		dom: document.documentElement,
 		
 		/// #ifdef ElementCore
 
@@ -723,20 +712,20 @@
 					// 如果有多节点，则复制到片段对象。
 					if(div.lastChild !== div.firstChild) {
 						context = context.createDocumentFragment();
-
+						
 						while(div.firstChild)
 							context.appendChild(div.firstChild);
 
 						div = context;
 					} else {
+						
+						assert(div.lastChild, "Element.parse(html, context, cachable): 无法根据 {html} 创建节点。", html);
 
 						/// #ifdef SupportIE8
 
 						div = p.$(div.lastChild);
 
 						/// #endif
-						
-						assert(div, "Element.parse(html, context, cachable): 无法根据 {html} 创建节点。", html);
 					}
 
 				} else {
@@ -746,10 +735,15 @@
 				}
 
 			}
-
-			if(!notSaveInCache)
-				cache[html] = div.clone ? div.clone(false, true) : div.cloneNode(true);
-
+			
+			if(!notSaveInCache) {
+				cache[html] = div.cloneNode(true);
+				
+				//  特殊属性复制。
+				//if (html = e.properties[div.tagName])
+				//	cache[html][html] = div[html];
+			}
+			
 			return div;
 
 		},
@@ -794,7 +788,6 @@
 		 * @param {Element} elem 节点。
 		 * @param {Element} child 子节点。
 		 * @return {Boolean} 如果确实存在子节点，则返回 true ， 否则返回 false 。
-		 * @static
 		 */
 		hasChild: div.compareDocumentPosition ? function (elem, child) {
 			assert.isNode(elem, "Element.hasChild(elem, child): 参数 {elem} ~。");
@@ -808,42 +801,6 @@
 					return true;
 					
 			return false;
-		},
-
-		/**
-		 * 删除一个节点的所有子节点。
-		 * @param {Element} elem 节点。
-		 * @static
-		 */
-		empty: function (elem) {
-			assert.isNode(elem, "Element.empty(elem): 参数 {elem} ~。");
-			//从后往前删
-			while(elem.lastChild)
-				e.dispose(elem.lastChild);
-		},
-
-		/**
-		 * 释放节点所有资源。
-		 * @param {Element} elem 节点。
-		 * @static
-		 */
-		dispose: function (elem) {
-			assert.isNode(elem, "Element.dispose(elem): 参数 {elem} ~。");
-			
-			//删除事件
-			if (elem.clearAttributes) {
-				elem.clearAttributes();
-			}
-
-			p.IEvent.un.call(elem);
-			
-			if(elem.$data)
-				elem.$data = null;
-
-			e.empty(elem);
-
-			elem.parentNode && elem.parentNode.removeChild(elem);
-
 		},
 	
 		/**
@@ -1409,7 +1366,10 @@
 		 * @return {Element} this
 		 */
 		empty: function () {
-			e.empty(this.dom || this);
+			var me = this.dom || this;
+			o.each(me.getElementsByTagName("*"), clean);
+			while(me.lastChild)
+				me.removeChild(me.lastChild);
 			return this;
 		},
 
@@ -1417,7 +1377,8 @@
 		 * 释放节点所有资源。
 		 */
 		dispose: function () {
-			e.dispose(this.dom || this);
+			clean(this.dom || this);
+			this.empty().remove()
 		},
 		
 		/// #endif
@@ -1433,6 +1394,7 @@
 		setStyle: function (name, value) {
 
 			assert.isString(name, "Element.prototype.setStyle(name, value): 参数 {name} ~。");
+			assert(typeof value !== "number" ? value !== null : !isNaN(value), "Element.prototype.setStyle(name, value): 参数 {value} 不是合法的 CSS 属性值。");
 
 			// 获取样式
 			var me = this;
@@ -2233,32 +2195,23 @@
 
 		/**
 		 * 复制节点。
-		 * @param {Boolean} copyDataAndEvent=false 是否复制事件。
+		 * @param {Boolean} cloneEvent=false 是否复制事件。
 		 * @param {Boolean} contents=true 是否复制子元素。
-		 * @param {Boolean} keepid=false 是否复制 id 。
+		 * @param {Boolean} keepId=false 是否复制 id 。
 		 * @return {Element} 元素。
 		 */
-		clone: function (copyDataAndEvent, contents, keepid) {
+		clone: function (cloneEvent, contents, keepId) {
 
-			assert.isNode(this.dom || this, "Element.prototype.clone(copyDataAndEvent, contents, keepid): this.dom || this 返回的必须是 DOM 节点。");
+			assert.isNode(this.dom || this, "Element.prototype.clone(cloneEvent, contents, keepid): this.dom || this 返回的必须是 DOM 节点。");
 
 			var elem = this.dom || this,
 				clone = elem.cloneNode(contents = contents !== false);
 
-			if (contents) {
-				for (var ce = clone.getElementsByTagName('*'), te = elem.getElementsByTagName('*'), i = ce.length; i--;)
-					cleanClone(ce[i], te[i], copyDataAndEvent, keepid);
-			}
+			if (contents)
+				for (var elemChild = elem.getElementsByTagName('*'), cloneChild = clone.getElementsByTagName('*'), i = elemChild.length; i--;)
+					cleanClone(elemChild[i], cloneChild[i], cloneEvent, keepId);
 
-			cleanClone(elem, clone, copyDataAndEvent, keepid);
-
-			/// #ifdef SupportIE6
-
-			if (navigator.isQuirks) {
-				o.update(elem.getElementsByTagName('object'), 'outerHTML', clone.getElementsByTagName('object'), true);
-			}
-
-			/// #endif
+			cleanClone(elem, clone, cloneEvent, keepId);
 
 			return clone;
 		},
@@ -2553,7 +2506,7 @@
 		
 		initUIEvent = function (e) {
 			if(!e.preventDefault) {
-				e.target = e.srcElement ? p.$(e.srcElement) : (e.srcElement = document);
+				e.target = p.$(e.srcElement);
 				e.stopPropagation = pep.stopPropagation;
 				e.preventDefault = pep.preventDefault;
 				e.stop = pep.stop;
@@ -2583,8 +2536,8 @@
 				e.which = e.keyCode;
 			}
 		};
-		
-		/// #endif
+	
+		e.properties.OBJECT = 'outerHTML';
 
 		try {
 	
@@ -2593,6 +2546,8 @@
 		} catch(e) {
 	
 		}
+	
+		/// #endif
 		
 	}
 	
@@ -2713,7 +2668,8 @@
 				document.on(readyOrLoad, fn);
 			
 			// 触发事件。
-			} else {
+			// 如果存在 JS 之后的 CSS 文件， 肯能导致 document.body 为空，此时延时执行 DomReady
+			} else if(document.body) {
 				
 				// 如果 isReady, 则删除
 				if(isLoad) {
@@ -2741,6 +2697,8 @@
 					document.un(readyOrLoad);
 					
 				}
+			} else {
+				setTimeout(arguments.callee, 1);
 			}
 			
 			return document;
@@ -2905,39 +2863,55 @@
 	 * 删除由于拷贝导致的杂项。
 	 * @param {Element} srcElem 源元素。
 	 * @param {Element} destElem 目的元素。
-	 * @param {Boolean} copyDataAndEvent=true 是否复制数据。
+	 * @param {Boolean} cloneEvent=true 是否复制数据。
 	 * @param {Boolean} keepId=false 是否留下ID。
 	 * @return {Element} 元素。
 	 */
-	function cleanClone(srcElem, destElem, copyDataAndEvent, keepId) {
+	function cleanClone(srcElem, destElem, cloneEvent, keepId) {
 		if (!keepId)
 			destElem.removeAttribute('id');
 
 		/// #ifdef SupportIE8
 
 		if(destElem.clearAttributes) {
-
+			
+			// IE 会复制 自定义事件， 清楚它。
 			destElem.clearAttributes();
 			destElem.mergeAttributes(srcElem);
 			// 在 IE delete destElem.$data  出现异常。
 			destElem.removeAttribute("$data");
 
 
-			if (srcElem.options) {
+			if (srcElem.options)
 				o.update(srcElem.options, 'selected', destElem.options, true);
-			}
 		}
 
 		/// #endif
 
-		if (copyDataAndEvent) {
-			p.cloneData(destElem, srcElem);
-		}
+		if (cloneEvent !== false)
+			p.cloneEvent(srcElem, destElem);
 
+		//  特殊属性复制。
+		if (keepId = e.properties[srcElem.tagName])
+			destElem[keepId] = srcElem[keepId];
+	}
+	
+	/**
+	 * 清除节点的引用。
+	 * @param {Element} elem 要清除的元素。
+	 */
+	function clean(elem) {
 
-		var prop = e.properties[srcElem.tagName];
-		if (prop)
-			destElem[prop] = srcElem[prop];
+		if (elem.clearAttributes)
+			elem.clearAttributes();
+
+		// 删除事件。
+		p.IEvent.un.call(elem);
+		
+		// 删除句柄，以删除双重的引用。
+		if(elem.$data)
+			elem.$data = null;
+		
 	}
 
 	/**

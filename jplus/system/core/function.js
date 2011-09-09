@@ -8,6 +8,32 @@
  */
 Function.implementIf({
 	
+	
+	
+	isFunction: jQuery.browser.msie ?
+	        function( fn ) {
+	            if( !fn )
+	                return false;
+	            var s   = "toString",
+	                v   = "valueOf",
+	                t   = typeof fn[s] === "function" && fn[s],
+	                o   = typeof fn[v] === "function" && fn[v],
+	                r;
+	            if( t )
+	                delete fn[s];
+	            if( o )
+	                delete fn[v];
+	            r   = typeof fn !== "string" && !(fn instanceof String) && !fn.nodeName && fn.constructor != Array && /^[\s[]?function/.test(fn + "");
+	            if( t )
+	                fn[s]   = t;
+	            if( o )
+	                fn[v]   = o;
+	            return r;
+	        } :
+	        function( fn ) {
+	            return fn && fn instanceof Function;
+	        },
+	
 	/**
 	 * 连接函数, 同时运行另一个, 参数为函数, 参数, 参数。
 	 * @param {Function} 连接的成员。

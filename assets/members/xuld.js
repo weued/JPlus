@@ -114,6 +114,92 @@ initUserMenu(todo, done);
 			return me;
 		},
 			
+			
+			
+			
+			
+
+//		/**
+//		 * 深拷贝一个对象本身, 不深复制函数。
+//		 * @static
+//		 * @param {Object} obj 要拷贝的对象。
+//		 * @return {Object} 返回复制后的对象。
+//		 * @example
+//		 * <code>
+//		 * var obj1 = {a: 0, b: 1};
+//		 * var obj2 = Object.clone(obj1);
+//		 *  
+//		 * obj1.a = 3;
+//		 * trace(obj1.a);  // trace 3
+//		 * trace(obj2.a);  // trace 0
+//		 *
+//		 * </code>
+//		 */
+//		clone: function (obj) {
+//			
+//			// 内部支持深度。
+//			// 用法:  Object.clone.call(1, val);
+//			var deep = this - 1;
+//			
+//			// 如果是对象，则复制。
+//			if (o.isObject(obj) && !(deep < 0)) {
+//				
+//				// 如果对象支持复制，自己复制。
+//				if(obj.clone)
+//					return obj.clone();
+//				
+//				// #1    
+//				// if(obj.cloneNode)
+//				//	return obj.cloneNode(true);
+//				
+//				//仅当对象才需深拷贝，null除外。
+//				obj = o.update(obj, o.clone, Array.isArray(obj) ? [] : {}, deep);
+//			}
+//			
+//			return obj;
+//		},
+
+
+//,
+//
+///**
+// * 添加一个对象的成员函数调用结束后的回调函数。
+// * @static
+// * @param {Object} obj 对象。
+// * @param {String} propertyName 成员函数名。
+// * @param {Function} fn 对象。
+// * @return {Object} obj。
+// * @example
+// * 
+// * 下面的代码方便地添加 onload 事件。 
+// * <code>
+// * Object.addCallback(window, "onload",trace.empty);
+// * </code>
+// */
+//addCallback: function (obj, propertyName, fn) {
+//	
+//	assert.notNull(obj, 'Object.addCallback(obj, propertyName, fn): 参数 obj ~。');
+//	
+//	assert.isFunction(fn, 'Object.addCallback(obj, propertyName, fn): 参数 {fn} ~。');
+//	
+//	// 获取已有的句柄。
+//	var f = obj[propertyName];
+//	
+//	// 如果不存在则直接拷贝，否则重新拷贝。新函数对原函数调用。
+//	obj[propertyName] = typeof f === 'function' ? function () {
+//		
+//		// 获取上次的函数。
+//		var v = f.apply(this, arguments);
+//		
+//		// 调用回调函数。
+//		fn.apply(this, arguments);
+//		
+//		// 返回原值。
+//		return v;
+//		
+//	} : fn;
+//	return obj;
+//}
 		
 		* */
 

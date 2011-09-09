@@ -1,0 +1,126 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>专题： CloneNode</title>
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+		<script type="text/javascript" src="../../jplus/system.js" ></script>
+		<script type="text/javascript" src="../../jplus/system/dom/element.js" ></script>
+	</head>
+	<body>
+		<h2>专题： CloneNode</h2>
+		<p>文/xuld</p>
+		<h4>背景</h4>
+		<p class="content">CloneNode 是 DOM 节点的一个方法，用于复制节点，但不是所有浏览器的复制行为都一致。 </p>
+		<h4>问题描述</h4>
+		<p class="content">因为 IE 下，节点属性和对象属性没有区分，所以复制的时候会一并拷贝。</p>
+		<p class="content">看一个例子：
+			<div id="ct">
+				<div id="a" myData="b" data-c="c" class="box purple" onclick="console.info('click')">
+					原始
+				</div>
+			</div>
+			<div id="ft" class="clear">
+			<select id="sel">
+				<option value="1">1</option>
+				<option value="2" selected="selected">2</option>
+				<option value="3">3</option>
+			</select>
+			<input id="rd" type="radio" checked="checked" />
+			<textarea id="tx">g</textarea>
+			</div>
+			<script>
+				var node = document.getElementById('a');
+				
+				node.addEventListener('mousedown', function(){
+					console.info('mousedown');
+				});
+		
+				node.on('click', function () {
+					alert(1);
+				});
+				
+				node.myData2  = "d";
+				
+				
+				console.log(node.innerHTML.trim() + "    --------------------");
+				console.log("myData => ",   node.getAttribute('myData'));
+				console.log("data-c => ", node.getAttribute('data-c'));
+				console.log("class => ", node.className);
+				console.log("onclick => ", node.onclick + "");
+				console.log("myData2 => ", node.myData2);
+				
+				node = document.getElementById('a').cloneNode(true);
+				node.innerHTML = '复制的';
+				console.log(node.innerHTML + "    --------------------");
+				console.log("myData => ",   node.getAttribute('myData'));
+				console.log("data-c => ", node.getAttribute('data-c'));
+				console.log("class => ", node.className);
+				console.log("onclick => ", node.onclick + "");
+				console.log("myData2 => ", node.myData2);
+				
+				document.getElementById('ct').appendChild(node);
+				
+				
+				node = document.getElementById('a').cloneNode(true);
+				node.innerHTML = '复制的修正';
+				
+				if( node.clearAttributes ) {
+					node.clearAttributes();
+					node.mergeAttributes(document.getElementById('a'));
+				}
+				
+				console.log(node.innerHTML + "    --------------------");
+				console.log("myData => ",   node.getAttribute('myData'));
+				console.log("data-c => ", node.getAttribute('data-c'));
+				console.log("class => ", node.className);
+				console.log("onclick => ", node.onclick + "");
+				console.log("myData2 => ", node.myData2);
+				
+				document.getElementById('ct').appendChild(node);
+				
+				//  IE   下无法复制  select 属性。
+				document.getElementById('ft').appendChild(document.getElementById('sel').cloneNode(true));
+				
+				//  无法复制  实时内容。
+				document.getElementById('ft').appendChild(document.getElementById('rd').cloneNode(true));
+				
+				//  文本框内容不会复制
+				document.getElementById('ft').appendChild(document.getElementById('tx').cloneNode(true));
+			
+				//  IE   下 object  参数不复制
+			</script>
+			</p>
+		<p class="content">从例子推测： IE 复制全部属性，包括事件 和 对象属性。非IE 复制全部属性，不包括事件 和 对象属性。部分表单控件无法实时复制。</p>
+		<h4>解决目标</h4>
+		<ol>
+			<li>
+				实现各个浏览器兼容的 CloneNode 事件: 复制节点
+			</li>
+			<li>
+				当复制 &lt;select&gt;等输入框时，同时复制内容。
+			</li>
+			<li>
+				支持事件复制。
+			</li>
+		</ol>
+		<h4>解决方案</h4>
+		<p class="content">定义清除的复制方式。</p>
+		<h4>测试</h4>
+		<script>
+			
+			node = $('a').clone();
+			node.innerHTML = '修复';
+			console.log(node.innerHTML + "    --------------------");
+			console.log("myData => ",   node.getAttribute('myData'));
+			console.log("data-c => ", node.getAttribute('data-c'));
+			console.log("class => ", node.className);
+			console.log("onclick => ", node.onclick + "");
+			console.log("myData2 => ", node.myData2);
+			document.getElementById('ct').appendChild(node);
+
+
+
+		</script>
+	</body>
+</html>

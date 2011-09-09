@@ -320,7 +320,7 @@
 			
 			var currentUser = location.href.match(/\/([^\/]*).htm/)[1];
 			
-			document.write('<script src="' + root + 'assets/project/' + currentUser +'.js" type="text/javascript"></' + 'script>');
+			document.write('<script src="' + root + 'assets/members/' + currentUser +'.js" type="text/javascript"></' + 'script>');
 			
 		},
 		

@@ -293,44 +293,29 @@ var JPlus = {
 			},
 			
 			/**
-			 * 复制一个对象的数据到另一个对象。
+			 * 复制一个对象的事件拷贝到另一个对象。
 			 * @static
 			 * @param {Object} src 来源的对象。
 			 * @param {Object} dest 目标的对象。
 			 * @return this
-			 * @example
-			 * <code>
-			 * var obj = {}, obj2 = {};
-			 * JPlus.cloneData(obj2, obj);
-			 * </code>
 			 */
-			cloneData: function (dest, src) {
+			cloneEvent: function (src, dest) {
 				
-				assert.isObject(src, "JPlus.cloneData(dest, src): 参数 {src} ~。");
-				assert.isObject(dest, "JPlus.cloneData(dest, src): 参数 {dest} ~。");
+				assert.isObject(src, "JPlus.cloneEvent(src, dest): 参数 {src} ~。");
+				assert.isObject(dest, "JPlus.cloneEvent(src, dest): 参数 {dest} ~。");
 				
-				var data = src.$data;
+				// event 作为系统内部对象。事件的拷贝必须重新进行 on 绑定。
+				var eventName = src.$data, event = eventName && eventName.event;
 				
-				if(data) {
+				if(event)
+					for (eventName in event)
 					
-					// 复制一份 data。
-					dest.$data = o.clone.call(2, data);
-					
-					// event 作为系统内部对象。事件的拷贝必须重新进行 on 绑定。
-					var evt = src.$data.event, i  ;
-					if(evt) {
-						delete dest.data.event;
-						for (i in evt) {
-							evt[i].handlers.forEach( function (fn, j) {
-								
-								// 如果源数据的 target 是 src， 则改 dest 。
-								IEvent.on.call(dest, i, fn, this[j] === src ? dest : this[j]);
-							}, evt[i].scopes);
-						}
-					}
-				}
-				
-				return dest;
+						// 对每种事件。
+						event[eventName].handlers.forEach(function (handler) {
+							
+							// 如果源数据的 target 是 src， 则改 dest 。
+							p.IEvent.on.call(dest, eventName, handler[0], handler[1] === src ? dest : handler[1]);
+						});
 			}, 
 			
 			/**
@@ -1247,7 +1232,7 @@ var JPlus = {
 		 * 将一个对象解析成一个类的属性。
 		 * @static
 		 * @param {Object} obj 类实例。
-		 * @param {Object} configs 参数。
+		 * @param {Object} options 参数。
 		 * 这个函数会分析对象，并试图找到一个 属性设置函数。
 		 * 当设置对象 obj 的 属性 key 为 value:
 		 * 发生了这些事:
@@ -1269,80 +1254,37 @@ var JPlus = {
 		 * 
 		 * </code>
 		 */
-		set: function (obj, configs) {
+		set: function (obj, options) {
 			
-			if(configs) 
-				for(var key in configs) {
+			if(options) 
+				for(var key in options) {
 					
 					// 检查 setValue 。
 					var setter = 'set' + key.capitalize(),
-						val = configs[key];
+						val = options[key];
 			
 			
-					if (Function.isFunction(obj[setter])) {
+					if (Function.isFunction(obj[setter]))
 						obj[setter](val);
-					} 
 					
 					// 是否存在函数。
-					else if(Function.isFunction(obj[key])) {
+					else if(Function.isFunction(obj[key]))
 						obj[key](val);
-					}
 					
 					// 检查 value.set 。
-					else if (obj[key] && obj[key].set) {
+					else if (obj[key] && obj[key].set)
 						obj[key].set(val);
-					} 
 					
 					// 检查 set 。
 					else if(obj.set)
 						obj.set(key, val);
-					else
 					
-						// 最后，就直接赋予。
+					// 最后，就直接赋予。
+					else
 						obj[key] = val;
 			
 				}
 			
-		},
-
-		/**
-		 * 深拷贝一个对象本身, 不深复制函数。
-		 * @static
-		 * @param {Object} obj 要拷贝的对象。
-		 * @return {Object} 返回复制后的对象。
-		 * @example
-		 * <code>
-		 * var obj1 = {a: 0, b: 1};
-		 * var obj2 = Object.clone(obj1);
-		 *  
-		 * obj1.a = 3;
-		 * trace(obj1.a);  // trace 3
-		 * trace(obj2.a);  // trace 0
-		 *
-		 * </code>
-		 */
-		clone: function (obj) {
-			
-			// 内部支持深度。
-			// 用法:  Object.clone.call(1, val);
-			var deep = this - 1;
-			
-			// 如果是对象，则复制。
-			if (o.isObject(obj) && !(deep < 0)) {
-				
-				// 如果对象支持复制，自己复制。
-				if(obj.clone)
-					return obj.clone();
-				
-				// #1    
-				// if(obj.cloneNode)
-				//	return obj.cloneNode(true);
-					
-				//仅当对象才需深拷贝，null除外。
-				obj = o.update(obj, o.clone, Array.isArray(obj) ? [] : {}, deep);
-			}
-			
-			return obj;
 		},
 		
 		/**
@@ -1376,45 +1318,6 @@ var JPlus = {
 					return b;
 					
 			}
-		},
-		
-		/**
-		 * 添加一个对象的成员函数调用结束后的回调函数。
-		 * @static
-		 * @param {Object} obj 对象。
-		 * @param {String} propertyName 成员函数名。
-		 * @param {Function} fn 对象。
-		 * @return {Object} obj。
-		 * @example
-		 * 
-		 * 下面的代码方便地添加 onload 事件。 
-		 * <code>
-		 * Object.addCallback(window, "onload",trace.empty);
-		 * </code>
-		 */
-		addCallback: function (obj, propertyName, fn) {
-			
-			assert.notNull(obj, 'Object.addCallback(obj, propertyName, fn): 参数 obj ~。');
-			
-			assert.isFunction(fn, 'Object.addCallback(obj, propertyName, fn): 参数 {fn} ~。');
-			
-			// 获取已有的句柄。
-			var f = obj[propertyName];
-			
-			// 如果不存在则直接拷贝，否则重新拷贝。新函数对原函数调用。
-			obj[propertyName] = typeof f === 'function' ? function () {
-				
-				// 获取上次的函数。
-				var v = f.apply(this, arguments);
-				
-				// 调用回调函数。
-				fn.apply(this, arguments);
-				
-				// 返回原值。
-				return v;
-				
-			} : fn;
-			return obj;
 		}
 
 	});
@@ -1459,13 +1362,10 @@ var JPlus = {
 				return [];
 				
 			//  [DOM Object] 。
-			if(iterable.item || iterable.count) {   
-				var l = iterable.length || iterable.count;
-				startIndex = startIndex || 0;
-				
-				// 复制。
-				var r = new Array(l);
-				while (l--) r[l] = iterable[startIndex++];
+			if(iterable.item) { 
+				var r = [], len = iterable.length;
+				for(startIndex = startIndex || 0; startIndex < len; startIndex++)
+					r[l] = iterable[startIndex];
 				return r;
 			}
 			
@@ -2131,15 +2031,11 @@ var JPlus = {
 	 * @return {XMLHttpRequest} 请求的对象。
 	 */
 	
-	if(!window.XMLHttpRequest) {
-		each.call(["MSXML2.XMLHTTP", "Microsoft.XMLHTTP"], function (xmlHttpType) {
-			try{
-				(window.XMLHttpRequest = function () {
-					return new ActiveXObject(xmlHttpType);
-				})();
-			}catch(e) {}
-			return false;
-		});
+	// IE 7 的  XMLHttpRequest 有错，强制覆盖。
+	if(navigator.isQuirks || !window.XMLHttpRequest) {
+		window.XMLHttpRequest = function () {
+			return new ActiveXObject(xmlHttpType);
+		};
 	}
 	
 	
