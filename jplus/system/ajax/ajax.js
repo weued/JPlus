@@ -84,7 +84,7 @@ namespace(".Ajax", Class({
 	 * @constructor Ajax
 	 */
 	constructor: function(obj) {
-		if (obj) Object.extend(this, obj);
+		Object.extend(this, obj);
 	},
 	
 	/**

@@ -10,7 +10,7 @@ namespace("JSON.", {
 		return JSON.specialChars[chr] || '\\u00' + Math.floor(chr.charCodeAt() / 16).toString(16) + (chr.charCodeAt() % 16).toString(16);
 	},
 
-	encode: function(obj){
+	encode: window.JSON && JSON.stringify || function(obj){
 		switch (Object.type(obj)){
 			case 'string':
 				return '"' + obj.replace(/[\x00-\x1f\\"]/g, JSON.replaceChars) + '"';
@@ -30,13 +30,16 @@ namespace("JSON.", {
 	decode: function(string){
 		if (typeof string != 'string' || !string.length) return null;
 		
+		if (window.JSON && JSON.parse)
+			return JSON.parse(string);
+		
 		// 摘自 json2.js
 		if (/^[\],:{}\s]*$/
                     .test(string.replace(/\\(?:["\\\/bfnrt]|u[\da-fA-F]{4})/g, '@')
                         .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
                         .replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
 
-        	return eval('(' + string + ')');
+        	return new Function('return ' + string)();
         	
         }
         
@@ -46,10 +49,6 @@ namespace("JSON.", {
 });
 
 
-Object.extendIf(JSON, {
-	
-	parse: JSON.decode,
-	
-	stringify: JSON.encode
-	
-});
+
+
+

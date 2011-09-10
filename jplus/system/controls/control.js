@@ -101,7 +101,7 @@ namespace(".Control", JPlus.Element.extend({
 		var me = this,
 		
 			// 临时的配置对象。
-			opt = Object.extend({}, me.options || {}),
+			opt = Object.extend({}, me.options),
 			
 			// 当前实际的节点。
 			dom;

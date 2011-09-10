@@ -77,16 +77,19 @@
 		
 				/**
 				 * 构造函数。
-				 * @param {Object} target
+				 * @param {Object} target 事件对象的目标。
+				 * @param {String} type 事件对象的类型。
+				 * @param {Object} [e] 事件对象的属性。
 				 * @constructor
 				 */
 				constructor: function (target, type, e) {
+					assert.notNull("JPlus.Event.prototype.constructor(target, type, e): 参数 {target} ~。", target);
+					
 					var me = this;
 					me.target = target;
 					me.srcElement = target.dom || target;
 					me.type = type;
-					if(e)
-						apply(me, e);
+					apply(me, e);
 				},
 	
 				/**
@@ -231,7 +234,7 @@
 		 * 是否属性的正则表达式。
 		 * @type RegExp
 		 */
-		rStyle = /\-|float/,
+		rStyle = /-(\w)|float/,
 	
 		/// #ifdef SupportIE8
 	
@@ -567,14 +570,17 @@
 			
 			assert(context.createElement, 'Element.parse(html, context, cachable): 参数 {context} 必须是 DOM 节点。', context);
 
-			if (!div || div.ownerDocument !== context) {
+			if (div && div.ownerDocument === context) {
+				
+				// 复制并返回节点的副本。
+				div = div.cloneNode(true);
+				
+			} else {
 				
 				html = html.replace(rXhtmlTag, "<$1></$2>");
 
 				// 过滤空格  // 修正   XHTML
-				var tag = rTagName.exec(html),
-					notSaveInCache = cachable !== undefined ? cachable : rNoClone.test(html);
-
+				var tag = rTagName.exec(html);
 
 				if (tag) {
 
@@ -586,7 +592,7 @@
 						div.innerHTML = wrap[1] + html + wrap[2];
 
 						// 转到正确的深度
-						while (wrap[0]--)
+						for (tag = wrap[0]; tag--;)
 							div = div.lastChild;
 
 					} else
@@ -603,13 +609,14 @@
 						div = context;
 					} else {
 						
-						assert(div.lastChild, "Element.parse(html, context, cachable): 无法根据 {html} 创建节点。", html);
-
 						/// #ifdef SupportIE8
 
 						div = p.$(div.lastChild);
 
 						/// #endif
+						
+						assert(div, "Element.parse(html, context, cachable): 无法根据 {html} 创建节点。", html);
+
 					}
 
 				} else {
@@ -617,15 +624,17 @@
 					// 创建文本节点。
 					div = context.createTextNode(html);
 				}
-
-			}
-			
-			if(!notSaveInCache) {
-				cache[html] = div.cloneNode(true);
 				
-				//  特殊属性复制。
-				//if (html = e.properties[div.tagName])
-				//	cache[html][html] = div[html];
+				if(cachable !== undefined ? cachable : !rNoClone.test(html)) {
+					cache[html] = div;
+					
+					//  特殊属性复制。
+					//if (html = e.properties[div.tagName])
+					//	cache[html][html] = div[html];
+					
+					div = div.cloneNode(true);
+				}
+
 			}
 			
 			return div;
@@ -1063,7 +1072,7 @@
 										this.forEach(function (node) {
 											var t = node[key].apply(node, args);
 											if(t) {
-												r.push.apply(r, t.doms || [t]);
+												r.push.apply(r, t.doms || (t.length !== undefined ? t : [t]));
 											}
 										});
 										return new el(r);
@@ -1279,8 +1288,7 @@
 		setStyle: function (name, value) {
 
 			assert.isString(name, "Element.prototype.setStyle(name, value): 参数 {name} ~。");
-			assert(typeof value !== "number" ? value !== null : !isNaN(value), "Element.prototype.setStyle(name, value): 参数 {value} 不是合法的 CSS 属性值。");
-
+			
 			// 获取样式
 			var me = this;
 
@@ -1288,25 +1296,23 @@
 			if (arguments.length == 1) {
 				value = name;
 				name = 'cssText';
-			} else {
-
+				
 				// 特殊属性。
-				if(name in styles) {
-					
-					name = styles[name];
-					
-					// setHeight , setWidth, setOpacity
-					if(me[name])
-						return me[name](value);
+			} else if(name in styles) {
+				
+				name = styles[name];
+				
+				// setHeight , setWidth, setOpacity
+				if(me[name])
+					return me[name](value);
 
-				} else {
-					name = name.toCamelCase();
-	
-					//如果值是函数，运行。
-					if (typeof value === "number" && !(name in e.styleNumbers))
-						value += "px";
-					
-				}
+			} else {
+				name = name.replace(rStyle, formatStyle);
+
+				//如果值是函数，运行。
+				if (typeof value === "number" && !(name in e.styleNumbers))
+					value += "px";
+				
 			}
 
 			// 指定值。
@@ -1322,27 +1328,35 @@
 		 * @param {Number} value 透明度， 0 - 1 。
 		 * @return {Element} this
 		 */
-		setOpacity: !('opacity' in div.style) ? function (value) {
-
-			var style = (this.dom || this).style;
-
-			assert(value <= 1 && value >= 0, 'Element.prototype.setOpacity(value): 参数 {value} 必须在 0~1 间。', value);
-
-			// 当元素未布局，IE会设置失败，强制使生效
-			style.zoom = 1;
-
-			// 设置值
-			style.filter = (style.filter || 'alpha(opacity=?)').replace(rOpacity, "opacity=" + value * 100);
-
-			//返回值， 保证是字符串  值为  0 - 100
-			return this;
-
-		} : function (value) {
+		setOpacity: 'opacity' in div.style ? function (value) {
 
 			assert(value <= 1 && value >= 0, 'Element.prototype.setOpacity(value): 参数 {value} 必须在 0~1 间。', value);
 
 			//  标准浏览器使用   opacity
 			(this.dom || this).style.opacity = value;
+			return this;
+
+		} : function (value) {
+
+			var me = this.dom || this, 
+				style = me.style;
+			
+			// 转换为数字。
+			value = +value;
+
+			assert(isNaN(value) || (value <= 1 && value >= 0), 'Element.prototype.setOpacity(value): 参数 {value} 必须在 0~1 间。', value);
+
+			value = value || value === 0 ? 'opacity=' + value * 100 : '';
+			
+			// 获取真实的滤镜。
+			me = styleString(me, 'filter');
+
+			// 当元素未布局，IE会设置失败，强制使生效。
+			style.zoom = 1;
+
+			// 设置值。
+			style.filter = rOpacity.test(me) ? me.replace(rOpacity, value) : (me + ' ' + value);
+			
 			return this;
 
 		},
@@ -1629,21 +1643,23 @@
 
 		/**
 		 * 获取元素自身大小（不带滚动条）。
+		 * @param {Number} value 值。
 		 * @return {Element} this
 		 */
 		setWidth: function (value) {
 
-			(this.dom || this).style.width = value > 0 ? value + 'px' : value <= 0 ? '0px' : '';
+			(this.dom || this).style.width = value > 0 ? value + 'px' : value <= 0 ? '0px' : value;
 			return this;
 		},
 
 		/**
 		 * 获取元素自身大小（不带滚动条）。
+		 * @param {Number} value 值。
 		 * @return {Element} this
 		 */
 		setHeight: function (value) {
 
-			(this.dom || this).style.height = value > 0 ? value + 'px' : value <= 0 ? '0px' : '';
+			(this.dom || this).style.height = value > 0 ? value + 'px' : value <= 0 ? '0px' : value;
 			return this;
 		},
 
@@ -1768,7 +1784,7 @@
 
 			var me = this.dom || this;
 
-			return me.style[name = name.toCamelCase()] || getStyle(me, name);
+			return me.style[name = name.replace(rStyle, formatStyle)] || getStyle(me, name);
 
 		},
 
@@ -2991,6 +3007,16 @@
 	
 	/// #ifdef ElementAttribute
 	
+    /**
+     * 到骆驼模式。
+     * @param {String} all 全部匹配的内容。
+     * @param {String} match 匹配的内容。
+     * @return {String} 返回的内容。
+     */
+    function formatStyle(all, match) {
+        return match ? match.toUpperCase() : styles['float'];
+    }
+	
 	/**
 	 * 读取样式字符串。
 	 * @param {Element} elem 元素。
@@ -3016,7 +3042,7 @@
 				if(name in styles) {
 					var style = e.getStyles(elem, e.display);
 					e.setStyles(elem, e.display);
-					value= parseFloat(getStyle(elem, name)) || 0;
+					value = parseFloat(getStyle(elem, name)) || 0;
 					e.setStyles(elem, style);
 				} else {
 					value = 0;

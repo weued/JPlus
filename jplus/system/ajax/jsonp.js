@@ -3,7 +3,7 @@
 //===========================================
 
 
-namespace(".Ajax.", {});
+namespace(".Ajax.", null);
 
 
 Ajax.JSONP = Class({
@@ -11,7 +11,7 @@ Ajax.JSONP = Class({
 	 * 
 	 */
 	constructor: function(obj) {
-		if (obj) Object.extend(this, obj);
+		Object.extend(this, obj);
 	},parseJSON:function(response){
 		return eval("(" + response + ")");
 	}
@@ -69,7 +69,7 @@ Ajax.JSONP = Class({
 
 
 
-Ajax.JSONP.getJSONP = function(json){
+Ajax.getJSONP = function(json){
 	new JSONP({url:json.url,success:json.success}).send();
 };
 

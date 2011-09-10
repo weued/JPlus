@@ -192,12 +192,6 @@ var JPlus = {
 		rWhite = /%20/g,
 		
 		/**
-	     * 转为骆驼格式的正则表达式。
-	     * @type RegExp
-	     */
-		rToCamelCase = /[\-_]\D/g,
-		
-		/**
 		 * 管理所有事件类型的工具。
 		 * @type Object
 		 */
@@ -315,26 +309,6 @@ var JPlus = {
 			}, 
 			
 			/**
-			 * 全局运行一个函数。
-			 * @param {String} statement 语句。
-			 * @return {Object} 执行返回值。
-			 * @example
-			 * <code>
-			 * JPlus.eval('alert("hello")');
-			 * </code>
-			 */
-			eval: window.execScript ? function(statement){
-				
-				// 如果 IE，使用 window.execScript  。
-				return window.execScript(statement);
-				
-			} : function (statement) {
-				
-				// 如果正常浏览器，使用 window.eval  。
-				return window.eval(statement);
-			},
-			
-			/**
 			 * 创建一个类。
 			 * @param {Object/Function} [methods] 成员或构造函数。
 			 * @return {Class} 生成的类。
@@ -397,7 +371,7 @@ var JPlus = {
 			 * </code>
 			 */
 			loadScript: function (url) {
-				return p.loadText(url, p.eval);
+				return p.loadText(url, execScript);
 			},
 			
 			/**
@@ -692,7 +666,7 @@ var JPlus = {
 				 */
 				un: function (type, listener) {
 					
-					assert(!listener || Function.isFunction(listener), 'IEvent.un(type, listener): 参数 {listener} 必须是可执行的函数或空参数。', listener);
+					assert(!listener || Function.isFunction(listener), 'IEvent.un(type, listener): 参数 {listener} 必须是函数或空参数。', listener);
 					
 					// 获取本对象     本对象的数据内容   本事件值
 					var me = this, d = p.getData(me, 'event'), evt, handlers, i;
@@ -1080,10 +1054,16 @@ var JPlus = {
 			p.enumerables = "toString hasOwnProperty valueOf constructor isPrototypeOf".split(' ');
 			// IE6  不会遍历系统对象需要复制，所以强制去测试，如果改写就复制 。
 			return function (dest, src) {
-				for (var i = p.enumerables.length, value; i--;)
-					if(hasOwnProperty.call(src, value = p.enumerables[i]))
-						dest[value] = src[value];
-				return apply(dest, src);
+				if(src) {
+					assert(dest != null, "Object.extend(dest, src): 参数 {dest} 不可为空。", dest);
+					
+					for (var i = p.enumerables.length, value; i--;)
+						if(hasOwnProperty.call(src, value = p.enumerables[i]))
+							dest[value] = src[value];
+					apply(dest, src);
+				}
+
+				return dest;
 			}
 		})(),
 
@@ -1117,8 +1097,8 @@ var JPlus = {
 		 */
 		each: function (iterable, fn, bind) {
 
-			assert(!Function.isFunction(iterable), "Object.each(iterable, fn, bind): 参数 {iterable} 不能是可执行的函数。 ", iterable);
-			assert(Function.isFunction(fn), "Object.each(iterable, fn, bind): 参数 {fn} 必须是可执行的函数。 ", fn);
+			assert(!Function.isFunction(iterable), "Object.each(iterable, fn, bind): 参数 {iterable} 不能是函数。 ", iterable);
+			assert(Function.isFunction(fn), "Object.each(iterable, fn, bind): 参数 {fn} 必须是函数。 ", fn);
 			
 			// 如果 iterable 是 null， 无需遍历 。
 			if (iterable != null) {
@@ -1333,7 +1313,7 @@ var JPlus = {
 			if(iterable.item) { 
 				var r = [], len = iterable.length;
 				for(startIndex = startIndex || 0; startIndex < len; startIndex++)
-					r[l] = iterable[startIndex];
+					r[startIndex] = iterable[startIndex];
 				return r;
 			}
 			
@@ -1740,19 +1720,6 @@ var JPlus = {
 	 * @class String 
 	 */
 	String.implementIf({
-		
-		/**
-	     * 转为骆驼格式。
-	     * @param {String} value 内容。
-	     * @return {String} 返回的内容。
-	     * @example
-		 * <code>
-		 * "font-size".toCamelCase(); //     "fontSize"
-		 * </code>
-	     */
-		toCamelCase: function () {
-	        return this.replace(rToCamelCase, toCamelCase);
-	    },
 
 		/// #ifdef SupportIE8
 
@@ -1929,7 +1896,7 @@ var JPlus = {
 			assert(args && typeof args.length === 'number', "Array.prototype.invoke(func, args): 参数 {args} 必须是数组, 无法省略。", args);
 			var r = [];
 			ap.forEach.call(this, function (value) { 
-				assert(value != null && value[func] && value[func].apply, "Array.prototype.invoke(func, args): {value} 不包含可执行的函数 {func}。", value, func);
+				assert(value != null && value[func] && value[func].apply, "Array.prototype.invoke(func, args): {value} 不包含函数 {func}。", value, func);
 				r.push(value[func].apply(value, args));
 			});
 			
@@ -2006,6 +1973,25 @@ var JPlus = {
 	/// #endregion
 
 	/// #region 页面
+	
+		
+	if(!window.execScript)
+	
+		/**
+		 * 全局运行一个函数。
+		 * @param {String} statement 语句。
+		 * @return {Object} 执行返回值。
+		 * @example
+		 * <code>
+		 * execScript('alert("hello")');
+		 * </code>
+		 */
+		window.execScript = function(statements) {
+			
+			// 如果正常浏览器，使用 window.eval  。
+			window.eval(statements);
+
+		};
 		
 	// 将以下成员赋予 window ，这些成员是全局成员。
 	String.map('undefined Class IEvent using namespace', p, window);
@@ -2056,7 +2042,6 @@ var JPlus = {
 	function apply(dest, src) {
 		
 		assert(dest != null, "Object.extend(dest, src): 参数 {dest} 不可为空。", dest);
-		assert(src != null, "Object.extend(dest, src): 参数 {src} 不可为空。", src);
 		
 		// 直接遍历，不判断是否为真实成员还是原型的成员。
 		for (var b in src)
@@ -2073,7 +2058,6 @@ var JPlus = {
 	function applyIf(dest, src) {
 		
 		assert(dest != null, "Object.extendIf(dest, src): 参数 {dest} 不可为空。", dest);
-		assert(src != null, "Object.extendIf(dest, src): 参数 {src} 不可为空。", src);
 		
 		// 和 apply 类似，只是判断目标的值是否为 undefiend 。
 		for (var b in src)
@@ -2090,7 +2074,7 @@ var JPlus = {
 	 */
 	function each(fn, bind) {
 		
-		assert(Function.isFunction(fn), "Array.prototype.each(fn, bind): 参数 {fn} 必须是一个可执行的函数。", fn);
+		assert(Function.isFunction(fn), "Array.prototype.each(fn, bind): 参数 {fn} 必须是一个函数。", fn);
 		
 		var i = -1,
 			me = this;
@@ -2120,15 +2104,6 @@ var JPlus = {
 			return ret;
 		}
 	}
-	
-    /**
-     * 到骆驼模式。
-     * @param {Match} match 匹配的内容。
-     * @return {String} 返回的内容。
-     */
-    function toCamelCase(match) {
-        return match.charAt(1).toUpperCase();
-    }
 	
 	/**
 	 * 将一个字符转为大写。
@@ -2950,7 +2925,7 @@ function assert(bValue, msg) {
 		 * </code>
 		 */
 		isFunction: function () {
-			return assertInternal2(Function.isFunction, "必须是可执行的函数", arguments);
+			return assertInternal2(Function.isFunction, "必须是函数", arguments);
 		},
 		
 		/**
