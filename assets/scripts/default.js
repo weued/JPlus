@@ -22,6 +22,8 @@
 	
 	apply(window, {
 		
+		_: window.console,
+		
 		initPage: function (navs) {
 			var result = [];
 			for(var nav in navs){

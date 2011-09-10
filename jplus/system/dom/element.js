@@ -690,6 +690,7 @@
 		/**
 		 * 特殊属性集合。
 		 * @type Object
+		 * 特殊的属性，在节点复制时不会被复制，因此需要额外复制这些属性内容。
 		 */
 		properties: {
 			INPUT: 'checked',
@@ -796,7 +797,7 @@
 			assert(type in e.styleMaps, "Element.getSizes(elem, type, names): 参数 {type} 必须是 \"x\" 或 \"y\"。", type);
 			assert.isString(names, "Element.getSizes(elem, type, names): 参数 {names} ~。");
 
-
+			// 缓存 currentStyle 可以大大增加标准浏览器执行速度， 因此这里冗余代码。
 			var value = 0, map = e.styleMaps[type], i = names.length, val, currentStyle = elem.ownerDocument.defaultView.getComputedStyle(elem, null);
 			while(i--) {
 				val = map[names.charAt(i)];
@@ -972,7 +973,7 @@
 		setStyles: function (elem, styles) {
 			assert.isElement(elem, "Element.getStyles(elem, styles): 参数 {elem} ~。");
 
-			o.extend(elem.style, styles);
+			apply(elem.style, styles);
 		},
 	
 		/// #endif
@@ -1778,14 +1779,10 @@
 		 * @method
 		 * @return {Number} 透明度。 0 - 1 范围。
 		 */
-		getOpacity: !('opacity' in div.style) ? function () {
-
-			return rOpacity.test(styleString(this.dom || this, 'filter')) ? parseInt(RegExp.$1) / 100 : 1;
-
-		} : function () {
-
+		getOpacity: 'opacity' in div.style ? function () {
 			return styleNumber(this.dom || this, 'opacity');
-
+		} : function () {
+			return rOpacity.test(styleString(this.dom || this, 'filter')) ? parseInt(RegExp.$1) / 100 : 1;
 		},
 
 		/// #else
@@ -2051,9 +2048,9 @@
 		
 	}, 2)
 	
+	/// #ifdef ElementNode
+	
 	.implement({
-		
-		/// #ifdef ElementNode
 
 		/// #ifdef SupportIE6
 
@@ -2206,14 +2203,10 @@
 			me.parentNode.replaceChild(html, me);
 			return html;
 		}
-		
-		/// #endif
 
 	}, 3)
 	
 	.implementIf({
-		
-		/// #ifdef ElementNode
 
 		/**
 		 * 根据属性获得元素内容。
@@ -2270,15 +2263,6 @@
 			return this.getElementsByTagName(name);
 		},
 
-		/**
-		 * 根据名字返回子节点。
-		 * @param {Strung} classname 类名。
-		 * @return {Array} 节点集合。
-		 */
-		getElementsByName: function (name) {
-			return this.getElementsByAttribute('name', name);
-		},
-
 		/// #ifdef SupportIE6
 
 		/**
@@ -2308,14 +2292,14 @@
 
 		/**
 		 * 获得相匹配的节点。
-		 * @param {String} type 类型。
-		 * @param {Function/Number} fn 过滤函数或索引或标签。
+		 * @param {String} treeWalker 遍历的类型，该类型在 {#link Element.treeWalkers} 指定。
+		 * @param {Function/Number} fn 过滤函数或索引或标签或类选择符。
 		 * @return {Element} 元素。
 		 */
-		get: function (type, fn) {
+		get: function (treeWalker, fn) {
 
 			// 如果 type 为函数， 表示 默认所有子节点。
-			switch (typeof type) {
+			switch (typeof treeWalker) {
 				case 'string':
 					fn = fn ? getFilter(fn) : isElement;
 					break;
@@ -2324,17 +2308,17 @@
 					type = 'children';
 					break;
 				case 'number':
-					fn = getFilter(type);
+					fn = getFilter(treeWalker);
 					type = 'first';
 			}
 			
-			assert(e.treeWalkers[type], 'Element.prototype.get(type, fn): 函数不支持 {0}类型 的节点关联。', type);
-			return e.treeWalkers[type](this.dom || this, fn);
+			assert(e.treeWalkers[treeWalker], 'Element.prototype.get(treeWalker, fn): 函数不支持 {treeWalker}类型 的节点关联。', treeWalker);
+			return e.treeWalkers[treeWalker](this.dom || this, fn);
 		}
-		
-		/// #endif
 
 	}, 4);
+		
+	/// #endif
 		
 	/// #ifdef ElementDimension
 	

@@ -6,41 +6,66 @@
 		<script type="text/javascript" src="../../jplus/system.js" ></script>
 		<script type="text/javascript" src="../../jplus/system/dom/element.js" ></script>
 		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+		<style>
+			#a {
+				background: #DCDCDC; margin: 4px; padding: 8px;
+			}
+			
+			#b {
+				background: #EDEDED; padding: 8px;
+			}
+			
+			#c {
+				background: #EAF2F5; border:  1px solid #ffffff; margin: 4px auto; width: 300px; text-align: center;
+			}
+			
+			#d {
+				background: #EAF2F5;  border:  10px solid #BEDCE7; padding: 8px;
+			}
+		</style>
 	</head>
 	<body>
+		<div id="all">
+			<div id="a" class="a"> id=a margin=4 padding=8
+				<div id="b" class="b">id=b padding=8
+					<div id="c" class="c">id=c border=1 margin=4 auto width=300</div>
+				</div>
+				<div id="d" class="d">id=d border=10 padding=8</div>
+			</div>
+		</div>
+		
 		<script>
+		
+			var a = $('a'), b = $('b'), c = $('c'), d = $('d'), o = $('o'), abcd = new ElementList($('all').getElementsByTagName("div"));
+			
 			
 			var testcases = {
-				'size': '-',
-				'Element.prototype.getOuterSize': '',
-				'Element.prototype.setOuterSize': '',
-				'Element.prototype.getSize': '',
-				'Element.prototype.setSize': '',
-				'Element.prototype.getWidth': '',
-				'Element.prototype.setWidth': '',
-				'Element.prototype.getHeight': '',
-				'Element.prototype.setHeight': '',
-				'basic element': '-',
-				'Element.prototype.getOffsetParent': '',
-				'Element.prototype.getOffsets': 'showInfo(a.getOffsets(), a); ',
-				'Element.prototype.getPosition': 'showInfo(a.getPosition(), a); ',
-				'Element.prototype.getPosition(true)': 'showInfo(a.getPosition(a.getOffsetParent()), a); ',
-				'inner element': '-',
-				'Element.prototype.getOffsetParent': 'b.getOffsetParent(); ',
-				'Element.prototype.getOffsets': 'showInfo(b.getOffsets(), b); ',
-				'Element.prototype.getPosition': 'showInfo(b.getPosition(), b); ',
-				'Element.prototype.getPosition(true)': 'showInfo(b.getPosition(b.getOffsetParent()), b); ',
-				'document': '-',
-				'document.getOffsetParent': 'document.getOffsetParent(); ',
-				'document.getOffsets': 'document.getOffsets(); ',
-				'document.getPosition': 'document.getPosition(); ',
-				'document.getPosition(value)': 'document.getPosition(document.getOffsetParent()); ',
-				'document.body': '-',
-				'document.body.getOffsetParent': 'document.body.getOffsetParent(); ',
-				'document.body.getOffsets': 'document.body.getOffsets(); ',
-				'document.body.getPosition': 'document.body.getPosition(); ',
-				'document.body.getPosition(value)': 'document.body.getPosition(document.getOffsetParent()); ',
-				'extra': '-',
+				'Core': '-',
+				'Element.getSizes': 'a, "x", "mbp"',
+				'Size': '-',
+				'Element.prototype.getOuterSize': '@a;',
+				'Element.prototype.setOuterSize': '@a;',
+				'Element.prototype.getSize': '@a;',
+				'Element.prototype.setSize': '@a;',
+				'Element.prototype.getWidth': '@a;',
+				'Element.prototype.setWidth': '@a;',
+				'Element.prototype.getHeight': '@a;',
+				'Element.prototype.setHeight': '@a;',
+				'Basic Element': '-',
+				'Element.prototype.getOffsetParent': '@a;',
+				'Element.prototype.getOffsets': '@a;',
+				'Element.prototype.getPosition': '@a; ; true',
+				'Document': '-',
+				'document.getOffsetParent': '',
+				'document.getOffsets': '',
+				'document.getPosition': '',
+				'document.getPosition(value)': 'document.getOffsetParent()',
+				'Document.body': '-',
+				'document.body.getOffsetParent': '',
+				'document.body.getOffsets': '',
+				'document.body.getPosition': '',
+				'document.body.getPosition(value)': 'document.getOffsetParent()',
+				'Extra': '-',
 				'Element.prototype.getOffset': 'a.getOffset(); ',
 				'Element.prototype.setOffset': '{ x: 3, y: 7 }',
 				'Element.prototype.setPosition': '{ x: 3, y: 7 }',
