@@ -223,7 +223,6 @@ var JPlus = {
 			
 			/**
 			 * 获取属于一个元素的数据。
-			 * @static
 			 * @param {Object} obj 元素。
 			 * @param {String} dataType 类型。
 			 * @return {Object} 值。
@@ -240,16 +239,15 @@ var JPlus = {
 				
 				assert.isObject(obj, "JPlus.data(obj, dataType): 参数 {obj} ~。");
 				
-				// 创建或测试 '$data'。
+				// 创建或获取 '$data'。
 				var d = obj.$data || (obj.$data = {}) ;
 				
-				// 创建或测试   dataType。
+				// 创建或获取 dataType。
 				return d[dataType] || (d[dataType] = {});
 			},
 		
 			/**
 			 * 如果存在，获取属于一个元素的数据。
-			 * @static
 			 * @param {Object} obj 元素。
 			 * @param {String} dataType 类型。
 			 * @return {Object} 值。
@@ -273,7 +271,6 @@ var JPlus = {
 			
 			/**
 			 * 设置属于一个元素的数据。
-			 * @static
 			 * @param {Object} obj 元素。
 			 * @param {String} dataType 类型。
 			 * @param {Object} data 内容。
@@ -294,7 +291,6 @@ var JPlus = {
 			
 			/**
 			 * 复制一个对象的事件拷贝到另一个对象。
-			 * @static
 			 * @param {Object} src 来源的对象。
 			 * @param {Object} dest 目标的对象。
 			 * @return this
@@ -320,8 +316,6 @@ var JPlus = {
 			
 			/**
 			 * 全局运行一个函数。
-			 * @method
-			 * @static
 			 * @param {String} statement 语句。
 			 * @return {Object} 执行返回值。
 			 * @example
@@ -342,8 +336,6 @@ var JPlus = {
 			
 			/**
 			 * 创建一个类。
-			 * @method
-			 * @static
 			 * @param {Object/Function} [methods] 成员或构造函数。
 			 * @return {Class} 生成的类。
 			 * 创建一个类，相当于继承于 JPlus.Object创建。
@@ -391,7 +383,6 @@ var JPlus = {
 		
 			/**
 			 * 全部已载入的名字空间。
-			 * @static
 			 * @type Array
 			 * @private
 			 */
@@ -399,7 +390,6 @@ var JPlus = {
 			
 			/**
 			 * 同步载入代码。
-			 * @static
 			 * @param {String} uri 地址。
 			 * @example
 			 * <code>
@@ -412,7 +402,6 @@ var JPlus = {
 			
 			/**
 			 * 异步载入样式。
-			 * @static
 			 * @param {String} uri 地址。
 			 * @example
 			 * <code>
@@ -483,8 +472,6 @@ var JPlus = {
 	
 			/**
 			 * 使用一个名空间。
-			 * @method
-			 * @static
 			 * @param {String} ns 名字空间。
 			 * @param {Boolean} isStyle=false 是否为样式表。
 			 * 有关名字空间的说明， 见 {@link namespace} 。
@@ -528,8 +515,6 @@ var JPlus = {
 	
 			/**
 			 * 定义名字空间。
-			 * @method
-			 * @static
 			 * @param {String} name 名字空间。
 			 * @param {Object} [obj] 值。
 			 * <p>
@@ -612,7 +597,6 @@ var JPlus = {
 			/**
 			 * 管理所有事件类型的工具。
 			 * @property
-			 * @static
 			 * @type Object
 			 * @private
 			 * 所有类的事件信息存储在这个变量。使用 xType -> name的结构。
@@ -621,7 +605,7 @@ var JPlus = {
 			
 			/**
 			 * 表示一个事件接口。
-			 * @interface JPlus.IEvent
+			 * @interface
 			 * @singleton
 			 * JPlus.IEvent 提供了事件机制的基本接口，凡实现这个接口的类店都有事件的处理能力。
 			 * 在调用  {@link JPlus.Object.addEvents} 的时候，将自动实现这个接口。
@@ -632,6 +616,7 @@ var JPlus = {
 				 * 增加一个监听者。
 				 * @param {String} type 监听名字。
 				 * @param {Function} listener 调用函数。
+				 * @param {Object} bind=this listener 执行时的作用域。
 				 * @return Object this
 				 * @example
 				 * <code>
@@ -685,7 +670,7 @@ var JPlus = {
 				/**
 				 * 删除一个监听器。
 				 * @param {String} [type] 监听名字。
-				 * @param {Function/undefined} listener 回调器。
+				 * @param {Function} [listener] 回调器。
 				 * @return Object this
 				 * 注意: function () {} !== function () {}, 这意味着这个代码有问题:
 				 * <code>
@@ -748,7 +733,7 @@ var JPlus = {
 				/**
 				 * 触发一个监听器。
 				 * @param {String} type 监听名字。
-				 * @param {Object/undefined} e 事件参数。
+				 * @param {Object} [e] 事件参数。
 				 * @return Object this
 				 * trigger 只是手动触发绑定的事件。
 				 * @example
@@ -770,6 +755,7 @@ var JPlus = {
 				 * 增加一个只执行一次的监听者。
 				 * @param {String} type 监听名字。
 				 * @param {Function} listener 调用函数。
+				 * @param {Object} bind=this listener 执行时的作用域。
 				 * @return Object this
 				 * @example
 				 * <code>
@@ -806,13 +792,12 @@ var JPlus = {
 	/// #region 全局函数
 	
 	/**
-	 * @class JPlus.Object
+	 * @namespace JPlus.Object
 	 */
 	apply(Object, {
 	
 		/**
 		 * 扩展当前类的动态方法。
-		 * @static
 		 * @param {Object} members 成员。
 		 * @return this
 		 * @seeAlso JPlus.Object.implementIf
@@ -838,7 +823,6 @@ var JPlus = {
 		
 		/**
 		 * 如果不存在成员, 扩展当前类的动态方法。
-		 * @static
 		 * @param {Object} members 成员。
 		 * @return this
 		 * @seeAlso JPlus.Object.implement
@@ -854,7 +838,6 @@ var JPlus = {
 		
 		/**
 		 * 为当前类添加事件。
-		 * @static
 		 * @param {Object} [evens] 所有事件。 具体见下。
 		 * @return this
 		 * <p>
@@ -997,7 +980,6 @@ var JPlus = {
 	
 		/**
 		 * 继承当前类并返回子类。
-		 * @static
 		 * @param {Object/Function} [methods] 成员或构造函数。
 		 * @return {Class} 继承的子类。
 		 * <p>
@@ -1074,14 +1056,12 @@ var JPlus = {
 	
 	/**
 	 * Object  简写。
-	 * @class Object
+	 * @namespace Object
 	 */
 	apply(o, {
 
 		/**
 		 * 复制对象的所有属性到其它对象。 
-		 * @static
-		 * @method
 		 * @param {Object} dest 复制目标。
 		 * @param {Object} obj 要复制的内容。
 		 * @return {Object} 复制后的对象 (dest)。
@@ -1109,8 +1089,6 @@ var JPlus = {
 
 		/**
 		 * 如果目标成员不存在就复制对象的所有属性到其它对象。 
-		 * @static
-		 * @method
 		 * @param {Object} dest 复制目标。
 		 * @param {Object} obj 要复制的内容。
 		 * @return {Object} 复制后的对象 (dest)。
@@ -1125,7 +1103,6 @@ var JPlus = {
 		
 		/**
 		 * 在一个可迭代对象上遍历。
-		 * @static
 		 * @param {Array/Object} iterable 对象，不支持函数。
 		 * @param {Function} fn 对每个变量调用的函数。 {@param {Object} value 当前变量的值} {@param {Number} key 当前变量的索引} {@param {Number} index 当前变量的索引} {@param {Array} array 数组本身} {@return {Boolean} 如果中止循环， 返回 false。}
 	 	 * @param {Object} bind 函数执行时的作用域。
@@ -1165,7 +1142,6 @@ var JPlus = {
 
 		/**
 		 * 更新一个可迭代对象。
-		 * @static
 		 * @param {Array/Object} iterable 对象，不支持函数。
 		 * @param {Function} fn 对每个变量调用的函数。 {@param {Object} value 当前变量的值} {@param {Number} key 当前变量的索引} {@param {Array} array 数组本身} {@return {Boolean} 如果中止循环， 返回 false。}
 	 	 * @param {Object} bind=iterable 函数执行时的作用域。
@@ -1218,7 +1194,6 @@ var JPlus = {
 
 		/**
 		 * 判断一个变量是否是引用变量。
-		 * @static
 		 * @param {Object} object 变量。
 		 * @return {Boolean} 所有对象变量返回 true, null 返回 false 。
 		 * @example
@@ -1235,7 +1210,6 @@ var JPlus = {
 		
 		/**
 		 * 将一个对象解析成一个类的属性。
-		 * @static
 		 * @param {Object} obj 类实例。
 		 * @param {Object} options 参数。
 		 * 这个函数会分析对象，并试图找到一个 属性设置函数。
@@ -1294,7 +1268,6 @@ var JPlus = {
 		
 		/**
 		 * 返回一个变量的类型的字符串形式。
-		 * @static
 		 * @param {Object} obj 变量。
 		 * @return {String} 所有可以返回的字符串：  string  number   boolean   undefined	null	array	function   element  class   date   regexp object。
 		 * @example
@@ -1310,32 +1283,23 @@ var JPlus = {
 		type: function (obj) {
 			
 			//获得类型  。
-			var b = typeof obj;
+			var typeName = typeof obj;
 			
-			switch (b) {
-				case "object":  // 对象， 直接获取 xType 。
-					return obj == null ? "null" : (obj.xType || b);
-
-				case "function":  // 如果有原型， 则为类 。
-					for(obj in obj.prototype) { return "class";}
-					
-				default:  // 和 typeof 一样 。
-					return b;
-					
-			}
+			// 对象， 直接获取 xType 。
+			return typeName === 'object' ? obj == null ? "null" : (obj.xType || typeName) : typeName;
+			
 		}
 
 	});
 
 	/**
 	 * 数组。
-	 * @class Array
+	 * @namespace Array
 	 */
 	applyIf(Array, {
 		
 		/**
 		 * 判断一个变量是否是数组。
-		 * @static
 		 * @param {Object} object 变量。
 		 * @return {Boolean} 如果是数组，返回 true， 否则返回 false。
 		 * @example
@@ -1353,7 +1317,6 @@ var JPlus = {
 
 		/**
 		 * 在原有可迭代对象生成一个数组。
-		 * @static
 		 * @param {Object} iterable 可迭代的实例。
 		 * @param {Number} startIndex=0 开始的位置。
 		 * @return {Array} 复制得到的数组。
@@ -1382,13 +1345,12 @@ var JPlus = {
 
 	/**
 	 * 函数。
-	 * @class Function
+	 * @namespace Function
 	 */
 	apply(Function, {
 		
 		/**
 		 * 绑定函数作用域。
-		 * @static
 		 * @param {Function} fn 函数。
 		 * @param {Object} bind 位置。
 		 * 注意，未来 Function.prototype.bind 是系统函数， 因此这个函数将在那个时候被 替换掉。
@@ -1409,7 +1371,6 @@ var JPlus = {
 		
 		/**
 		 * 空函数。
-		 * @static
 		 * @property
 		 * @type Function
 		 * Function.empty返回空函数的引用。
@@ -1418,7 +1379,6 @@ var JPlus = {
 
 		/**
 		 * 一个返回 true 的函数。
-		 * @static
 		 * @property
 		 * @type Function
 		 */
@@ -1426,7 +1386,6 @@ var JPlus = {
 
 		/**
 		 * 一个返回 false 的函数。
-		 * @static
 		 * @property
 		 * @type Function
 		 */
@@ -1434,7 +1393,6 @@ var JPlus = {
 
 		/**
 		 * 判断一个变量是否是函数。
-		 * @static
 		 * @param {Object} object 变量。
 		 * @return {Boolean} 如果是函数，返回 true， 否则返回 false。
 		 * @example
@@ -1452,8 +1410,6 @@ var JPlus = {
 		
 		/**
 		 * 返回自身的函数。
-		 * @static
-		 * @method
 		 * @param {Object} v 需要返回的参数。
 		 * @return {Function} 执行得到参数的一个函数。
 		 * @hide
@@ -1468,13 +1424,12 @@ var JPlus = {
 
 	/**
 	 * 字符串。
-	 * @class String
+	 * @namespace String
 	 */
 	apply(String, {
 
 		/**
 		 * 格式化字符串。
-		 * @static
 		 * @param {String} format 字符。
 		 * @param {Object} ... 参数。
 		 * @return {String} 格式化后的字符串。
@@ -1510,7 +1465,6 @@ var JPlus = {
 		
 		/**
 		 * 将一个数组源形式的字符串内容拷贝。
-		 * @static
 		 * @param {Object} str 字符串。用空格隔开。
 		 * @param {Object/Function} source 更新的函数或源。
 		 * @param {Object} [dest] 如果指明了， 则拷贝结果到这个目标。
@@ -1541,7 +1495,6 @@ var JPlus = {
 		
 		/**
 		 * 返回变量的地址形式。
-		 * @static
 		 * @param {Object} obj 变量。
 		 * @return {String} 字符串。
 		 * @example
@@ -1581,13 +1534,12 @@ var JPlus = {
 	
 	/**
 	 * 日期。
-	 * @class Date
+	 * @namespace Date
 	 */
 	applyIf(Date, {
 		
 		/**
 		 * 获取当前时间。
-		 * @static
 		 * @return {Number} 当前的时间点。
 		 * @example
 		 * <code>
@@ -1662,7 +1614,7 @@ var JPlus = {
 			/// #ifdef SupportIE6
 			
 			/**
-			 * 浏览器是否为标准事件。就目前浏览器状况， IE6，7 中 isQuirks = true  其它皆 false 。
+			 * 获取一个值，该值指示当前浏览器是否支持标准事件。就目前浏览器状况， IE6，7 中 isQuirks = true  其它皆 false 。
 			 * @type Boolean
 			 * 此处认为 IE6,7 是怪癖的。
 			 */
@@ -1673,21 +1625,22 @@ var JPlus = {
 			/// #ifdef SupportIE8
 			
 			/**
-			 * 是否为标准浏览器事件。
+			 * 获取一个值，该值指示当前浏览器是否为标准浏览器。
 			 * @type Boolean
+			 * 此处认为 IE6, 7, 8 不是标准的浏览器。
 			 */
 			isStandard: !!-[1,],
 			
 			/// #endif
 			
 			/**
-			 * 浏览器名字。
+			 * 获取当前浏览器的简写。
 			 * @type String
 			 */
 			name: browser,
 			
 			/**
-			 * 浏览器版本。
+			 * 获取当前浏览器版本。
 			 * @type String
 			 * 输出的格式比如 6.0.0 。
 			 * 这是一个字符串，如果需要比较版本，应该使用 parseFloat(navigator.version) < 4 。
@@ -1713,7 +1666,7 @@ var JPlus = {
 	RegExp.prototype.xType = "regexp";
 	
 	
-	// 把所有内建对象本地化
+	// 把所有内建对象本地化 。
 	each.call([String, Array, Function, Date, Number], p.Native);
 	
 	/**
@@ -2105,7 +2058,7 @@ var JPlus = {
 		assert(dest != null, "Object.extend(dest, src): 参数 {dest} 不可为空。", dest);
 		assert(src != null, "Object.extend(dest, src): 参数 {src} 不可为空。", src);
 		
-		
+		// 直接遍历，不判断是否为真实成员还是原型的成员。
 		for (var b in src)
 			dest[b] = src[b];
 		return dest;
@@ -2121,7 +2074,8 @@ var JPlus = {
 		
 		assert(dest != null, "Object.extendIf(dest, src): 参数 {dest} 不可为空。", dest);
 		assert(src != null, "Object.extendIf(dest, src): 参数 {src} 不可为空。", src);
-
+		
+		// 和 apply 类似，只是判断目标的值是否为 undefiend 。
 		for (var b in src)
 			if (dest[b] === undefined)
 				dest[b] = src[b];
@@ -2130,10 +2084,9 @@ var JPlus = {
 
 	/**
 	 * 对数组运行一个函数。
-	 * @param {Function} fn 函数.参数 value, index, array
+	 * @param {Function} fn 遍历的函数。参数依次 value, index, array 。
 	 * @param {Object} bind 对象。
-	 * @return {Boolean} 有无执行完。
-	 * 现在大多数浏览器已含此函数.除了 IE8-  。
+	 * @return {Boolean} 返回一个布尔值，该值指示本次循环时，有无出现一个函数返回 false 而中止循环。
 	 */
 	function each(fn, bind) {
 		
@@ -2141,6 +2094,7 @@ var JPlus = {
 		
 		var i = -1,
 			me = this;
+			
 		while (++i < me.length)
 			if(fn.call(bind, me[i], i, me) === false)
 				return false;
@@ -2153,16 +2107,17 @@ var JPlus = {
 	function Object() {
 	
 	}
-		
+	
 	/**
 	 * 返回返回指定结果的函数。
-	 * @param {mixed} v 结果。
+	 * @param {Object} ret 结果。
 	 * @return {Function} 函数。
 	 */
-	function from(obj) {
+	function from(ret) {
 		
+		// 返回一个值，这个值是当前的参数。
 		return function () {
-			return obj;
+			return ret;
 		}
 	}
 	
@@ -2190,10 +2145,16 @@ var JPlus = {
 		
 	}
 	
+	/**
+	 * 获取指定的对象所有的事件管理器。
+	 * @param {Object} obj 要使用的对象。
+	 * @param {String} type 事件名。
+	 * @return {Object} 符合要求的事件管理器，如果找不到合适的，返回默认的事件管理器。
+	 */
 	function getMgr(eMgr, type) {
 		var evt = eMgr.constructor;
 		
-		// 遍历父类， 找到适合的 eMgr	
+		// 遍历父类， 找到适合的 eMgr 。
 		while(!(eMgr = eventMgr[eMgr.xType]) || !(eMgr = eMgr[type])) {
 			
 			if(evt && (evt = evt.base)) {
@@ -2210,7 +2171,7 @@ var JPlus = {
 	/**
 	 * 定义名字空间。
 	 * @param {String} ns 名字空间。
-	 * @param {Object/Boolean} obj 值。
+	 * @param {Object} obj 值。
 	 */
 	function namespace(ns, obj) {
 		
@@ -2235,21 +2196,25 @@ var JPlus = {
 		// 取值，创建。
 		ns = ns.split('.');
 		
+		// 如果第1个字符是 ., 则表示内置使用的名字空间。
 		var current = window, i = -1, len = ns.length - 1, dft = !ns[0];
 		
 		// 如果第一个字符是 . 则补上默认的名字空间。
 		ns[0] = ns[0] || p.defaultNamespace;
 		
+		// 依次创建对象。
 		while(++i < len)
 			current = current[ns[i]] || (current[ns[i]] = {});
 
+  		// 如果最后一个对象是 . 则覆盖到最后一个对象， 否则更新到末尾。
 		if(i = ns[len])
 			current[i] = applyIf(obj, current[i] || {});
 		else {
 			obj = applyIf(current, obj);
-			i = ns[--len];
+			i = ns[len - 1];
 		}
 		
+		// 如果是内置使用的名字空间，将最后一个成员更新为全局对象。
 		if(dft)
 			window[i] = obj;
 		

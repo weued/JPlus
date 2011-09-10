@@ -50,7 +50,7 @@
 		document = window.document,
 	
 		/**
-		 * 被测元素。
+		 * 用于测试的元素。
 		 * @type Element
 		 */
 		div = document.createElement('DIV'),
@@ -159,7 +159,7 @@
 		 * 是否为标签。
 		 * @type RegExp
 		 */
-		rXhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\window:]+)[^>]*)\/>/ig,
+		rXhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/ig,
 	
 		/**
 		 * 无法复制的标签。
@@ -225,7 +225,7 @@
 		 * 事件名。
 		 * @type RegExp
 		 */
-		rEventName = /^on(\window+)/,
+		rEventName = /^on(\w+)/,
 	
 		/**
 		 * 是否属性的正则表达式。
@@ -236,17 +236,16 @@
 		/// #ifdef SupportIE8
 	
 		/**
-		 * 获取元素的计算样式。
-		 * @param {Element} dom 节点。
-		 * @param {String} name 名字。
-		 * @return {String} 样式。
-		 * @private
+		 * 获取元素的实际的样式属性。
+		 * @param {Element} elem 需要获取属性的节点。
+		 * @param {String} name 需要获取的CSS属性名字。
+		 * @return {String} 返回样式字符串，肯能是 null 或空字符串。
 		 */
 		getStyle = window.getComputedStyle ? function (elem, name) {
 	
 			assert.isElement(elem , "Element.getStyle(elem, name): 参数 {elem} ~。");
 			
-			// 获取样式
+			// 获取真实的样式
 			var computedStyle = elem.ownerDocument.defaultView.getComputedStyle(elem, null);
 	
 			// 返回 , 在 火狐如果存在 IFrame， 则  computedStyle == null
@@ -257,6 +256,7 @@
 	
 			assert.isElement(elem , "Element.getStyle(elem, name): 参数 {elem} ~。");
 			
+			// 特殊样式保存在 styles 。
 			if(name in styles) {
 				switch(name) {
 					case 'height':
@@ -484,15 +484,6 @@
 			}
 	
 		})),
-	
-		/**
-		 * 获取滚动条已滚动的大小。
-		 * @return {Point} 位置。
-		 */
-		getWindowScroll = 'pageXOffset' in window ? function () {
-			var win = this.defaultView;
-			return new Point(win.pageXOffset, win.pageYOffset);
-		} : getScroll,
 		
 		/// #endif
 		
@@ -544,114 +535,6 @@
 			xType: "elementlist"
 	
 		}));
-
-	/**
-	 * 获取节点本身。
-	 */
-	document.dom = document.documentElement;
-		
-	/**
-	 * @namespace document
-	 */
-	p.Native(p.Document).implement({
-		
-		/// #ifdef ElementCore
-
-		/**
-		 * 创建一个节点。
-		 * @param {Object} tagName
-		 * @param {Object} className
-		 */
-		create: function (tagName, className) {
-			
-			assert.isString(tagName, 'Document.prototype.create(tagName, className): 参数 {tagName} ~。');
-
-			/// #ifdef SupportIE6
-
-			var div = p.$(this.createElement(tagName));
-
-			/// #else
-
-			/// var div = this.createElement(tagName);
-
-			/// #endif
-
-			div.className = className;
-
-			return div;
-		},
-	
-		/// #endif
-		
-		/// #ifdef ElementDimension
-		
-		/**
-		 * 获取元素可视区域大小。包括 margin 和 border 大小。
-		 * @method getSize
-		 * @return {Point} 位置。
-		 */
-		getSize: function () {
-			var doc = this.dom;
-
-			return new Point(doc.clientWidth, doc.clientHeight);
-		},
-
-		/**
-		 * 获取滚动条已滚动的大小。
-		 * @method getScroll
-		 * @return {Point} 位置。
-		 */
-		getScroll: getWindowScroll,
-
-		/**
-		 * 获取距父元素的偏差。
-		 * @method getOffsets
-		 * @return {Point} 位置。
-		 */
-		getPosition: getWindowScroll,
-
-		/**
-		 * 获取滚动区域大小。
-		 * @method getScrollSize
-		 * @return {Point} 位置。
-		 */
-		getScrollSize: function () {
-			var html = this.dom,
-				min = this.getSize(),
-				max = Math.max,
-				body = this.body;
-
-
-			return new Point(max(html.scrollWidth, body.scrollWidth, min.x), max(html.scrollHeight, body.scrollHeight, min.y));
-		},
-
-		/**
-		 * 滚到。
-		 * @method setScroll
-		 * @param {Number} x 坐标。
-		 * @param {Number} y 坐标。
-		 * @return {Document} this 。
-		 */
-		setScroll: function (x, y) {
-			var p = adaptXY(x,y, this, 'getScroll');
-
-			this.defaultView.scrollTo(p.x, p.y);
-
-			return this;
-		},
-		
-		/// #endif
-		
-		/**
-		 * 根据元素返回节点。
-		 * @param {String} ... 对象的 id 或对象。
-		 * @return {ElementList} 如果只有1个参数，返回元素，否则返回元素集合。
-		 */
-		getDom: function () {
-			return arguments.length === 1 ? p.$(this.getElementById(arguments[0])) :  new el(o.update(arguments, this.getElementById, null, this));
-		}
-		
-	});
 	
 	/**
 	 * @class Element
@@ -2059,7 +1942,10 @@
 		 * 获取滚动条已滚动的大小。
 		 * @return {Point} 位置。
 		 */
-		getScroll: getScroll,
+		getScroll:  function getScroll() {
+			var me = this.dom || this;
+			return new Point(me.scrollLeft, me.scrollTop);
+		},
 
 		/**
 		 * 获取元素的上下左右大小。
@@ -2450,6 +2336,122 @@
 
 	}, 4);
 		
+	/// #ifdef ElementDimension
+	
+	/**
+	 * 获取滚动条已滚动的大小。
+	 * @return {Point} 位置。
+	 */
+	var getWindowScroll = 'pageXOffset' in window ? function () {
+		var win = this.defaultView;
+		return new Point(win.pageXOffset, win.pageYOffset);
+	} : ep.getScroll;
+		
+	/// #endif
+	
+	/**
+	 * @namespace document
+	 */
+	p.Native(p.Document).implement({
+		
+		/// #ifdef ElementCore
+
+		/**
+		 * 创建一个节点。
+		 * @param {Object} tagName
+		 * @param {Object} className
+		 */
+		create: function (tagName, className) {
+			
+			assert.isString(tagName, 'Document.prototype.create(tagName, className): 参数 {tagName} ~。');
+
+			/// #ifdef SupportIE6
+
+			var div = p.$(this.createElement(tagName));
+
+			/// #else
+
+			/// var div = this.createElement(tagName);
+
+			/// #endif
+
+			div.className = className;
+
+			return div;
+		},
+	
+		/// #endif
+		
+		/// #ifdef ElementDimension
+		
+		/**
+		 * 获取元素可视区域大小。包括 margin 和 border 大小。
+		 * @method getSize
+		 * @return {Point} 位置。
+		 */
+		getSize: function () {
+			var doc = this.dom;
+
+			return new Point(doc.clientWidth, doc.clientHeight);
+		},
+
+		/**
+		 * 获取滚动条已滚动的大小。
+		 * @method getScroll
+		 * @return {Point} 位置。
+		 */
+		getScroll: getWindowScroll,
+
+		/**
+		 * 获取距父元素的偏差。
+		 * @method getOffsets
+		 * @return {Point} 位置。
+		 */
+		getPosition: getWindowScroll,
+
+		/**
+		 * 获取滚动区域大小。
+		 * @method getScrollSize
+		 * @return {Point} 位置。
+		 */
+		getScrollSize: function () {
+			var html = this.dom,
+				min = this.getSize(),
+				max = Math.max,
+				body = this.body;
+
+
+			return new Point(max(html.scrollWidth, body.scrollWidth, min.x), max(html.scrollHeight, body.scrollHeight, min.y));
+		},
+
+		/**
+		 * 滚到。
+		 * @method setScroll
+		 * @param {Number} x 坐标。
+		 * @param {Number} y 坐标。
+		 * @return {Document} this 。
+		 */
+		setScroll: function (x, y) {
+			var p = adaptXY(x,y, this, 'getScroll');
+
+			this.defaultView.scrollTo(p.x, p.y);
+
+			return this;
+		},
+		
+		/// #endif
+		
+		/**
+		 * 根据元素返回节点。
+		 * @param {String} ... 对象的 id 或对象。
+		 * @return {ElementList} 如果只有1个参数，返回元素，否则返回元素集合。
+		 */
+		getDom: function () {
+			return arguments.length === 1 ? p.$(this.getElementById(arguments[0])) :  new el(o.update(arguments, this.getElementById, null, this));
+		}
+		
+	});
+		
 	assert.isNode(document.documentElement, "在 element.js 执行时，必须存在 document.documentElement 属性。请确认浏览器为标准浏览器， 且未使用  Quirks 模式。");
 	
 	/// #ifdef ElementCore
@@ -2459,6 +2461,11 @@
 	wrapMap.th = wrapMap.td;
 	
 	/// #endif
+
+	/**
+	 * 获取节点本身。
+	 */
+	document.dom = document.documentElement;
 	
 	/// #ifdef SupportIE8
 
@@ -2497,7 +2504,7 @@
 			
 		};
 		
-		/**
+		/**s
 		 * 返回当前文档默认的视图。
 		 * @type {Window}
 		 */
@@ -2506,7 +2513,7 @@
 		/// #ifdef ElementEvent
 		
 		initUIEvent = function (e) {
-			if(!e.preventDefault) {
+			if(!e.stop) {
 				e.target = p.$(e.srcElement);
 				e.stopPropagation = pep.stopPropagation;
 				e.preventDefault = pep.preventDefault;
@@ -2516,7 +2523,7 @@
 
 		// mouseEvent
 		initMouseEvent = function (e) {
-			if(!e.preventDefault) {
+			if(!e.stop) {
 				initUIEvent(e);
 				e.relatedTarget = e.fromElement === e.target ? e.toElement : e.fromElement;
 				var dom = getDocument(e.target).dom;
@@ -2532,7 +2539,7 @@
 
 		// keyEvents
 		initKeyboardEvent = function (e) {
-			if(!e.preventDefault) {
+			if(!e.stop) {
 				initUIEvent(e);
 				e.which = e.keyCode;
 			}
@@ -2902,7 +2909,8 @@
 	 * @param {Element} elem 要清除的元素。
 	 */
 	function clean(elem) {
-
+		
+		//  删除自定义属性。
 		if (elem.clearAttributes)
 			elem.clearAttributes();
 
@@ -2977,15 +2985,22 @@
 	
 	/**
 	 * 判断发生事件的元素是否在当前鼠标所在的节点内。
+	 * @param {Event} e 事件对象。
+	 * @return {Boolean} 返回是否应该触发  mouseenter。
 	 */
-	function checkMouseEnter(e) {
+	function checkMouseEnter(event) {
+		
+		return this !== event.relatedTarget && !e.hasChild(this, event.relatedTarget);
 
-		var parent = e.relatedTarget;
-		while (parent && parent != this) {
+		/*var parent = e.relatedTarget;
+		while (parent) {
+			
+			if(parent === this)
+				return false;
+				
 			parent = parent.parentNode;
 		}
-
-		return this != parent;
+*/
 	}
 	
 	/// #endif
@@ -3036,15 +3051,6 @@
 	 */
 	function checkPosition(elem, position) {
 		return styleString(elem, "position") === position;
-	}
-
-	/**
-	 * 获取一个元素滚动。
-	 * @return {Point} 大小。
-	 */
-	function getScroll() {
-		var doc = this.dom || this;
-		return new Point(doc.scrollLeft, doc.scrollTop);
 	}
 
 	/**

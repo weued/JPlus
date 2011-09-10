@@ -42,7 +42,9 @@
 				'Element.prototype.on': '@a; "click", function(){console.log("clicked") }',
 				'Element.prototype.un': '@a; "click"',
 				'Element.prototype.trigger': '@a; "click"',
-				'Element.prototype.one': '@a; "click", function(){console.log("clicked - once") }'
+				'Element.prototype.one': '@a; "click", function(){console.log("clicked - once") }',
+				'Element.prototype.addEventListener': '@a; "click", function(){console.log("clicked") }, false',
+				'Element.prototype.removeEventListener': '@a; "click", function(){console.log("clicked") }, false'
 			};
 			
 			initTestCases(testcases);
