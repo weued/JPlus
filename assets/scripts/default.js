@@ -5,6 +5,7 @@
 
 (function(){
 	
+			
 	var root = getRoot(),
 		moduleName = location.href.replace(root, '') + '/',
 		current = {},
@@ -16,6 +17,7 @@
 		];
 
 	moduleName = moduleName.substr(0, moduleName.indexOf('/'));
+	
 	document.write('<link type="text/css" rel="stylesheet" href="' + root + 'assets/styles/default.css" />');
 	document.write('<script type="text/javascript" src="' + root + 'assets/project/project.js"></script>');
 	document.write('<script type="text/javascript" src="' + root + 'assets/libs/firebug-lite/build/firebug-lite.js"></script>');
@@ -425,7 +427,7 @@
 			var t = name.indexOf('.prototype.');
 			
 			if(t !== -1) {
-				this.method = name.substr(t + '.prototype'.length);
+				this.method = name.substr(t + '.prototype.'.length);
 			}
 			
 			t = overrides[0].substr(1).split(/\s*=\s*/);
@@ -434,7 +436,7 @@
 				this.methodName = t[1] + this.method;
 			}
 			
-			this.method = t[0] + this.method;
+			this.method = t[0] + '.' + this.method;
 			
 			
 			overrides.splice(0, 1);
@@ -635,7 +637,7 @@
 	function getRoot() { 
 		var b = document.getElementsByTagName("script");
 		b = b[b.length - 1];
-		return (!-[1, ] && typeof Element !== 'function' && String(window.Element).indexOf("object Element") === -1 ? b.getAttribute('src', 5) : b.src).replace(/assets\/scripts\/.*$/, '');
+		return (!-[1, ] && !document.createTextNode('').constructor ? b.getAttribute('src', 5) : b.src).replace(/assets\/scripts\/.*$/, '');
 	}
 		
 	function getElementsByClassName(parentNode, className) {

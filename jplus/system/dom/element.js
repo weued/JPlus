@@ -181,6 +181,7 @@
 		 * @type Object
 		 */
 		wrapMap = {
+			$default: [0, '', ''],
 			option: [ 1, '<select multiple="multiple">', '</select>' ],
 			legend: [ 1, '<fieldset>', '</fieldset>' ],
 			thead: [ 1, '<table>', '</table>' ],
@@ -221,11 +222,10 @@
 		 * 是否为数字的正则表达式。
 		 * @type RegExp
 		 */
-		
 		rNum = /^-?\d/,
 	
 		/**
-		 * 事件名。
+		 * 表示事件的表达式。
 		 * @type RegExp
 		 */
 		rEventName = /^on(\w+)/,
@@ -316,11 +316,16 @@
 		/// #endif
 		
 		/**
+		 * float 属性的名字。
+		 * @type String
+		 */
+		styleFloat = 'cssFloat' in div.style ? 'cssFloat' : 'styleFloat',
+		
+		/**
 		 * 特殊的样式。
 		 * @type Object
 		 */
 		styles = {
-			'float': 'cssFloat' in div.style ? 'cssFloat' : 'styleFloat',
 			height: 'setHeight',
 			width: 'setWidth'
 		},
@@ -331,8 +336,8 @@
 		 */
 		attributes = {
 			innerText: 'innerText' in div ? 'innerText' : 'textContent',
-			"for": "htmlFor",
-			"class": "className"
+			'for': 'htmlFor',
+			'class': 'className'
 		},
 		
 		/// #endif
@@ -531,6 +536,15 @@
 			filter: function (fn, bind) {
 				return new el(ap.filter.call(this.doms, fn, bind));
 			},
+			
+			/**
+			 * 根据索引返回节点。
+			 * @param {Number} index 索引。 -1 表示最后一个节点。
+			 * @return {Element} 节点。
+			 */
+			get: function (index){
+				return this.doms[index < 0 ? this.doms.length + index : index];
+			},
 	
 			/**
 			 * xType
@@ -586,17 +600,13 @@
 
 					div = context.createElement("div");
 
-					var wrap = wrapMap[tag[1].toLowerCase()];
+					var wrap = wrapMap[tag[1].toLowerCase()] || wrapMap.$default;
 
-					if (wrap) {
-						div.innerHTML = wrap[1] + html + wrap[2];
+					div.innerHTML = wrap[1] + html + wrap[2];
 
-						// 转到正确的深度
-						for (tag = wrap[0]; tag--;)
-							div = div.lastChild;
-
-					} else
-						div.innerHTML = html;
+					// 转到正确的深度
+					for (tag = wrap[0]; tag--;)
+						div = div.lastChild;
 
 					// 一般使用最后的节点， 如果存在最后的节点，使用父节点。
 					// 如果有多节点，则复制到片段对象。
@@ -803,11 +813,11 @@
 		getSizes: window.getComputedStyle ? function (elem, type, names) {
 
 			assert.isElement(elem, "Element.getSizes(elem, type, names): 参数 {elem} ~。");
-			assert(type in e.styleMaps, "Element.getSizes(elem, type, names): 参数 {type} 必须是 \"x\" 或 \"y\"。", type);
+			assert(type in e.sizeMap, "Element.getSizes(elem, type, names): 参数 {type} 必须是 \"x\" 或 \"y\"。", type);
 			assert.isString(names, "Element.getSizes(elem, type, names): 参数 {names} ~。");
 
 			// 缓存 currentStyle 可以大大增加标准浏览器执行速度， 因此这里冗余代码。
-			var value = 0, map = e.styleMaps[type], i = names.length, val, currentStyle = elem.ownerDocument.defaultView.getComputedStyle(elem, null);
+			var value = 0, map = e.sizeMap[type], i = names.length, val, currentStyle = elem.ownerDocument.defaultView.getComputedStyle(elem, null);
 			while(i--) {
 				val = map[names.charAt(i)];
 				value += (parseFloat(currentStyle[val[0]]) || 0) + (parseFloat(currentStyle[val[1]]) || 0);
@@ -818,10 +828,10 @@
 
 
 			assert.isElement(elem, "Element.getSizes(elem, type, names): 参数 {elem} ~。");
-			assert(type in e.styleMaps, "Element.getSizes(elem, type, names): 参数 {type} 必须是 \"x\" 或 \"y\"。", type);
+			assert(type in e.sizeMap, "Element.getSizes(elem, type, names): 参数 {type} 必须是 \"x\" 或 \"y\"。", type);
 			assert.isString(names, "Element.getSizes(elem, type, names): 参数 {names} ~。");
 
-			var value = 0, map = e.styleMaps[type], i = names.length, val;
+			var value = 0, map = e.sizeMap[type], i = names.length, val;
 			while(i--) {
 				val = map[names.charAt(i)];
 				value += (parseFloat(getStyle(elem, val[0])) || 0) + (parseFloat(getStyle(elem, val[1])) || 0);
@@ -853,7 +863,7 @@
 		 * @static
 		 * @type Object
 		 */
-		styleMaps: {},
+		sizeMap: {},
 		
 		/**
 		 * 显示元素的样式。
@@ -914,34 +924,31 @@
 		getAttr: function (elem, name) {
 
 			assert.isNode(elem, "Element.getAttr(elem, name): 参数 {elem} ~。");
-
 			
-			if(name in attributes) {
+			// if(navigator.isSafari && name === 'selected' && elem.parentNode) { elem.parentNode.selectIndex; if(elem.parentNode.parentNode) elem.parentNode.parentNode.selectIndex; }
+			
+			var fix = attributes[name];
+			
+			// 如果是特殊属性，直接返回Property。
+			if (fix) {
 				
-				/// #ifdef SupportIE6
-				if(navigator.isQuirks && /^(href|src)$/.test(name))
-					return elem.getAttribute(name, 2);
+				if(fix.get)
+					return fix.get(elem, name);
+					
+				assert(!elem[fix] || !elem[fix].nodeType, "Element.getAttr(elem, name): 表单内不能存在 {name} 的元素。", name);
 
-				/// #endif
-				
-				// if(navigator.isSafari && name === 'selected' && elem.parentNode) { elem.parentNode.selectIndex; if(elem.parentNode.parentNode) elem.parentNode.parentNode.selectIndex; }
-				
-				name = attributes[name];
+				// 如果 这个属性是自定义属性。
+				if(fix in elem)
+					return elem[fix];
 			}
+			
+			assert(elem.getAttributeNode, "Element.getAttr(elem, name): 参数 {elem} 不支持 getAttribute。", elem);
 
-			// 如果是节点具有的属性
-			if (name in elem) {
-
-				// 表单上的元素，返回节点属性值
-				if (elem.nodeName === "FORM") {
-					var node = elem.getAttributeNode(name);
-					return node && node.nodeValue;
-				}
-
-				return elem[name];
-			}
-
-			return elem.getAttribute(name); // 有些属性在 IE 需要参数获取
+			// 获取属性节点，避免 IE 返回属性。
+			fix = elem.getAttributeNode(name);
+			
+			// 如果不存在节点， name 为  null ，如果不存在节点值， 返回     null。
+			return fix && (fix.value || null);
 
 		},
 
@@ -954,7 +961,7 @@
 		 */
 		hasClass: function (elem, className) {
 			assert.isNode(elem, "Element.hasClass(elem, className): 参数 {elem} ~。");
-			assert(!className.indexOf || !/[\s\r\n]/.test(className), "Element.hasClass(elem, className): 参数 {className} 不允许有空格和换行。");
+			assert(className && (!className.indexOf || !/[\s\r\n]/.test(className)), "Element.hasClass(elem, className): 参数 {className} 不能空，且不允许有空格和换行。");
 			return (" " + elem.className + " ").indexOf(" " + className + " ") >= 0;
 		},
 		
@@ -1067,13 +1074,18 @@
 									break;
 									
 								case 4:  //  return ElementList(ElementList)
-									value = function () {
-										var args = arguments, r = [];
+									value = function (args1, args2) {
+										var r = [];
 										this.forEach(function (node) {
-											var t = node[key].apply(node, args);
+											var t = node[key](args1, args2);
 											if(t) {
-												r.push.apply(r, t.doms || (t.length !== undefined ? t : [t]));
+												t = t.doms || (t.length !== undefined ? t : [t]);
+												for(var i = 0; i < t.length; i++)
+													r.push(t[i]);
+													
+												// r.push.apply(r, t));	  IE 6  不允许
 											}
+												
 										});
 										return new el(r);
 			
@@ -1232,7 +1244,7 @@
 			// 切换到节点。
 			elem = elem && elem !== true ? p.$(elem) : document.body;
 
-			assert(elem.appendChild, 'Element.prototype.appendTo(elem): 参数 {elem} ~ 必须是 DOM 节点或控件。');
+			assert(elem && elem.appendChild, 'Element.prototype.appendTo(elem): 参数 {elem} ~ 必须是 DOM 节点或控件。', elem);
 			
 			// 插入节点
 			elem.appendChild(this.dom || this);
@@ -1284,6 +1296,7 @@
 		 * @param {String} name CSS 属性名或 CSS 字符串。
 		 * @param {String/Number} [value] CSS属性值， 数字如果不加单位，则自动转为像素。
 		 * @return {Element} this
+		 * setStyle('cssText') 不被支持，需要使用 name， value 来设置样式。
 		 */
 		setStyle: function (name, value) {
 
@@ -1293,21 +1306,15 @@
 			var me = this;
 
 			//没有键  返回  cssText
-			if (arguments.length == 1) {
-				value = name;
-				name = 'cssText';
+			if(name in styles) {
 				
-				// 特殊属性。
-			} else if(name in styles) {
-				
-				name = styles[name];
-				
-				// setHeight , setWidth, setOpacity
-				if(me[name])
-					return me[name](value);
+				// setHeight  setWidth   setOpacity
+				return me[styles[name]](value);
 
 			} else {
 				name = name.replace(rStyle, formatStyle);
+				
+				assert(value || !isNaN(value), "Element.prototype.setStyle(name, value): 参数 {value} 不是正确的属性值。", value);
 
 				//如果值是函数，运行。
 				if (typeof value === "number" && !(name in e.styleNumbers))
@@ -1340,22 +1347,24 @@
 
 			var me = this.dom || this, 
 				style = me.style;
+
+			assert(!+value || (value <= 1 && value >= 0), 'Element.prototype.setOpacity(value): 参数 {value} 必须在 0~1 间。', value);
 			
-			// 转换为数字。
-			value = +value;
-
-			assert(isNaN(value) || (value <= 1 && value >= 0), 'Element.prototype.setOpacity(value): 参数 {value} 必须在 0~1 间。', value);
-
-			value = value || value === 0 ? 'opacity=' + value * 100 : '';
+			if(value)
+				value *= 100;
+			
+			value = value || value === 0 ? 'opacity=' + value : '';
 			
 			// 获取真实的滤镜。
 			me = styleString(me, 'filter');
-
+			
+			assert(!/alpha\([^)]*\)/i.test(me) || rOpacity.test(me), 'Element.prototype.setOpacity(value): 当前元素的 {filter} CSS属性存在不属于 alpha 的 opacity， 将导致 setOpacity 不能正常工作。', me);
+			
 			// 当元素未布局，IE会设置失败，强制使生效。
 			style.zoom = 1;
 
 			// 设置值。
-			style.filter = rOpacity.test(me) ? me.replace(rOpacity, value) : (me + ' ' + value);
+			style.filter = rOpacity.test(me) ? me.replace(rOpacity, value) : (me + ' alpha(' + value + ')');
 			
 			return this;
 
@@ -1383,34 +1392,46 @@
 		 */
 		setAttr: function (name, value) {
 
-			//简写
 			var me = this.dom || this;
+			
+			/// #ifdef SupportIE6
 
-			//属性
-			name = attributes[name] || name;
+			assert(name !== 'type' || me.tagName !== "INPUT" || !me.parentNode, "Element.prototype.setAttr(name, type): 无法修改此元素的 type 属性。");
 
-			// 如果是节点具有的属性
-			if (name in me) {
+			/// #endif
 
-
-				/// #ifdef SupportIE6
-
-				assert(name != 'type' || me.nodeName != "INPUT" || !me.parentNode, "此元素 type 属性不能修改");
-
-				/// #endif
+			// 如果是节点具有的属性。
+			if (name in attributes) {
 				
-				// 首先设置 Property 属性。 IE 总是会进入。
-				me[name] = value;
+				if(attributes[name].set)
+					attributes[name].set(me, name, value);
+				else {
+					
+					assert(me.tagName !== 'FORM' || name !== 'className' || typeof me.className === 'string', "Element.prototype.setAttr(name, type): 表单内不能存在 name='className' 的节点。");
+	
+					me[attributes[name]] = value;
+				
+				}
 				
 			} else if (value === null){
 				
-				// 删除 属性。
-				me.removeAttribute(name);
+				assert(me.removeAttributeNode, "Element.prototype.setAttr(name, type): 当前元素不存在 removeAttributeNode 方法");
 				
+				if(value = me.getAttributeNode(name)) {
+					value.nodeValue = '';
+					me.removeAttributeNode(value);
+				}
+			
 			} else {
 				
-				// 设置 Attribute 属性。
-				me.setAttribute(name, value);
+				assert(me.getAttributeNode, "Element.prototype.setAttr(name, type): 当前元素不存在 getAttributeNode 方法");
+
+				var node = me.getAttributeNode(name);
+				
+				if(node)
+					node.nodeValue = value;
+				else
+					me.setAttribute(name, value);
 				
 			}
 
@@ -1441,12 +1462,8 @@
 					me.setStyle(name, value);
 
 				// attr 。
-				else if(name in dom)
-					dom[name] = value;
-
-				// Object 。
 				else
-					me[name] = value;
+					me.setAttr(name, value);
 
 			} else if(o.isObject(name)) {
 
@@ -1468,6 +1485,8 @@
 		addClass: function (className) {
 			var me = this.dom || this;
 			
+			assert(className && !/[\r\n]/.test(className), "Element.prototype.addClass(className): 参数 {className} 不能空，且不允许有空格和换行。");
+			
 			me.className = me.className ? me.className + ' ' + className : className;
 			
 			return this;
@@ -1480,8 +1499,10 @@
 		 */
 		removeClass: function (className) {
 			var me = this.dom || this;
-
-			me.className = className ? me.className.replace(new RegExp('\\b' + className + '\\b\\s*', "g"), '') : '';
+			
+			assert(!className || !/[\s\r\n]/.test(className), "Element.prototype.addClass(className): 参数 {className} 不能空，且不允许有空格和换行。");
+			
+			me.className = className != null ? me.className.replace(new RegExp('\\b' + className + '\\b\\s*', "g"), '') : '';
 			
 			return this;
 		},
@@ -1493,7 +1514,7 @@
 		 * @return {Element} this
 		 */
 		toggleClass: function (className, toggle) {
-			return (toggle !== undefined ? !toggle : this.hasClass(className)) ? this.removeClass(className) : this.addClass(  className  );
+			return (toggle !== undefined ? !toggle : this.hasClass(className)) ? this.removeClass(className) : this.addClass(className);
 		},
 
 		/**
@@ -1506,7 +1527,7 @@
 
 			switch(me.tagName) {
 				case "SELECT":
-					if(me.type === 'select-multiple' && value) {
+					if(me.type === 'select-multiple' && value != null) {
 						
 						assert.isString(value, "Element.prototype.setText(value): 参数  {value} ~。");
 					
@@ -1777,6 +1798,7 @@
 		 * @param {String} key 键。
 		 * @param {String} value 值。
 		 * @return {String} 样式。
+		 * getStyle() 不被支持，需要使用 name 来设置样式。
 		 */
 		getStyle: function (name) {
 
@@ -1841,10 +1863,9 @@
 					if(me.type != 'select-one') {
 						var r = [];
 						o.each(me.options, function (s) {
-							if(s.selected)
+							if(s.selected && s.value)
 								r.push(s.value)
 						});
-
 						return r.join(',');
 					}
 
@@ -2460,6 +2481,10 @@
 	wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
 	wrapMap.th = wrapMap.td;
 	
+	if(!navigator.isStandard) {
+		wrapMap.$default = [1, '$<div>', '</div>'];
+	}
+	
 	/// #endif
 
 	/**
@@ -2633,7 +2658,7 @@
 	/// #ifdef ElementAttribute
 	
 	String.map('x y', function (c, i) {
-		c = e.styleMaps[c] = {};
+		c = e.sizeMap[c] = {};
 		var tx = i ? ['Top', 'Bottom'] : ['Left', 'Right'];
 		c.d = tx.invoke('toLowerCase', []);
 		String.map('padding~ margin~ border~Width', function (v) {
@@ -2641,9 +2666,59 @@
 		});
 	});
 	
-	String.map("href src defaultValue accessKey cellPadding cellSpacing rowSpan colSpan frameBorder maxLength readOnly tabIndex useMap contentEditable", function (value) {
-		attributes[value.toLowerCase()] = value;
+	//  下列属性应该直接使用。
+	String.map("checked selected disabled value innerHTML textContent className autofocus autoplay async controls hidden loop open required scoped compact nowrap ismap declare noshade multiple noresize defer readOnly tabIndex defaultValue accessKey defaultChecked cellPadding cellSpacing rowSpan colSpan frameBorder maxLength useMap contentEditable", function (value) {
+		attributes[value.toLowerCase()] = attributes[value] = value;
 	});
+	
+	if(!navigator.isStandard){
+		
+		attributes.style = {
+			
+			get: function (elem, name) {
+				return elem.style.cssText.toLowerCase();
+			},
+			
+			set: function(elem, name, value) {
+				elem.style.cssText = value;
+			}
+			
+		};
+		
+		if(navigator.isQuirks) {
+		
+			attributes.value = {
+				
+				node: function(elem, name) {
+					assert(elem.getAttributeNode, "Element.prototype.getAttr(name, type): 当前元素不存在 getAttributeNode 方法");
+					return elem.tagName === 'BUTTON' ? elem.getAttributeNode(name) || {value: ''} : elem;
+				},
+				
+				get: function (elem, name) {
+					return this.node(elem, name).value;
+				},
+				
+				set: function(elem, name, value) {
+					this.node(elem, name).value = value || '';
+				}
+				
+			};
+		
+			attributes.href = attributes.src = attributes.usemap = {
+				
+				get: function (elem, name) {
+					return elem.getAttribute(name, 2);
+				},
+				
+				set: function(elem, name, value) {
+					elem.setAttribute(name, value);
+				}
+				
+			};
+			
+		}
+		
+	}
 	
 	if(!('opacity' in div.style)) {
 		styles.opacity = 'setOpacity';
@@ -3014,7 +3089,7 @@
      * @return {String} 返回的内容。
      */
     function formatStyle(all, match) {
-        return match ? match.toUpperCase() : styles['float'];
+        return match ? match.toUpperCase() : styleFloat;
     }
 	
 	/**

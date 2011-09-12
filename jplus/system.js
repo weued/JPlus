@@ -1266,7 +1266,7 @@ var JPlus = {
 			var typeName = typeof obj;
 			
 			// 对象， 直接获取 xType 。
-			return typeName === 'object' ? obj == null ? "null" : (obj.xType || typeName) : typeName;
+			return obj ? obj.xType || typeName : obj === null ? "null" : typeName;
 			
 		}
 
@@ -1424,22 +1424,21 @@ var JPlus = {
 		 * </code>
 		 */
 		format: function (format, args) {
-
-			if (!format) return "";
 					
-			assert(format.replace, 'String.format(format, args): 参数 {format} 必须是字符串。', format);
+			assert(!format || format.replace, 'String.format(format, args): 参数 {format} 必须是字符串。', format);
 
 			//支持参数2为数组或对象的直接格式化。
-			var toString = this,
-				arr = o.isObject(args) && arguments.length === 2 ? args: ap.slice.call(arguments, 1);
+			var toString = this;
+			
+			args = arguments.length === 2 && o.isObject(args) ? args: ap.slice.call(arguments, 1);
 
 			//通过格式化返回
-			return format.replace(rFormat, function (match, name) {
+			return (format || "").replace(rFormat, function (match, name) {
 				var start = match.charAt(1) == '{',
 					end = match.charAt(match.length - 2) == '}';
 				if (start || end) return match.slice(start, match.length - end);
 				//LOG : {0, 2;yyyy} 为了支持这个格式, 必须在这里处理 match , 同时为了代码简短, 故去该功能。
-				return name in arr ? toString(arr[name]) : "";
+				return name in args ? toString(args[name]) : "";
 			});
 		},
 		
@@ -1543,7 +1542,7 @@ var JPlus = {
 	 * 浏览器。
 	 * @namespace navigator
 	 */
-	applyIf(navigator, (function (ua) {
+	applyIf(navigator, (function (ua, isNonStandard) {
 
 		//检查信息
 		var match = ua.match(/(IE|Firefox|Chrome|Safari|Opera|Navigator).((\d+)\.?[\d.]*)/i) || ["", "Other", 0, 0],
@@ -1551,7 +1550,7 @@ var JPlus = {
 			// 版本信息。
 			version = ua.match(/(Version).((\d+)\.?[\d.]*)/i) || match,
 			
-			//浏览器名字
+			// 浏览器名字。
 			browser = match[1];
 		
 		
@@ -1598,7 +1597,7 @@ var JPlus = {
 			 * @type Boolean
 			 * 此处认为 IE6,7 是怪癖的。
 			 */
-			isQuirks: typeof Element !== 'function' && String(window.Element).indexOf("object Element") === -1,
+			isQuirks: isNonStandard && !o.isObject(document.constructor),
 			
 			/// #endif
 			
@@ -1609,7 +1608,7 @@ var JPlus = {
 			 * @type Boolean
 			 * 此处认为 IE6, 7, 8 不是标准的浏览器。
 			 */
-			isStandard: !!-[1,],
+			isStandard: !isNonStandard,
 			
 			/// #endif
 			
@@ -1629,7 +1628,7 @@ var JPlus = {
 			
 		};
 	
-	})(navigator.userAgent));
+	})(navigator.userAgent, !-[1,]));
 
 	/// #endregion
 	

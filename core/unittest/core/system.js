@@ -106,6 +106,77 @@ test("Object.each", function() {
 
 });
 
+test("Array.isArray", function() {
+	expect(17);
+
+	// Make sure that false values return false
+	ok( !Array.isArray(), "No Value" );
+	ok( !Array.isArray( null ), "null Value" );
+	ok( !Array.isArray( undefined ), "undefined Value" );
+	ok( !Array.isArray( "" ), "Empty String Value" );
+	ok( !Array.isArray( 0 ), "0 Value" );
+
+	// Check built-ins
+	// Safari uses "(Internal Function)"
+	ok( !Array.isArray(String), "String Function("+String+")" );
+	ok( !Array.isArray(Array), "Array Function("+Array+")" );
+	ok( !Array.isArray(Object), "Object Function("+Object+")" );
+	ok( !Array.isArray(Function), "Function Function("+Function+")" );
+
+	// When stringified, this could be misinterpreted
+	var mystr = "function";
+	ok( !Array.isArray(mystr), "Function String" );
+
+	// When stringified, this could be misinterpreted
+	var myarr = [ "function" ];
+	ok( Array.isArray(myarr), "Function Array" );
+
+	// When stringified, this could be misinterpreted
+	var myArray = { "function": "test", length: 3 };
+	ok( !Array.isArray(myArray), "Function Object" );
+
+	// Make sure normal functions still work
+	var fn = function(){};
+	ok( !Array.isArray(fn), "Normal Function" );
+
+	var obj = document.createElement("object");
+
+	// Firefox says this is a function
+	ok( !Array.isArray(obj), "Object Element" );
+
+	// IE says this is an object
+	// Since 1.3, this isn't supported (#2968)
+	//ok( Array.isArray(obj.getAttribute), "getAttribute Function" );
+
+	var nodes = document.body.childNodes;
+
+	ok( !Array.isArray(nodes), "childNodes Property" );
+
+	var first = document.body.firstChild;
+
+	// Normal elements are reported ok everywhere
+	ok( !Array.isArray(first), "A normal DOM Element" );
+
+	var input = document.createElement("input");
+	input.type = "text";
+	document.body.appendChild( input );
+
+	// IE says this is an object
+	// Since 1.3, this isn't supported (#2968)
+	//ok( Array.isArray(input.focus), "A default function property" );
+
+	document.body.removeChild( input );
+
+	var a = document.createElement("a");
+	a.href = "some-function";
+	document.body.appendChild( a );
+
+	// This serializes with the word 'function' in it
+	ok( !Array.isArray(a), "Anchor Element" );
+
+	document.body.removeChild( a );
+});
+
 test("Array.create", function(){
 
 	equals( Array.create(document.findAll("head").doms)[0].nodeName.toUpperCase(), "HEAD", "Pass makeArray a List object" );
@@ -253,6 +324,18 @@ test("JSON.decode", function(){return
 	} catch( e ) {
 		ok( true, "Test malformed JSON string." );
 	}
+});
+
+test("String.format", function() {
+
+	var nbsp = String.fromCharCode(160);
+
+	equals( String.format("{0} {1}  {2}", 1, 2 ,3 ), "1 2  3", "格式化{序号}" );
+	equals( String.format("{a} {b}  {c}", {a:1, b:2, c:3} ), "1 2  3", "格式化{字段}" );
+	equals( String.format("{2} {2}  {2}", 1, 2 ,3 ), "3 3  3", "重复序号" );
+	equals( String.format("{2}" ), "", "不存在的序号" );
+	equals( String.format.call(function(){return 3}, "{0}",  1 ), "3", "自定义格式化对象的函数" );
+	equals( String.format("{{}} {0}", 1), "{} 1", "格式化的字符串内有 { 和  }" );
 });
 
 test("String.prototype.trim", function() {

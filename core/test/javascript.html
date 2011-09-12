@@ -30,7 +30,7 @@
 	</head>
 	<body>
 		<span id="all">
-			<div id="a">
+			<div id="a" aa="aa">
 				id=a margin=4 padding=8
 				<div id="b">
 					id=b padding=8
@@ -55,6 +55,12 @@
 		</script>
 		<script>
 			var a = document.getElementById('a'), b = document.getElementById('b'), c = document.getElementById('c'), d = document.getElementById('d');
+
+				initTestCases({
+					'getAttribute': '@a; "aa"',
+					'getAttributeNode': '@a; "aa"'
+					
+				})
 
 			// Add your code here
 		</script>

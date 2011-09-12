@@ -6,7 +6,7 @@ test("System.Dom.Element", function() {
 	ok( Element, "Element" );
 });
 
-test("Element.parse", function() {
+test("Element.parse('html')", function() {
 	var elem = Element.parse("<div/><hr/><code/><b/>");
 	equals( elem.childNodes.length, 4, "节点个数" );
 
@@ -71,7 +71,7 @@ test("Element.parse('html', context)", function() {
 	equals(span.tagName, 'SPAN', "Verify a span created with a div context works");
 });
 
-test("ElementList.prototype.each(Function)", function() {
+test("ElementList.prototype.each", function() {
 	expect(1);
 	var div = document.findAll("div");
 	div.each(function(node){node.foo = "zoo";});
