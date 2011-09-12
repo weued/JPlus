@@ -56,7 +56,7 @@
 			
 			Element.implement({
 				d: function(){return  new ElementList([this]);}
-			}, 4);
+			}, 3);
 		
 			var a = $('a'), b = $('b'), c = $('c'), d = $('d'), o = $('o'), abcd = new ElementList($('all').getElementsByTagName("div"));
 			
@@ -67,16 +67,16 @@
 				'Element.parse': '"<div/>" ; "<div><div />a<\/div>"; "   <div/> f <div/>"; "<object />"; "<input type=\'radio\' checked=\'checked\'>"', 
 				'ElementList': '-',
 				'ElementList.prototype.each': '@abcd; function(value){ assert.log(value.id)} => assert.logged("abcd")',
-				'ElementList.prototype.filter': '@abcd; function(value) {return value === a || value === c} => assert.areEqual(value.doms, [a, c])',
-				'ElementList.prototype.invoke': '@abcd; "setAttribute", ["ff", 1] => assert.isTrue(a.getAttribute("ff") == 1),  assert.isTrue(d.getAttribute("ff") == 1) ',
+				'ElementList.prototype.filter': '@abcd; function(value) {return value === a || value === c} => assert.areEqual(value, [a, c])',
+				'ElementList.prototype.invoke': '@abcd; "setAttr", ["ff", 1] => assert.isTrue(a.getAttr("ff") == 1),  assert.isTrue(d.getAttr("ff") == 1) ',
 				'ElementList.prototype.indexOf': '@abcd; a => 0; d => 3; o => -1',
 				'ElementList.prototype.a': '@abcd; => abcd',
 				'ElementList.prototype.b': '@abcd; => [1,1,1,1]',
-				'ElementList.prototype.c': '@abcd; => assert.areEqual(value.doms, [a, b,c, d])',
-				'ElementList.prototype.d': '@abcd; => assert.areEqual(value.doms, [a, b,c, d])',
+				'ElementList.prototype.c': '@abcd; => assert.areEqual(value, [a, b,c, d])',
+				'ElementList.prototype.d': '@abcd; => assert.areEqual(value, [a, b,c, d])',
 				'Document': '-',
 				'Document.prototype.create': '@document; "div", "a" => assert.isTrue(value.tagName === "DIV")',
-				'Document.prototype.getDom': '@document;"a", "c" => assert.areEqual(value.doms, [a, c])'
+				'Document.prototype.getDom': '@document;"a", "c" => assert.areEqual(value, [a, c])'
 			};
 			
 			initTestCases(testcases);

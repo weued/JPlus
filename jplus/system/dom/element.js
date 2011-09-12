@@ -181,7 +181,7 @@
 		 * @type Object
 		 */
 		wrapMap = {
-			$default: [0, '', ''],
+			$default:  navigator.isStandard ? [0, '', ''] : [1, '$<div>', '</div>'],
 			option: [ 1, '<select multiple="multiple">', '</select>' ],
 			legend: [ 1, '<fieldset>', '</fieldset>' ],
 			thead: [ 1, '<table>', '</table>' ],
@@ -192,16 +192,6 @@
 		},
 		
 		/// #endif
-		
-		/// #ifdef ElementNode
-		
-		/**
-		 * 属性。
-		 * @type RegExp
-		 */
-		rAttr = /^\[\s*([^=]+?)(\s*=\s*(['"])([\s\S]*)\3)?\s*\]$/,
-	
-		/// #endif
 
 		/// #ifdef ElementAttribute
 
@@ -211,18 +201,6 @@
 		 */
 		
 		rOpacity = /opacity=([^)]*)/,
-	
-		/**
-		 * 是否为像素的正则表达式。
-		 * @type RegExp
-		 */
-		rNumPx = /^-?\d+(?:px)?$/i,
-	
-		/**
-		 * 是否为数字的正则表达式。
-		 * @type RegExp
-		 */
-		rNum = /^-?\d/,
 	
 		/**
 		 * 表示事件的表达式。
@@ -282,7 +260,7 @@
 			// 来自 jQuery
 	
 			// 如果返回值不是一个带px的 数字。 转换为像素单位
-			if (rNum.test(r) && !rNumPx.test(r)) {
+			if (/^-?\d/.test(r) && !/^-?\d+(?:px)?$/i.test(r)) {
 	
 				// 保存初始值
 				var style = elem.style,  left = style.left, rsLeft = elem.runtimeStyle.left;
@@ -498,12 +476,12 @@
 		/**
 		 * 节点集合。
 		 * @class ElementList
-		 * @extends Element
+		 * @extends Array
 		 * ElementList 是对元素数组的只读包装。
 		 * ElementList 允许快速操作多个节点。
 		 * ElementList 的实例一旦创建，则不允许修改其成员。
 		 */
-		el = namespace(".ElementList", Class({
+		el = namespace(".ElementList", Array.extend({
 	
 			/**
 			 * 初始化   ElementList  实例。
@@ -513,37 +491,34 @@
 			constructor: function (doms) {
 	
 				assert(doms && doms.length !== undefined, 'ElementList.prototype.constructor(doms): 参数 {doms} 必须是一个 NodeList 或 Array 类型的变量。', doms);
+				
+				var len = this.length = doms.length;
+				while(len--)
+					this[len] = doms[len];
 	
 				/// #ifdef SupportIE8
 				
 				// 检查是否需要为每个成员调用  $ 函数。
 				if(!navigator.isStandard)
-					doms = o.update(doms, p.$, []);
-	
-				
+					o.update(this, p.$);
+					
 				/// #endif
 				
-				this.doms = doms;
-	
 			},
 			
 			/**
-			 * 使用指定函数过滤当前集合，返回符合要求的元素组成的新的集合。
-			 * @param {Function} fn 函数。参数 value, index, this。
-			 * @param {Object} bind 绑定的对象。
-			 * @return {ElementList} 元素列表。
+			 * 将参数数组添加到当前集合。
+			 * @param {Element/ElementList} 元素。
+			 * @return this
 			 */
-			filter: function (fn, bind) {
-				return new el(ap.filter.call(this.doms, fn, bind));
-			},
-			
-			/**
-			 * 根据索引返回节点。
-			 * @param {Number} index 索引。 -1 表示最后一个节点。
-			 * @return {Element} 节点。
-			 */
-			get: function (index){
-				return this.doms[index < 0 ? this.doms.length + index : index];
+			concat: function (value) {
+				if(value) {
+					value = value.length !== undefined ? value : [value];
+					for(var i = 0, len = value.length; i < len; i++)
+						this.include(value[i]);
+				}
+				
+				return this;
 			},
 	
 			/**
@@ -636,13 +611,11 @@
 				}
 				
 				if(cachable !== undefined ? cachable : !rNoClone.test(html)) {
-					cache[html] = div;
+					cache[html] = div.cloneNode(true);
 					
 					//  特殊属性复制。
 					//if (html = e.properties[div.tagName])
 					//	cache[html][html] = div[html];
-					
-					div = div.cloneNode(true);
 				}
 
 			}
@@ -1042,8 +1015,7 @@
 		 *
 		 *  1,   其它    setText - 执行结果返回 this， 返回 this 。(默认)
 		 *  2  getText - 执行结果是数据，返回结果数组。 
-		 *  3  getElementById - 执行结果是DOM，返回  ElementList 包装。
-		 *  4  getElementsByTagName - 执行结果是DOM数组，返回  ElementList 包装。
+		 *  3  getElementById - 执行结果是DOM 或 ElementList，返回  ElementList 包装。
 		 * 
 		 * 
 		 *
@@ -1062,41 +1034,28 @@
 						
 						if(!i) {
 							switch (listType) {
-								case 2:  //   return this
+								case 2:  //   return array
 									value = function () {
 										return this.invoke(key, arguments);
 									};
 									break;
-								case 3:  //  return  ElementList(dom)
-									value = function () {
-										return new el(this.invoke(key, arguments));
-									};
-									break;
 									
-								case 4:  //  return ElementList(ElementList)
-									value = function (args1, args2) {
-										var r = [];
+								case 3:  //  return ElementList
+									value = function () {
+										var args = arguments, r = new el([]);
 										this.forEach(function (node) {
-											var t = node[key](args1, args2);
-											if(t) {
-												t = t.doms || (t.length !== undefined ? t : [t]);
-												for(var i = 0; i < t.length; i++)
-													r.push(t[i]);
-													
-												// r.push.apply(r, t));	  IE 6  不允许
-											}
-												
+											r.concat(node[key].apply(node, args));
 										});
-										return new el(r);
+										return r;
 			
 									};
 									break;
 									
-								default:  // return return
+								default:  // return  this
 									value = function () {
-										var doms = this.doms, l = doms.length, i = -1;
-										while (++i < l)
-											doms[i][key].apply(doms[i], arguments);
+										var me = this, len = me.length, i = -1;
+										while (++i < len)
+											me[i][key].apply(me[i], arguments);
 										return this;
 									};
 									
@@ -1127,7 +1086,7 @@
 		 * 若不存在，则将一个对象附加到 Element 对象。
 		 * @static
 		 * @param {Object} obj 要附加的对象。
-		 * @param {Number} listType 说明如何复制到 ElementList 实例。
+		 * @param {Number} listType = 1 说明如何复制到 ElementList 实例。
 		 * @param {Number} docType 说明如何复制到 Document 实例。
 		 * @return {Element} this
 		 */
@@ -1284,7 +1243,7 @@
 		 */
 		dispose: function () {
 			clean(this.dom || this);
-			this.empty().remove()
+			this.empty().remove();
 		},
 		
 		/// #endif
@@ -1345,8 +1304,8 @@
 
 		} : function (value) {
 
-			var me = this.dom || this, 
-				style = me.style;
+			var elem = this.dom || this, 
+				style = elem.style;
 
 			assert(!+value || (value <= 1 && value >= 0), 'Element.prototype.setOpacity(value): 参数 {value} 必须在 0~1 间。', value);
 			
@@ -1356,15 +1315,15 @@
 			value = value || value === 0 ? 'opacity=' + value : '';
 			
 			// 获取真实的滤镜。
-			me = styleString(me, 'filter');
+			elem = styleString(elem, 'filter');
 			
-			assert(!/alpha\([^)]*\)/i.test(me) || rOpacity.test(me), 'Element.prototype.setOpacity(value): 当前元素的 {filter} CSS属性存在不属于 alpha 的 opacity， 将导致 setOpacity 不能正常工作。', me);
+			assert(!/alpha\([^)]*\)/i.test(elem) || rOpacity.test(elem), 'Element.prototype.setOpacity(value): 当前元素的 {filter} CSS属性存在不属于 alpha 的 opacity， 将导致 setOpacity 不能正常工作。', me);
 			
 			// 当元素未布局，IE会设置失败，强制使生效。
 			style.zoom = 1;
 
 			// 设置值。
-			style.filter = rOpacity.test(me) ? me.replace(rOpacity, value) : (me + ' alpha(' + value + ')');
+			style.filter = rOpacity.test(elem) ? elem.replace(rOpacity, value) : (elem + ' alpha(' + value + ')');
 			
 			return this;
 
@@ -1392,11 +1351,11 @@
 		 */
 		setAttr: function (name, value) {
 
-			var me = this.dom || this;
+			var elem = this.dom || this;
 			
 			/// #ifdef SupportIE6
 
-			assert(name !== 'type' || me.tagName !== "INPUT" || !me.parentNode, "Element.prototype.setAttr(name, type): 无法修改此元素的 type 属性。");
+			assert(name !== 'type' || elem.tagName !== "INPUT" || !elem.parentNode, "Element.prototype.setAttr(name, type): 无法修改此元素的 type 属性。");
 
 			/// #endif
 
@@ -1404,34 +1363,34 @@
 			if (name in attributes) {
 				
 				if(attributes[name].set)
-					attributes[name].set(me, name, value);
+					attributes[name].set(elem, name, value);
 				else {
 					
-					assert(me.tagName !== 'FORM' || name !== 'className' || typeof me.className === 'string', "Element.prototype.setAttr(name, type): 表单内不能存在 name='className' 的节点。");
+					assert(elem.tagName !== 'FORM' || name !== 'className' || typeof me.className === 'string', "Element.prototype.setAttr(name, type): 表单内不能存在 name='className' 的节点。");
 	
-					me[attributes[name]] = value;
+					elem[attributes[name]] = value;
 				
 				}
 				
 			} else if (value === null){
 				
-				assert(me.removeAttributeNode, "Element.prototype.setAttr(name, type): 当前元素不存在 removeAttributeNode 方法");
+				assert(elem.removeAttributeNode, "Element.prototype.setAttr(name, type): 当前元素不存在 removeAttributeNode 方法");
 				
-				if(value = me.getAttributeNode(name)) {
+				if(value = elem.getAttributeNode(name)) {
 					value.nodeValue = '';
-					me.removeAttributeNode(value);
+					elem.removeAttributeNode(value);
 				}
 			
 			} else {
 				
-				assert(me.getAttributeNode, "Element.prototype.setAttr(name, type): 当前元素不存在 getAttributeNode 方法");
+				assert(elem.getAttributeNode, "Element.prototype.setAttr(name, type): 当前元素不存在 getAttributeNode 方法");
 
-				var node = me.getAttributeNode(name);
+				var node = elem.getAttributeNode(name);
 				
 				if(node)
 					node.nodeValue = value;
 				else
-					me.setAttribute(name, value);
+					elem.setAttribute(name, value);
 				
 			}
 
@@ -1483,11 +1442,11 @@
 		 * @return {Element} this
 		 */
 		addClass: function (className) {
-			var me = this.dom || this;
+			var elem = this.dom || this;
 			
 			assert(className && !/[\r\n]/.test(className), "Element.prototype.addClass(className): 参数 {className} 不能空，且不允许有空格和换行。");
 			
-			me.className = me.className ? me.className + ' ' + className : className;
+			elem.className = elem.className ? elem.className + ' ' + className : className;
 			
 			return this;
 		},
@@ -1498,11 +1457,11 @@
 		 * @return {Element} this
 		 */
 		removeClass: function (className) {
-			var me = this.dom || this;
+			var elem = this.dom || this;
 			
 			assert(!className || !/[\s\r\n]/.test(className), "Element.prototype.addClass(className): 参数 {className} 不能空，且不允许有空格和换行。");
 			
-			me.className = className != null ? me.className.replace(new RegExp('\\b' + className + '\\b\\s*', "g"), '') : '';
+			elem.className = className != null ? elem.className.replace(new RegExp('\\b' + className + '\\b\\s*', "g"), '') : '';
 			
 			return this;
 		},
@@ -1523,16 +1482,16 @@
 		 * @return {Element} this
 		 */
 		setText: function (value) {
-			var me = this.dom || this;
+			var elem = this.dom || this;
 
-			switch(me.tagName) {
+			switch(elem.tagName) {
 				case "SELECT":
-					if(me.type === 'select-multiple' && value != null) {
+					if(elem.type === 'select-multiple' && value != null) {
 						
 						assert.isString(value, "Element.prototype.setText(value): 参数  {value} ~。");
 					
 						value = value.split(',');
-						o.each(me.options, function (e) {
+						o.each(elem.options, function (e) {
 							e.selected = value.indexOf(e.value) > -1;
 						});
 						
@@ -1543,10 +1502,10 @@
 				//  继续执行
 				case "INPUT":
 				case "TEXTAREA":
-					me.value = value;
+					elem.value = value;
 					break;
 				default:
-					me[attributes.innerText] = value;
+					elem[attributes.innerText] = value;
 			}
 			return  this;
 		},
@@ -1631,9 +1590,12 @@
 			
 			assert(!elem || (elem.dom  && elem.dom.style) || elem.style, "Element.prototype.bringToFront(elem): 参数 {elem} 必须为 元素或为空。", elem);
 			
-			var me = this.dom || this;
-
-			me.style.zIndex = Math.max(parseInt(styleString(me, 'zIndex')) || 0, elem && (parseInt(styleString(elem.dom || elem, 'zIndex')) + 1) || e.zIndex++);
+			var thisElem = this.dom || this,
+				targetZIndex = elem && (parseInt(styleString(elem.dom || elem, 'zIndex')) + 1) || e.zIndex++;
+			
+			// 如果当前元素的 z-index 未超过目标值，则设置
+			if(!(styleString(thisElem, 'zIndex') > targetZIndex))
+				thisElem.style.zIndex = targetZIndex;
 			
 			return this;
 		},
@@ -1734,6 +1696,114 @@
 			e.setMovable(me.dom || me);
 
 			return me.setOffset(offset);
+		},
+	
+		/// #endif
+		
+		/// #ifdef ElementNode
+
+		/**
+		 * 在某个位置插入一个HTML 。
+		 * @param {String/Element} html 内容。
+		 * @param {String} [swhere] 插入地点。 beforeBegin   节点外    beforeEnd   节点里
+		 * afterBegin    节点外  afterEnd     节点里
+		 * @return {Element} 插入的节点。
+		 */
+		insert: 'insertAdjacentElement' in div ? function (html, swhere) {
+			var me = this.dom || this;
+			assert.isNode(me, "Element.prototype.insert(html, swhere): this.dom || this 返回的必须是 DOM 节点。");
+			assert.notNull(html, "Element.prototype.insert(html, swhere): 参数  {html} ~。");
+			assert(!swhere || 'afterEnd beforeBegin afterBegin beforeEnd '.indexOf(swhere + ' ') != -1, "Element.prototype.insert(html, swhere): 参数  {swhere} 必须是 beforeBegin、beforeEnd、afterBegin 或 afterEnd 。", swhere);
+			if(typeof html === 'string')
+				me.insertAdjacentHTML(swhere, html);
+			else
+				me.insertAdjacentElement(swhere, html.dom || html);
+			
+			return p.$(me[{
+				afterEnd: 'nextSibling',
+				beforeBegin: 'previousSibling',
+				afterBegin: 'firstChild'
+			}[swhere] || 'lastChild']);
+			
+		} : function (html, swhere) {
+
+			var me = this.dom || this;
+
+			assert.notNull(html, "Element.prototype.insert(html, swhere): 参数 {html} ~。");
+			assert.isNode(me, "Element.prototype.insert(html, swhere): this.dom || this 返回的必须是 DOM 节点。");
+			assert(!swhere || 'afterEnd beforeBegin afterBegin beforeEnd '.indexOf(swhere + ' ') != -1, "Element.prototype.insert(html, swhere): 参数 {swhere} 必须是 beforeBegin、beforeEnd、afterBegin 或 afterEnd 。", swhere);
+			html = e.parse(html, me);
+
+			switch (swhere) {
+				case "afterEnd":
+					if(!me.nextSibling) {
+
+						assert(me.parentNode != null, "Element.prototype.insert(html, swhere): 节点无父节点时无法插入 {this}", me);
+
+						me.parentNode.appendChild(html);
+						break;
+					}
+
+					me = me.nextSibling;
+				case "beforeBegin":
+					assert(me.parentNode != null, "Element.prototype.insert(html, swhere): 节点无父节点时无法插入 {this}", me);
+					me.parentNode.insertBefore(html, me);
+					break;
+				case "afterBegin":
+					if (me.firstChild) {
+						me.insertBefore(html, me.firstChild);
+						break;
+					}
+				default:
+					assert(arguments.length == 1 || !swhere || swhere == 'beforeEnd' || swhere == 'afterBegin', 'Element.prototype.insert(html, swhere): 参数 {swhere} 必须是 beforeBegin、beforeEnd、afterBegin 或 afterEnd 。', swhere);
+					me.appendChild(html);
+					break;
+			}
+
+			return html;
+		},
+
+		/**
+		 * 插入一个HTML 。
+		 * @param {String/Element} html 内容。
+		 * @return {Element} 元素。
+		 */
+		append: function (html) {
+
+			assert.notNull(html, "Element.prototype.append(html, escape): 参数 {html} ~。");
+
+			return this.appendChild(e.parse(html, this.dom || this));
+		},
+
+		/**
+		 * 将一个节点用html包围。
+		 * @param {String} html 内容。
+		 * @return {Element} 元素。
+		 */
+		wrapWith: function (html) {
+			html = this.replaceWith(html);
+			while(html.lastChild)
+				html = html.lastChild;
+			html.appendChild(this.dom || this);
+			return html;
+		},
+
+		/**
+		 * 将一个节点用另一个节点替换。
+		 * @param {String} html 内容。
+		 * @return {Element} 元素。
+		 */
+		replaceWith: function (html) {
+			var me = this.dom || this;
+
+			assert.notNull(html, "Element.prototype.replaceWith(html): 参数 {html} ~。");
+			html = e.parse(html, me);
+
+
+			assert(me.parentNode, 'Element.prototype.replaceWith(html): 当前节点无父节点，不能执行此方法 {this}', me);
+			assert.isNode(html, "Element.prototype.replaceWith(html, escape): 参数 {html} ~或 HTM 片段。");
+			me.parentNode.replaceChild(html, me);
+			return html;
 		}
 	
 		/// #endif
@@ -1976,7 +2046,7 @@
 		 * 获取滚动条已滚动的大小。
 		 * @return {Point} 位置。
 		 */
-		getScroll:  function getScroll() {
+		getScroll:  function () {
 			var me = this.dom || this;
 			return new Point(me.scrollLeft, me.scrollTop);
 		},
@@ -2087,7 +2157,7 @@
 	
 	/// #ifdef ElementNode
 	
-	.implement({
+	.implementIf({
 
 		/// #ifdef SupportIE6
 
@@ -2113,192 +2183,6 @@
 		/// find: div.querySelector,
 
 		/// #endif
-
-		/**
-		 * 复制节点。
-		 * @param {Boolean} cloneEvent=false 是否复制事件。
-		 * @param {Boolean} contents=true 是否复制子元素。
-		 * @param {Boolean} keepId=false 是否复制 id 。
-		 * @return {Element} 元素。
-		 */
-		clone: function (cloneEvent, contents, keepId) {
-
-			assert.isNode(this.dom || this, "Element.prototype.clone(cloneEvent, contents, keepid): this.dom || this 返回的必须是 DOM 节点。");
-
-			var elem = this.dom || this,
-				clone = elem.cloneNode(contents = contents !== false);
-
-			if (contents)
-				for (var elemChild = elem.getElementsByTagName('*'), cloneChild = clone.getElementsByTagName('*'), i = elemChild.length; i--;)
-					cleanClone(elemChild[i], cloneChild[i], cloneEvent, keepId);
-
-			cleanClone(elem, clone, cloneEvent, keepId);
-
-			return clone;
-		},
-
-		/**
-		 * 在某个位置插入一个HTML 。
-		 * @param {String/Element} html 内容。
-		 * @param {String} [swhere] 插入地点。 beforeBegin   节点外    beforeEnd   节点里
-		 * afterBegin    节点外  afterEnd     节点里
-		 * @return {Element} 插入的节点。
-		 */
-		insert: 'insertAdjacentElement' in div ? function (html, swhere) {
-			var me = this.dom || this;
-			assert.isNode(me, "Element.prototype.insert(html, swhere): this.dom || this 返回的必须是 DOM 节点。");
-			assert.notNull(html, "Element.prototype.insert(html, swhere): 参数  {html} ~。");
-			assert(!swhere || 'afterEnd beforeBegin afterBegin beforeEnd '.indexOf(swhere + ' ') != -1, "Element.prototype.insert(html, swhere): 参数  {swhere} 必须是 beforeBegin、beforeEnd、afterBegin 或 afterEnd 。", swhere);
-			if(typeof html === 'string')
-				me.insertAdjacentHTML(swhere, html);
-			else
-				me.insertAdjacentElement(swhere, html.dom || html);
-			
-			return p.$(me[{
-				afterEnd: 'nextSibling',
-				beforeBegin: 'previousSibling',
-				afterBegin: 'firstChild'
-			}[swhere] || 'lastChild']);
-			
-		} : function (html, swhere) {
-
-			var me = this.dom || this;
-
-			assert.notNull(html, "Element.prototype.insert(html, swhere): 参数 {html} ~。");
-			assert.isNode(me, "Element.prototype.insert(html, swhere): this.dom || this 返回的必须是 DOM 节点。");
-			assert(!swhere || 'afterEnd beforeBegin afterBegin beforeEnd '.indexOf(swhere + ' ') != -1, "Element.prototype.insert(html, swhere): 参数 {swhere} 必须是 beforeBegin、beforeEnd、afterBegin 或 afterEnd 。", swhere);
-			html = e.parse(html, me);
-
-			switch (swhere) {
-				case "afterEnd":
-					if(!me.nextSibling) {
-
-						assert(me.parentNode != null, "Element.prototype.insert(html, swhere): 节点无父节点时无法插入 {this}", me);
-
-						me.parentNode.appendChild(html);
-						break;
-					}
-
-					me = me.nextSibling;
-				case "beforeBegin":
-					assert(me.parentNode != null, "Element.prototype.insert(html, swhere): 节点无父节点时无法插入 {this}", me);
-					me.parentNode.insertBefore(html, me);
-					break;
-				case "afterBegin":
-					if (me.firstChild) {
-						me.insertBefore(html, me.firstChild);
-						break;
-					}
-				default:
-					assert(arguments.length == 1 || !swhere || swhere == 'beforeEnd' || swhere == 'afterBegin', 'Element.prototype.insert(html, swhere): 参数 {swhere} 必须是 beforeBegin、beforeEnd、afterBegin 或 afterEnd 。', swhere);
-					me.appendChild(html);
-					break;
-			}
-
-			return html;
-		},
-
-		/**
-		 * 插入一个HTML 。
-		 * @param {String/Element} html 内容。
-		 * @return {Element} 元素。
-		 */
-		append: function (html) {
-
-			assert.notNull(html, "Element.prototype.append(html, escape): 参数 {html} ~。");
-
-			return this.appendChild(e.parse(html, this.dom || this));
-		},
-
-		/**
-		 * 将一个节点用html包围。
-		 * @param {String} html 内容。
-		 * @return {Element} 元素。
-		 */
-		wrapWith: function (html) {
-			html = this.replaceWith(html);
-			while(html.lastChild)
-				html = html.lastChild;
-			html.appendChild(this.dom || this);
-			return html;
-		},
-
-		/**
-		 * 将一个节点用另一个节点替换。
-		 * @param {String} html 内容。
-		 * @return {Element} 元素。
-		 */
-		replaceWith: function (html) {
-			var me = this.dom || this;
-
-			assert.notNull(html, "Element.prototype.replaceWith(html): 参数 {html} ~。");
-			html = e.parse(html, me);
-
-
-			assert(me.parentNode, 'Element.prototype.replaceWith(html): 当前节点无父节点，不能执行此方法 {this}', me);
-			assert.isNode(html, "Element.prototype.replaceWith(html, escape): 参数 {html} ~或 HTM 片段。");
-			me.parentNode.replaceChild(html, me);
-			return html;
-		}
-
-	}, 3)
-	
-	.implementIf({
-
-		/**
-		 * 根据属性获得元素内容。
-		 * @param {Strung} name 属性名。
-		 * @param {Strung} value 属性值。
-		 * @return {Array} 节点集合。
-		 */
-		getElementsByAttribute: function (name, value) {
-			return e.find(this.dom || this, value === undefined ? function (elem) {
-				return !!e.getAttr(elem, name);
-			} : function (elem) {
-
-				// 或者属性值 == value 且 value 非空
-				// 或者 value空， 属性值非空
-				return e.getAttr(elem, name) === value;
-			});
-
-		},
-
-		/// #ifdef SupportIE6
-
-		/**
-		 * 根据类名返回子节点。
-		 * @param {Strung} className 类名。
-		 * @return {Array} 节点集合。
-		 */
-		getElementsByClassName: function (className) {
-			assert.isString(className, "Element.prototype.getElementsByClassName(className): 参数 {className} ~。");
-			className = className.split(/\s/); 
-			return e.find(this.dom || this, function (elem) {
-				var i = className.length;
-				while(i--) if(!e.hasClass(elem, className[i])) return false;
-                return true;
-			});
-
-		},
-
-		/// #else
-
-		/// getElementsByClassName:  function (name) {
-		/// 	return this.getElementsByClassName(name);
-		/// },
-
-		/// #endif
-
-		// 使     ElementList 支持此函数
-		
-		/**
-		 * 根据标签返回子节点。
-		 * @param {Strung} name 类名。
-		 * @return {Array} 节点集合。
-		 */
-		getElementsByTagName: function (name) {
-			return this.getElementsByTagName(name);
-		},
 
 		/// #ifdef SupportIE6
 
@@ -2351,9 +2235,32 @@
 			
 			assert(e.treeWalkers[treeWalker], 'Element.prototype.get(treeWalker, fn): 函数不支持 {treeWalker}类型 的节点关联。', treeWalker);
 			return e.treeWalkers[treeWalker](this.dom || this, fn);
+		},
+		
+		/**
+		 * 复制节点。
+		 * @param {Boolean} cloneEvent=false 是否复制事件。
+		 * @param {Boolean} contents=true 是否复制子元素。
+		 * @param {Boolean} keepId=false 是否复制 id 。
+		 * @return {Element} 元素。
+		 */
+		clone: function (cloneEvent, contents, keepId) {
+
+			assert.isNode(this.dom || this, "Element.prototype.clone(cloneEvent, contents, keepid): this.dom || this 返回的必须是 DOM 节点。");
+
+			var elem = this.dom || this,
+				clone = elem.cloneNode(contents = contents !== false);
+
+			if (contents)
+				for (var elemChild = elem.getElementsByTagName('*'), cloneChild = clone.getElementsByTagName('*'), i = elemChild.length; i--;)
+					cleanClone(elemChild[i], cloneChild[i], cloneEvent, keepId);
+
+			cleanClone(elem, clone, cloneEvent, keepId);
+
+			return clone;
 		}
 
-	}, 4);
+	}, 3);
 		
 	/// #endif
 		
@@ -2371,7 +2278,7 @@
 	/// #endif
 	
 	/**
-	 * @namespace document
+	 * @class Document
 	 */
 	p.Native(p.Document).implement({
 		
@@ -2480,10 +2387,6 @@
 	wrapMap.optgroup = wrapMap.option;
 	wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
 	wrapMap.th = wrapMap.td;
-	
-	if(!navigator.isStandard) {
-		wrapMap.$default = [1, '$<div>', '</div>'];
-	}
 	
 	/// #endif
 
@@ -2856,12 +2759,14 @@
 	
 	String.map("$ Element Document", p, window, true);
 
-	String.map("invoke each indexOf forEach", function (func) {
-		el.prototype[func] = function () {
-			return ap[func].apply(this.doms, arguments);
-		};
-	});
+	//       String.map("invoke each indexOf forEach push unshift pop shift include unique", ap, el.prototype);
 
+	String.map("filter slice splice", function(func){
+		return function(){
+			return new el(ap[func].apply(this, arguments));
+		};
+	}, el.prototype);
+	
 	/**
 	 * @class
 	 */
@@ -3004,7 +2909,7 @@
 	 * @param {String} selector 选择器。
 	 * @return {JPlus.ElementList} 元素集合。
 	 */
-	function findBy(elem, selector) {
+	function findBy(elem, selector) {  return
 		switch(selector.charAt(0)) {
 			case '.':
 				elem = elem.getElementsByClassName(selector.replace(/\./g, ' '));
@@ -3223,3 +3128,232 @@
 
 })(this);
 
+	
+
+/**
+* "mini" Selector Engine
+* https://github.com/jamespadolsey/mini
+* Copyright (c) 2009 James Padolsey
+* -------------------------------------------------------
+* Dual licensed under the MIT and GPL licenses.
+* - http://www.opensource.org/licenses/mit-license.php
+* - http://www.gnu.org/copyleft/gpl.html
+* -------------------------------------------------------
+* Version: 0.01 (BETA)
+* 
+*     * div
+    * .example
+    * body div
+    * div, p
+    * div, p, .example
+    * div p
+    * div > p
+    * div.example
+    * ul .example
+    * #title
+    * h1#title
+    * div #title
+    * ul.foo > * span
+
+*/
+
+
+var mini = (function(){
+    
+    var snack = /(?:[\w\-\\.#]+)+(?:\[\w+?=([\'"])?(?:\\\1|.)+?\1\])?|\*|>/ig,
+        exprClassName = /^(?:[\w\-_]+)?\.([\w\-_]+)/,
+        exprId = /^(?:[\w\-_]+)?#([\w\-_]+)/,
+        exprNodeName = /^([\w\*\-_]+)/,
+        na = [null,null];
+    
+    function _find(selector, context) {
+        
+        /**
+* This is what you call via x()
+* Starts everything off...
+*/
+        
+        context = context || document;
+        
+        var simple = /^[\w\-_#]+$/.test(selector);
+        
+        if (!simple && context.querySelectorAll) {
+            return realArray(context.querySelectorAll(selector));
+        }
+        
+        if (selector.indexOf(',') > -1) {
+            var split = selector.split(/,/g), ret = [], sIndex = 0, len = split.length;
+            for(; sIndex < len; ++sIndex) {
+                ret = ret.concat( _find(split[sIndex], context) );
+            }
+            return unique(ret);
+        }
+        
+        var parts = selector.match(snack),
+            part = parts.pop(),
+            id = (part.match(exprId) || na)[1],
+            className = !id && (part.match(exprClassName) || na)[1],
+            nodeName = !id && (part.match(exprNodeName) || na)[1],
+            collection;
+            
+        if (className && !nodeName && context.getElementsByClassName) {
+            
+            collection = realArray(context.getElementsByClassName(className));
+            
+        } else {
+            
+            collection = !id && realArray(context.getElementsByTagName(nodeName || '*'));
+            
+            if (className) {
+                collection = filterByAttr(collection, 'className', RegExp('(^|\\s)' + className + '(\\s|$)'));
+            }
+            
+            if (id) {
+                var byId = context.getElementById(id);
+                return byId?[byId]:[];
+            }
+        }
+        
+        return parts[0] && collection[0] ? filterParents(parts, collection) : collection;
+        
+    }
+    
+    function realArray(c) {
+        
+        /**
+* Transforms a node collection into
+* a real array
+*/
+        
+        try {
+            return Array.prototype.slice.call(c);
+        } catch(e) {
+            var ret = [], i = 0, len = c.length;
+            for (; i < len; ++i) {
+                ret[i] = c[i];
+            }
+            return ret;
+        }
+        
+    }
+    
+    function filterParents(selectorParts, collection, direct) {
+        
+        /**
+* This is where the magic happens.
+* Parents are stepped through (upwards) to
+* see if they comply with the selector.
+*/
+        
+        var parentSelector = selectorParts.pop();
+        
+        if (parentSelector === '>') {
+            return filterParents(selectorParts, collection, true);
+        }
+        
+        var ret = [],
+            r = -1,
+            id = (parentSelector.match(exprId) || na)[1],
+            className = !id && (parentSelector.match(exprClassName) || na)[1],
+            nodeName = !id && (parentSelector.match(exprNodeName) || na)[1],
+            cIndex = -1,
+            node, parent,
+            matches;
+            
+        nodeName = nodeName && nodeName.toLowerCase();
+            
+        while ( (node = collection[++cIndex]) ) {
+            
+            parent = node.parentNode;
+            
+            do {
+                
+                matches = !nodeName || nodeName === '*' || nodeName === parent.nodeName.toLowerCase();
+                matches = matches && (!id || parent.id === id);
+                matches = matches && (!className || RegExp('(^|\\s)' + className + '(\\s|$)').test(parent.className));
+                
+                if (direct || matches) { break; }
+                
+            } while ( (parent = parent.parentNode) );
+            
+            if (matches) {
+                ret[++r] = node;
+            }
+        }
+        
+        return selectorParts[0] && ret[0] ? filterParents(selectorParts, ret) : ret;
+        
+    }
+    
+    
+    var unique = (function(){
+        
+        var uid = +new Date();
+                
+        var data = (function(){
+         
+            var n = 1;
+         
+            return function(elem) {
+         
+                var cacheIndex = elem[uid],
+                    nextCacheIndex = n++;
+         
+                if(!cacheIndex) {
+                    elem[uid] = nextCacheIndex;
+                    return true;
+                }
+         
+                return false;
+         
+            };
+         
+        })();
+        
+        return function(arr) {
+        
+            /**
+* Returns a unique array
+*/
+            
+            var length = arr.length,
+                ret = [],
+                r = -1,
+                i = 0,
+                item;
+                
+            for (; i < length; ++i) {
+                item = arr[i];
+                if (data(item)) {
+                    ret[++r] = item;
+                }
+            }
+            
+            uid += 1;
+            
+            return ret;
+    
+        };
+    
+    })();
+    
+    function filterByAttr(collection, attr, regex) {
+        
+        /**
+* Filters a collection by an attribute.
+*/
+        
+        var i = -1, node, r = -1, ret = [];
+        
+        while ( (node = collection[++i]) ) {
+            if (regex.test(node[attr])) {
+                ret[++r] = node;
+            }
+        }
+        
+        return ret;
+    }
+    
+    return _find;
+    
+})();

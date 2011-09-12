@@ -1306,19 +1306,21 @@ var JPlus = {
 		 * </code>
 		 */
 		create: function (iterable, startIndex) {
-			if(!iterable)
-				return [];
+			//if(!iterable)
+			//	return [];
 				
 			//  [DOM Object] 。
-			if(iterable.item) { 
-				var r = [], len = iterable.length;
-				for(startIndex = startIndex || 0; startIndex < len; startIndex++)
-					r[startIndex] = iterable[startIndex];
-				return r;
-			}
+			//if(iterable.item) { 
+			//	var r = [], len = iterable.length;
+			//	for(startIndex = startIndex || 0; startIndex < len; startIndex++)
+			//		r[startIndex] = iterable[startIndex];
+			//	return r;
+			//}
+			
+			assert(!iterable || !iterable.item || typeof iterable.length !== 'number', 'Array.create(iterable, startIndex): 参数 {iterable} 不支持 DomCollection 。', iterable);
 			
 			// 调用 slice 实现。
-			return ap.slice.call(iterable, startIndex);
+			return iterable ? ap.slice.call(iterable, startIndex) : [];
 		}
 
 	});

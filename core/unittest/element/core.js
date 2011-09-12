@@ -71,13 +71,33 @@ test("Element.parse('html', context)", function() {
 	equals(span.tagName, 'SPAN', "Verify a span created with a div context works");
 });
 
-test("ElementList.prototype.each", function() {
-	expect(1);
-	var div = document.findAll("div");
-	div.each(function(node){node.foo = "zoo";});
+test("ElementList",  function() {
+	var el = new ElementList(document.getElementsByTagName('span'));
+	var length = el.length ;
+	equals(length > 0, true, "可以获取长度");
+	
+	el.push(document.body);
+	equals(el.length, length + 1, "push() 增加长度");
+	equals(el[length], document.body, "push() 添加到最后一个元素");
+	
+	el.unshift(document.body);
+	equals(el.length, length + 2, "unshift() 增加长度");
+	equals(el[0], document.body, "unshift() 添加到第一个元素");
+	
+	equals(el.shift(), document.body, "shift() 移除返回第一个。");
+	equals(el.length, length + 1, "shift() 减少长度");
+	
+	equals(el.pop(), document.body, "pop() 移除返回最后一个。");
+	equals(el.length, length, "pop() 减少长度");
+	
+	same(el.filter(Function.returnTrue), el, "filter() 返回");
+	
+	equals(el.indexOf(document), -1, "indexOf() 返回");
+	
+	el.each(function(node){node.foo = "zoo";});
 	var pass = true;
-	for ( var i = 0; i < div.doms.length; i++ ) {
-		if ( div.doms[i].foo != "zoo" ) pass = false;
+	for ( var i = 0; i < el.length; i++ ) {
+		if ( el[i].foo != "zoo" ) pass = false;
 	}
-	ok( pass, "Execute a function, Relative" );
+	ok( pass, "each() 执行" );
 });
