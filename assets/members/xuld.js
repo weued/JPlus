@@ -1,7 +1,7 @@
 
 
 var todo = {
-	'Element -  ElementList   Mini Selector   get    getOuterSize': '',
+	'Element -        Mini Selector                   getOuterSize': '',
 	'Select 处理': ''
 };
 

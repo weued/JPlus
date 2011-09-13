@@ -100,8 +100,8 @@ test("Element.prototype.setAttr", function() {
 	var div = document.findAll("div").set("foo", "bar"),
 		fail = false;
 
-	for ( var i = 0; i < div.doms.length; i++ ) {
-		if ( div.doms[i].getAttribute("foo") != "bar" ){
+	for ( var i = 0; i < div.length; i++ ) {
+		if ( div[i].getAttribute("foo") != "bar" ){
 			fail = i;
 			break;
 		}
@@ -473,8 +473,8 @@ test("Element.prototype.addClass", function() {
 	var div = document.findAll("div");
 	div.addClass( "test" );
 	var pass = true;
-	for ( var i = 0; i < div.doms.length; i++ ) {
-		if ( !~div.doms[i].className.indexOf("test") ) {
+	for ( var i = 0; i < div.length; i++ ) {
+		if ( !~div[i].className.indexOf("test") ) {
 			pass = false;
 		}
 	}
@@ -515,7 +515,7 @@ test("Element.prototype.removeClass", function() {
 
 	$divs.addClass("test").removeClass( "test" );
 
-	ok( !$divs.doms[0].hasClass("test"), "Remove Class" );
+	ok( !$divs[0].hasClass("test"), "Remove Class" );
 
 	QUnit.reset();
 	$divs = document.findAll("div");
@@ -523,17 +523,17 @@ test("Element.prototype.removeClass", function() {
 	$divs.addClass("test").addClass("foo").addClass("bar");
 	$divs.removeClass( "test" ).removeClass( "bar" ).removeClass( "foo" );
 
-	ok( !$divs.doms[0].hasClass("bar"), "Remove multiple classes" );
+	ok( !$divs[0].hasClass("bar"), "Remove multiple classes" );
 
 	QUnit.reset();
 	$divs = document.findAll("div");
 
 	// Make sure that a null value doesn't cause problems
-	// $divs.doms[0].addClass("test").removeClass( null );
-	// ok( $divs.doms[0].hasClass("test"), "Null value passed to removeClass" );
+	// $divs[0].addClass("test").removeClass( null );
+	// ok( $divs[0].hasClass("test"), "Null value passed to removeClass" );
 
-	$divs.doms[0].addClass("test").removeClass( "" );
-	ok( $divs.doms[0].hasClass("test"), "Empty string passed to removeClass" );
+	$divs[0].addClass("test").removeClass( "" );
+	ok( $divs[0].hasClass("test"), "Empty string passed to removeClass" );
 
 	var div = document.createElement("div");
 	div.className = " test foo ";

@@ -198,9 +198,9 @@ test("getStyle('height') doesn't clear radio buttons", function () {
 	// IE6 was clearing "checked" in getStyle("height");
 	checkedtest.getStyle("height");
 	ok(  checkedtest.find("[type='radio']").checked, "Check first radio still checked." );
-	ok(  !checkedtest.findAll("[type='radio']").doms[checkedtest.findAll("[type='radio']").doms.length - 1].checked, "Check last radio still NOT checked." );
+	ok(  !checkedtest.findAll("[type='radio']")[checkedtest.findAll("[type='radio']").length - 1].checked, "Check last radio still NOT checked." );
 	ok( checkedtest.find("[type='checkbox']").checked, "Check first checkbox still checked." );
-	ok( !checkedtest.findAll("[type='checkbox']").doms[checkedtest.findAll("[type='checkbox']").doms.length - 1].checked, "Check last checkbox still NOT checked." );
+	ok( !checkedtest.findAll("[type='checkbox']")[checkedtest.findAll("[type='checkbox']").length - 1].checked, "Check last checkbox still NOT checked." );
 });
 
 /*

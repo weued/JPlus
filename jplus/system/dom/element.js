@@ -48,6 +48,27 @@
 		 * @type Document
 		 */
 		document = window.document,
+		
+		/// #ifdef SupportIE6
+		
+		/**
+		 * 元素。
+		 * @type Function
+		 * 如果页面已经存在 Element， 不管是不是用户自定义的，都直接使用。只需保证 Element 是一个函数即可。
+		 */
+		e = window.Element || function() {},
+		
+		/// #else
+		
+		/// e = window.Element,
+		
+		/// #endif
+		
+		/**
+		 * 元素原型。
+		 * @type Object
+		 */
+		ep = e.prototype,
 	
 		/**
 		 * 用于测试的元素。
@@ -121,7 +142,7 @@
 			/**
 			 * 元素。
 			 */	
-			Element: Class(function (dom) {this.dom = dom;}),
+			Element: e,
 			
 			/**
 			 * 文档。
@@ -129,27 +150,6 @@
 			Document: document.constructor || {prototype: document}
 				
 		}),
-		
-		/// #ifdef SupportIE6
-		
-		/**
-		 * 元素。
-		 * @type Function
-		 * 如果页面已经存在 Element， 不管是不是用户自定义的，都直接使用。只需保证 Element 是一个函数即可。
-		 */
-		e = window.Element || p.Element,
-		
-		/// #else
-		
-		/// e = window.Element,
-		
-		/// #endif
-		
-		/**
-		 * 元素原型。
-		 * @type Object
-		 */
-		ep = e.prototype,
 		
 		/// #ifdef ElementCore
 		
@@ -474,6 +474,122 @@
 		/// #endif
 		
 		/**
+		 * 所有控件基类。
+		 * @class Control
+		 * @abstract
+		 * @extends Element
+		 * 控件的周期：
+		 * constructor  -  创建控件对于的 Javascript 类。 不建议重写，除非你知道你在做什么。
+		 * create - 创建本身的 dom 节点。 可重写 - 默认使用  this.tpl 创建。
+		 * init - 初始化控件本身。 可重写 - 默认为无操作。
+		 * appendTo - 渲染控件到文档。 不建议重写，如果你希望额外操作渲染事件，则重写。
+		 * dispose - 删除控件。不建议重写，如果一个控件用到多个 dom 内容需重写。
+		 */
+		Control = namespace(".Control", Class({
+			
+			/**
+			 * 封装的节点。
+			 * @type Element
+			 */
+			dom: null,
+		
+			/**
+			 * 根据一个节点返回。
+			 * @param {String/Element/Object} [options] 对象的 id 或对象或各个配置。
+			 */
+			constructor: function (options) {
+				
+				// 这是所有控件共用的构造函数。
+				
+				var me = this,
+				
+					// 临时的配置对象。
+					opt = apply({}, me.options),
+					
+					// 当前实际的节点。
+					dom;
+				
+				// 如果存在配置。
+				if (options) {
+					
+					// 如果参数是一个 DOM 节点或 ID 。
+					if (typeof options == 'string' || options.nodeType) {
+						
+						// 直接赋值， 在下面用 $ 获取节点 。
+						dom = options;
+					} else {
+						
+						// 否则 options 是一个对象。
+						
+						// 复制成员到临时配置。
+						apply(opt, options);
+						
+						// 保存 dom 。
+						dom = opt.dom;
+						delete opt.dom;
+					}
+				}
+				
+				// 如果 dom 的确存在，使用已存在的， 否则使用 create(opt)生成节点。
+				me.dom = dom ? p.$(dom) : me.create(opt);
+				
+				assert(me.dom && me.dom.nodeType, "Control.prototype.constructor(options): 当前实例的 dom 属性为空，或此属性不是 DOM 对象。(检查 options.dom 是否是合法的节点或ID(options 或 options.dom 指定的ID的节点不存在?) 或当前实例的 create 方法是否正确返回一个节点)\r\n当前控件: {dom} {xType}", me.dom, me.xType);
+				
+				// 调用 init 初始化控件。
+				me.init(opt);
+				
+				// 处理样式。
+				if('style' in opt) {
+					assert(me.dom.style, "Control.prototype.constructor(options): 当前控件不支持样式。");
+					me.dom.style.cssText += ';' + opt.style;
+					delete opt.style;
+				}
+				
+				// 复制各个选项。
+				Object.set(me, opt);
+			},
+			
+			/**
+			 * 当被子类重写时，生成当前控件。
+			 * @param {Object} options 选项。
+			 * @protected
+			 */
+			create: function() {
+				
+				assert(this.tpl, "Control.prototype.create(): 当前类不存在 tpl 属性。Control.prototype.create 会调用 tpl 属性，根据这个属性中的 HTML 代码动态地生成节点并返回。子类必须定义 tpl 属性或重写 Control.prototype.create 方法。");
+				
+				// 转为对 tpl解析。
+				return Element.parse(this.tpl);
+			},
+			
+			/**
+			 * 当被子类重写时，渲染控件。
+			 * @method
+			 * @param {Object} options 配置。
+			 * @protected
+			 */
+			init: Function.empty,
+			
+			/**
+			 * xType 。
+			 */
+			xType: "control",
+			
+			/**
+		     * 创建并返回控件的副本。
+		     * @param {Boolean} keepId=fasle 是否复制 id 。
+		     * @return {Control} 新的控件。
+		     */
+			clone: function(keepId) {
+				
+				// 创建一个控件。
+				return  new this.constructor(this.dom.clone(false, true, keepId));
+				
+			}
+			
+		})),
+		
+		/**
 		 * 节点集合。
 		 * @class ElementList
 		 * @extends Array
@@ -481,7 +597,7 @@
 		 * ElementList 允许快速操作多个节点。
 		 * ElementList 的实例一旦创建，则不允许修改其成员。
 		 */
-		el = namespace(".ElementList", Array.extend({
+		ElementList = namespace(".ElementList", Array.extend({
 	
 			/**
 			 * 初始化   ElementList  实例。
@@ -527,7 +643,7 @@
 			xType: "elementlist"
 	
 		}));
-	
+		
 	/**
 	 * @class Element
 	 */
@@ -627,37 +743,6 @@
 		/// #endif
 		
 		/// #ifdef ElementNode
-		
-		/**
-		 * 查找一个节点。
-		 * @param {Element} elem 父节点。
-		 * @param {Function} fn 查找函数。
-		 * @return {Element} 节点。
-		 */
-		find: 'all' in div ? function (elem, fn) { // 返回数组
-			assert.isFunction(fn, "Element.prototype.find(elem, fn): 参数 {fn} ~。");
-			return  ap.filter.call(elem.all, fn);
-		} : function (elem, fn) {
-			assert.isFunction(fn, "Element.prototype.find(elem, fn): 参数 {fn} ~。");
-			if(!elem.firstChild) return [];
-			var ds = [], doms = [elem], p, nx;
-			while (doms.length) {
-				p = doms.pop();
-				nx = p.firstChild;
-				do {
-					if (nx.nodeType !== 1)
-						continue;
-					if (fn(nx)) {
-						ds.push(nx);
-					}
-	
-					if(nx.firstChild)
-						doms.push(nx);
-				} while(nx = nx.nextSibling);
-			}
-	
-			return ds;
-		},
 			
 		/**
 		 * 判断指定节点之后有无存在子节点。
@@ -697,12 +782,34 @@
 		treeWalkers: {
 	
 			// 全部子节点。
-			children: function (elem, fn) {
-				return new el(e.find(elem,  fn));
+			all: 'all' in div ? function (elem, fn) { // 返回数组
+				assert.isFunction(fn, "Element.prototype.get('all', args): 参数 {args} ~。");
+				var r = new ElementList([]);
+				ap.forEach.call(elem.all, function(elem){
+					if(fn(elem))
+						r.push(elem);
+				});
+				return  r;
+			} : function (elem, fn) {
+				assert.isFunction(fn, "Element.prototype.get('all', args): 参数 {args} ~。");
+				var r = new ElementList([]), doms = [elem];
+				while (elem = doms.pop()) {
+					for(elem = elem.firstChild; elem; elem = elem.nextSibling)
+						if (elem.nodeType === 1) {
+							if (fn(elem))
+								r.push(elem);
+							doms.push(elem);
+						}
+				}
+				
+				return r;
 			},
 	
 			// 上级节点。
 			parent: createTreeWalker(true, 'parentNode'),
+	
+			// 第一个节点。
+			first: createTreeWalker(true, 'nextSibling', 'firstChild'),
 	
 			// 后面的节点。
 			next: createTreeWalker(true, 'nextSibling'),
@@ -710,37 +817,62 @@
 			// 前面的节点。
 			previous: createTreeWalker(true, 'previousSibling'),
 	
-			// 第一个节点。
-			first: createTreeWalker(true, 'firstChild', 'nextSibling'),
-	
 			// 最后的节点。
-			last: createTreeWalker(true, 'lastChild', 'previousSibling'),
+			last: createTreeWalker(true, 'previousSibling', 'lastChild'),
+			
+			// 全部子节点。
+			children: createTreeWalker(false, 'nextSibling', 'firstChild'),
+			
+			// 最相邻的节点。
+			closest: function(elem, args){
+				assert.isFunction(args, "Element.prototype.get('closest', args): 参数 {args} 必须是函数");
+				return args(this) ? this : this.parent(elem, args);
+			},
 	
 			// 全部上级节点。
 			parents: createTreeWalker(false, 'parentNode'),
 	
+			// 后面的节点。
+			nexts: createTreeWalker(false, 'nextSibling'),
+	
 			// 前面的节点。
 			previouses: createTreeWalker(false, 'previousSibling'),
 	
-			// 后面的节点。
-			nexts: createTreeWalker(false, 'nextSibling'),
+			// 奇数个。
+			odd: function(elem, args){
+				return this.even(elem, !args);
+			},
 			
-			// 选中的节点。
-			checked: createTreeWalker(false, function (elem) {
-				return elem.checked;
-			}),
-	
-			// 奇数或偶数个。
-			odd: function(elem, fn){
-				return dir(elem, function (elem) {
-					return fn = fn === false;
-				}, 'nextSibling', 'firstChild');
+			// 偶数个。
+			even: function (elem, args) {
+				return this.children(elem, function (elem) {
+					return args = !args;
+				});
 			},
 	
 			// 兄弟节点。
-			siblings: createTreeWalker(false, function (elem) {
-				return this != elem;
-			})
+			siblings: function(elem, args){
+				var p = this.previouses(elem, args);
+				p.push.apply(p, this.nexts(elem, args));
+				return p;
+			},
+			
+			// 号次。
+			index: function (elem) {
+				var i = 0;
+				while(elem = elem.previousSibling)
+					if(elem.nodeType === 1)
+						i++;
+				return i;
+			},
+			
+			// 偏移父位置。
+			offsetParent: function (elem) {
+				elem = elem.offsetParent || getDocument(elem).body;
+				while ( elem && !isBody(elem) && checkPosition(elem, "static") )
+					elem = elem.offsetParent;
+				return p.$(elem);
+			}
 	
 		},
 		
@@ -1025,26 +1157,26 @@
 
 			assert.notNull(members, "Element.implement" + (copyIf ? 'If' : '') + "(members, listType): 参数 {members} ~。");
 			
-			Object.each(members, function (value, key) {
+			Object.each(members, function (value, func) {
 				
 				var i = this.length;
 				while(i--) {
 					var cls = this[i].prototype;
-					if(cls && (!copyIf || !cls[key])) {
+					if(!copyIf || !cls[func]) {
 						
 						if(!i) {
 							switch (listType) {
 								case 2:  //   return array
 									value = function () {
-										return this.invoke(key, arguments);
+										return this.invoke(func, arguments);
 									};
 									break;
 									
 								case 3:  //  return ElementList
 									value = function () {
-										var args = arguments, r = new el([]);
+										var args = arguments, r = new ElementList([]);
 										this.forEach(function (node) {
-											r.concat(node[key].apply(node, args));
+											r.concat(node[func].apply(node, args));
 										});
 										return r;
 			
@@ -1055,21 +1187,21 @@
 									value = function () {
 										var me = this, len = me.length, i = -1;
 										while (++i < len)
-											me[i][key].apply(me[i], arguments);
+											me[i][func].apply(me[i], arguments);
 										return this;
 									};
 									
 							}
 						}
 						
-						cls[key] = value;
+						cls[func] = value;
 					}
 				}
 				
 				
 				
 				
-			}, [el, p.Document, p.Element, e != p.Element && e]);
+			}, [ElementList, p.Document, e, Control]);
 			
 			/// #ifdef SupportIE8
 
@@ -1142,13 +1274,13 @@
 			
 			var ee = p.Events.element;
 			
-			assert.isString(events, "Element.addEvents(events, baseEvent, initEvent): 参数 {events} ~。如果需要使用传统的对象表达式添加事件，请使用 JPlus.Element.addEvents(events)");
+			if(Object.isObject(events)) {
+				p.Object.addEvents.call(this, events);
+				return this;
+			}
 			
-			// if(Object.isObject(events)) {
-			// 		p.Element.addEvents(events);
-			// 		return this;
-			// }
-	
+			assert.isString(events, "Element.addEvents(events, baseEvent, initEvent): 参数 {events} ~或对象。");
+			
 			// 删除已经创建的事件。
 			delete ee[events];
 			
@@ -1712,7 +1844,6 @@
 		insert: 'insertAdjacentElement' in div ? function (html, swhere) {
 			var me = this.dom || this;
 			assert.isNode(me, "Element.prototype.insert(html, swhere): this.dom || this 返回的必须是 DOM 节点。");
-			assert.notNull(html, "Element.prototype.insert(html, swhere): 参数  {html} ~。");
 			assert(!swhere || 'afterEnd beforeBegin afterBegin beforeEnd '.indexOf(swhere + ' ') != -1, "Element.prototype.insert(html, swhere): 参数  {swhere} 必须是 beforeBegin、beforeEnd、afterBegin 或 afterEnd 。", swhere);
 			if(typeof html === 'string')
 				me.insertAdjacentHTML(swhere, html);
@@ -1729,7 +1860,6 @@
 
 			var me = this.dom || this;
 
-			assert.notNull(html, "Element.prototype.insert(html, swhere): 参数 {html} ~。");
 			assert.isNode(me, "Element.prototype.insert(html, swhere): this.dom || this 返回的必须是 DOM 节点。");
 			assert(!swhere || 'afterEnd beforeBegin afterBegin beforeEnd '.indexOf(swhere + ' ') != -1, "Element.prototype.insert(html, swhere): 参数 {swhere} 必须是 beforeBegin、beforeEnd、afterBegin 或 afterEnd 。", swhere);
 			html = e.parse(html, me);
@@ -1769,9 +1899,8 @@
 		 * @return {Element} 元素。
 		 */
 		append: function (html) {
-
-			assert.notNull(html, "Element.prototype.append(html, escape): 参数 {html} ~。");
-
+			
+			// this.appendChild 肯能不是原生的
 			return this.appendChild(e.parse(html, this.dom || this));
 		},
 
@@ -1796,7 +1925,6 @@
 		replaceWith: function (html) {
 			var me = this.dom || this;
 
-			assert.notNull(html, "Element.prototype.replaceWith(html): 参数 {html} ~。");
 			html = e.parse(html, me);
 
 
@@ -2137,18 +2265,6 @@
 				pos.minus(relative.getOffsets()).add( -styleNumber(me, 'marginLeft') - styleNumber(relative, 'borderLeftWidth') ,-styleNumber(me, 'marginTop') - styleNumber(relative,  'borderTopWidth') );
 			}
 			return pos;
-		},
-
-		/**
-		 * 获取用于作为父元素的节点。
-		 * @return {Element} 元素。
-		 */
-		getOffsetParent: function () {
-			var me = this.dom || this, elem = me.offsetParent || getDocument(me).body;
-			while ( elem && !isBody(elem) && checkPosition(elem, "static") ) {
-				elem = elem.offsetParent;
-			}
-			return elem;
 		}
 
 		/// #endif
@@ -2194,10 +2310,10 @@
 		 */
 		findAll: div.querySelectorAll ? function (selecter) {
 			assert.isString(selecter, "Element.prototype.findAll(selecter): 参数 {selecter} ~。");
-			return new el((this.dom || this).querySelectorAll(selecter));
+			return new ElementList((this.dom || this).querySelectorAll(selecter));
 		} : function (selecter) {
 			assert.isString(selecter, "Element.prototype.findAll(selecter): 参数 {selecter} ~。");
-			var current = new el([this.dom || this]);
+			var current = new ElementList([this.dom || this]);
 			selecter.split(' ').forEach( function (v) {
 				current = findBy(current, v);
 			});
@@ -2213,28 +2329,26 @@
 
 		/**
 		 * 获得相匹配的节点。
-		 * @param {String} treeWalker 遍历的类型，该类型在 {#link Element.treeWalkers} 指定。
-		 * @param {Function/Number} fn 过滤函数或索引或标签或类选择符。
+		 * @param {String/Function/Number} treeWalker 遍历函数，该函数在 {#link Element.treeWalkers} 指定。
+		 * @param {Object} [args] 传递给遍历函数的参数。
 		 * @return {Element} 元素。
 		 */
-		get: function (treeWalker, fn) {
+		get: function (treeWalker, args) {
 
-			// 如果 type 为函数， 表示 默认所有子节点。
 			switch (typeof treeWalker) {
 				case 'string':
-					fn = fn ? getFilter(fn) : isElement;
 					break;
 				case 'function':
-					fn = type;
-					type = 'children';
+					args = treeWalker;
+					treeWalker = 'all';
 					break;
 				case 'number':
-					fn = getFilter(treeWalker);
-					type = 'first';
+					args = treeWalker;
+					treeWalker = 'first';
 			}
 			
-			assert(e.treeWalkers[treeWalker], 'Element.prototype.get(treeWalker, fn): 函数不支持 {treeWalker}类型 的节点关联。', treeWalker);
-			return e.treeWalkers[treeWalker](this.dom || this, fn);
+			assert.isFunction(e.treeWalkers[treeWalker], 'Element.prototype.get(treeWalker, args): 函数不支持 {treeWalker}类型 的节点关联。', treeWalker);
+			return e.treeWalkers[treeWalker](this.dom || this, args);
 		},
 		
 		/**
@@ -2248,7 +2362,7 @@
 
 			assert.isNode(this.dom || this, "Element.prototype.clone(cloneEvent, contents, keepid): this.dom || this 返回的必须是 DOM 节点。");
 
-			var elem = this.dom || this,
+			var elem = this,
 				clone = elem.cloneNode(contents = contents !== false);
 
 			if (contents)
@@ -2368,6 +2482,15 @@
 		},
 		
 		/// #endif
+
+		/**
+		 * 插入一个HTML 。
+		 * @param {String/Element} html 内容。
+		 * @return {Element} 元素。
+		 */
+		append: function (html) {
+			return $(this.body).append(html);
+		},
 		
 		/**
 		 * 根据元素返回节点。
@@ -2375,11 +2498,63 @@
 		 * @return {ElementList} 如果只有1个参数，返回元素，否则返回元素集合。
 		 */
 		getDom: function () {
-			return arguments.length === 1 ? p.$(this.getElementById(arguments[0])) :  new el(o.update(arguments, this.getElementById, null, this));
+			return arguments.length === 1 ? p.$(this.getElementById(arguments[0])) :  new ElementList(o.update(arguments, this.getElementById, null, this));
 		}
 		
 	});
+	
+	apply(Control, {
 		
+		/**
+		 * 基类。
+		 */
+		base: e,
+		
+		/**
+		 * 将指定名字的方法委托到当前对象指定的成员。
+		 * @param {Object} control 类。
+		 * @param {String} delegate 委托变量。
+		 * @param {String} methods 所有成员名。
+		 * @param {Number} type 类型。 1 - 返回本身 2 - 返回委托返回 3 - 返回自己，参数作为控件。 
+		 * @param {String} [methods2] 成员。
+		 * @param {String} [type2] 类型。
+		 * 由于一个控件本质上是对 DOM 的封装， 因此经常需要将一个函数转换为对节点的调用。
+		 */
+		delegate: function(control, target, methods, type, methods2, type2) {
+			
+			if (methods2) 
+				arguments.callee(control, target, methods2, type2);
+			
+			assert(control && control.prototype, "Control.delegate(control, target, methods, type, methods2, type2): 参数 {control} 必须是一个类", control);
+			assert.isNumber(type, "Control.delegate(control, target, methods, type, methods2, type2): 参数 {type} ~。");
+			
+			String.map(methods, function(func) {
+				switch (type) {
+					case 2:
+						return function() {
+							var me = this[target];
+							return me[func].apply(me, arguments);
+						};
+					case 3:
+						return function(control1, control2) {
+							return this[target][func](control1 && control1.dom || control1, control2 ? control2.dom || control2 : null);
+						};
+					default:
+						return function() {
+							var me = this[target];
+							me[func].apply(me, arguments);
+							return this;
+						};
+				}
+			}, control.prototype);
+			
+			return arguments.callee;
+		}
+		
+	});
+	
+	Control.delegate(Control, 'dom', 'addEventListener removeEventListener scrollIntoView focus blur', 2, 'appendChild removeChild insertBefore replaceChild', 3);
+	
 	assert.isNode(document.documentElement, "在 element.js 执行时，必须存在 document.documentElement 属性。请确认浏览器为标准浏览器， 且未使用  Quirks 模式。");
 	
 	/// #ifdef ElementCore
@@ -2389,7 +2564,20 @@
 	wrapMap.th = wrapMap.td;
 	
 	/// #endif
-
+		
+	/// #ifdef ElementNode
+	
+	String.map('checked disabled selected', function (treeWalker) {
+		return function(elem, args){
+			args = args !== false;
+			return this.children(elem, function (elem) {
+				return elem[treeWalker] !== args;
+			});
+		};
+	}, e.treeWalkers);
+	
+	/// #endif
+	
 	/**
 	 * 获取节点本身。
 	 */
@@ -2759,13 +2947,13 @@
 	
 	String.map("$ Element Document", p, window, true);
 
-	//       String.map("invoke each indexOf forEach push unshift pop shift include unique", ap, el.prototype);
+	//       String.map("invoke each indexOf forEach push unshift pop shift include unique", ap, ElementList.prototype);
 
 	String.map("filter slice splice", function(func){
 		return function(){
-			return new el(ap[func].apply(this, arguments));
+			return new ElementList(ap[func].apply(this, arguments));
 		};
-	}, el.prototype);
+	}, ElementList.prototype);
 	
 	/**
 	 * @class
@@ -2791,60 +2979,36 @@
 	}
 	
 	/// #ifdef ElementNode
-
-	/**
-	 * 返回元素指定节点。
-	 * @param {Element} elem 节点。
-	 * @param {Number/Function/undefined/undefined} fn 过滤函数。
-	 * @param {String} walk 路径。
-	 * @param {String} first 第一个节点。
-	 * @return {Element} 节点。
-	 */
-	function walk(elem, fn, walk, first) {
-		first = elem[first];
-		while (first) {
-			if (fn.call(elem, first))
-				return p.$(first);
-			first = first[walk];
-		}
-		return null;
-	}
-
-	/**
-	 * 返回元素满足条件的节点的列表。
-	 * @param {Element} elem 节点。
-	 * @param {Function} fn 过滤函数。
-	 * @param {String} walk 路径。
-	 * @param {String} first 第一个节点。
-	 * @return {ElementList} 集合。
-	 */
-	function dir(elem, fn, walk, first) {
-		first = elem[first || walk];
-		var r = [];
-		while (first) {
-			if (fn.call(elem, first))
-				r.push(first);
-			first = first[walk];
-		}
-		return new el(r);
-	}
 	
-	function isElement(elem){
-		return 	elem.nodeType === 1;
-	}
-	
+	/**
+	 * 返回简单的遍历函数。
+	 * @param {Boolean} getFirst 返回第一个还是返回所有元素。
+	 * @param {String} next 获取下一个成员使用的名字。
+	 * @param {String} first=next 获取第一个成员使用的名字。
+	 * @return {Function} 遍历函数。
+	 */
 	function createTreeWalker(getFirst, next, first) {
-		getFirst = getFirst ? walk : dir;
-		if(Function.isFunction(next)) {
-			return function (elem, fn) {
-				return getFirst(elem, next, 'firstChild', 'nextSibling', fn);
+		first = first || next;
+		return getFirst ? function(elem, args){
+			args = args == undefined ? Function.returnTrue : getFilter(args);
+			first = elem[first];
+			while (first) {
+				if (first.nodeType === 1 && args.call(elem, first))
+					return p.$(first);
+				first = first[next];
 			}
-		} else {
-			first = first || walk;
-			return function(elem, fn){
-				return getFirst(elem, fn, next, first);
-			};
-		}
+			return first;
+		} : function (elem, args) {
+			args = args == undefined ? Function.returnTrue : getFilter(args);
+			first = elem[first];
+			var r = new ElementList([]);
+			while (first) {
+				if (first.nodeType === 1 && args.call(elem, first))
+					r.push(first);
+				first = first[next];
+			}
+			return r;
+		};
 	}
 
 	/**
@@ -2929,34 +3093,24 @@
 
 	/**
 	 * 获取一个选择器。
-	 * @param {Number/Function/String} fn
+	 * @param {Number/Function/String} args 参数。
 	 * @return {Funtion} 函数。
 	 */
-	function getFilter(fn) {
-		var t;
-		switch(typeof fn) {
+	function getFilter(args) {
+		switch(typeof args) {
 			case 'number':
-				t = fn;
-				fn = function (elem) {
-					return elem.nodeType === 1 && --t < 0;
+				return function (elem) {
+					return --args < 0;
 				};
-				break;
 			case 'string':
-				if(fn.charAt(0) === '.') {
-					t = fn.substring(1);
-					fn = function (elem) {
-						return e.hasClass(elem, t);
-					};
-				} else {
-					t = fn.toUpperCase();
-					fn = function (elem) {
-						return elem.tagName === t;
-					};
-				}
+				args = args.toUpperCase();
+				return function (elem) {
+					return elem.tagName === t;
+				};
 		}
 		
-		assert.isFunction(fn, "Element.prototype.get(type, fn): 参数 {fn} 必须是一个函数、数字或字符串。", fn);
-		return fn;
+		assert.isFunction(args, "Element.prototype.get(treeWalker, args): 参数 {fn} 必须是一个函数、空、数字或字符串。", args);
+		return args;
 	}
 	
 	/// #endif

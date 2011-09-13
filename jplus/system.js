@@ -1215,34 +1215,33 @@ var JPlus = {
 		 */
 		set: function (obj, options) {
 			
-			if(options) 
-				for(var key in options) {
-					
-					// 检查 setValue 。
-					var setter = 'set' + key.capitalize(),
-						val = options[key];
-			
-			
-					if (Function.isFunction(obj[setter]))
-						obj[setter](val);
-					
-					// 是否存在函数。
-					else if(Function.isFunction(obj[key]))
-						obj[key](val);
-					
-					// 检查 value.set 。
-					else if (obj[key] && obj[key].set)
-						obj[key].set(val);
-					
-					// 检查 set 。
-					else if(obj.set)
-						obj.set(key, val);
-					
-					// 最后，就直接赋予。
-					else
-						obj[key] = val;
-			
-				}
+			for(var key in options) {
+				
+				// 检查 setValue 。
+				var setter = 'set' + key.capitalize(),
+					val = options[key];
+		
+		
+				if (Function.isFunction(obj[setter]))
+					obj[setter](val);
+				
+				// 是否存在函数。
+				else if(Function.isFunction(obj[key]))
+					obj[key](val);
+				
+				// 检查 value.set 。
+				else if (obj[key] && obj[key].set)
+					obj[key].set(val);
+				
+				// 检查 set 。
+				else if(obj.set)
+					obj.set(key, val);
+				
+				// 最后，就直接赋予。
+				else
+					obj[key] = val;
+		
+			}
 			
 		},
 		
@@ -1769,11 +1768,10 @@ var JPlus = {
 		 * @param {Number} start=0 开始查找的位置。
 		 * @return Number 位置，找不到返回 -1 。 
 		 * 现在大多数浏览器已含此函数.除了 IE8-  。
-		 * @method
 		 */
-		indexOf: function   (item, startIndex) {
+		indexOf: function (item, startIndex) {
 			startIndex = startIndex || 0;
-			for (var l = this.length; startIndex < l; startIndex++)
+			for (var len = this.length; startIndex < len; startIndex++)
 				if (this[startIndex] === item)
 					return startIndex;
 			return -1;
@@ -1814,7 +1812,7 @@ var JPlus = {
 		 */
 		filter: function (fn, bind) {
 			var r = [];
-			ap.forEach.call(this, function (value, i, array) {
+			this.forEach(function (value, i, array) {
 				
 				// 过滤布存在的成员。
 				if(fn.call(this, value, i, array))
@@ -1875,7 +1873,7 @@ var JPlus = {
 			
 			assert.isNumber(index, "Array.prototype.insert(index, value): 参数 index ~。");
 			var me = this,
-				tmp = ap.slice.call(this, index);
+				tmp = me.slice(index);
 			me.length = index;
 			this[index] = value;
 			ap.push.apply(me, tmp);
@@ -1896,7 +1894,7 @@ var JPlus = {
 		invoke: function (func, args) {
 			assert(args && typeof args.length === 'number', "Array.prototype.invoke(func, args): 参数 {args} 必须是数组, 无法省略。", args);
 			var r = [];
-			ap.forEach.call(this, function (value) { 
+			this.forEach(function (value) { 
 				assert(value != null && value[func] && value[func].apply, "Array.prototype.invoke(func, args): {value} 不包含函数 {func}。", value, func);
 				r.push(value[func].apply(value, args));
 			});
@@ -1915,7 +1913,7 @@ var JPlus = {
 		unique: function () {
 			
 			// 删除从 i + 1 之后的当前元素。
-			for(var i = 0; i < this.length; ap.remove.call(this, this[i], ++i)) ;
+			for(var i = 0; i < this.length; this.remove(this[i], ++i)) ;
 			
 			return this;
 		},
@@ -1932,8 +1930,8 @@ var JPlus = {
 		remove: function (value, startIndex) {
 			
 			// 找到位置， 然后删。
-			var i = ap.indexOf.call(this, value, startIndex);
-			if(i !== -1) ap.splice.call(this, i, 1);
+			var i = this.indexOf(value, startIndex);
+			if(i !== -1) this.splice(i, 1);
 			return i;
 		},
 		
