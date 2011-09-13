@@ -194,13 +194,6 @@
 		/// #endif
 
 		/// #ifdef ElementAttribute
-
-		/**
-		 * 透明度的正则表达式。
-		 * @type RegExp
-		 */
-		
-		rOpacity = /opacity=([^)]*)/,
 	
 		/**
 		 * 表示事件的表达式。
@@ -215,6 +208,12 @@
 		rStyle = /-(\w)|float/,
 	
 		/// #ifdef SupportIE8
+
+		/**
+		 * 透明度的正则表达式。
+		 * @type RegExp
+		 */
+		rOpacity = /opacity=([^)]*)/,
 	
 		/**
 		 * 获取元素的实际的样式属性。
@@ -1950,16 +1949,6 @@
 		
 	/// #endif
 	
-	.implementIf({
-		
-		/**
-		 * xType
-		 * @type String
-		 */
-		xType: "element"
-
-	})
-	
 	.implement({
 		
 		/// #ifdef ElementNode
@@ -2099,16 +2088,6 @@
 		/// #ifdef ElementDimension
 
 		/**
-		 * 获取滚动区域大小。
-		 * @return {Point} 位置。
-		 */
-		getScrollSize: function () {
-			var me = this.dom || this;
-
-			return new Point(me.scrollWidth, me.scrollHeight);
-		},
-
-		/**
 		 * 获取元素可视区域大小。包括 border 大小。
 		 * @return {Point} 位置。
 		 */
@@ -2168,31 +2147,6 @@
 		 */
 		getHeight: function () {
 			return styleNumber(this.dom || this, 'height');
-		},
-
-		/**
-		 * 获取滚动条已滚动的大小。
-		 * @return {Point} 位置。
-		 */
-		getScroll:  function () {
-			var me = this.dom || this;
-			return new Point(me.scrollLeft, me.scrollTop);
-		},
-
-		/**
-		 * 获取元素的上下左右大小。
-		 * @return {Rectange} 大小。
-		 */
-		getBound: function () {
-			var p = this.getPosition(), s = this.getSize();
-			return {
-				left: p.x,
-				top: p.y,
-				width: s.x,
-				height: s.y,
-				right: p.x + s.x,
-				bottom: p.y + s.y
-			};
 		},
 
 		/**
@@ -2265,15 +2219,34 @@
 				pos.minus(relative.getOffsets()).add( -styleNumber(me, 'marginLeft') - styleNumber(relative, 'borderLeftWidth') ,-styleNumber(me, 'marginTop') - styleNumber(relative,  'borderTopWidth') );
 			}
 			return pos;
+		},
+
+		/**
+		 * 获取滚动区域大小。
+		 * @return {Point} 位置。
+		 */
+		getScrollSize: function () {
+			var me = this.dom || this;
+
+			return new Point(me.scrollWidth, me.scrollHeight);
+		},
+
+		/**
+		 * 获取滚动条已滚动的大小。
+		 * @return {Point} 位置。
+		 */
+		getScroll:  function () {
+			var me = this.dom || this;
+			return new Point(me.scrollLeft, me.scrollTop);
 		}
 
 		/// #endif
 		
 	}, 2)
 	
-	/// #ifdef ElementNode
-	
 	.implementIf({
+		
+		/// #ifdef ElementNode
 
 		/// #ifdef SupportIE6
 
@@ -2372,11 +2345,17 @@
 			cleanClone(elem, clone, cloneEvent, keepId);
 
 			return clone;
-		}
+		},
+		
+		/// #endif
+		
+		/**
+		 * xType
+		 * @type String
+		 */
+		xType: "element"
 
 	}, 3);
-		
-	/// #endif
 		
 	/// #ifdef ElementDimension
 	

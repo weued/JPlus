@@ -154,6 +154,14 @@ test("Element.prototype.setStyle", function() {
 	//	success = false;
 	//}
 	//ok( success, "Setting RGBA values does not throw Error" );
+	
+	
+	var div = Element.parse("<div>").appendTo("qunit-fixture");
+
+	div.setStyle("fill-opacity", 0).set({ "fill-opacity": 1.0 });
+	
+	equal( div.getStyle("fill-opacity"), 1, "Do not append px to 'fill-opacity'");
+
 });
 
 if ( !navigator.isStandard ) {
@@ -294,12 +302,3 @@ test("widows & orphans", function () {
 	p.remove();
 });
 
-test("Do not append px to 'fill-opacity'", 1, function() {
-
-	var div = Element.parse("<div>").appendTo("qunit-fixture");
-
-	div.setStyle("fill-opacity", 0).set({ "fill-opacity": 1.0 });
-	
-	equal( div.getStyle("fill-opacity"), 1, "Do not append px to 'fill-opacity'");
-
-});

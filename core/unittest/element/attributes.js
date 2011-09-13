@@ -292,7 +292,7 @@ test("Element.prototype.set", function(){
 	equals( elem.style.paddingRight, "1px", "set({...})");
 });
 
-test("getAttr('tabindex')", function() {
+test("Element.prototype.getAttr('tabindex')", function() {
 
 	// elements not natively tabbable
 	equals($("listWithTabIndex").getAttr("tabindex"), 5, "not natively tabbable, with tabindex set to 0");
@@ -309,7 +309,7 @@ test("getAttr('tabindex')", function() {
 	equals($("linkWithNoHrefWithNegativeTabIndex").getAttr("tabindex"), -1, "anchor without href, no tabindex set");
 });
 
-test("setAttr('tabindex', value)", function() {
+test("Element.prototype.setAttr('tabindex', value)", function() {
 
 	var element = $("divWithNoTabIndex");
 	//equals(element.getAttr("tabindex"), -1, "start with no tabindex");
@@ -345,7 +345,7 @@ test("setAttr('tabindex', value)", function() {
 	equals(element.getAttr("tabindex"), -1, "set negative tabindex");
 });
 
-test("setAttr(String, null)", function() {
+test("Element.prototype.setAttr(String, null)", function() {
 	
 	var form = $("form");
 	// equal( $("mark").setAttr( "class", null ).className, "", "remove class" );
@@ -547,7 +547,7 @@ test("Element.prototype.removeClass", function() {
 	equals( div.className, " ", "Make sure there is nothing left after everything is removed." );
 });
 
-test("toggleClass(String|boolean|undefined[, boolean])", function() {
+test("Element.prototype.toggleClass", function() {
 
 	var e = $("firstp");
 	ok( !e.hasClass("test"), "Assert class not present" );

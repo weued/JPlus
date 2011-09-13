@@ -1,4 +1,4 @@
-module("System");
+module("Element");
 
 test("System.Dom.Element", function() {
 	ok( JPlus, "JPlus" );
@@ -6,7 +6,7 @@ test("System.Dom.Element", function() {
 	ok( Element, "Element" );
 });
 
-test("Element.parse('html')", function() {
+test("Element.parse", function() {
 	var elem = Element.parse("<div/><hr/><code/><b/>");
 	equals( elem.childNodes.length, 4, "节点个数" );
 
@@ -39,7 +39,7 @@ test("Element.parse('html')", function() {
 	QUnit.reset();
 	//ok( Element.parse("<link rel='stylesheet'/>"), "Creating a link" );
 
-	ok( Element.parse("<input/>").setAttr("type", "hidden"), "Create an input and set the type." );
+	//  ok( Element.parse("<input/>").setAttr("type", "hidden"), "Create an input and set the type." );
 
 	var j = Element.parse("<span>hi</span> there <!-- mon ami -->");
 	ok( j.childNodes.length >= 2, "Check node,textnode,comment creation (some browsers delete comments)" );
@@ -61,14 +61,25 @@ test("Element.parse('html')", function() {
 	equals( html.nodeName.toUpperCase(), "UL");
 	equals( html.firstChild.nodeName.toUpperCase(), "LI");
 	equals( html.childNodes.length, 50000 );
-});
-
-test("Element.parse('html', context)", function() {
-	expect(1);
-
+	
+	
 	var div = Element.parse("<div/>");
 	var span = Element.parse("<span/>", div);
 	equals(span.tagName, 'SPAN', "Verify a span created with a div context works");
+
+});
+
+test("Document.prototype.create",  function() {
+	var el = document.create('AAa');
+	equals(el.tagName, 'AAA', "成功创建");
+	equals(el.append, Element.prototype.append, "包括 Element 方法");
+});
+
+test("Document.prototype.getDom",  function() {
+	Element.parse('<div id="a"></div>').appendTo("qunit-fixture");
+	var el = document.getDom('a');
+	equals(el.tagName, 'DIV', "成功创建");
+	equals(el.append, Element.prototype.append, "包括 Element 方法");
 });
 
 test("ElementList",  function() {
@@ -100,4 +111,9 @@ test("ElementList",  function() {
 		if ( el[i].foo != "zoo" ) pass = false;
 	}
 	ok( pass, "each() 执行" );
+});
+
+test("Control",  function() {
+	var el = new Control(document);
+	equals(el.dom, document, "dom 属性");
 });
