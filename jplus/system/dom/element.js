@@ -104,7 +104,7 @@
 				 * @constructor
 				 */
 				constructor: function (target, type, e) {
-					assert.notNull("JPlus.Event.prototype.constructor(target, type, e): 参数 {target} ~。", target);
+					assert.notNull(target, "JPlus.Event.prototype.constructor(target, type, e): 参数 {target} ~。");
 					
 					var me = this;
 					me.target = target;
@@ -1827,110 +1827,6 @@
 			e.setMovable(me.dom || me);
 
 			return me.setOffset(offset);
-		},
-	
-		/// #endif
-		
-		/// #ifdef ElementNode
-
-		/**
-		 * 在某个位置插入一个HTML 。
-		 * @param {String/Element} html 内容。
-		 * @param {String} [swhere] 插入地点。 beforeBegin   节点外    beforeEnd   节点里
-		 * afterBegin    节点外  afterEnd     节点里
-		 * @return {Element} 插入的节点。
-		 */
-		insert: 'insertAdjacentElement' in div ? function (html, swhere) {
-			var me = this.dom || this;
-			assert.isNode(me, "Element.prototype.insert(html, swhere): this.dom || this 返回的必须是 DOM 节点。");
-			assert(!swhere || 'afterEnd beforeBegin afterBegin beforeEnd '.indexOf(swhere + ' ') != -1, "Element.prototype.insert(html, swhere): 参数  {swhere} 必须是 beforeBegin、beforeEnd、afterBegin 或 afterEnd 。", swhere);
-			if(typeof html === 'string')
-				me.insertAdjacentHTML(swhere, html);
-			else
-				me.insertAdjacentElement(swhere, html.dom || html);
-			
-			return p.$(me[{
-				afterEnd: 'nextSibling',
-				beforeBegin: 'previousSibling',
-				afterBegin: 'firstChild'
-			}[swhere] || 'lastChild']);
-			
-		} : function (html, swhere) {
-
-			var me = this.dom || this;
-
-			assert.isNode(me, "Element.prototype.insert(html, swhere): this.dom || this 返回的必须是 DOM 节点。");
-			assert(!swhere || 'afterEnd beforeBegin afterBegin beforeEnd '.indexOf(swhere + ' ') != -1, "Element.prototype.insert(html, swhere): 参数 {swhere} 必须是 beforeBegin、beforeEnd、afterBegin 或 afterEnd 。", swhere);
-			html = e.parse(html, me);
-
-			switch (swhere) {
-				case "afterEnd":
-					if(!me.nextSibling) {
-
-						assert(me.parentNode != null, "Element.prototype.insert(html, swhere): 节点无父节点时无法插入 {this}", me);
-
-						me.parentNode.appendChild(html);
-						break;
-					}
-
-					me = me.nextSibling;
-				case "beforeBegin":
-					assert(me.parentNode != null, "Element.prototype.insert(html, swhere): 节点无父节点时无法插入 {this}", me);
-					me.parentNode.insertBefore(html, me);
-					break;
-				case "afterBegin":
-					if (me.firstChild) {
-						me.insertBefore(html, me.firstChild);
-						break;
-					}
-				default:
-					assert(arguments.length == 1 || !swhere || swhere == 'beforeEnd' || swhere == 'afterBegin', 'Element.prototype.insert(html, swhere): 参数 {swhere} 必须是 beforeBegin、beforeEnd、afterBegin 或 afterEnd 。', swhere);
-					me.appendChild(html);
-					break;
-			}
-
-			return html;
-		},
-
-		/**
-		 * 插入一个HTML 。
-		 * @param {String/Element} html 内容。
-		 * @return {Element} 元素。
-		 */
-		append: function (html) {
-			
-			// this.appendChild 肯能不是原生的
-			return this.appendChild(e.parse(html, this.dom || this));
-		},
-
-		/**
-		 * 将一个节点用html包围。
-		 * @param {String} html 内容。
-		 * @return {Element} 元素。
-		 */
-		wrapWith: function (html) {
-			html = this.replaceWith(html);
-			while(html.lastChild)
-				html = html.lastChild;
-			html.appendChild(this.dom || this);
-			return html;
-		},
-
-		/**
-		 * 将一个节点用另一个节点替换。
-		 * @param {String} html 内容。
-		 * @return {Element} 元素。
-		 */
-		replaceWith: function (html) {
-			var me = this.dom || this;
-
-			html = e.parse(html, me);
-
-
-			assert(me.parentNode, 'Element.prototype.replaceWith(html): 当前节点无父节点，不能执行此方法 {this}', me);
-			assert.isNode(html, "Element.prototype.replaceWith(html, escape): 参数 {html} ~或 HTM 片段。");
-			me.parentNode.replaceChild(html, me);
-			return html;
 		}
 	
 		/// #endif
@@ -2248,6 +2144,110 @@
 		
 		/// #ifdef ElementNode
 
+		/**
+		 * 在某个位置插入一个HTML 。
+		 * @param {String/Element} html 内容。
+		 * @param {String} [swhere] 插入地点。 beforeBegin   节点外    beforeEnd   节点里
+		 * afterBegin    节点外  afterEnd     节点里
+		 * @return {Element} 插入的节点。
+		 */
+		insert: 'insertAdjacentElement' in div ? function (html, swhere) {
+			var me = this.dom || this;
+			assert.isNode(me, "Element.prototype.insert(html, swhere): this.dom || this 返回的必须是 DOM 节点。");
+			assert(!swhere || 'afterEnd beforeBegin afterBegin beforeEnd '.indexOf(swhere + ' ') != -1, "Element.prototype.insert(html, swhere): 参数  {swhere} 必须是 beforeBegin、beforeEnd、afterBegin 或 afterEnd 。", swhere);
+			if(typeof html === 'string')
+				me.insertAdjacentHTML(swhere, html);
+			else
+				me.insertAdjacentElement(swhere, html.dom || html);
+			
+			return p.$(me[{
+				afterEnd: 'nextSibling',
+				beforeBegin: 'previousSibling',
+				afterBegin: 'firstChild'
+			}[swhere] || 'lastChild']);
+			
+		} : function (html, swhere) {
+
+			var me = this.dom || this;
+
+			assert.isNode(me, "Element.prototype.insert(html, swhere): this.dom || this 返回的必须是 DOM 节点。");
+			assert(!swhere || 'afterEnd beforeBegin afterBegin beforeEnd '.indexOf(swhere + ' ') != -1, "Element.prototype.insert(html, swhere): 参数 {swhere} 必须是 beforeBegin、beforeEnd、afterBegin 或 afterEnd 。", swhere);
+			html = e.parse(html, me);
+
+			switch (swhere) {
+				case "afterEnd":
+					if(!me.nextSibling) {
+
+						assert(me.parentNode != null, "Element.prototype.insert(html, swhere): 节点无父节点时无法插入 {this}", me);
+
+						me.parentNode.appendChild(html);
+						break;
+					}
+
+					me = me.nextSibling;
+				case "beforeBegin":
+					assert(me.parentNode != null, "Element.prototype.insert(html, swhere): 节点无父节点时无法插入 {this}", me);
+					me.parentNode.insertBefore(html, me);
+					break;
+				case "afterBegin":
+					if (me.firstChild) {
+						me.insertBefore(html, me.firstChild);
+						break;
+					}
+				default:
+					assert(arguments.length == 1 || !swhere || swhere == 'beforeEnd' || swhere == 'afterBegin', 'Element.prototype.insert(html, swhere): 参数 {swhere} 必须是 beforeBegin、beforeEnd、afterBegin 或 afterEnd 。', swhere);
+					me.appendChild(html);
+					break;
+			}
+
+			return html;
+		},
+
+		/**
+		 * 插入一个HTML 。
+		 * @param {String/Element} html 内容。
+		 * @return {Element} 元素。
+		 */
+		append: function (html) {
+			
+			// this.appendChild 肯能不是原生的
+			return this.appendChild(e.parse(html, this.dom || this));
+		},
+
+		/**
+		 * 将一个节点用html包围。
+		 * @param {Element/String} html 内容。
+		 * @return {Element} 元素。
+		 */
+		wrapWith: function (html) {
+			html = this.replaceWith(html);
+			while(html.lastChild && html.lastChild.nodeType === 1)
+				html = html.lastChild;
+			html.appendChild(this.dom || this);
+			return html;
+		},
+
+		/**
+		 * 将一个节点用另一个节点替换。
+		 * @param {Element/String} html 内容。
+		 * @return {Element} 替换之后的新元素。
+		 */
+		replaceWith: function (html) {
+			var me = this.dom || this;
+
+			html = e.parse(html, me);
+
+
+			assert(me.parentNode, 'Element.prototype.replaceWith(html): 当前节点无父节点，不能执行此方法 {this}', me);
+			assert.isNode(html, "Element.prototype.replaceWith(html, escape): 参数 {html} ~或 HTM 片段。");
+			me.parentNode.replaceChild(html, me);
+			return html;
+		},
+	
+		/// #endif
+		
+		/// #ifdef ElementNode
+
 		/// #ifdef SupportIE6
 
 		/**
@@ -2320,7 +2320,7 @@
 					treeWalker = 'first';
 			}
 			
-			assert.isFunction(e.treeWalkers[treeWalker], 'Element.prototype.get(treeWalker, args): 函数不支持 {treeWalker}类型 的节点关联。', treeWalker);
+			assert(Function.isFunction(e.treeWalkers[treeWalker]), 'Element.prototype.get(treeWalker, args): 不支持 {treeWalker}类型 的节点关联。', treeWalker);
 			return e.treeWalkers[treeWalker](this.dom || this, args);
 		},
 		
@@ -2333,8 +2333,8 @@
 		 */
 		clone: function (cloneEvent, contents, keepId) {
 
-			assert.isNode(this.dom || this, "Element.prototype.clone(cloneEvent, contents, keepid): this.dom || this 返回的必须是 DOM 节点。");
-
+			assert.isElement(this, "Element.prototype.clone(cloneEvent, contents, keepid): this 必须是 nodeType = 1 的 DOM 节点。");
+			
 			var elem = this,
 				clone = elem.cloneNode(contents = contents !== false);
 
@@ -2970,21 +2970,21 @@
 		first = first || next;
 		return getFirst ? function(elem, args){
 			args = args == undefined ? Function.returnTrue : getFilter(args);
-			first = elem[first];
-			while (first) {
-				if (first.nodeType === 1 && args.call(elem, first))
-					return p.$(first);
-				first = first[next];
+			var node = elem[first];
+			while (node) {
+				if (node.nodeType === 1 && args.call(elem, node))
+					return p.$(node);
+				node = node[next];
 			}
-			return first;
+			return node;
 		} : function (elem, args) {
 			args = args == undefined ? Function.returnTrue : getFilter(args);
-			first = elem[first];
-			var r = new ElementList([]);
-			while (first) {
-				if (first.nodeType === 1 && args.call(elem, first))
-					r.push(first);
-				first = first[next];
+			var node = elem[first],
+				r = new ElementList([]);
+			while (node) {
+				if (node.nodeType === 1 && args.call(elem, node))
+					r.push(node);
+				node = node[next];
 			}
 			return r;
 		};

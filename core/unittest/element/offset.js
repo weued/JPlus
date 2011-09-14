@@ -322,7 +322,7 @@ testoffset("fixed", function( jQuery ) {
 	});
 
 	// Bug 8316
-	var $noTopLeft = jQuery("#fixed-no-top-left");
+	var $noTopLeft = $("fixed-no-top-left");
 	if ( jQuery.offset.supportsFixedPosition ) {
 		equals( $noTopLeft.offset().top,  1007,  "Check offset top for fixed element with no top set" );
 		equals( $noTopLeft.offset().left, 1007, "Check offset left for fixed element with no left set" );
@@ -336,11 +336,11 @@ testoffset("fixed", function( jQuery ) {
 testoffset("table", function( jQuery ) {
 	expect(4);
 
-	equals( jQuery("#table-1").offset().top, 6, "jQuery('#table-1').offset().top" );
-	equals( jQuery("#table-1").offset().left, 6, "jQuery('#table-1').offset().left" );
+	equals( $("table-1").offset().top, 6, "jQuery('#table-1').offset().top" );
+	equals( $("table-1").offset().left, 6, "jQuery('#table-1').offset().left" );
 
-	equals( jQuery("#th-1").offset().top, 10, "jQuery('#th-1').offset().top" );
-	equals( jQuery("#th-1").offset().left, 10, "jQuery('#th-1').offset().left" );
+	equals( $("th-1").offset().top, 10, "jQuery('#th-1').offset().top" );
+	equals( $("th-1").offset().left, 10, "jQuery('#th-1').offset().left" );
 });
 
 testoffset("scroll", function( jQuery, win ) {
@@ -349,20 +349,20 @@ testoffset("scroll", function( jQuery, win ) {
 	var ie = jQuery.browser.msie && parseInt( jQuery.browser.version, 10 ) < 8;
 
 	// IE is collapsing the top margin of 1px
-	equals( jQuery("#scroll-1").offset().top, ie ? 6 : 7, "jQuery('#scroll-1').offset().top" );
-	equals( jQuery("#scroll-1").offset().left, 7, "jQuery('#scroll-1').offset().left" );
+	equals( $("scroll-1").offset().top, ie ? 6 : 7, "jQuery('#scroll-1').offset().top" );
+	equals( $("scroll-1").offset().left, 7, "jQuery('#scroll-1').offset().left" );
 
 	// IE is collapsing the top margin of 1px
-	equals( jQuery("#scroll-1-1").offset().top, ie ? 9 : 11, "jQuery('#scroll-1-1').offset().top" );
-	equals( jQuery("#scroll-1-1").offset().left, 11, "jQuery('#scroll-1-1').offset().left" );
+	equals( $("scroll-1-1").offset().top, ie ? 9 : 11, "jQuery('#scroll-1-1').offset().top" );
+	equals( $("scroll-1-1").offset().left, 11, "jQuery('#scroll-1-1').offset().left" );
 
 
 	// scroll offset tests .scrollTop/Left
-	equals( jQuery("#scroll-1").scrollTop(), 5, "jQuery('#scroll-1').scrollTop()" );
-	equals( jQuery("#scroll-1").scrollLeft(), 5, "jQuery('#scroll-1').scrollLeft()" );
+	equals( $("scroll-1").scrollTop(), 5, "jQuery('#scroll-1').scrollTop()" );
+	equals( $("scroll-1").scrollLeft(), 5, "jQuery('#scroll-1').scrollLeft()" );
 
-	equals( jQuery("#scroll-1-1").scrollTop(), 0, "jQuery('#scroll-1-1').scrollTop()" );
-	equals( jQuery("#scroll-1-1").scrollLeft(), 0, "jQuery('#scroll-1-1').scrollLeft()" );
+	equals( $("scroll-1-1").scrollTop(), 0, "jQuery('#scroll-1-1').scrollTop()" );
+	equals( $("scroll-1-1").scrollLeft(), 0, "jQuery('#scroll-1-1').scrollLeft()" );
 
 	// equals( jQuery("body").scrollTop(), 0, "jQuery("body").scrollTop()" );
 	// equals( jQuery("body").scrollLeft(), 0, "jQuery("body").scrollTop()" );
@@ -410,8 +410,8 @@ testoffset("body", function( jQuery ) {
 test("Chaining offset(coords) returns jQuery object", function() {
 	expect(2);
 	var coords = { top:  1, left:  1 };
-	equals( jQuery("#absolute-1").offset(coords).selector, "#absolute-1", "offset(coords) returns jQuery object" );
-	equals( jQuery("#non-existent").offset(coords).selector, "#non-existent", "offset(coords) with empty jQuery set returns jQuery object" );
+	equals( $("absolute-1").offset(coords).selector, "#absolute-1", "offset(coords) returns jQuery object" );
+	equals( $("non-existent").offset(coords).selector, "#non-existent", "offset(coords) with empty jQuery set returns jQuery object" );
 });
 
 test("offsetParent", function(){
@@ -421,24 +421,24 @@ test("offsetParent", function(){
 	equals( body.length, 1, "Only one offsetParent found." );
 	equals( body[0], document.body, "The body is its own offsetParent." );
 
-	var header = jQuery("#qunit-header").offsetParent();
+	var header = $("qunit-header").offsetParent();
 	equals( header.length, 1, "Only one offsetParent found." );
 	equals( header[0], document.body, "The body is the offsetParent." );
 
-	var div = jQuery("#nothiddendivchild").offsetParent();
+	var div = $("nothiddendivchild").offsetParent();
 	equals( div.length, 1, "Only one offsetParent found." );
 	equals( div[0], document.body, "The body is the offsetParent." );
 
-	jQuery("#nothiddendiv").css("position", "relative");
+	$("nothiddendiv").css("position", "relative");
 
-	div = jQuery("#nothiddendivchild").offsetParent();
+	div = $("nothiddendivchild").offsetParent();
 	equals( div.length, 1, "Only one offsetParent found." );
-	equals( div[0], jQuery("#nothiddendiv")[0], "The div is the offsetParent." );
+	equals( div[0], $("nothiddendiv")[0], "The div is the offsetParent." );
 
 	div = jQuery("body, #nothiddendivchild").offsetParent();
 	equals( div.length, 2, "Two offsetParent found." );
 	equals( div[0], document.body, "The body is the offsetParent." );
-	equals( div[1], jQuery("#nothiddendiv")[0], "The div is the offsetParent." );
+	equals( div[1], $("nothiddendiv")[0], "The div is the offsetParent." );
 });
 
 test("fractions (see #7730 and #7885)", function() {

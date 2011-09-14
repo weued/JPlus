@@ -2944,7 +2944,7 @@ function assert(bValue, msg) {
 		 * @return {Boolean} 返回 bValue 。
 		 */
 		isObject: function (value, msg) {
-			return assertInternal(Object.isObject(value) || Function.isFunction(value), msg, value,  "必须是引用的对象", arguments);
+			return assertInternal(Object.isObject(value) || Function.isFunction(value) || value.nodeType, msg, value,  "必须是引用的对象", arguments);
 		},
 		
 		/**
