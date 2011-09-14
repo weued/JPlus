@@ -1,12 +1,12 @@
-module("offset");
+module("Offset");
 
 test("disconnected node", function() {
 	expect(2);
 
-	var result = jQuery( document.createElement("div") ).offset();
+	var result = document.create("div").getOffset();
 
-	equals( result.top, 0, "Check top" );
-	equals( result.left, 0, "Check left" );
+	equals( result.x, 0, "Check top" );
+	equals( result.y, 0, "Check left" );
 });
 
 var supportsScroll = false;
@@ -20,7 +20,7 @@ testoffset("absolute", function($, iframe) {
 	// this insures that the results will be wrong
 	// if the offset method is using the scroll offset
 	// of the parent window
-	var forceScroll = jQuery("<div>", { width: 2000, height: 2000 }).appendTo("body");
+	var forceScroll = Element.parse("<div style='width: 2000px, height: 2000px'>").appendTo();
 	window.scrollTo(200, 200);
 
 	if ( document.documentElement.scrollTop || document.body.scrollTop ) {
@@ -28,25 +28,13 @@ testoffset("absolute", function($, iframe) {
 	}
 
 	window.scrollTo(1, 1);
+	
+	equals( $("#absolute-1").getOffsets().x, 1, "$('#absolute-1').getOffsets().x");
+	equals( $("#absolute-1").getOffsets().y, 1, "$('#absolute-1').getOffsets().y");
 
-	// get offset
-	tests = [
-		{ id: "#absolute-1", top: 1, left: 1 }
-	];
-	jQuery.each( tests, function() {
-		equals( jQuery( this.id, doc ).offset().top,  this.top,  "jQuery('" + this.id + "').offset().top" );
-		equals( jQuery( this.id, doc ).offset().left, this.left, "jQuery('" + this.id + "').offset().left" );
-	});
-
-
-	// get position
-	tests = [
-		{ id: "#absolute-1", top: 0, left: 0 }
-	];
-	jQuery.each( tests, function() {
-		equals( jQuery( this.id, doc ).position().top,  this.top,  "jQuery('" + this.id + "').position().top" );
-		equals( jQuery( this.id, doc ).position().left, this.left, "jQuery('" + this.id + "').position().left" );
-	});
+	
+	equals( $("#absolute-1").getPosition().x, 0, "$('#absolute-1').getPosition().x");
+	equals( $("#absolute-1").getPosition().y, 0, "$('#absolute-1').getPosition().y");
 
 	forceScroll.remove();
 });

@@ -227,6 +227,38 @@ initUserMenu(todo, done);
 		// toCamelCase: function () {
 	        // return this.replace(rToCamelCase, toCamelCase);
 	    // },
+
+//
+//
+//
+//
+///**
+// * 将一个节点用html包围。
+// * @param {Element/String} html 内容。
+// * @return {Element} 元素。
+// */
+//wrap: function (html) {
+//	html = this.replaceWith(html);
+//	while(html.lastChild && html.lastChild.nodeType === 1)
+//		html = html.lastChild;
+//	html.appendChild(this.dom || this);
+//	return html;
+//},
+//
+///**
+// * 删除一个节点的包围。
+// * @return {Element} 元素。
+// */
+//unwrap: function () {
+//	var elem = this.dom || this;
+//	assert.isNode(elem.parentNode, "Element.prototype.unwrap(): 当前节点不存在父节点，无法替换。");
+//	while(elem.firstChild)
+//		elem.parentNode.insertBefore(elem.firstChild, elem);
+//	return this.remove().get('last');
+//},
+
+
+
 // 		
 		// * */
 

@@ -190,7 +190,7 @@
 				
 				info = runFn(new Function(info.toRun()));
 				
-				document.getElementById('testcase-' + name).className = assert.hasError === true ? 'testcase error' : !showSuccess ? 'testcase' : assert.hasError === false ? 'testcase success' : 'testcase warn';
+				document.getElementById('testcase-' + name).className = assert.hasError === true ? 'testcase error' : showSuccess === false ? 'testcase' : assert.hasError === false ? 'testcase success' : 'testcase warn';
 				
 				return  info;
 			
@@ -493,7 +493,7 @@
 			    encodeHTML(this.overrides[p] ? ' => ' + this.overrides[p] : ''),
 			    '" onclick="doRun(\'', 
 			    this.id,
-			    '\')">', encodeHTML(this.name || this.id),
+			    '\', false)">', encodeHTML(this.name || this.id),
 			    '</a>',
 			    this.summary ? '&nbsp;&nbsp;&nbsp;&nbsp;' + encodeHTML(this.summary) : '',
 			    '</div>'

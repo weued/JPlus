@@ -37,20 +37,19 @@
 			var a = $('a'), b = $('b'), c = $('c'), d = $('d');
 			
 			var testcases = {
-				'Attribute': '-',
-				'Element.prototype.setAttr': '@a; "innerText", "12121" => assert.areEqual(a.getAttr("innerText"), "12121")',
-				'Element.prototype.getAttr': '@a; "innerText" =>  "12121"',
-				'Element.prototype.set': '@a; {"innerHTML": "cv"} => assert',
+				'Style': '-',
+				'Element.prototype.setStyle': '@a; "font-size", 14 => assert.areEqual(a.style.fontSize, "14px")',
+				'Element.prototype.getStyle': '@a; "font-size" => "14px"',
+				'Element.prototype.setOpacity': '@a; 0.8 => assert.areEqual(a.  getOpacity(), .8)',
+				'Element.prototype.getOpacity': '@a; => 0.8',
 				'Application': '-',
-				'Element.prototype.getText': '@a; => "cv"',
-				'Element.prototype.setText': '@a; "cv" => assert.areEqual(a.getText(), "cv")',
-				'Element.prototype.getHtml': '@a; => "cv"',
-				'Element.prototype.setHtml': '@a; "cv" => assert.areEqual(a.getHtml(), "cv")',
-				'Class': '-',
-				'Element.prototype.addClass': '@a; "light" => assert.areEqual(a.hasClass("light"), true)  ',
-				'Element.prototype.hasClass': '@a; "light" => true ',
-				'Element.prototype.removeClass': '@a; "light" => assert.areEqual(a.hasClass("light"), false)',
-				'Element.prototype.toggleClass': '@a; "light" => assert.areEqual(a.hasClass("light"), true)',
+				'Element.prototype.toggle': '@a;',
+				'Element.prototype.hide': '@a; =>assert.areEqual(a.isHidden(), true)',
+				'Element.prototype.show': '@a; => assert.areEqual(a.isHidden(), false)',
+				'Element.prototype.isHidden': '@a; => false',
+				//'Element.prototype.animate': '@a;',
+				'Element.prototype.setUnselectable': '@a;',
+				'Element.prototype.bringToFront': '@a;'
 			};
 			
 			initTestCases(testcases);

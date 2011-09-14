@@ -415,7 +415,7 @@
 		
 		/// #ifdef ElementDimension
 		
-		rBody = /^(?:body|html)$/i,
+		rBody = /^(?:BODY|HTML)$/i,
 	
 		/**
 		 * 表示一个点。
@@ -582,7 +582,7 @@
 			clone: function(keepId) {
 				
 				// 创建一个控件。
-				return  new this.constructor(this.dom.clone(false, true, keepId));
+				return  new this.constructor(this.dom.nodeType === 1 ? this.dom.clone(false, true, keepId) : this.dom.cloneNode(!keepId));
 				
 			}
 			
@@ -623,7 +623,7 @@
 			
 			/**
 			 * 将参数数组添加到当前集合。
-			 * @param {Element/ElementList} 元素。
+			 * @param {Element/ElementList} value 元素。
 			 * @return this
 			 */
 			concat: function (value) {
@@ -666,11 +666,9 @@
 			
 			if(html.dom) return html.dom;
 
-			assert.isString(html, 'Element.parse(html, context, cachable): 参数 {html} ~。');
-
-			var div = cache[html = html.trim()];
+			var div = cache[html];
 			
-			context = context ? getDocument(context) : document;
+			context = context && context.ownerDocument || document;
 			
 			assert(context.createElement, 'Element.parse(html, context, cachable): 参数 {context} 必须是 DOM 节点。', context);
 
@@ -680,19 +678,19 @@
 				div = div.cloneNode(true);
 				
 			} else {
-				
-				html = html.replace(rXhtmlTag, "<$1></$2>");
 
 				// 过滤空格  // 修正   XHTML
 				var tag = rTagName.exec(html);
 
 				if (tag) {
+					
+					assert.isString(html, 'Element.parse(html, context, cachable): 参数 {html} ~。');
 
 					div = context.createElement("div");
 
 					var wrap = wrapMap[tag[1].toLowerCase()] || wrapMap.$default;
 
-					div.innerHTML = wrap[1] + html + wrap[2];
+					div.innerHTML = wrap[1] + html.trim().replace(rXhtmlTag, "<$1></$2>") + wrap[2];
 
 					// 转到正确的深度
 					for (tag = wrap[0]; tag--;)
@@ -704,7 +702,7 @@
 						context = context.createDocumentFragment();
 						
 						while(div.firstChild)
-							context.appendChild(div.firstChild);
+							context.appendChild(p.$(div.firstChild));
 
 						div = context;
 					} else {
@@ -867,10 +865,8 @@
 			
 			// 偏移父位置。
 			offsetParent: function (elem) {
-				elem = elem.offsetParent || getDocument(elem).body;
-				while ( elem && !isBody(elem) && checkPosition(elem, "static") )
-					elem = elem.offsetParent;
-				return p.$(elem);
+				while ( (elem = elem.offsetParent) && !isBody(elem) && checkPosition(elem, "static") );
+				return p.$(elem || getDocument(elem).body);
 			}
 	
 		},
@@ -1147,7 +1143,7 @@
 		 *  1,   其它    setText - 执行结果返回 this， 返回 this 。(默认)
 		 *  2  getText - 执行结果是数据，返回结果数组。 
 		 *  3  getElementById - 执行结果是DOM 或 ElementList，返回  ElementList 包装。
-		 * 
+		 *  4   hasClass - 只要有一个返回等于 true 的值， 就返回这个值。
 		 * 
 		 *
 		 *  参数 copyIf 仅内部使用。
@@ -1181,7 +1177,14 @@
 			
 									};
 									break;
-									
+								case 4: // return if true
+									value = function () {
+										var me = this, i = -1, item = null;
+										while (++i < me.length && !item)
+											item = me[i][func].apply(me[i], arguments);
+										return item;
+									};
+									break;
 								default:  // return  this
 									value = function () {
 										var me = this, len = me.length, i = -1;
@@ -1334,7 +1337,7 @@
 			// 切换到节点。
 			elem = elem && elem !== true ? p.$(elem) : document.body;
 
-			assert(elem && elem.appendChild, 'Element.prototype.appendTo(elem): 参数 {elem} ~ 必须是 DOM 节点或控件。', elem);
+			assert(elem && elem.appendChild, 'Element.prototype.appendTo(elem): 参数 {elem} 必须是 DOM 节点或控件。', elem);
 			
 			// 插入节点
 			elem.appendChild(this.dom || this);
@@ -1846,33 +1849,6 @@
 	/// #endif
 	
 	.implement({
-		
-		/// #ifdef ElementNode
-
-		/**
-		 * 判断一个节点是否包含一个节点。 一个节点包含自身。
-		 * @param {Element} child 子节点。
-		 * @return {Boolean} 有返回true 。
-		 */
-		contains: function (child) {
-			var me = this.dom || this;
-			assert.isNode(me, "Element.prototype.contains(child): this.dom || this 返回的必须是 DOM 节点。");
-			assert.notNull(child, "Element.prototype.contains(child):参数 {child} ~。");
-			child = child.dom || child;
-			return child == me || e.hasChild(me, child);
-		},
-
-		/**
-		 * 判断一个节点是否有子节点。
-		 * @param {Element} child 子节点。
-		 * @return {Boolean} 有返回true 。
-		 */
-		hasChild: function (child) {
-			var me = this.dom || this;
-			return child ? e.hasChild(me, child.dom || child) : me.firstChild !== null;
-		},
-		
-		/// #endif
 
 		/// #ifdef ElementAttribute
 
@@ -1969,17 +1945,6 @@
 
 			return (this.dom || this).innerHTML;
 		},
-
-		/**
-		 * 判断一个节点是否隐藏。
-		 * @param {Element} elem 元素。
-		 * @return {Boolean} 隐藏返回 true 。
-		 */
-		isHidden: function () {
-			var me = this.dom || this;
-
-			return (me.style.display || getStyle(me, 'display')) === 'none';
-		},
 	
 		/// #ifdef ElementDimension
 
@@ -2073,7 +2038,7 @@
 			while (elem && !isBody(elem)) {
 				p.add(elem.offsetLeft, elem.offsetTop);
 				if (navigator.isFirefox) {
-					if (nborderBox(elem)) {
+					if (styleString(elem, 'MozBoxSizing') != 'border-box') {
 						add(elem);
 					}
 					var parent = elem.parentNode;
@@ -2086,7 +2051,7 @@
 
 				elem = elem.offsetParent;
 			}
-			if (navigator.isFirefox && nborderBox(me)) {
+			if (navigator.isFirefox && styleString(elem, 'MozBoxSizing') != 'border-box') {
 				p.add(-styleNumber(me, 'borderLeftWidth'), -styleNumber(me, 'borderTopWidth'));
 			}
 			
@@ -2215,63 +2180,22 @@
 		},
 
 		/**
-		 * 将一个节点用html包围。
-		 * @param {Element/String} html 内容。
-		 * @return {Element} 元素。
-		 */
-		wrapWith: function (html) {
-			html = this.replaceWith(html);
-			while(html.lastChild && html.lastChild.nodeType === 1)
-				html = html.lastChild;
-			html.appendChild(this.dom || this);
-			return html;
-		},
-
-		/**
 		 * 将一个节点用另一个节点替换。
 		 * @param {Element/String} html 内容。
 		 * @return {Element} 替换之后的新元素。
 		 */
 		replaceWith: function (html) {
-			var me = this.dom || this;
-
-			html = e.parse(html, me);
-
-
-			assert(me.parentNode, 'Element.prototype.replaceWith(html): 当前节点无父节点，不能执行此方法 {this}', me);
-			assert.isNode(html, "Element.prototype.replaceWith(html, escape): 参数 {html} ~或 HTM 片段。");
-			me.parentNode.replaceChild(html, me);
+			var elem = this.dom || this;
+			
+			html = e.parse(html, elem);
+			assert.isNode(html, "Element.prototype.replaceWith(html, escape): 参数 {html} ~或 html片段。");
+			elem.parentNode && elem.parentNode.replaceChild(html, me);
 			return html;
 		},
 	
 		/// #endif
 		
 		/// #ifdef ElementNode
-
-		/// #ifdef SupportIE6
-
-		/**
-		 * 执行一个简单的选择器。
-		 * @param {String} selecter 选择器。 如 h2 .cls attr=value 。
-		 * @return {Element/undefined} 节点。
-		 */
-		find: div.querySelector ? function (selecter) {
-			assert.isString(selecter, "Element.prototype.find(selecter): 参数 {selecter} ~。");
-			return (this.dom || this).querySelector(selecter);
-		} : function (selecter) {
-			var current = this.dom || this;
-			assert.isString(selecter, "Element.prototype.find(selecter): 参数 {selecter} ~。");
-			if(selecter.split(' ').each(function (v) {
-				return !!(current = findBy(current, v)[0]);
-			}))
-				return p.$(current);
-		},
-
-		/// #else
-
-		/// find: div.querySelector,
-
-		/// #endif
 
 		/// #ifdef SupportIE6
 
@@ -2316,8 +2240,14 @@
 					treeWalker = 'all';
 					break;
 				case 'number':
-					args = treeWalker;
-					treeWalker = 'first';
+					if(treeWalker < 0) {
+						args = -treeWalker;
+						treeWalker = 'last';
+					} else {
+						args = treeWalker;
+						treeWalker = 'first';
+					}
+					
 			}
 			
 			assert(Function.isFunction(e.treeWalkers[treeWalker]), 'Element.prototype.get(treeWalker, args): 不支持 {treeWalker}类型 的节点关联。', treeWalker);
@@ -2355,7 +2285,66 @@
 		 */
 		xType: "element"
 
-	}, 3);
+	}, 3)
+	
+	.implement({
+		
+		/// #ifdef ElementNode
+
+		/**
+		 * 判断一个节点是否包含一个节点。 一个节点包含自身。
+		 * @param {Element} child 子节点。
+		 * @return {Boolean} 有返回true 。
+		 */
+		contains: function (child) {
+			var me = this.dom || this;
+			assert.isNode(me, "Element.prototype.contains(child): this.dom || this 返回的必须是 DOM 节点。");
+			assert.notNull(child, "Element.prototype.contains(child):参数 {child} ~。");
+			child = child.dom || child;
+			return child == me || e.hasChild(me, child);
+		},
+
+		/**
+		 * 判断一个节点是否有子节点。
+		 * @param {Element} child 子节点。
+		 * @return {Boolean} 有返回true 。
+		 */
+		hasChild: function (child) {
+			var me = this.dom || this;
+			return child ? e.hasChild(me, child.dom || child) : me.firstChild !== null;
+		},
+		
+		/// #endif
+
+		/**
+		 * 判断一个节点是否隐藏。
+		 * @param {Element} elem 元素。
+		 * @return {Boolean} 隐藏返回 true 。
+		 */
+		isHidden: function () {
+			var me = this.dom || this;
+
+			return (me.style.display || getStyle(me, 'display')) === 'none';
+		},
+		
+		/**
+		 * 执行一个简单的选择器。
+		 * @param {String} selecter 选择器。 如 h2 .cls attr=value 。
+		 * @return {Element/undefined} 节点。
+		 */
+		find: div.querySelector ? function (selecter) {
+			assert.isString(selecter, "Element.prototype.find(selecter): 参数 {selecter} ~。");
+			return (this.dom || this).querySelector(selecter);
+		} : function (selecter) {
+			var current = this.dom || this;
+			assert.isString(selecter, "Element.prototype.find(selecter): 参数 {selecter} ~。");
+			if(selecter.split(' ').each(function (v) {
+				return !!(current = findBy(current, v)[0]);
+			}))
+				return p.$(current);
+		}
+		
+	}, 4);
 		
 	/// #ifdef ElementDimension
 	
@@ -2953,7 +2942,7 @@
 	 * @return {Document} 文档。
 	 */
 	function getDocument(elem) {
-		assert.isNode(elem, 'Element.getDocument(elem): 参数 {elem} ~。');
+		assert(elem && (elem.nodeType || elem.setInterval), 'Element.getDocument(elem): 参数 {elem} 必须是节点。' , elem);
 		return elem.ownerDocument || elem.document || elem;
 	}
 	
@@ -3084,7 +3073,7 @@
 			case 'string':
 				args = args.toUpperCase();
 				return function (elem) {
-					return elem.tagName === t;
+					return elem.tagName === args;
 				};
 		}
 		
@@ -3202,15 +3191,6 @@
 			elem.setHeight(p.y - e.getSizes(elem.dom || elem, 'y', fix));
 
 		return elem;
-	}
-
-	/**
-	 * 未使用盒子边框
-	 * @param {Element} elem 元素。
-	 * @return {Boolean} 是否使用。
-	 */
-	function nborderBox(elem) {
-		return styleString(elem, 'MozBoxSizing') != 'border-box';
 	}
 
 	/**

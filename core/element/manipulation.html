@@ -27,7 +27,7 @@
 	<body>
 		<div id="all">
 			<div id="a" class="a"> id=a margin=4 padding=8
-				<div id="b" class="b">id=b padding=8
+				<div id="b" class="b" _tag="b">id=b padding=8
 					<div id="c" class="c">id=c border=1 margin=4 auto width=300</div>
 				</div>
 				<div id="d" class="d">id=d border=10 padding=8</div>
@@ -35,18 +35,32 @@
 		</div>
 		
 		<script>
-		
+			
+			
 			var a = $('a'), b = $('b'), c = $('c'), d = $('d'), o = $('o'), abcd = new ElementList($('all').getElementsByTagName("div"));
 			
 			
 			var testcases = {
-				'Dimension': '-',
-				'Element.prototype.getSize': '@a;',
-				'Element.prototype.setSize': '@a;',
-				'Element.prototype.getWidth': '@a;',
-				'Element.prototype.setWidth': '@a;',
-				'Element.prototype.getHeight': '@a;',
-				'Element.prototype.setHeight': '@a;'
+				'Insert': '-',
+				'Element.prototype.append': '@a; "appended"',
+				'Element.prototype.insert': '@a; "inserted", "beforeEnd"',
+				'Element.prototype.appendTo': '@a; document.body',
+				
+				'Remove': '-',
+				'Element.prototype.remove': '@a; b',
+				'Element.prototype.empty': '@a; ',
+				'Element.prototype.dispose': '@a; ',
+				
+				'Update': '-',
+				'Element.prototype.wrap': '@a; "<i><\/i>"',
+				'Element.prototype.unwrap': '@a; "<i><\/i>"',
+				'Element.prototype.replaceWith': '@a; ab',
+				'Element.prototype.clone': '@a; ab',
+				
+				'Select': '-',
+				'Element.hasChild': '@a; a, b => true; c => true; d => false',
+				'Element.prototype.contains': '@a; b => true; c => true; d => false',
+				'Element.prototype.clone': '@a;'
 			};
 			
 			initTestCases(testcases);

@@ -37,6 +37,7 @@
 				'Array.prototype.filter': '@ar = [5,4]; function(v){return v > 2} => [5,4]',
 				'Array.prototype.each': '@ar = [5,4]; assert.log => assert.logged("54")',
 				//'Array.prototype.select': '@ar = [5,4]; function(v){return v > 2} => [5,4]',
+				'Array.prototype.item': '@ar = [5,4]; 0 => 5; 1 => 4; -1 => 4; 2 => undefined',
 				'Array.prototype.include': '@ar = [5,4]; 4 => true; 2 => assert.areEqual(ar, [5, 4, 2])',
 				'Array.prototype.insert': '@ar = [5,4]; 1, "1" => [5, "1", 4]',
 				'Array.prototype.invoke': '@ar = [5,4]; "toString", [] => ["5", "4"]',

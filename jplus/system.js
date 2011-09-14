@@ -1934,6 +1934,21 @@ var JPlus = {
 			if(i !== -1) this.splice(i, 1);
 			return i;
 		},
+			
+		/**
+		 * 获取指定索引的元素。如果 index < 0， 则获取倒数 index 元素。
+		 * @param {Number} index 元素。
+		 * @return {Object} 指定位置所在的元素。
+		 * @example
+		 * <code>
+		 * [1,7,8,8].item(0); //   1
+		 * [1,7,8,8].item(-1); //   8
+		 * [1,7,8,8].item(5); //   undefined
+		 * </code>
+		 */
+		item: function (index) {
+			return this[index < 0 ? this.length + index : index];
+		},
 		
 		/**
 		 * xType。

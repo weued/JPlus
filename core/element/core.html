@@ -76,10 +76,24 @@
 				'ElementList.prototype.d': '@abcd; => assert.areEqual(value, [a, b,c, d])',
 				'Document': '-',
 				'Document.prototype.create': '@document; "div", "a" => assert.isTrue(value.tagName === "DIV")',
-				'Document.prototype.getDom': '@document;"a", "c" => assert.areEqual(value, [a, c])'
+				'Document.prototype.getDom': '@document;"a", "c" => assert.areEqual(value, [a, c])',
+				'Control': '-',
+				'new Control': 'a => assert.areEqual(value.dom, a)'
 			};
 			
 			initTestCases(testcases);
+			
+			
+			
+			// 1.  Style:   g/setStyle   show/hide   g/setOpcaity   isHidden
+// 2.  Attribute   g/setAttr   g/setHtml   g/setText    add/remove/toggle/hasClass   
+// 3. Dimension     g/setHeight/Width  g/setSize   getScroolSize
+// 4. Offset   g/setOffset    g/setPosition getOffsets   g/setScroll
+// 5.  Transfersing   find  findAll   get
+// 6.  Manipulation  append  appendTo  clone  insert     empty  contains  hasChild   dispose    remove  replaceWith
+// 7. Event  on one trigger un
+// 8.     $     document.create   Element.parse
+
 		</script>
 	</body>
 </html>
