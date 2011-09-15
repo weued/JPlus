@@ -49,9 +49,536 @@
 		</form>
 		<input type="button" onclick="mc()" value="asdasd">
 		<script>
-			function mc() {document.kk.reset();
-				alert(document.getElementById('kkk').value);
-			}
+		
+		
+		/*
+LISENCE:
+保留此代码的商业使用权利,
+此版权声明最终解释权归原始作者所有
+作者: hackwaly
+Email: hackwaly@gmail.com
+ */
+function Elements(selector){
+    this.hash = {};
+    this.push = Array.prototype.push;
+    this.length = 0;
+    arguments.callee.collect.call(this, selector);
+    delete this.push;
+    //delete this.hash;
+}
+Elements.prototype = function (){
+    var REGEXP_1 = /^(\s)*([\),\+>~]?)\s*\*?([\[\.:#]?)\s*([\w\u0080-\uFFFF_-]*)\(?/;
+    var REGEXP_2 = /^(?:\s*(\S?\=)\s*(?:([\+\-\d\.]+)|(\w+)|"((?:[^"]|`")*)"))?\s*\]/;
+    var REGEXP_3 = /^\s*(?:(even|odd)|(?:(\d*)n)?([\+\-\d]+)?)\s*\)/;
+    var REGEXP_4 = /^(?:([^\)]+)|"((?:[^"]|`")*)")/;
+    var VALUES_MAP = {};
+    VALUES_MAP['true'] = true;
+    VALUES_MAP['false'] = false;
+    VALUES_MAP['null'] = null;
+    VALUES_MAP['undefined'] = undefined;
+    function parse(selector){
+        var tmp,
+            sequence = [],
+            chain = [sequence],
+            group = [chain];
+        while (selector && REGEXP_1.test(selector)){
+            selector = RegExp.rightContext;
+            if (tmp = RegExp.$2 || RegExp.$1){
+                sequence = [];
+                switch (tmp){
+                case ',':
+                    sequence = [];
+                    chain = [sequence];
+                    group.push(chain);
+                    break;
+                case ')':
+                    group.selector = selector;
+                    return group;
+                default:
+                    sequence = [];
+                    sequence.tag = tmp;
+                    chain.push(sequence);
+                    break;
+                }
+            }
+            if (tmp = RegExp.$3 || RegExp.$4){
+                tmp = RegExp.$3 ? tmp : 'T';
+                var token = [];
+                token.tag = tmp;
+                switch (tmp){
+                case ':':
+                    tmp = RegExp.$4;
+                    token.tag = tmp;
+                    switch (tmp){
+                    case 'not':
+                    case 'has':
+                        tmp = parse(selector);
+                        selector = tmp.selector;
+                        //tmp = tmp[0][0][0];
+                        token.push(tmp);
+                        break;
+                    case 'nth-child':
+                    case 'nth-of-type':
+                    case 'nth':
+                        if (REGEXP_3.test(selector)){
+                            selector = RegExp.rightContext;
+                            if (tmp = RegExp.$1){
+                                if (tmp == 'even'){
+                                    token.push(2);
+                                    token.push(0);
+                                } else if (tmp == 'odd'){
+                                    token.push(2);
+                                    token.push(1);
+                                } else throw '';
+                            } else {
+                                tmp = RegExp.$2 || 0;
+                                tmp = Number(tmp);
+                                token.push(tmp);
+                                tmp = RegExp.$3 || 0;
+                                tmp = Number(tmp);
+                                token.push(tmp);
+                            }
+                        }
+                        break;
+                    case 'contains':
+                        if (REGEXP_4.test(selector)){
+                            selector = RegExp.rightContext;
+                            tmp = RegExp.$1 || RegExp.$2.replace(/`(`*")/g, '$1');
+                            token.push(tmp);
+                        }
+                        break;
+                    default:
+                        break;
+                    }
+                    break;
+                case '[':
+                    tmp = RegExp.$4;
+                    if (tmp === 'class') tmp = 'className';
+                    token.push(tmp);
+                    if (REGEXP_2.test(selector)){
+                        selector = RegExp.rightContext;
+                        if (tmp = RegExp.$1){
+                            token.tag = tmp;
+                            if (tmp = RegExp.$2){
+                                tmp = Number(tmp);
+                            } else if (tmp = RegExp.$3){
+                                tmp = VALUES_MAP[tmp] || tmp;
+                            } else if (tmp = RegExp.$4){
+                                tmp = tmp.replace(/`(`*")/g, '$1');
+                            } else throw '';
+                            token.push(tmp);
+                        } else {
+
+                        }
+                    } else throw '';
+                    break;
+                case '#':
+                case '.':
+                case 'T':
+                    token.push(RegExp.$4);
+                    break;
+                }
+                //sequence[ORDERS_MAP[token.tag]] = token;
+                sequence.push(token);
+            }
+        }
+        return group;
+    }
+    var SELECT =
+        'key = node.uid || (node.uid = uid++);' +
+        'key += "[@]" + #0;' +
+        'var #nodes = rcc[key] || (rcc[key] = node.getElementsBy@(#0));' +
+        'for (var #i=0,#l=#nodes.length; #i<#l; #i++){' +
+            'node = #nodes[#i];' +
+            'if (node.nodeType===1){' +
+                '{find}' +
+            '}' +
+        '}' +
+        '#nodes = null;';
+    var tpl = {
+        '{': {
+            code:
+            'ret = function (){' +
+                'var node, key, hash = this.hash;' +
+                '{next}' +
+                'return this;' +
+            '}'
+        },
+        '}': { next: '' },
+        '(': {
+            next:
+            'node = document;' +
+            '{head}' +
+            '{find}' +
+            '{foot}' +
+            '{next}'
+        },
+        t2f: { test: '{find}' },
+        f2t: { find: '{test}' },
+        finder:
+        {
+            '>': {
+                find:
+                'var #nodes = node.children || node.childNodes;' +
+                'for (var #i=0,#l=#nodes.length; #i<#l; #i++){' +
+                    'node = #nodes[#i];' +
+                    'if (node.nodeType===1){' +
+                        '{find}' +
+                    '}' +
+                '}' +
+                '#nodes = null;'
+            },
+            '+': {
+                find:
+                'var #node = node;' +
+                'while (#node = #node.nextSibling){' +
+                    'if (#node.nodeType == 1){' +
+                        'node = #node;' +
+                        '{find}' +
+                        'break;' +
+                    '}' +
+                '}'
+            },
+            '~': {
+                head:
+                'var #hash = {};{head}',
+                find:
+                'var #node = node;' +
+                'while (#node = #node.nextSibling){' +
+                    'key = #node.uid || (#node.uid = uid++);' +
+                    'if (key in #hash){' +
+                        'break;' +
+                    '} else {' +
+                        'node = #node;' +
+                        'if (node.nodeType===1){' +
+                            '{find}' +
+                        '}' +
+                    '}' +
+                    '#hash[key] = null'+
+                '}',
+                foot:
+                '{foot}#hash = null;'
+            },
+            '#': { find: 'if (node = node.getElementById(#0)){{find}}' },
+            'T': { find: SELECT.replace(/@/g, 'TagName') },
+            '.': { find: SELECT.replace(/@/g, 'ClassName') },
+            'N': { find: SELECT.replace(/@/g, 'Name') },
+            '*': {
+                find:
+                'key = node.uid || (node.uid = uid++);' +
+                'var #nodes = rcc[key] || (rcc[key] = node.all || node.getElementsByTagName("*"));' +
+                'for (var #i=0,#l=#nodes.length; #i<#l; #i++){' +
+                    'node = #nodes[#i];' +
+                    '{find}' +
+                '}' +
+                '#nodes = null;'
+            }
+        },
+        ')': {
+            head: '',
+            find:
+                'key = node.uid || (node.uid = uid++);' +
+                'if (!(key in hash)){' +
+                    'this.push(node);' +
+                    'hash[key] = null;' +
+                '}',
+            foot: ''
+        },
+        '[': {
+            find:
+                'var pass = false;' +
+                'var #node = node;' +
+                '{pass}' +
+                'if (pass){' +
+                    'node = #node;' +
+                    '{find}' +
+                '}'
+        },
+        t2p: { test: '{pass}' },
+        p2t: { pass: '{test}' },
+        passer:
+        {
+            ' ': {
+                head: 'var #hash = {};{head}',
+                pass:
+                'var #pass = [false];' +
+                'var #node = node;' +
+                'while (#node = #node.parentNode){' +
+                    'key = #node.uid || (#node.uid = uid++);' +
+                    'if (key in #hash){' +
+                        'pass = #pass[0] = #hash[key][0];' +
+                        'break;' +
+                    '} else {' +
+                        'pass = false;' +
+                        'node = #node;' +
+                        '{pass}' +
+                        'if (pass){' +
+                            'break;' +
+                        '}' +
+                    '}' +
+                    '#hash[key] = #pass;'+
+                '}' +
+                '#pass[0] = pass;',
+                foot: '{foot}#hash = null;'
+            },
+            '~': {
+                head: 'var #hash = {};{head}',
+                pass:
+                'var #pass = [false];' +
+                'var #node = node;' +
+                'while (#node = #node.previousSibling){' +
+                    'key = #node.uid || (#node.uid = uid++);' +
+                    'if (key in #hash){' +
+                        'pass = #pass[0] = #hash[key][0];' +
+                        'break;' +
+                    '} else {' +
+                        'pass = false;' +
+                        'node = #node;' +
+                        '{pass}' +
+                        'if (pass){' +
+                            'break;' +
+                        '}' +
+                    '}' +
+                    '#hash[key] = #pass;'+
+                '}' +
+                '#pass[0] = pass;',
+                foot: '{foot}#hash = null;'
+            },
+            '>': {
+                pass:
+                'var #node = node;' +
+                'while (#node = #node.parentNode){' +
+                    'node = #node;' +
+                    '{pass}' +
+                    'break;' +
+                '}'
+            },
+            '+': {
+                pass:
+                'var #node = node;' +
+                'while (#node = #node.previousSibling){' +
+                    'node = #node;' +
+                    'if (node.nodeType===1){' +
+                        '{pass}' +
+                    '}' +
+                    'break;' +
+                '}'
+            }
+        },
+        ']': { pass: 'pass = true;' },
+        tester:
+        {
+            'T': { test: 'if (node.tagName.toUpperCase()===#1){{test}}' },
+            '[': { test: 'if (node.getAttribute(#0)){{test}}' },
+            '*': { test: '{test}' },
+            '[href]': { test: 'if (node.getAttribute("href",2)){{test}}' },
+            '[class]': { test: 'if (node.className){{test}}' },
+            '=': { test: 'if (node[#0] == #1){{test}}' },
+            '!=': { test: 'if (node[#0] != #1){{test}}' },
+            '~=': { test: 'if (#1.test(node[#0])){{test}}' },
+            '^=': { test: 'if (node[#0].indexOf(#1)===0){{test}}' },
+            '$=': { test: 'if (node[#0].lastIndexOf(#1)===node[#0].length-#1.length){{test}}' },
+            '*=': { test: 'if (node[#0].indexOf(#1) >= 0){{test}}' },
+            '|=': { test: 'if (#2.test(node[#0])){{test}}' },
+            'contains': { test: 'if (#1.test(node.textContent||node.innerText||"")){{test}}' },
+            'nth-child': { test: 'if ((index.call(node)-#1)%#0===0){{test}}' },
+            'nth-child1': { test: 'if (index.call(node)===#1)){{test}}' }
+        }
+    };
+    var fix = {
+        '#': function (id){
+            this[1] = id;
+            this[0] = 'id';
+            this.tag = '=';
+        },
+        'T': function (tagName){
+            this[1] = tagName.toUpperCase();
+        },
+        '[': function (attrName){
+            if (attrName==='class'){
+                this.tag = '[class]';
+            } else if (attrName==='href'){
+                this.tag = '[href]';
+            }
+        },
+        '.': function (className){
+            this.tag = '~=';
+            this[0] = 'className';
+            this[1] = new RegExp('\\b'+className+'\\b');
+        },
+        '|=': function (){
+            this[2] = new RegExp('^'+this[1]+'(-.*)?');
+        },
+        'contains': function (text){
+            this[1] = new RegExp(text);
+        },
+        '~=': function (){
+            this[1] = new RegExp('\\b'+this[1]+'\\b');
+        },
+        'nth-child': function (a, b){
+            if (!a){
+                if (!b){
+                    this.tag = '*';
+                } else {
+                    this.tag = 'nth-child1';
+                }
+            }
+        },
+        'first-child': function (){
+            this.tag = 'nth-child';
+            this[0] = 0;
+            this[1] = 1;
+        }
+    };
+    var rcc = {};
+    var uid = 11;
+    var fcc = {};
+    var ctx;
+    var cns;
+    function setup(tpl, pms){
+        var ns = 'NS'+(cns++)+'_';
+        return this.replace(/\{(\w+)\}/g, function (m, p1){
+            if (p1){
+                if (p1 in tpl){
+                    m = tpl[p1];
+                    m = m.replace(/#(\d*)/g, function (m, p1){
+                        m = ns;
+                        if (p1){
+                            m += p1;
+                            ctx[m] = pms[p1];
+                        }
+                        return m;
+                    });
+                }
+            } else {
+                m = tpl;
+            }
+            return m;
+        });
+    }
+    function index(){
+        if (!('nodeIndex' in this)){
+            var p = this.parentNode;
+            var index = 1;
+            var nodes = p.children || p.childNodes;
+            for (var i=0,l=nodes.length; i<l; i++){
+                var node = nodes[i];
+                if (node.nodeType === 1){
+                    node.nodeIndex = index ++;
+                }
+            }
+        }
+        return this.nodeIndex;
+    }
+    var ORDER_MAP = { 'T': 4, '#': 1, '.': 3, 'N': 2 };
+    if (!document['getElementsByClassName']){
+        delete ORDER_MAP['.'];
+        delete tpl.finder['.'];
+    }
+    function build(selector){
+        var ret;
+        if (ret = fcc[selector]) return ret;
+        ctx = {};
+        cns = 11;
+        var group = parse(selector);
+        selector = '{code}';
+        selector = setup.call(selector, tpl['{']);
+        for (var i=0,l=group.length; i<l; i++){
+            selector = setup.call(selector, tpl['(']);
+            var chain = group[i];
+            chain[0].tag = ' ';
+            var x = chain.length;
+            var p, q = 9999;
+            while (x > 0){
+                p = ORDER_MAP[chain[x - 1][0].tag] || 9999;
+                if (p > q){
+                    break;
+                } else {
+                    q = p;
+                }
+                x --;
+            }
+            var seq, tag, token;
+            var once = x > 0;
+            for (var j=x,m=chain.length; j<m; j++){
+                var y = 0, n;
+                seq = chain[j];
+                if (seq.length === 0){
+                    token = [];
+                    token.tag = '*';
+                    seq.push(token);
+                }
+                tag = seq.tag;
+                if (tag == ' ' || j === x){
+                    tag = seq[0].tag;
+                    if (tag in tpl.finder){
+                        y = 1;
+                    } else {
+                        tag = '*';
+                    }
+                }
+                selector = setup.call(selector, tpl.finder[tag], seq[0]);
+                selector = setup.call(selector, tpl.f2t);
+                for (n=seq.length; y<n; y++){
+                    token = seq[y];
+                    if (fix[token.tag]){
+                        fix[token.tag].apply(token, token);
+                    }
+                    selector = setup.call(selector, tpl.tester[token.tag], token);
+                }
+                selector = setup.call(selector, tpl.t2f);
+                if (once && j == x){
+                    var k = x;
+                    selector = setup.call(selector, tpl['[']);
+                    while (k-- > 0){
+                        seq = chain[k];
+                        selector = setup.call(selector, tpl.passer[chain[k + 1].tag]);
+                        selector = setup.call(selector, tpl.p2t);
+                        for (y=0,n=seq.length; y<n; y++){
+                            token = seq[y];
+                            if (fix[token.tag]){
+                                fix[token.tag].apply(token, token);
+                            }
+                            selector = setup.call(selector, tpl.tester[token.tag], token);
+                        }
+                        selector = setup.call(selector, tpl.t2p);
+                    }
+                    once = false;
+                    selector = setup.call(selector, tpl[']']);
+                }
+            }
+            selector = setup.call(selector, tpl[')']);
+        }
+        selector = setup.call(selector, tpl['}']);
+        with (ctx){
+            fcc[selector] = ret = eval(selector);
+        }
+        ctx = null;
+        return ret;
+    }
+    function flush(){
+        rcc = {};
+    };
+    document.uid = uid ++;
+    var handle = document.attachEvent ||
+                document.addEventListener;
+    handle('DOMNodeInserted', flush, false);
+    handle('DOMNodeRemoved', flush, false);
+    handle('DOMAttrModified', flush, false);
+    this.flush = flush;
+    this.query = function (selector){
+        return new Elements(selector);
+    };
+    this.collect = function (selector){
+        //TODO: Do not put result into cache directly! should clone it.
+        return rcc[selector] || (rcc[selector] = build(selector).call(this));
+    };
+    return {
+
+    };
+}.call(Elements);
+document.getElementsBySelector = Elements.query;
+			
 		</script>
 		<script>
 			var a = document.getElementById('a'), b = document.getElementById('b'), c = document.getElementById('c'), d = document.getElementById('d');

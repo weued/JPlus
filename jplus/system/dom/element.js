@@ -44,6 +44,12 @@
 		ap = Array.prototype,
 		
 		/**
+		 * String.map 缩写。
+		 * @type Object
+		 */
+		map = String.map,
+		
+		/**
 		 * document 简写。
 		 * @type Document
 		 */
@@ -77,16 +83,16 @@
 		div = document.createElement('DIV'),
 		
 		/**
+		 * 根据一个 id 或 对象获取节点。
+		 * @param {String/Element} id 对象的 id 或对象。
+		 */
+		$ = getElementById,
+		
+		/**
 		 * JPlus 简写。
 		 * @namespace JPlus
 		 */
 		p = apply(JPlus, {
-			
-			/**
-			 * 根据一个 id 或 对象获取节点。
-			 * @param {String/Element} id 对象的 id 或对象。
-			 */
-			$: getElementById,
 			
 			/// #ifdef ElementEvent
 			
@@ -415,10 +421,20 @@
 		
 		/// #ifdef ElementDimension
 		
-		rBody = /^(?:BODY|HTML)$/i,
+		/**
+		 * 判断 body 节点的正则表达式。
+		 * @type RegExp
+		 */
+		rBody = /^(?:BODY|HTML|#document)$/i,
+		
+		/**
+		 * 测试是否是绝对位置的正则表达式。
+		 * @type RegExp
+		 */
+		rPos = /^(?:abs|fix)/,
 	
 		/**
-		 * 表示一个点。
+		 * 一个点。
 		 * @class Point
 		 */
 		Point = namespace(".Point", Class({
@@ -436,15 +452,12 @@
 	
 			/**
 			 * 将 (x, y) 增值。
-			 * @param {Number} value 值。
+			 * @param {Point} p 值。
 			 * @return {Point} this
 			 */
-			add: function (x, y) {
-				//#cc Number.isNumber()会不会更好呢
-				assert(typeof x == 'number' && typeof y == 'number', "Point.prototype.add(x, y): 参数 x 和 参数 y 必须是数字。");
-				this.x += x;
-				this.y += y;
-				return this;
+			add: function (p) {
+				assert(p && 'x' in p && 'y' in p, "Point.prototype.add(p): 参数 {p} 必须有 'x' 和 'y' 属性。", p);
+				return new Point(this.x + p.x, this.y + p.y);
 			},
 	
 			/**
@@ -452,22 +465,11 @@
 			 * @param {Point} p 值。
 			 * @return {Point} this
 			 */
-			minus: function (p) {
-	
-				assert(p && 'x' in p && 'y' in p, "Point.prototype.minus(p): 参数 {p} 必须有 'x' 和 'y' 属性。", p);
-				this.x -= p.x;
-				this.y -= p.y;
-				return this;
-			},
-	
-			/**
-			 * 复制当前对象。
-			 * @return {Point} 坐标。
-			 */
-			clone: function () {
-				return new Point(this.x, this.y);
+			sub: function (p) {
+				assert(p && 'x' in p && 'y' in p, "Point.prototype.sub(p): 参数 {p} 必须有 'x' 和 'y' 属性。", p);
+				return new Point(this.x - p.x, this.y - p.y);
 			}
-	
+			
 		})),
 		
 		/// #endif
@@ -491,6 +493,11 @@
 			 * @type Element
 			 */
 			dom: null,
+			
+			/**
+			 * xType 。
+			 */
+			xType: "control",
 		
 			/**
 			 * 根据一个节点返回。
@@ -530,7 +537,7 @@
 				}
 				
 				// 如果 dom 的确存在，使用已存在的， 否则使用 create(opt)生成节点。
-				me.dom = dom ? p.$(dom) : me.create(opt);
+				me.dom = dom ? $(dom) : me.create(opt);
 				
 				assert(me.dom && me.dom.nodeType, "Control.prototype.constructor(options): 当前实例的 dom 属性为空，或此属性不是 DOM 对象。(检查 options.dom 是否是合法的节点或ID(options 或 options.dom 指定的ID的节点不存在?) 或当前实例的 create 方法是否正确返回一个节点)\r\n当前控件: {dom} {xType}", me.dom, me.xType);
 				
@@ -568,11 +575,6 @@
 			 * @protected
 			 */
 			init: Function.empty,
-			
-			/**
-			 * xType 。
-			 */
-			xType: "control",
 			
 			/**
 		     * 创建并返回控件的副本。
@@ -615,7 +617,7 @@
 				
 				// 检查是否需要为每个成员调用  $ 函数。
 				if(!navigator.isStandard)
-					o.update(this, p.$);
+					o.update(this, $);
 					
 				/// #endif
 				
@@ -702,14 +704,14 @@
 						context = context.createDocumentFragment();
 						
 						while(div.firstChild)
-							context.appendChild(p.$(div.firstChild));
+							context.appendChild($(div.firstChild));
 
 						div = context;
 					} else {
 						
 						/// #ifdef SupportIE8
 
-						div = p.$(div.lastChild);
+						div = $(div.lastChild);
 
 						/// #endif
 						
@@ -865,8 +867,9 @@
 			
 			// 偏移父位置。
 			offsetParent: function (elem) {
-				while ( (elem = elem.offsetParent) && !isBody(elem) && checkPosition(elem, "static") );
-				return p.$(elem || getDocument(elem).body);
+				var me = elem;
+				while ( (me = me.offsetParent) && !isBody(me) && checkPosition(me, "static") );
+				return $(me || getDocument(elem).body);
 			}
 	
 		},
@@ -977,7 +980,7 @@
 		 * @static
 		 * @type Object
 		 */
-		styleNumbers: String.map('fillOpacity fontWeight lineHeight opacity orphans widows zIndex zoom', Function.returnTrue, {}),
+		styleNumbers: map('fillOpacity fontWeight lineHeight opacity orphans widows zIndex zoom', Function.returnTrue, {}),
 	
 		/**
 		 * 默认最大的 z-index 。
@@ -1103,7 +1106,7 @@
 		 */
 		setMovable: function (elem) {
 			assert.isElement(elem, "Element.setMovable(elem): 参数 elem ~。");
-			if(!checkPosition(elem, "absolute"))
+			if(!rPos.test(styleString(elem, "position")))
 				elem.style.position = "relative";
 		},
 
@@ -1117,13 +1120,20 @@
 		checkPosition: checkPosition,
 
 		/**
-		 * 根据 x, y 获取 {x: x y: y} 对象
-		 * @param {Number/Point} x
-		 * @param {Number} y
-		 * @static
-		 * @private
+		 * 获取一个元素的所有滚动大小。
+		 * @param {Element} elem 元素。
+		 * @return {Point} 偏差。
 		 */
-		getXY: getXY,
+		getScrolls: function (elem) {
+			var p = new Point(0, 0);
+			elem = elem.parentNode;
+			while (elem && !isBody(elem)) {
+				p.x -= elem.scrollLeft;
+				p.y -= elem.scrollTop;
+				elem = elem.parentNode;
+			}
+			return p;
+		},
 		
 		/// #endif
 		
@@ -1289,7 +1299,7 @@
 			assert(!initEvent || ee[baseEvent], "Element.addEvents(events, baseEvent, initEvent): 不存在基础事件 {baseEvent}。");
 	
 			// 对每个事件执行定义。
-			String.map(events, Function.from(Function.isFunction(baseEvent) ? o.extendIf({
+			map(events, Function.from(Function.isFunction(baseEvent) ? o.extendIf({
 	
 				initEvent: baseEvent
 	
@@ -1335,7 +1345,7 @@
 		appendTo: function (elem) {
 			
 			// 切换到节点。
-			elem = elem && elem !== true ? p.$(elem) : document.body;
+			elem = elem && elem !== true ? $(elem) : document.body;
 
 			assert(elem && elem.appendChild, 'Element.prototype.appendTo(elem): 参数 {elem} 必须是 DOM 节点或控件。', elem);
 			
@@ -1352,11 +1362,11 @@
 		 * @return {Element} this
 		 */
 		remove: function (child) {
-			var me = this.dom || this;
+			var elem = this.dom || this;
 			assert(!child || this.hasChild(child.dom || child), 'Element.prototype.remove(child): 参数 {child} 不是当前节点的子节点', child);
 			
 			// 如果指明 child ,则删除 这个子节点， 否则删除自己。
-			child ? this.removeChild(child.dom || child) : ( me.parentNode && me.parentNode.removeChild(me) );
+			child ? this.removeChild(child.dom || child) : ( elem.parentNode && elem.parentNode.removeChild(elem) );
 			return this;
 		},
 
@@ -1365,10 +1375,10 @@
 		 * @return {Element} this
 		 */
 		empty: function () {
-			var me = this.dom || this;
-			o.each(me.getElementsByTagName("*"), clean);
-			while(me.lastChild)
-				me.removeChild(me.lastChild);
+			var elem = this.dom || this;
+			o.each(elem.getElementsByTagName("*"), clean);
+			while(elem.lastChild)
+				elem.removeChild(elem.lastChild);
 			return this;
 		},
 
@@ -1788,12 +1798,12 @@
 		 * @return {Element} this
 		 */
 		setScroll: function (x, y) {
-			var me = this.dom || this, p = getXY(x,y);
+			var elem = this.dom || this, p = formatPoint(x, y);
 
 			if(p.x != null)
-				me.scrollLeft = p.x;
+				elem.scrollLeft = p.x;
 			if(p.y != null)
-				me.scrollTop = p.y;
+				elem.scrollTop = p.y;
 			return this;
 
 		},
@@ -1819,7 +1829,7 @@
 		 * @return {Element} this
 		 */
 		setPosition: function (x, y) {
-			var me = this, offset = me.getOffset().minus(me.getPosition()), p = getXY(x,y);
+			var me = this, offset = me.getOffset().sub(me.getPosition()), p = formatPoint(x, y);
 
 			if (p.y)
 				offset.y += p.y;
@@ -1863,9 +1873,9 @@
 
 			assert.isString(name, "Element.prototypgetStyle(name): 参数 {name} ~。");
 
-			var me = this.dom || this;
+			var elem = this.dom || this;
 
-			return me.style[name = name.replace(rStyle, formatStyle)] || getStyle(me, name);
+			return elem.style[name = name.replace(rStyle, formatStyle)] || getStyle(elem, name);
 
 		},
 
@@ -1915,13 +1925,13 @@
 		 * @return {Object/String} 值。对普通节点返回 text 属性。
 		 */
 		getText: function () {
-			var me = this.dom || this;
+			var elem = this.dom || this;
 
-			switch(me.tagName) {
+			switch(elem.tagName) {
 				case "SELECT":
-					if(me.type != 'select-one') {
+					if(elem.type != 'select-one') {
 						var r = [];
-						o.each(me.options, function (s) {
+						o.each(elem.options, function (s) {
 							if(s.selected && s.value)
 								r.push(s.value)
 						});
@@ -1931,9 +1941,9 @@
 				//  继续执行
 				case "INPUT":
 				case "TEXTAREA":
-					return me.value;
+					return elem.value;
 				default:
-					return me[attributes.innerText];
+					return elem[attributes.innerText];
 			}
 		},
 
@@ -1953,9 +1963,9 @@
 		 * @return {Point} 位置。
 		 */
 		getSize: function () {
-			var me = this.dom || this;
+			var elem = this.dom || this;
 
-			return new Point(me.offsetWidth, me.offsetHeight);
+			return new Point(elem.offsetWidth, elem.offsetHeight);
 		},
 
 		/**
@@ -1963,8 +1973,8 @@
 		 * @return {Point} 位置。
 		 */
 		getOuterSize: function () {
-			var me = this.dom || this;
-			return this.getSize().add(e.getSizes(me, 'x', 'm'), e.getSizes(me, 'y', 'm'));
+			var elem = this.dom || this;
+			return this.getSize().add(e.getSizes(elem, 'x', 'm'), e.getSizes(elem, 'y', 'm'));
 		},
 
 		/**
@@ -1974,20 +1984,28 @@
 		getOffset: function () {
 
 			// 如果设置过 left top ，这是非常轻松的事。
-			var me = this.dom || this,
-				left = me.style.left,
-				top = me.style.top;
+			var elem = this.dom || this,
+				left = elem.style.left,
+				top = elem.style.top;
 
 			// 如果未设置过。
 			if (!left || !top) {
 
 				// 绝对定位需要返回绝对位置。
-				if(checkPosition(me, 'absolute'))
-					return this.getOffsets(this.getOffsetParent());
+				if(checkPosition(elem, 'absolute')) {
+					top = this.get('offsetParent');
+					left = this.getPosition();
+					if(!isBody(top))
+						left = left.sub(top.getPosition());
+					left.x -= styleNumber(elem, 'marginLeft') + styleNumber(top, 'borderLeftWidth');
+					left.y -= styleNumber(elem, 'marginTop') + styleNumber(top,  'borderTopWidth');
+					
+					return left;
+				}
 
 				// 非绝对的只需检查 css 的style。
-				left = getStyle(me, 'left');
-				top = getStyle(me, 'top');
+				left = getStyle(elem, 'left');
+				top = getStyle(elem, 'top');
 			}
 
 			// 碰到 auto ， 空 变为 0 。
@@ -2016,70 +2034,48 @@
 		 */
 		getPosition: div.getBoundingClientRect   ? function () {
 
-			var me = this.dom || this,
-				bound = me.getBoundingClientRect(),
-				doc = getDocument(me),
+			var elem = this.dom || this,
+				bound = elem.getBoundingClientRect(),
+				doc = getDocument(elem),
 				html = doc.dom,
-				htmlScroll = checkPosition(me, 'fixed') ? {
-					x:0,
-					y:0
-				} : doc.getScroll();
+				htmlScroll = doc.getScroll();
 
 			return new Point(
-				bound.left+ htmlScroll.x - html.clientLeft,
+				bound.left+ htmlScroll.x - html.clientLeft,  // TODO
 				bound.top + htmlScroll.y - html.clientTop
 			    );
 		} : function () {
 
-			var me = this.dom || this,
-				elem = me,
-				p = getScrolls(elem);
+			var elem = this.dom || this,
+				p = e.getScrolls(elem);
 
 			while (elem && !isBody(elem)) {
-				p.add(elem.offsetLeft, elem.offsetTop);
+				p.x += elem.offsetLeft;
+				p.y -= elem.offsetTop;
 				if (navigator.isFirefox) {
-					if (styleString(elem, 'MozBoxSizing') != 'border-box') {
+					if (styleString(elem, 'MozBoxSizing') !== 'border-box') {
 						add(elem);
 					}
 					var parent = elem.parentNode;
-					if (parent && styleString(parent, 'overflow') != 'visible') {
+					if (parent && styleString(parent, 'overflow') !== 'visible') {
 						add(parent);
 					}
-				} else if (elem != me && navigator.isSafari) {
+				} else if (elem !== me && navigator.isSafari) {
 					add(elem);
 				}
 
 				elem = elem.offsetParent;
 			}
-			if (navigator.isFirefox && styleString(elem, 'MozBoxSizing') != 'border-box') {
-				p.add(-styleNumber(me, 'borderLeftWidth'), -styleNumber(me, 'borderTopWidth'));
+			if (navigator.isFirefox && styleString(elem, 'MozBoxSizing') !== 'border-box') {
+				p.x -= styleNumber(me, 'borderLeftWidth');
+				p.y -= styleNumber(me, 'borderTopWidth');
 			}
 			
 			function add(elem) {
-				p.add(styleNumber(elem, 'borderLeftWidth'),  styleNumber(elem, 'borderTopWidth'));
+				p.x += styleNumber(elem, 'borderLeftWidth');
+				p.y += styleNumber(elem, 'borderTopWidth');
 			}
 			return p;
-		},
-
-		/**
-		 * 获取包括滚动位置的位置。
-		 * @param {Element/String/Boolean} relative 相对的节点。
-		 * @return {Point} 位置。
-		 */
-		getOffsets: function ( relative) {
-			var pos, me = this.dom || this;
-			if (isBody(me))
-				return new Point(0, 0);
-			pos = this.getPosition().minus(getScrolls(me));
-			if(relative) {
-				
-				relative = relative.dom || p.$(relative);
-
-				assert.isElement(relative, "Element.prototype.getOffsets(relative): 参数 {relative} ~。");
-
-				pos.minus(relative.getOffsets()).add( -styleNumber(me, 'marginLeft') - styleNumber(relative, 'borderLeftWidth') ,-styleNumber(me, 'marginTop') - styleNumber(relative,  'borderTopWidth') );
-			}
-			return pos;
 		},
 
 		/**
@@ -2087,9 +2083,9 @@
 		 * @return {Point} 位置。
 		 */
 		getScrollSize: function () {
-			var me = this.dom || this;
+			var elem = this.dom || this;
 
-			return new Point(me.scrollWidth, me.scrollHeight);
+			return new Point(elem.scrollWidth, elem.scrollHeight);
 		},
 
 		/**
@@ -2097,8 +2093,8 @@
 		 * @return {Point} 位置。
 		 */
 		getScroll:  function () {
-			var me = this.dom || this;
-			return new Point(me.scrollLeft, me.scrollTop);
+			var elem = this.dom || this;
+			return new Point(elem.scrollLeft, elem.scrollTop);
 		}
 
 		/// #endif
@@ -2117,15 +2113,15 @@
 		 * @return {Element} 插入的节点。
 		 */
 		insert: 'insertAdjacentElement' in div ? function (html, swhere) {
-			var me = this.dom || this;
-			assert.isNode(me, "Element.prototype.insert(html, swhere): this.dom || this 返回的必须是 DOM 节点。");
+			var elem = this.dom || this;
+			assert.isNode(elem, "Element.prototype.insert(html, swhere): this.dom || this 返回的必须是 DOM 节点。");
 			assert(!swhere || 'afterEnd beforeBegin afterBegin beforeEnd '.indexOf(swhere + ' ') != -1, "Element.prototype.insert(html, swhere): 参数  {swhere} 必须是 beforeBegin、beforeEnd、afterBegin 或 afterEnd 。", swhere);
 			if(typeof html === 'string')
-				me.insertAdjacentHTML(swhere, html);
+				elem.insertAdjacentHTML(swhere, html);
 			else
-				me.insertAdjacentElement(swhere, html.dom || html);
+				elem.insertAdjacentElement(swhere, html.dom || html);
 			
-			return p.$(me[{
+			return $(elem[{
 				afterEnd: 'nextSibling',
 				beforeBegin: 'previousSibling',
 				afterBegin: 'firstChild'
@@ -2133,35 +2129,35 @@
 			
 		} : function (html, swhere) {
 
-			var me = this.dom || this;
+			var elem = this.dom || this;
 
-			assert.isNode(me, "Element.prototype.insert(html, swhere): this.dom || this 返回的必须是 DOM 节点。");
+			assert.isNode(elem, "Element.prototype.insert(html, swhere): this.dom || this 返回的必须是 DOM 节点。");
 			assert(!swhere || 'afterEnd beforeBegin afterBegin beforeEnd '.indexOf(swhere + ' ') != -1, "Element.prototype.insert(html, swhere): 参数 {swhere} 必须是 beforeBegin、beforeEnd、afterBegin 或 afterEnd 。", swhere);
-			html = e.parse(html, me);
+			html = e.parse(html, elem);
 
 			switch (swhere) {
 				case "afterEnd":
-					if(!me.nextSibling) {
+					if(!elem.nextSibling) {
 
-						assert(me.parentNode != null, "Element.prototype.insert(html, swhere): 节点无父节点时无法插入 {this}", me);
+						assert(elem.parentNode != null, "Element.prototype.insert(html, swhere): 节点无父节点时无法插入 {this}", elem);
 
-						me.parentNode.appendChild(html);
+						elem.parentNode.appendChild(html);
 						break;
 					}
 
-					me = me.nextSibling;
+					elem = elem.nextSibling;
 				case "beforeBegin":
-					assert(me.parentNode != null, "Element.prototype.insert(html, swhere): 节点无父节点时无法插入 {this}", me);
-					me.parentNode.insertBefore(html, me);
+					assert(elem.parentNode != null, "Element.prototype.insert(html, swhere): 节点无父节点时无法插入 {this}", elem);
+					elem.parentNode.insertBefore(html, elem);
 					break;
 				case "afterBegin":
-					if (me.firstChild) {
-						me.insertBefore(html, me.firstChild);
+					if (elem.firstChild) {
+						elem.insertBefore(html, elem.firstChild);
 						break;
 					}
 				default:
 					assert(arguments.length == 1 || !swhere || swhere == 'beforeEnd' || swhere == 'afterBegin', 'Element.prototype.insert(html, swhere): 参数 {swhere} 必须是 beforeBegin、beforeEnd、afterBegin 或 afterEnd 。', swhere);
-					me.appendChild(html);
+					elem.appendChild(html);
 					break;
 			}
 
@@ -2197,8 +2193,6 @@
 		
 		/// #ifdef ElementNode
 
-		/// #ifdef SupportIE6
-
 		/**
 		 * 执行一个简单的选择器。
 		 * @method
@@ -2208,21 +2202,7 @@
 		findAll: div.querySelectorAll ? function (selecter) {
 			assert.isString(selecter, "Element.prototype.findAll(selecter): 参数 {selecter} ~。");
 			return new ElementList((this.dom || this).querySelectorAll(selecter));
-		} : function (selecter) {
-			assert.isString(selecter, "Element.prototype.findAll(selecter): 参数 {selecter} ~。");
-			var current = new ElementList([this.dom || this]);
-			selecter.split(' ').forEach( function (v) {
-				current = findBy(current, v);
-			});
-
-			return current;
-		},
-
-		/// #else
-
-		/// findAll: div.querySelectorAll,
-
-		/// #endif
+		} : cssSelector(true),
 
 		/**
 		 * 获得相匹配的节点。
@@ -2297,11 +2277,11 @@
 		 * @return {Boolean} 有返回true 。
 		 */
 		contains: function (child) {
-			var me = this.dom || this;
-			assert.isNode(me, "Element.prototype.contains(child): this.dom || this 返回的必须是 DOM 节点。");
+			var elem = this.dom || this;
+			assert.isNode(elem, "Element.prototype.contains(child): this.dom || this 返回的必须是 DOM 节点。");
 			assert.notNull(child, "Element.prototype.contains(child):参数 {child} ~。");
 			child = child.dom || child;
-			return child == me || e.hasChild(me, child);
+			return child == elem || e.hasChild(elem, child);
 		},
 
 		/**
@@ -2310,8 +2290,8 @@
 		 * @return {Boolean} 有返回true 。
 		 */
 		hasChild: function (child) {
-			var me = this.dom || this;
-			return child ? e.hasChild(me, child.dom || child) : me.firstChild !== null;
+			var elem = this.dom || this;
+			return child ? e.hasChild(elem, child.dom || child) : elem.firstChild !== null;
 		},
 		
 		/// #endif
@@ -2322,9 +2302,9 @@
 		 * @return {Boolean} 隐藏返回 true 。
 		 */
 		isHidden: function () {
-			var me = this.dom || this;
+			var elem = this.dom || this;
 
-			return (me.style.display || getStyle(me, 'display')) === 'none';
+			return (elem.style.display || getStyle(elem, 'display')) === 'none';
 		},
 		
 		/**
@@ -2335,29 +2315,14 @@
 		find: div.querySelector ? function (selecter) {
 			assert.isString(selecter, "Element.prototype.find(selecter): 参数 {selecter} ~。");
 			return (this.dom || this).querySelector(selecter);
-		} : function (selecter) {
-			var current = this.dom || this;
-			assert.isString(selecter, "Element.prototype.find(selecter): 参数 {selecter} ~。");
-			if(selecter.split(' ').each(function (v) {
-				return !!(current = findBy(current, v)[0]);
-			}))
-				return p.$(current);
-		}
+		} : cssSelector(false)
 		
 	}, 4);
-		
-	/// #ifdef ElementDimension
 	
-	/**
-	 * 获取滚动条已滚动的大小。
-	 * @return {Point} 位置。
-	 */
 	var getWindowScroll = 'pageXOffset' in window ? function () {
 		var win = this.defaultView;
 		return new Point(win.pageXOffset, win.pageYOffset);
 	} : ep.getScroll;
-		
-	/// #endif
 	
 	/**
 	 * @class Document
@@ -2377,7 +2342,7 @@
 
 			/// #ifdef SupportIE6
 
-			var div = p.$(this.createElement(tagName));
+			var div = $(this.createElement(tagName));
 
 			/// #else
 
@@ -2406,32 +2371,28 @@
 		},
 
 		/**
+		 * 获取距父元素的偏差。
+		 * @return {Point} 位置。
+		 */
+		getPosition: getWindowScroll,
+		
+		/**
 		 * 获取滚动条已滚动的大小。
-		 * @method getScroll
 		 * @return {Point} 位置。
 		 */
 		getScroll: getWindowScroll,
 
 		/**
-		 * 获取距父元素的偏差。
-		 * @method getOffsets
-		 * @return {Point} 位置。
-		 */
-		getPosition: getWindowScroll,
-
-		/**
 		 * 获取滚动区域大小。
-		 * @method getScrollSize
 		 * @return {Point} 位置。
 		 */
 		getScrollSize: function () {
 			var html = this.dom,
 				min = this.getSize(),
-				max = Math.max,
 				body = this.body;
-
-
-			return new Point(max(html.scrollWidth, body.scrollWidth, min.x), max(html.scrollHeight, body.scrollHeight, min.y));
+				
+				
+			return new Point(Math.max(html.scrollWidth, body.scrollWidth, min.x), Math.max(html.scrollHeight, body.scrollHeight, min.y));
 		},
 
 		/**
@@ -2442,11 +2403,14 @@
 		 * @return {Document} this 。
 		 */
 		setScroll: function (x, y) {
-			var p = adaptXY(x,y, this, 'getScroll');
+			var doc = this, p = formatPoint(x, y);
+			if(p.x == null)
+				p.x = doc.getScroll().x;
+			if(p.y == null)
+				p.y = doc.getScroll().y;
+			doc.defaultView.scrollTo(p.x, p.y);
 
-			this.defaultView.scrollTo(p.x, p.y);
-
-			return this;
+			return doc;
 		},
 		
 		/// #endif
@@ -2466,11 +2430,14 @@
 		 * @return {ElementList} 如果只有1个参数，返回元素，否则返回元素集合。
 		 */
 		getDom: function () {
-			return arguments.length === 1 ? p.$(this.getElementById(arguments[0])) :  new ElementList(o.update(arguments, this.getElementById, null, this));
+			return arguments.length === 1 ? $(this.getElementById(arguments[0])) :  new ElementList(o.update(arguments, this.getElementById, null, this));
 		}
 		
 	});
 	
+	/**
+	 * @namespace Control
+	 */
 	apply(Control, {
 		
 		/**
@@ -2496,7 +2463,7 @@
 			assert(control && control.prototype, "Control.delegate(control, target, methods, type, methods2, type2): 参数 {control} 必须是一个类", control);
 			assert.isNumber(type, "Control.delegate(control, target, methods, type, methods2, type2): 参数 {type} ~。");
 			
-			String.map(methods, function(func) {
+			map(methods, function(func) {
 				switch (type) {
 					case 2:
 						return function() {
@@ -2523,8 +2490,21 @@
 	
 	Control.delegate(Control, 'dom', 'addEventListener removeEventListener scrollIntoView focus blur', 2, 'appendChild removeChild insertBefore replaceChild', 3);
 	
-	assert.isNode(document.documentElement, "在 element.js 执行时，必须存在 document.documentElement 属性。请确认浏览器为标准浏览器， 且未使用  Quirks 模式。");
-	
+	/**
+	 * 根据 x, y 获取 {x: x y: y} 对象
+	 * @param {Number/Point} x
+	 * @param {Number} y
+	 * @static
+	 * @private
+	 */
+	Point.format = formatPoint;
+
+	map("filter slice splice", function(func){
+		return function(){
+			return new ElementList(ap[func].apply(this, arguments));
+		};
+	}, ElementList.prototype);
+
 	/// #ifdef ElementCore
 	
 	wrapMap.optgroup = wrapMap.option;
@@ -2535,7 +2515,7 @@
 		
 	/// #ifdef ElementNode
 	
-	String.map('checked disabled selected', function (treeWalker) {
+	map('checked disabled selected', function (treeWalker) {
 		return function(elem, args){
 			args = args !== false;
 			return this.children(elem, function (elem) {
@@ -2576,19 +2556,21 @@
 		
 		ep.$version = 1;
 		
-		p.$ = function (id) {
+		$ = function (id) {
 			
+			// 获取节点本身。
 			var dom = getElementById(id);
 	
-			if(dom && dom.$version !== ep.$version) {
+			// 把 Element 成员复制到节点。
+			// 根据 $version 决定是否需要拷贝，这样保证每个节点只拷贝一次。
+			if(dom && dom.$version !== ep.$version)
 				o.extendIf(dom, ep);
-			}
 	
 			return dom;
 			
 		};
 		
-		/**s
+		/**
 		 * 返回当前文档默认的视图。
 		 * @type {Window}
 		 */
@@ -2598,7 +2580,7 @@
 		
 		initUIEvent = function (e) {
 			if(!e.stop) {
-				e.target = p.$(e.srcElement);
+				e.target = $(e.srcElement);
 				e.stopPropagation = pep.stopPropagation;
 				e.preventDefault = pep.preventDefault;
 				e.stop = pep.stop;
@@ -2644,6 +2626,10 @@
 	}
 	
 	/// #endif
+	
+	p.$ = $;
+	
+	map("$ Element Document", p, window, true);
 		
 	/// #ifdef ElementEvent
 	
@@ -2716,7 +2702,7 @@
 		
 	/// #ifdef ElementAttribute
 	
-	String.map('x y', function (c, i) {
+	map('x y', function (c, i) {
 		c = e.sizeMap[c] = {};
 		var tx = i ? ['Top', 'Bottom'] : ['Left', 'Right'];
 		c.d = tx.invoke('toLowerCase', []);
@@ -2726,7 +2712,7 @@
 	});
 	
 	//  下列属性应该直接使用。
-	String.map("checked selected disabled value innerHTML textContent className autofocus autoplay async controls hidden loop open required scoped compact nowrap ismap declare noshade multiple noresize defer readOnly tabIndex defaultValue accessKey defaultChecked cellPadding cellSpacing rowSpan colSpan frameBorder maxLength useMap contentEditable", function (value) {
+	map("checked selected disabled value innerHTML textContent className autofocus autoplay async controls hidden loop open required scoped compact nowrap ismap declare noshade multiple noresize defer readOnly tabIndex defaultValue accessKey defaultChecked cellPadding cellSpacing rowSpan colSpan frameBorder maxLength useMap contentEditable", function (value) {
 		attributes[value.toLowerCase()] = attributes[value] = value;
 	});
 	
@@ -2787,7 +2773,7 @@
 	
 	/// #ifdef ElementReady
 		
-	String.map('Ready Load', function (ReadyOrLoad, isLoad) {
+	map('Ready Load', function (ReadyOrLoad, isLoad) {
 	
 		var readyOrLoad = ReadyOrLoad.toLowerCase(),
 			isReadyOrLoad = isLoad ? 'isReady' : 'isLoaded';
@@ -2913,16 +2899,6 @@
 	
 	/// #endif
 	
-	String.map("$ Element Document", p, window, true);
-
-	//       String.map("invoke each indexOf forEach push unshift pop shift include unique", ap, ElementList.prototype);
-
-	String.map("filter slice splice", function(func){
-		return function(){
-			return new ElementList(ap[func].apply(this, arguments));
-		};
-	}, ElementList.prototype);
-	
 	/**
 	 * @class
 	 */
@@ -2962,7 +2938,7 @@
 			var node = elem[first];
 			while (node) {
 				if (node.nodeType === 1 && args.call(elem, node))
-					return p.$(node);
+					return $(node);
 				node = node[next];
 			}
 			return node;
@@ -3034,214 +3010,28 @@
 			elem.$data = null;
 		
 	}
-
+	
 	/**
 	 * 执行简单的选择器。
 	 * @param {Element} elem 元素。
 	 * @param {String} selector 选择器。
 	 * @return {JPlus.ElementList} 元素集合。
-	 */
-	function findBy(elem, selector) {  return
-		switch(selector.charAt(0)) {
-			case '.':
-				elem = elem.getElementsByClassName(selector.replace(/\./g, ' '));
-				break;
-			case '[':
-				var s = rAttr.exec(selector);
-				assert(s && s[1], "Element.prototype.find(selector): 参数 {selector} 不是合法的选择器。 属性选择器如: [checked='checked']", selector);
-				elem = elem.getElementsByAttribute(s[1], s[4]);
-				break;
-			default:
-				elem = elem.getElementsByTagName(selector);
-				break;
-		}
+	 */	
+	function cssSelector(all) {
+		if(!cssSelector.inited){
 
-		return elem;
-	}
-
-	/**
-	 * 获取一个选择器。
-	 * @param {Number/Function/String} args 参数。
-	 * @return {Funtion} 函数。
-	 */
-	function getFilter(args) {
-		switch(typeof args) {
-			case 'number':
-				return function (elem) {
-					return --args < 0;
-				};
-			case 'string':
-				args = args.toUpperCase();
-				return function (elem) {
-					return elem.tagName === args;
-				};
-		}
-		
-		assert.isFunction(args, "Element.prototype.get(treeWalker, args): 参数 {fn} 必须是一个函数、空、数字或字符串。", args);
-		return args;
-	}
-	
-	/// #endif
-	
-	/// #ifdef ElementEvent
-	
-	/**
-	 * 判断发生事件的元素是否在当前鼠标所在的节点内。
-	 * @param {Event} e 事件对象。
-	 * @return {Boolean} 返回是否应该触发  mouseenter。
-	 */
-	function checkMouseEnter(event) {
-		
-		return this !== event.relatedTarget && !e.hasChild(this, event.relatedTarget);
-
-		/*var parent = e.relatedTarget;
-		while (parent) {
-			
-			if(parent === this)
-				return false;
-				
-			parent = parent.parentNode;
-		}
-*/
-	}
-	
-	/// #endif
-	
-	/// #ifdef ElementAttribute
-	
-    /**
-     * 到骆驼模式。
-     * @param {String} all 全部匹配的内容。
-     * @param {String} match 匹配的内容。
-     * @return {String} 返回的内容。
-     */
-    function formatStyle(all, match) {
-        return match ? match.toUpperCase() : styleFloat;
-    }
-	
-	/**
-	 * 读取样式字符串。
-	 * @param {Element} elem 元素。
-	 * @param {String} name 属性名。
-	 * @return {String} 字符串。
-	 */
-	function styleString(elem, name) {
-		return elem.style[name] || getStyle(elem, name);
-	}
-
-	/**
-	 * 读取样式数字。
-	 * @param {Object} elem 元素。
-	 * @param {Object} name 属性名。
-	 * @return {Number} 数字。
-	 */
-	function styleNumber(elem, name) {
-		var value = parseFloat(elem.style[name]);
-		if(!value && value !== 0) {
-			value = parseFloat(getStyle(elem, name));
-			
-			if(!value && value !== 0) {
-				if(name in styles) {
-					var style = e.getStyles(elem, e.display);
-					e.setStyles(elem, e.display);
-					value = parseFloat(getStyle(elem, name)) || 0;
-					e.setStyles(elem, style);
-				} else {
-					value = 0;
-				}
-			}
-		}
-		
-		return value;
-	}
-	
-	/**
-	 * 检查元素的 position 是否和指定的一致。
-	 * @param {Element} elem 元素。
-	 * @param {String} position 方式。
-	 * @return {Boolean} 一致，返回 true 。
-	 */
-	function checkPosition(elem, position) {
-		return styleString(elem, "position") === position;
-	}
-
-	/**
-	 * 检查是否为 body 。
-	 * @param {Element} elem 内容。
-	 * @return {Boolean} 是否为文档或文档跟节点。
-	 */
-	function isBody(elem) {
-		return rBody.test(elem.nodeName);
-	}
-	
-	/**
-	 * 设置元素的宽或高。
-	 * @param {Element/Control} me 元素。
-	 * @param {String} fix 修正的边框。
-	 * @param {Number} x 宽。
-	 * @param {Number} y 宽。
-	 */
-	function setSize(elem, fix, x ,y) {
-		var p = getXY(x,y);
-
-		if(p.x != null)
-			elem.setWidth(p.x - e.getSizes(elem.dom || elem, 'x', fix));
-
-		if (p.y != null)
-			elem.setHeight(p.y - e.getSizes(elem.dom || elem, 'y', fix));
-
-		return elem;
-	}
-
-	/**
-	 * 转换参数为标准点。
-	 * @param {Number} x X
-	 * @param {Number} y Y
-	 */
-	function getXY(x, y) {
-		return x && typeof x === 'object' ? x : {
-			x:x,
-			y:y
-		};
-	}
-
-	/**
-	 * 获取默认的位置。
-	 * @param {Object} x
-	 * @param {Object} y
-	 * @param {Object} obj
-	 * @param {Object} method
-	 */
-	function adaptXY(x, y, obj, method) {
-		var p = getXY(x, y);
-		if(p.x == null)
-			p.x = obj[method]().x;
-		if(p.y == null)
-			p.y = obj[method]().y;
-		assert(!isNaN(p.x) && !isNaN(p.y), "adaptXY(x, y, obj, method): 参数 {x}或{y} 不是合法的数字。(method = {method})", x, y, method);
-		return p;
-	}
-
-	/**
-	 * 获取一个元素的所有滚动大小。
-	 * @param {Element} elem 元素。
-	 * @return {Point} 偏差。
-	 */
-	function getScrolls(elem) {
-		var p = new Point(0, 0);
-		elem = elem.parentNode;
-		while (elem && !isBody(elem)) {
-			p.add(-elem.scrollLeft, -elem.scrollTop);
-			elem = elem.parentNode;
-		}
-		return p;
-	}
-	
-	/// #endif
-
-})(this);
-
-	
+		// 简单的 CSS 选择器
+		//
+		// div
+		// .example
+		// body div
+		// div, p
+		// div, p, .example
+		// div p
+		// div > p
+		// div.example
+		// ul .example
+		// ul.foo > * span
 
 /**
 * "mini" Selector Engine
@@ -3254,19 +3044,7 @@
 * -------------------------------------------------------
 * Version: 0.01 (BETA)
 * 
-*     * div
-    * .example
-    * body div
-    * div, p
-    * div, p, .example
-    * div p
-    * div > p
-    * div.example
-    * ul .example
-    * #title
-    * h1#title
-    * div #title
-    * ul.foo > * span
+*   
 
 */
 
@@ -3470,3 +3248,759 @@ var mini = (function(){
     return _find;
     
 })();
+
+			
+			cssSelector.inited = true;
+		}
+		  function (selecter) {
+			assert.isString(selecter, "Element.prototype.findAll(selecter): 参数 {selecter} ~。");
+			var current = new ElementList([this.dom || this]);
+			selecter.split(' ').forEach( function (v) {
+				current = findBy(current, v);
+			});
+
+			return current;
+		}
+		function (selecter) {
+			var current = this.dom || this;
+			assert.isString(selecter, "Element.prototype.find(selecter): 参数 {selecter} ~。");
+			if(selecter.split(' ').each(function (v) {
+				return !!(current = findBy(current, v)[0]);
+			}))
+				return $(current);
+		}
+	}
+
+	
+	function findBy(elem, selector) {  return  //  TODO
+		switch(selector.charAt(0)) {
+			case '.':
+				elem = elem.getElementsByClassName(selector.replace(/\./g, ' '));
+				break;
+			case '[':
+				var s = rAttr.exec(selector);
+				assert(s && s[1], "Element.prototype.find(selector): 参数 {selector} 不是合法的选择器。 属性选择器如: [checked='checked']", selector);
+				elem = elem.getElementsByAttribute(s[1], s[4]);
+				break;
+			default:
+				elem = elem.getElementsByTagName(selector);
+				break;
+		}
+
+		return elem;
+	}
+
+	/**
+	 * 获取一个选择器。
+	 * @param {Number/Function/String} args 参数。
+	 * @return {Funtion} 函数。
+	 */
+	function getFilter(args) {
+		switch(typeof args) {
+			case 'number':
+				return function (elem) {
+					return --args < 0;
+				};
+			case 'string':
+				args = args.toUpperCase();
+				return function (elem) {
+					return elem.tagName === args;
+				};
+		}
+		
+		assert.isFunction(args, "Element.prototype.get(treeWalker, args): 参数 {fn} 必须是一个函数、空、数字或字符串。", args);
+		return args;
+	}
+	
+	/// #endif
+	
+	/// #ifdef ElementEvent
+	
+	/**
+	 * 判断发生事件的元素是否在当前鼠标所在的节点内。
+	 * @param {Event} e 事件对象。
+	 * @return {Boolean} 返回是否应该触发  mouseenter。
+	 */
+	function checkMouseEnter(event) {
+		
+		return this !== event.relatedTarget && !e.hasChild(this, event.relatedTarget);
+
+		/*var parent = e.relatedTarget;
+		while (parent) {
+			
+			if(parent === this)
+				return false;
+				
+			parent = parent.parentNode;
+		}
+*/
+	}
+	
+	/// #endif
+	
+	/// #ifdef ElementAttribute
+	
+    /**
+     * 到骆驼模式。
+     * @param {String} all 全部匹配的内容。
+     * @param {String} match 匹配的内容。
+     * @return {String} 返回的内容。
+     */
+    function formatStyle(all, match) {
+        return match ? match.toUpperCase() : styleFloat;
+    }
+	
+	/**
+	 * 读取样式字符串。
+	 * @param {Element} elem 元素。
+	 * @param {String} name 属性名。
+	 * @return {String} 字符串。
+	 */
+	function styleString(elem, name) {
+		return elem.style[name] || getStyle(elem, name);
+	}
+
+	/**
+	 * 读取样式数字。
+	 * @param {Object} elem 元素。
+	 * @param {Object} name 属性名。
+	 * @return {Number} 数字。
+	 */
+	function styleNumber(elem, name) {
+		var value = parseFloat(elem.style[name]);
+		if(!value && value !== 0) {
+			value = parseFloat(getStyle(elem, name));
+			
+			if(!value && value !== 0) {
+				if(name in styles) {
+					var style = e.getStyles(elem, e.display);
+					e.setStyles(elem, e.display);
+					value = parseFloat(getStyle(elem, name)) || 0;
+					e.setStyles(elem, style);
+				} else {
+					value = 0;
+				}
+			}
+		}
+		
+		return value;
+	}
+	
+	/**
+	 * 检查元素的 position 是否和指定的一致。
+	 * @param {Element} elem 元素。
+	 * @param {String} position 方式。
+	 * @return {Boolean} 一致，返回 true 。
+	 */
+	function checkPosition(elem, position) {
+		return styleString(elem, "position") === position;
+	}
+
+	/**
+	 * 检查是否为 body 。
+	 * @param {Element} elem 内容。
+	 * @return {Boolean} 是否为文档或文档跟节点。
+	 */
+	function isBody(elem) {
+		return rBody.test(elem.nodeName);
+	}
+	
+	/**
+	 * 转换参数为标准点。
+	 * @param {Number} x X
+	 * @param {Number} y Y
+	 */
+	function formatPoint(x, y) {
+		return x && typeof x === 'object' ? x : {
+			x:x,
+			y:y
+		};
+	}
+
+	/**
+	 * 设置元素的宽或高。
+	 * @param {Element/Control} me 元素。
+	 * @param {String} fix 修正的边框。
+	 * @param {Number} x 宽。
+	 * @param {Number} y 宽。
+	 */
+	function setSize(elem, fix, x ,y) {
+		var p = formatPoint(x,y);
+
+		if(p.x != null)
+			elem.setWidth(p.x - e.getSizes(elem.dom || elem, 'x', fix));
+
+		if (p.y != null)
+			elem.setHeight(p.y - e.getSizes(elem.dom || elem, 'y', fix));
+
+		return elem;
+	}
+	
+	/// #endif
+
+})(this);
+
+      
+function Elements(selector){
+    this.hash = {};
+    this.push = Array.prototype.push;
+    this.length = 0;
+    arguments.callee.collect.call(this, selector);
+    delete this.push;
+    //delete this.hash;
+}
+Elements.prototype = function (){
+    var REGEXP_1 = /^(\s)*([\),\+>~]?)\s*\*?([\[\.:#]?)\s*([\w\u0080-\uFFFF_-]*)\(?/;
+    var REGEXP_2 = /^(?:\s*(\S?\=)\s*(?:([\+\-\d\.]+)|(\w+)|"((?:[^"]|`")*)"))?\s*\]/;
+    var REGEXP_3 = /^\s*(?:(even|odd)|(?:(\d*)n)?([\+\-\d]+)?)\s*\)/;
+    var REGEXP_4 = /^(?:([^\)]+)|"((?:[^"]|`")*)")/;
+    var VALUES_MAP = {};
+    VALUES_MAP['true'] = true;
+    VALUES_MAP['false'] = false;
+    VALUES_MAP['null'] = null;
+    VALUES_MAP['undefined'] = undefined;
+    function parse(selector){
+        var tmp,
+            sequence = [],
+            chain = [sequence],
+            group = [chain];
+        while (selector && REGEXP_1.test(selector)){
+            selector = RegExp.rightContext;
+            if (tmp = RegExp.$2 || RegExp.$1){
+                sequence = [];
+                switch (tmp){
+                case ',':
+                    sequence = [];
+                    chain = [sequence];
+                    group.push(chain);
+                    break;
+                case ')':
+                    group.selector = selector;
+                    return group;
+                default:
+                    sequence = [];
+                    sequence.tag = tmp;
+                    chain.push(sequence);
+                    break;
+                }
+            }
+            if (tmp = RegExp.$3 || RegExp.$4){
+                tmp = RegExp.$3 ? tmp : 'T';
+                var token = [];
+                token.tag = tmp;
+                switch (tmp){
+                case ':':
+                    tmp = RegExp.$4;
+                    token.tag = tmp;
+                    switch (tmp){
+                    case 'not':
+                    case 'has':
+                        tmp = parse(selector);
+                        selector = tmp.selector;
+                        //tmp = tmp[0][0][0];
+                        token.push(tmp);
+                        break;
+                    case 'nth-child':
+                    case 'nth-of-type':
+                    case 'nth':
+                        if (REGEXP_3.test(selector)){
+                            selector = RegExp.rightContext;
+                            if (tmp = RegExp.$1){
+                                if (tmp == 'even'){
+                                    token.push(2);
+                                    token.push(0);
+                                } else if (tmp == 'odd'){
+                                    token.push(2);
+                                    token.push(1);
+                                } else throw '';
+                            } else {
+                                tmp = RegExp.$2 || 0;
+                                tmp = Number(tmp);
+                                token.push(tmp);
+                                tmp = RegExp.$3 || 0;
+                                tmp = Number(tmp);
+                                token.push(tmp);
+                            }
+                        }
+                        break;
+                    case 'contains':
+                        if (REGEXP_4.test(selector)){
+                            selector = RegExp.rightContext;
+                            tmp = RegExp.$1 || RegExp.$2.replace(/`(`*")/g, '$1');
+                            token.push(tmp);
+                        }
+                        break;
+                    default:
+                        break;
+                    }
+                    break;
+                case '[':
+                    tmp = RegExp.$4;
+                    if (tmp === 'class') tmp = 'className';
+                    token.push(tmp);
+                    if (REGEXP_2.test(selector)){
+                        selector = RegExp.rightContext;
+                        if (tmp = RegExp.$1){
+                            token.tag = tmp;
+                            if (tmp = RegExp.$2){
+                                tmp = Number(tmp);
+                            } else if (tmp = RegExp.$3){
+                                tmp = VALUES_MAP[tmp] || tmp;
+                            } else if (tmp = RegExp.$4){
+                                tmp = tmp.replace(/`(`*")/g, '$1');
+                            } else throw '';
+                            token.push(tmp);
+                        } else {
+
+                        }
+                    } else throw '';
+                    break;
+                case '#':
+                case '.':
+                case 'T':
+                    token.push(RegExp.$4);
+                    break;
+                }
+                //sequence[ORDERS_MAP[token.tag]] = token;
+                sequence.push(token);
+            }
+        }
+        return group;
+    }
+    var SELECT =
+        'key = node.uid || (node.uid = uid++);' +
+        'key += "[@]" + #0;' +
+        'var #nodes = rcc[key] || (rcc[key] = node.getElementsBy@(#0));' +
+        'for (var #i=0,#l=#nodes.length; #i<#l; #i++){' +
+            'node = #nodes[#i];' +
+            'if (node.nodeType===1){' +
+                '{find}' +
+            '}' +
+        '}' +
+        '#nodes = null;';
+    var tpl = {
+        '{': {
+            code:
+            'ret = function (){' +
+                'var node, key, hash = this.hash;' +
+                '{next}' +
+                'return this;' +
+            '}'
+        },
+        '}': { next: '' },
+        '(': {
+            next:
+            'node = document;' +
+            '{head}' +
+            '{find}' +
+            '{foot}' +
+            '{next}'
+        },
+        t2f: { test: '{find}' },
+        f2t: { find: '{test}' },
+        finder:
+        {
+            '>': {
+                find:
+                'var #nodes = node.children || node.childNodes;' +
+                'for (var #i=0,#l=#nodes.length; #i<#l; #i++){' +
+                    'node = #nodes[#i];' +
+                    'if (node.nodeType===1){' +
+                        '{find}' +
+                    '}' +
+                '}' +
+                '#nodes = null;'
+            },
+            '+': {
+                find:
+                'var #node = node;' +
+                'while (#node = #node.nextSibling){' +
+                    'if (#node.nodeType == 1){' +
+                        'node = #node;' +
+                        '{find}' +
+                        'break;' +
+                    '}' +
+                '}'
+            },
+            '~': {
+                head:
+                'var #hash = {};{head}',
+                find:
+                'var #node = node;' +
+                'while (#node = #node.nextSibling){' +
+                    'key = #node.uid || (#node.uid = uid++);' +
+                    'if (key in #hash){' +
+                        'break;' +
+                    '} else {' +
+                        'node = #node;' +
+                        'if (node.nodeType===1){' +
+                            '{find}' +
+                        '}' +
+                    '}' +
+                    '#hash[key] = null'+
+                '}',
+                foot:
+                '{foot}#hash = null;'
+            },
+            '#': { find: 'if (node = node.getElementById(#0)){{find}}' },
+            'T': { find: SELECT.replace(/@/g, 'TagName') },
+            '.': { find: SELECT.replace(/@/g, 'ClassName') },
+            'N': { find: SELECT.replace(/@/g, 'Name') },
+            '*': {
+                find:
+                'key = node.uid || (node.uid = uid++);' +
+                'var #nodes = rcc[key] || (rcc[key] = node.all || node.getElementsByTagName("*"));' +
+                'for (var #i=0,#l=#nodes.length; #i<#l; #i++){' +
+                    'node = #nodes[#i];' +
+                    '{find}' +
+                '}' +
+                '#nodes = null;'
+            }
+        },
+        ')': {
+            head: '',
+            find:
+                'key = node.uid || (node.uid = uid++);' +
+                'if (!(key in hash)){' +
+                    'this.push(node);' +
+                    'hash[key] = null;' +
+                '}',
+            foot: ''
+        },
+        '[': {
+            find:
+                'var pass = false;' +
+                'var #node = node;' +
+                '{pass}' +
+                'if (pass){' +
+                    'node = #node;' +
+                    '{find}' +
+                '}'
+        },
+        t2p: { test: '{pass}' },
+        p2t: { pass: '{test}' },
+        passer:
+        {
+            ' ': {
+                head: 'var #hash = {};{head}',
+                pass:
+                'var #pass = [false];' +
+                'var #node = node;' +
+                'while (#node = #node.parentNode){' +
+                    'key = #node.uid || (#node.uid = uid++);' +
+                    'if (key in #hash){' +
+                        'pass = #pass[0] = #hash[key][0];' +
+                        'break;' +
+                    '} else {' +
+                        'pass = false;' +
+                        'node = #node;' +
+                        '{pass}' +
+                        'if (pass){' +
+                            'break;' +
+                        '}' +
+                    '}' +
+                    '#hash[key] = #pass;'+
+                '}' +
+                '#pass[0] = pass;',
+                foot: '{foot}#hash = null;'
+            },
+            '~': {
+                head: 'var #hash = {};{head}',
+                pass:
+                'var #pass = [false];' +
+                'var #node = node;' +
+                'while (#node = #node.previousSibling){' +
+                    'key = #node.uid || (#node.uid = uid++);' +
+                    'if (key in #hash){' +
+                        'pass = #pass[0] = #hash[key][0];' +
+                        'break;' +
+                    '} else {' +
+                        'pass = false;' +
+                        'node = #node;' +
+                        '{pass}' +
+                        'if (pass){' +
+                            'break;' +
+                        '}' +
+                    '}' +
+                    '#hash[key] = #pass;'+
+                '}' +
+                '#pass[0] = pass;',
+                foot: '{foot}#hash = null;'
+            },
+            '>': {
+                pass:
+                'var #node = node;' +
+                'while (#node = #node.parentNode){' +
+                    'node = #node;' +
+                    '{pass}' +
+                    'break;' +
+                '}'
+            },
+            '+': {
+                pass:
+                'var #node = node;' +
+                'while (#node = #node.previousSibling){' +
+                    'node = #node;' +
+                    'if (node.nodeType===1){' +
+                        '{pass}' +
+                    '}' +
+                    'break;' +
+                '}'
+            }
+        },
+        ']': { pass: 'pass = true;' },
+        tester:
+        {
+            'T': { test: 'if (node.tagName.toUpperCase()===#1){{test}}' },
+            '[': { test: 'if (node.getAttribute(#0)){{test}}' },
+            '*': { test: '{test}' },
+            '[href]': { test: 'if (node.getAttribute("href",2)){{test}}' },
+            '[class]': { test: 'if (node.className){{test}}' },
+            '=': { test: 'if (node[#0] == #1){{test}}' },
+            '!=': { test: 'if (node[#0] != #1){{test}}' },
+            '~=': { test: 'if (#1.test(node[#0])){{test}}' },
+            '^=': { test: 'if (node[#0].indexOf(#1)===0){{test}}' },
+            '$=': { test: 'if (node[#0].lastIndexOf(#1)===node[#0].length-#1.length){{test}}' },
+            '*=': { test: 'if (node[#0].indexOf(#1) >= 0){{test}}' },
+            '|=': { test: 'if (#2.test(node[#0])){{test}}' },
+            'contains': { test: 'if (#1.test(node.textContent||node.innerText||"")){{test}}' },
+            'nth-child': { test: 'if ((index.call(node)-#1)%#0===0){{test}}' },
+            'nth-child1': { test: 'if (index.call(node)===#1)){{test}}' }
+        }
+    };
+    var fix = {
+        '#': function (id){
+            this[1] = id;
+            this[0] = 'id';
+            this.tag = '=';
+        },
+        'T': function (tagName){
+            this[1] = tagName.toUpperCase();
+        },
+        '[': function (attrName){
+            if (attrName==='class'){
+                this.tag = '[class]';
+            } else if (attrName==='href'){
+                this.tag = '[href]';
+            }
+        },
+        '.': function (className){
+            this.tag = '~=';
+            this[0] = 'className';
+            this[1] = new RegExp('\\b'+className+'\\b');
+        },
+        '|=': function (){
+            this[2] = new RegExp('^'+this[1]+'(-.*)?');
+        },
+        'contains': function (text){
+            this[1] = new RegExp(text);
+        },
+        '~=': function (){
+            this[1] = new RegExp('\\b'+this[1]+'\\b');
+        },
+        'nth-child': function (a, b){
+            if (!a){
+                if (!b){
+                    this.tag = '*';
+                } else {
+                    this.tag = 'nth-child1';
+                }
+            }
+        },
+        'first-child': function (){
+            this.tag = 'nth-child';
+            this[0] = 0;
+            this[1] = 1;
+        }
+    };
+    var rcc = {};
+    var uid = 11;
+    var fcc = {};
+    var ctx;
+    var cns;
+    function setup(tpl, pms){
+        var ns = 'NS'+(cns++)+'_';
+        return this.replace(/\{(\w+)\}/g, function (m, p1){
+            if (p1){
+                if (p1 in tpl){
+                    m = tpl[p1];
+                    m = m.replace(/#(\d*)/g, function (m, p1){
+                        m = ns;
+                        if (p1){
+                            m += p1;
+                            ctx[m] = pms[p1];
+                        }
+                        return m;
+                    });
+                }
+            } else {
+                m = tpl;
+            }
+            return m;
+        });
+    }
+    function index(){
+        if (!('nodeIndex' in this)){
+            var p = this.parentNode;
+            var index = 1;
+            var nodes = p.children || p.childNodes;
+            for (var i=0,l=nodes.length; i<l; i++){
+                var node = nodes[i];
+                if (node.nodeType === 1){
+                    node.nodeIndex = index ++;
+                }
+            }
+        }
+        return this.nodeIndex;
+    }
+    var ORDER_MAP = { 'T': 4, '#': 1, '.': 3, 'N': 2 };
+    if (!document['getElementsByClassName']){
+        delete ORDER_MAP['.'];
+        delete tpl.finder['.'];
+    }
+    function build(selector){
+        var ret;
+        if (ret = fcc[selector]) return ret;
+        ctx = {};
+        cns = 11;
+        var group = parse(selector);
+        selector = '{code}';
+        selector = setup.call(selector, tpl['{']);
+        for (var i=0,l=group.length; i<l; i++){
+            selector = setup.call(selector, tpl['(']);
+            var chain = group[i];
+            chain[0].tag = ' ';
+            var x = chain.length;
+            var p, q = 9999;
+            while (x > 0){
+                p = ORDER_MAP[chain[x - 1][0].tag] || 9999;
+                if (p > q){
+                    break;
+                } else {
+                    q = p;
+                }
+                x --;
+            }
+            var seq, tag, token;
+            var once = x > 0;
+            for (var j=x,m=chain.length; j<m; j++){
+                var y = 0, n;
+                seq = chain[j];
+                if (seq.length === 0){
+                    token = [];
+                    token.tag = '*';
+                    seq.push(token);
+                }
+                tag = seq.tag;
+                if (tag == ' ' || j === x){
+                    tag = seq[0].tag;
+                    if (tag in tpl.finder){
+                        y = 1;
+                    } else {
+                        tag = '*';
+                    }
+                }
+                selector = setup.call(selector, tpl.finder[tag], seq[0]);
+                selector = setup.call(selector, tpl.f2t);
+                for (n=seq.length; y<n; y++){
+                    token = seq[y];
+                    if (fix[token.tag]){
+                        fix[token.tag].apply(token, token);
+                    }
+                    selector = setup.call(selector, tpl.tester[token.tag], token);
+                }
+                selector = setup.call(selector, tpl.t2f);
+                if (once && j == x){
+                    var k = x;
+                    selector = setup.call(selector, tpl['[']);
+                    while (k-- > 0){
+                        seq = chain[k];
+                        selector = setup.call(selector, tpl.passer[chain[k + 1].tag]);
+                        selector = setup.call(selector, tpl.p2t);
+                        for (y=0,n=seq.length; y<n; y++){
+                            token = seq[y];
+                            if (fix[token.tag]){
+                                fix[token.tag].apply(token, token);
+                            }
+                            selector = setup.call(selector, tpl.tester[token.tag], token);
+                        }
+                        selector = setup.call(selector, tpl.t2p);
+                    }
+                    once = false;
+                    selector = setup.call(selector, tpl[']']);
+                }
+            }
+            selector = setup.call(selector, tpl[')']);
+        }
+        selector = setup.call(selector, tpl['}']);
+        with (ctx){
+            fcc[selector] = ret = eval(selector);
+        }
+        ctx = null;
+        return ret;
+    }
+    function flush(){
+        rcc = {};
+    };
+    document.uid = uid ++;
+    var handle = document.attachEvent ||
+                document.addEventListener;
+    handle('DOMNodeInserted', flush, false);
+    handle('DOMNodeRemoved', flush, false);
+    handle('DOMAttrModified', flush, false);
+    this.flush = flush;
+    this.query = function (selector){
+        return new Elements(selector);
+    };
+    this.collect = function (selector){
+        //TODO: Do not put result into cache directly! should clone it.
+        return rcc[selector] || (rcc[selector] = build(selector).call(this));
+    };
+    return {
+
+    };
+}.call(Elements);
+document.getElementsBySelector = Elements.query;
+
+
+
+function parse(selector, context) {
+	
+	// div>a~[a='c']
+	var match = /^(.*?)(\s*)([\[:,>~\+\s])/.exec(selector);
+	
+	
+	switch(match[2]){
+		
+		case '[':
+		
+		case ':';
+		
+		case ',':
+		
+		case '>':
+		
+		case '~':
+		
+		case '+':
+		
+		default:
+	}
+	
+	
+
+}
+
+
+function parseOne(selector){
+
+	var match = /[\.#]?\s*[\w\u0080-\uFFFF_-]+/.selector;
+
+	
+		
+
+
+
+	
+
+}

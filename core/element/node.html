@@ -45,6 +45,9 @@
 				'Element.prototype.find': '@a; "div" => b; ".b" => b; "[_tag=\\\"b\\\"]" => b',
 				'Element.prototype.findAll': '@a; "div" => assert.areEqual(value[0], b); ".b" => assert.areEqual(value[0], b); "[_tag=\\\"b\\\"]" => assert.areEqual(value[0], b)',
 				'Element.prototype.get': '@b; "previous" => null; "next" => d; "first" => c; "parent" => a; "last" => c',
+				'Element.prototype.get("all")': function(){
+					b.get('all', 'a');
+				},
 				
 				'Insert': '-',
 				'Element.prototype.append': '@a; "appended"',

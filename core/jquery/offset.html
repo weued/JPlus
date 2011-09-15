@@ -3,8 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<title>J+ Core 测试</title>
-		<script type="text/javascript" src="../../jplus/system.js" ></script>
-		<script type="text/javascript" src="../../jplus/system/dom/element.js" ></script>
+		<script type="text/javascript" src="../../assets/libs/jquery/jquery-1.6.2.js" ></script>
 		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
 		<style>
 			#a {
@@ -47,25 +46,23 @@
 				<div id="d" class="d">id=d border=10 padding=8</div>
 			</div>
 		</div>
-		
 		<div id="rule"></div>
+		
 		<script>
 		
-			var a = $('a'), b = $('b'), c = $('c'), d = $('d'), o = $('o'), abcd = new ElementList($('all').getElementsByTagName("div")), rule = $('rule');
+			var a = $('#a'), b = $('#b'), c = $('#c'), d = $('#d'), o = $('#o'), abcd = new jQuery($('#all')[0].getElementsByTagName("div")), rule = $('#rule');
 			
 			
 			var testcases = {
 				'Offset': '-',
-				'Element.prototype.getOffset': '@a;',
-				'Element.prototype.setOffset': '@a;',
-				'Element.prototype.getPosition': '@a;',
-				'Element.prototype.setPosition': '@a;',
-				'Element.prototype.getOffsets': '@a;',
-				'Element.prototype.getScroll': '@a;'
+				'jQuery.prototype.offset': '@a;',
+				'jQuery.prototype.position': '@a;',
+				'jQuery.prototype.scrollTop': '@a;'
 			};
 			
 			initTestCases(testcases);
 			
 		</script>
+		
 	</body>
 </html>

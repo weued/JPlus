@@ -235,7 +235,7 @@
 		},
 		
 		doLog: function(value){
-			console.log(typeof value === 'string' ? "'" + value.replace(/'/g, "\\\'") + "'" : value);
+			console.log(typeof value === 'string' ? "'" + encodeJs(value) + "'" : value);
 		},
 
 		initQuestions: function (questions,  result) {
@@ -418,7 +418,7 @@
 		if(typeof this.overrides === 'function') {
 			window.TestCases = window.TestCases || {};
 			window.TestCases[name] = this.overrides;
-			this.method = 'TestCases.' + name;
+			this.method = 'TestCases["' + encodeJs(name) + '"]';
 			this.overrides = null;
 		}
 		
@@ -668,6 +668,16 @@
          	.replace(/ /g,"&nbsp;")
         	.replace(/\'/g,"&#39;")
          	.replace(/\"/g,"&quot;"); 
+		
+	}
+	
+	function encodeJs(value){
+		return  value
+			.replace(/\\/g, "\\\\")
+			.replace(/'/g, "\\\'")
+			.replace(/"/g, "\\\"")
+			.replace(/\r/g, "\\r'")
+			.replace(/\n/g, "\\n'"); 
 		
 	}
 	
