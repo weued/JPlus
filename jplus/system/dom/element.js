@@ -2948,7 +2948,7 @@
 				r = new ElementList([]);
 			while (node) {
 				if (node.nodeType === 1 && args.call(elem, node))
-					r.push(node);
+					r[r.length++] = node;
 				node = node[next];
 			}
 			return r;
@@ -3252,7 +3252,7 @@ var mini = (function(){
 			
 			cssSelector.inited = true;
 		}
-		  function (selecter) {
+		  function b(selecter) {
 			assert.isString(selecter, "Element.prototype.findAll(selecter): 参数 {selecter} ~。");
 			var current = new ElementList([this.dom || this]);
 			selecter.split(' ').forEach( function (v) {
@@ -3261,7 +3261,7 @@ var mini = (function(){
 
 			return current;
 		}
-		function (selecter) {
+		function n(selecter) {
 			var current = this.dom || this;
 			assert.isString(selecter, "Element.prototype.find(selecter): 参数 {selecter} ~。");
 			if(selecter.split(' ').each(function (v) {
@@ -3575,7 +3575,7 @@ Elements.prototype = function (){
             'node = #nodes[#i];' +
             'if (node.nodeType===1){' +
                 '{find}' +
-            '}' +
+            '}' +""
         '}' +
         '#nodes = null;';
     var tpl = {
@@ -3963,28 +3963,88 @@ Elements.prototype = function (){
 document.getElementsBySelector = Elements.query;
 
 
+// filter       1   - 对已有元素进行过滤
+// map          2   - 根据已有元素重新获取新的数组
+// operator     3   - 特殊操作
+// seperator    4   - 计算分隔操作
 
-function parse(selector, context) {
+function parse(selector) {
 	
-	// div>a~[a='c']
-	var match = /^(.*?)(\s*)([\[:,>~\+\s])/.exec(selector);
+	// div>a~n+a [a='c']t
+	var match = /^\s*(.*?)(\s*)([\[:,>~\+\s])/.exec(selector),
+		p = match[0],
+		type,
+		value,
+		tokens = [];
 	
+	parseOne(match[1], tokens);
 	
-	switch(match[2]){
+	switch(match[3]){
 		
 		case '[':
-		
-		case ':';
-		
-		case ',':
-		
+			if(match[2]) {
+				type = 4;
+				p = match[1];
+			} else {
+				type = 1;
+				value = '/*[]*/';
+				//match = /(.*)=(['"]?)(.*)\1\]/.exec(p);
+			}
+			break;
+			
+		case ':':
+			type = 1;
+			value = '/*:*/';
+			break;
+			
 		case '>':
-		
 		case '~':
-		
 		case '+':
-		
+			type = 2;
+			value = match[2];
+			break;
+		case ',':
+			break;
+			
 		default:
+			type = 4;
+			
+	}
+	
+	
+	tokens.push([type, value]);
+
+	 trace(tokens);
+}
+
+
+function parseOne(selector, tokens){
+
+	while(selector) {
+
+		var match = /^([\.#]?)\s*([\w\u0080-\uFFFF_-]+)/.exec(selector),
+			p = match[2];
+		
+		selector = selector.substring(match[0].length);
+	
+		switch(match[1]){
+		
+			case '.':
+				p = 'e.hasClass(_, "' + p + '")';
+				break;
+			
+			case '#':
+				p = '_.id === "' + p + '")';
+				break;
+			
+			case '':
+				tokens.push([2, p]);
+				continue;
+			
+		}
+		
+		tokens.push([1, p]);
+	
 	}
 	
 	
@@ -3992,15 +4052,12 @@ function parse(selector, context) {
 }
 
 
-function parseOne(selector){
-
-	var match = /[\.#]?\s*[\w\u0080-\uFFFF_-]+/.selector;
-
+// tag: 标签:
+// condition: 条件:
+// type: ' '   '>' '~'  '+'     ''
+// 编译这样的标签:  tag.cls[attr=val] > + ~
+function compile(result, token, conditions){
+	result.push("n = new ElementList([]);");
+	//token.tag
 	
-		
-
-
-
-	
-
 }

@@ -573,6 +573,10 @@ Elements.prototype = function (){
         //TODO: Do not put result into cache directly! should clone it.
         return rcc[selector] || (rcc[selector] = build(selector).call(this));
     };
+    
+    _ = function (selector){
+        return  build(selector).toString();
+    };
     return {
 
     };
