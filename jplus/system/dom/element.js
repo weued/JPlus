@@ -606,20 +606,24 @@
 			 * @constructor
 			 */
 			constructor: function (doms) {
-	
-				assert(doms && doms.length !== undefined, 'ElementList.prototype.constructor(doms): 参数 {doms} 必须是一个 NodeList 或 Array 类型的变量。', doms);
 				
-				var len = this.length = doms.length;
-				while(len--)
-					this[len] = doms[len];
-	
-				/// #ifdef SupportIE8
-				
-				// 检查是否需要为每个成员调用  $ 函数。
-				if(!navigator.isStandard)
-					o.update(this, $);
+				if(doms) {
+		
+					assert(doms.length !== undefined, 'ElementList.prototype.constructor(doms): 参数 {doms} 必须是一个 NodeList 或 Array 类型的变量。', doms);
 					
-				/// #endif
+					var len = this.length = doms.length;
+					while(len--)
+						this[len] = doms[len];
+		
+					/// #ifdef SupportIE8
+					
+					// 检查是否需要为每个成员调用  $ 函数。
+					if(!navigator.isStandard)
+						o.update(this, $);
+						
+					/// #endif
+				
+				}
 				
 			},
 			
@@ -783,7 +787,7 @@
 			// 全部子节点。
 			all: 'all' in div ? function (elem, fn) { // 返回数组
 				assert.isFunction(fn, "Element.prototype.get('all', args): 参数 {args} ~。");
-				var r = new ElementList([]);
+				var r = new ElementList;
 				ap.forEach.call(elem.all, function(elem){
 					if(fn(elem))
 						r.push(elem);
@@ -791,7 +795,7 @@
 				return  r;
 			} : function (elem, fn) {
 				assert.isFunction(fn, "Element.prototype.get('all', args): 参数 {args} ~。");
-				var r = new ElementList([]), doms = [elem];
+				var r = new ElementList, doms = [elem];
 				while (elem = doms.pop()) {
 					for(elem = elem.firstChild; elem; elem = elem.nextSibling)
 						if (elem.nodeType === 1) {
@@ -1179,7 +1183,7 @@
 									
 								case 3:  //  return ElementList
 									value = function () {
-										var args = arguments, r = new ElementList([]);
+										var args = arguments, r = new ElementList;
 										this.forEach(function (node) {
 											r.concat(node[func].apply(node, args));
 										});
@@ -2945,7 +2949,7 @@
 		} : function (elem, args) {
 			args = args == undefined ? Function.returnTrue : getFilter(args);
 			var node = elem[first],
-				r = new ElementList([]);
+				r = new ElementList;
 			while (node) {
 				if (node.nodeType === 1 && args.call(elem, node))
 					r[r.length++] = node;
@@ -3964,100 +3968,271 @@ document.getElementsBySelector = Elements.query;
 
 
 // filter       1   - 对已有元素进行过滤
-// map          2   - 根据已有元素重新获取新的数组
-// operator     3   - 特殊操作
-// seperator    4   - 计算分隔操作
+// seperator    2   - 计算分隔操作
+// map          -1  - 根据已有元素重新获取新的数组
+// map +        -2  - 根据已有元素重新获取新的数组
 
-function parse(selector) {
+
+function CssSelector() {
 	
-	// div>a~n+a [a='c']t
-	var match = /^\s*(.*?)(\s*)([\[:,>~\+\s])/.exec(selector),
-		p = match[0],
-		type,
-		value,
-		tokens = [];
-	
-	parseOne(match[1], tokens);
-	
-	switch(match[3]){
+	/**
+	 *  属性操作符，#表示值。
+	 */
+	var attrs = {
+			'=': '===#',
+			'^=': '.indexOf(#)===0',
+			'*=': '.indexOf(#)>=0',
+			'|=': '.split(/\\b+/).indexOf(#)===0',
+			'~=': '.split(/\\b+/).indexOf(#)>=0'
+		},
 		
-		case '[':
-			if(match[2]) {
-				type = 4;
-				p = match[1];
+		/**
+		 * 连接符转为代码。
+		 */
+		maps = {
+			'>': 'for(_=c[i].firstChild;_;_=_.nextSibling){',
+			'~': 'for(_=c[i];_;_=_.nextSibling){',
+			'+': 'for(_=c[i];_&&_.nodeType !== 1;_=_.nextSibling);if(_){'
+		},
+		
+		/**
+		 * 用于提取简单部分的正式表达式。
+		 * 
+		 * 一个简单的表达式由2个部分组成。
+		 * 前面部分可以是
+		 * 	#id
+		 * 	.className
+		 * 	tagName
+		 * 
+		 * 后面部分可以是
+		 * 	(任意空格)
+		 * 	#
+		 * 	.
+		 * 	>
+		 * 	+
+		 * 	~
+		 * 	[
+		 * 	,
+		 * 
+		 * 并不是全部选择器都是简单选择器。下列情况是复杂的表达式。
+		 *  >
+		 *  +
+		 *  ~
+		 * 	,
+		 * 	[attrName]
+		 *  [attrName=attrVal]
+		 *  [attrName='attrVal']
+		 *  [attrName="attrVal"]
+		 */
+		rSimpleSelector = /^\s*([#.]?)([\w\u0080-\uFFFF_-]+)(([\[#.,>+~])|\s*)/,
+		
+		/**
+		 * 复杂的表达式。
+		 * 
+		 * 只匹配 > + ~ , [ 开头的选择器。其它选择器被认为非法表达式。
+		 * 
+		 * 如果是 [ 开头的表达式， 则同时找出 [attrName] 后的内容。
+		 */
+		rRelSelector = /^\s*([>+~,]|\[([^=]+?)\s*(([\^\*\|\~]?=)\s*((['"])([^\5]*)\5|(([^\]]*?)))\s*)?\])/;
+	
+	/**
+	 * 分析选择器，并返回一个等价的函数。
+	 * @param {String} selector css3 选择器。
+	 * @return {Function} 返回执行选择器的函数。函数的参数是 elem, 表示当前的元素。
+	 * 只支持下列选择器及组合：
+	 * #id
+	 * .class
+	 * tagName
+	 * [attr]
+	 * [attr=val]  (val 可以是单引号或双引号或不包围的字符串，但不支持\转义。)
+	 * [attr!=val]
+	 * [attr~=val]
+	 * [attr^=val]
+	 * [attr|=val]
+	 * 
+	 * 选择器组合方式有：
+	 * selctor1selctor2
+	 * selctor1,selector2
+	 * selctor1 selctor2
+	 * selctor1>selctor2
+	 * selctor1~selctor2
+	 * selctor1+selctor2
+	 */
+	function parse(selector) {
+		
+		var type,
+			value,
+			tokens = [],
+			matchSize,
+			match,
+			p;
+		
+		// 只要还有没有处理完的选择器。
+		while(selector) {
+			
+			// 执行简单的选择器。
+			match = rSimpleSelector.exec(selector);
+			
+			// 如果不返回 null, 说明这是简单的选择器。
+			// #id .class tagName 选择器 会进入if语句。
+			if(match) {
+				
+				// 记录当前选择器已被处理过的部分的长度。
+				matchSize = match[0].length;
+				
+				// 选择器的内容部分， 如 id class tagName
+				value = match[2];
+				
+				// 根据前缀判断。
+				switch(match[1]){
+					
+					// 类选择器。
+					case '.':
+						type = 1;
+						value = 'Element.hasClass(_,' + toJsString(value) + ')';
+						break;
+					
+					// ID 选择器。
+					case '#':
+						type = 1;
+						value = '_.id===' + toJsString(value);
+						break;
+					
+					// 标签选择器。
+					default:
+						type = -1;
+					
+				}
+				
+				// 如果之后有 . # > + ~ [, 则回退一个字符，下次继续处理。
+				if(match[4]) {
+					matchSize--;
+					
+				} else {
+					
+					// 保存当前的值，以追加空格。
+					tokens.push([type, value]);
+					
+					// 如果末尾有空格，则添加，否则说明已经是选择器末尾，跳出循环:)。
+					if(match[3])
+						type = 2;
+					else
+						break;
+				}
 			} else {
-				type = 1;
-				value = '/*[]*/';
-				//match = /(.*)=(['"]?)(.*)\1\]/.exec(p);
+				
+				// 处理 ~ + > [ ,  开头的选择器， 不是这些开头的选择器是非法选择器。
+				match = rRelSelector.exec(selector);
+				
+				assert(match, "CssSelector.parse(selector): 选择器语法错误(在 " + selector + ' 附近)');
+				
+				// 记录当前选择器已被处理过的部分的长度。
+				matchSize = match[0].length;
+				
+				// [ 属性 ]
+				if(match[2]) {
+					type = 1;
+					value = 'Element.getAttr(_,' + toJsString(match[2]) + ')';
+					if(match[4])
+						value = '(' + value + '||"")' + attrs[match[4]].replace('#', toJsString(match[6]));
+				
+				// ,
+				} else if(match[1] === ',') {
+					
+					// ，  为特殊的关系符，将剩下的选择器保存，并直接退出循环。 
+					// 剩余的部分在 下面转换内处理。
+					selector = selector.substring(matchSize));
+					break;
+				
+				// + > ~
+				} else {
+					type = -2;
+					value = match[1];
+				}
 			}
-			break;
 			
-		case ':':
-			type = 1;
-			value = '/*:*/';
-			break;
+			p = tokens.item(-1);
 			
-		case '>':
-		case '~':
-		case '+':
-			type = 2;
-			value = match[2];
-			break;
-		case ',':
-			break;
+			// 条件之前必须是 map。 否则， 增加 * 的节点返回。
+			if(type === 1 && (!p || p[0] === 2))
+				tokens.push([-1, '*']);
+				
+			// 忽略 map 之前的 空格。
+			else if(type < 0 && p && p[0] === 2)
+				tokens.pop();
 			
-		default:
-			type = 4;
-			
+			// 经过处理后， token 的出现顺序为   -1 1 1 3 -2 1 1...
+			tokens.push([type, value]);
+				
+			// 去掉已经处理的部分。
+			selector = selector.substring(matchSize);
+		
+		}
+	
+		 trace(tokens);
+		return tokens;
 	}
 	
-	
-	tokens.push([type, value]);
+	/**
+	 * 把一个字符串转为Javascript的字符串。
+	 * @param {String} value 输入的字符串。
+	 * @return {String} 带双引号的字符串。
+	 */
+	function toJsString (value) {
+		return '"' + value.replace(/"/g, '\\"') + '"';
+	}
 
-	 trace(tokens);
 }
-
-
-function parseOne(selector, tokens){
-
-	while(selector) {
-
-		var match = /^([\.#]?)\s*([\w\u0080-\uFFFF_-]+)/.exec(selector),
-			p = match[2];
-		
-		selector = selector.substring(match[0].length);
 	
-		switch(match[1]){
+
+
+
+function compile(tokens){
+	var codes = ['var c=[elem],n,t,i,j,_;'], token, j, checkElement;
+	for(var i = 0; i < tokens.length;){
+		token = tokens[i++];
 		
-			case '.':
-				p = 'e.hasClass(_, "' + p + '")';
-				break;
+		if(token[0] !== 2) {
 			
-			case '#':
-				p = '_.id === "' + p + '")';
-				break;
+			for(j = i; tokens[i] && tokens[i][0] === 1; i++);
 			
-			case '':
-				tokens.push([2, p]);
-				continue;
+			codes.push('n=new ElementList;for(i=0;i<c.length;i++){');
+			if(token[0] === -1) {
+				if(token[1] === '*' && 'all' in document) {
+					codes.push('t=c[i].all;');
+					checkElement = true;
+				} else {
+					codes.push('t=c[i].getElementsByTagName(',
+						toJsString(token[1]),
+						');for(j=0;j<t.length;j++){_=t[i];'
+					); 
+					checkElement = false;
+				}
+			} else {
+				codes.push(maps[token[1]]);
+				checkElement = token[1] !== '+';
+			}
+			
+			// 是否需要条件
+			if(i > j) {
+				codes.push('if(_.nodeType===1');
+				while(j < i)
+					codes.push('&&', tokens[j++][1]);
+				codes.push(')');
+			}
+			
+			codes.push('n[n.length++]=_;}}c=n;');
 			
 		}
 		
-		tokens.push([1, p]);
-	
 	}
 	
 	
-
-}
-
-
-// tag: 标签:
-// condition: 条件:
-// type: ' '   '>' '~'  '+'     ''
-// 编译这样的标签:  tag.cls[attr=val] > + ~
-function compile(result, token, conditions){
-	result.push("n = new ElementList([]);");
-	//token.tag
+	codes.push('return c;');
 	
+	trace(codes.join('       '));
+	
+	return new Function('elem', codes.join('')).toString();
+	
+	return codes;
 }
