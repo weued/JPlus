@@ -325,6 +325,8 @@
 		
 		/// #endif
 		
+		cssSelector,
+		
 		/// #ifdef ElementEvent
 		
 		pep = p.Event.prototype,
@@ -648,6 +650,64 @@
 			xType: "elementlist"
 	
 		}));
+		
+	if(!navigator.isStandard) {
+		ElementList.prototype.push = function(){
+			return ap.push.apply(this, o.update(arguments, $));
+		};	
+	}
+	
+	
+	/**
+	 * @class Document
+	 */
+	p.Native(p.Document);
+	
+	if(div.querySelectorAll) {
+		cssSelector = [];
+		String.map("find findAll", function(func, key){
+			cssSelector[key] = function(selector) {
+				var elem = this.dom || this;
+				if(elem.id)
+					return document[func]('#' + elem.id + ' ' + selector);
+				
+				elem.id = '__cssSelector__';
+				
+				try {
+					return document[func]('#__cssSelector__ ' + selector);
+				} finally {
+					elem.id = null;	
+				}
+			};
+		});
+		
+		p.Document.implement({
+			
+			/**
+			 * 执行一个简单的选择器。
+			 * @param {String} selecter 选择器。 如 h2 .cls attr=value 。
+			 * @return {Element/undefined} 节点。
+			 */
+			find: function (selecter) {
+				assert.isString(selecter, "Element.prototype.find(selecter): 参数 {selecter} ~。");
+				return this.querySelector(selecter);
+			},
+	
+			/**
+			 * 执行一个简单的选择器。
+			 * @method
+			 * @param {String} selecter 选择器。 如 h2 .cls attr=value 。
+			 * @return {Element/undefined} 节点。
+			 */
+			findAll: function (selecter) {
+				assert.isString(selecter, "Element.prototype.findAll(selecter): 参数 {selecter} ~。");
+				return new ElementList(this.querySelectorAll(selecter));
+			}
+	
+		});
+	} else {
+		cssSelector = CssSelector();	
+	}
 		
 	/**
 	 * @class Element
@@ -2196,17 +2256,14 @@
 		/// #endif
 		
 		/// #ifdef ElementNode
-
+		
 		/**
 		 * 执行一个简单的选择器。
 		 * @method
 		 * @param {String} selecter 选择器。 如 h2 .cls attr=value 。
 		 * @return {Element/undefined} 节点。
 		 */
-		findAll: div.querySelectorAll ? function (selecter) {
-			assert.isString(selecter, "Element.prototype.findAll(selecter): 参数 {selecter} ~。");
-			return new ElementList((this.dom || this).querySelectorAll(selecter));
-		} : cssSelector(true),
+		findAll: cssSelector[1],
 
 		/**
 		 * 获得相匹配的节点。
@@ -2274,6 +2331,13 @@
 	.implement({
 		
 		/// #ifdef ElementNode
+		
+		/**
+		 * 执行一个简单的选择器。
+		 * @param {String} selecter 选择器。 如 h2 .cls attr=value 。
+		 * @return {Element/undefined} 节点。
+		 */
+		find: cssSelector[0],
 
 		/**
 		 * 判断一个节点是否包含一个节点。 一个节点包含自身。
@@ -2309,17 +2373,7 @@
 			var elem = this.dom || this;
 
 			return (elem.style.display || getStyle(elem, 'display')) === 'none';
-		},
-		
-		/**
-		 * 执行一个简单的选择器。
-		 * @param {String} selecter 选择器。 如 h2 .cls attr=value 。
-		 * @return {Element/undefined} 节点。
-		 */
-		find: div.querySelector ? function (selecter) {
-			assert.isString(selecter, "Element.prototype.find(selecter): 参数 {selecter} ~。");
-			return (this.dom || this).querySelector(selecter);
-		} : cssSelector(false)
+		}
 		
 	}, 4);
 	
@@ -2327,11 +2381,8 @@
 		var win = this.defaultView;
 		return new Point(win.pageXOffset, win.pageYOffset);
 	} : ep.getScroll;
-	
-	/**
-	 * @class Document
-	 */
-	p.Native(p.Document).implement({
+		
+	p.Document.implement({
 		
 		/// #ifdef ElementCore
 
@@ -3014,284 +3065,337 @@
 			elem.$data = null;
 		
 	}
-	
+
 	/**
-	 * 执行简单的选择器。
-	 * @param {Element} elem 元素。
-	 * @param {String} selector 选择器。
-	 * @return {JPlus.ElementList} 元素集合。
-	 */	
-	function cssSelector(all) {
-		if(!cssSelector.inited){
-
-		// 简单的 CSS 选择器
-		//
-		// div
-		// .example
-		// body div
-		// div, p
-		// div, p, .example
-		// div p
-		// div > p
-		// div.example
-		// ul .example
-		// ul.foo > * span
-
-/**
-* "mini" Selector Engine
-* https://github.com/jamespadolsey/mini
-* Copyright (c) 2009 James Padolsey
-* -------------------------------------------------------
-* Dual licensed under the MIT and GPL licenses.
-* - http://www.opensource.org/licenses/mit-license.php
-* - http://www.gnu.org/copyleft/gpl.html
-* -------------------------------------------------------
-* Version: 0.01 (BETA)
-* 
-*   
-
-*/
-
-
-var mini = (function(){
-    
-    var snack = /(?:[\w\-\\.#]+)+(?:\[\w+?=([\'"])?(?:\\\1|.)+?\1\])?|\*|>/ig,
-        exprClassName = /^(?:[\w\-_]+)?\.([\w\-_]+)/,
-        exprId = /^(?:[\w\-_]+)?#([\w\-_]+)/,
-        exprNodeName = /^([\w\*\-_]+)/,
-        na = [null,null];
-    
-    function _find(selector, context) {
-        
-        /**
-* This is what you call via x()
-* Starts everything off...
-*/
-        
-        context = context || document;
-        
-        var simple = /^[\w\-_#]+$/.test(selector);
-        
-        if (!simple && context.querySelectorAll) {
-            return realArray(context.querySelectorAll(selector));
-        }
-        
-        if (selector.indexOf(',') > -1) {
-            var split = selector.split(/,/g), ret = [], sIndex = 0, len = split.length;
-            for(; sIndex < len; ++sIndex) {
-                ret = ret.concat( _find(split[sIndex], context) );
-            }
-            return unique(ret);
-        }
-        
-        var parts = selector.match(snack),
-            part = parts.pop(),
-            id = (part.match(exprId) || na)[1],
-            className = !id && (part.match(exprClassName) || na)[1],
-            nodeName = !id && (part.match(exprNodeName) || na)[1],
-            collection;
-            
-        if (className && !nodeName && context.getElementsByClassName) {
-            
-            collection = realArray(context.getElementsByClassName(className));
-            
-        } else {
-            
-            collection = !id && realArray(context.getElementsByTagName(nodeName || '*'));
-            
-            if (className) {
-                collection = filterByAttr(collection, 'className', RegExp('(^|\\s)' + className + '(\\s|$)'));
-            }
-            
-            if (id) {
-                var byId = context.getElementById(id);
-                return byId?[byId]:[];
-            }
-        }
-        
-        return parts[0] && collection[0] ? filterParents(parts, collection) : collection;
-        
-    }
-    
-    function realArray(c) {
-        
-        /**
-* Transforms a node collection into
-* a real array
-*/
-        
-        try {
-            return Array.prototype.slice.call(c);
-        } catch(e) {
-            var ret = [], i = 0, len = c.length;
-            for (; i < len; ++i) {
-                ret[i] = c[i];
-            }
-            return ret;
-        }
-        
-    }
-    
-    function filterParents(selectorParts, collection, direct) {
-        
-        /**
-* This is where the magic happens.
-* Parents are stepped through (upwards) to
-* see if they comply with the selector.
-*/
-        
-        var parentSelector = selectorParts.pop();
-        
-        if (parentSelector === '>') {
-            return filterParents(selectorParts, collection, true);
-        }
-        
-        var ret = [],
-            r = -1,
-            id = (parentSelector.match(exprId) || na)[1],
-            className = !id && (parentSelector.match(exprClassName) || na)[1],
-            nodeName = !id && (parentSelector.match(exprNodeName) || na)[1],
-            cIndex = -1,
-            node, parent,
-            matches;
-            
-        nodeName = nodeName && nodeName.toLowerCase();
-            
-        while ( (node = collection[++cIndex]) ) {
-            
-            parent = node.parentNode;
-            
-            do {
-                
-                matches = !nodeName || nodeName === '*' || nodeName === parent.nodeName.toLowerCase();
-                matches = matches && (!id || parent.id === id);
-                matches = matches && (!className || RegExp('(^|\\s)' + className + '(\\s|$)').test(parent.className));
-                
-                if (direct || matches) { break; }
-                
-            } while ( (parent = parent.parentNode) );
-            
-            if (matches) {
-                ret[++r] = node;
-            }
-        }
-        
-        return selectorParts[0] && ret[0] ? filterParents(selectorParts, ret) : ret;
-        
-    }
-    
-    
-    var unique = (function(){
-        
-        var uid = +new Date();
-                
-        var data = (function(){
-         
-            var n = 1;
-         
-            return function(elem) {
-         
-                var cacheIndex = elem[uid],
-                    nextCacheIndex = n++;
-         
-                if(!cacheIndex) {
-                    elem[uid] = nextCacheIndex;
-                    return true;
-                }
-         
-                return false;
-         
-            };
-         
-        })();
-        
-        return function(arr) {
-        
-            /**
-* Returns a unique array
-*/
-            
-            var length = arr.length,
-                ret = [],
-                r = -1,
-                i = 0,
-                item;
-                
-            for (; i < length; ++i) {
-                item = arr[i];
-                if (data(item)) {
-                    ret[++r] = item;
-                }
-            }
-            
-            uid += 1;
-            
-            return ret;
-    
-        };
-    
-    })();
-    
-    function filterByAttr(collection, attr, regex) {
-        
-        /**
-* Filters a collection by an attribute.
-*/
-        
-        var i = -1, node, r = -1, ret = [];
-        
-        while ( (node = collection[++i]) ) {
-            if (regex.test(node[attr])) {
-                ret[++r] = node;
-            }
-        }
-        
-        return ret;
-    }
-    
-    return _find;
-    
-})();
-
+	 * 简单的CSS选择器引擎。
+	 */
+	function CssSelector() {
+		
+		/**
+		 *  属性操作符，#表示值。
+		 */
+		var attrs = {
+				'=': '===#',
+				'^=': '.indexOf(#)===0',
+				'*=': '.indexOf(#)>=0',
+				'|=': '.split(/\\b+/).indexOf(#)===0',
+				'~=': '.split(/\\b+/).indexOf(#)>=0'
+			},
 			
-			cssSelector.inited = true;
-		}
-		  function b(selecter) {
-			assert.isString(selecter, "Element.prototype.findAll(selecter): 参数 {selecter} ~。");
-			var current = new ElementList([this.dom || this]);
-			selecter.split(' ').forEach( function (v) {
-				current = findBy(current, v);
-			});
-
-			return current;
-		}
-		function n(selecter) {
-			var current = this.dom || this;
-			assert.isString(selecter, "Element.prototype.find(selecter): 参数 {selecter} ~。");
-			if(selecter.split(' ').each(function (v) {
-				return !!(current = findBy(current, v)[0]);
-			}))
-				return $(current);
-		}
-	}
-
+			/**
+			 * 连接符转为代码。
+			 */
+			maps = {
+				'>': 'for(_=c[i].firstChild;_;_=_.nextSibling){',
+				'~': 'for(_=c[i];_;_=_.nextSibling){',
+				'+': 'for(_=c[i];_&&_.nodeType !== 1;_=_.nextSibling);if(_){'
+			},
+			
+			findCache = {},
+			
+			findAllCache = {},
+			
+			/**
+			 * 用于提取简单部分的正式表达式。
+			 * 
+			 * 一个简单的表达式由2个部分组成。
+			 * 前面部分可以是
+			 * 	#id
+			 * 	.className
+			 * 	tagName
+			 * 
+			 * 后面部分可以是
+			 * 	(任意空格)
+			 * 	#
+			 * 	.
+			 * 	>
+			 * 	+
+			 * 	~
+			 * 	[
+			 * 	,
+			 * 
+			 * 并不是全部选择器都是简单选择器。下列情况是复杂的表达式。
+			 *  >
+			 *  +
+			 *  ~
+			 * 	,
+			 * 	[attrName]
+			 *  [attrName=attrVal]
+			 *  [attrName='attrVal']
+			 *  [attrName="attrVal"]
+			 */
+			rSimpleSelector = /^\s*([#.]?)([*\w\u0080-\uFFFF_-]+)(([\[#.,>+~])|\s*)/,
+			
+			/**
+			 * 复杂的表达式。
+			 * 
+			 * 只匹配 > + ~ , [ 开头的选择器。其它选择器被认为非法表达式。
+			 * 
+			 * 如果是 [ 开头的表达式， 则同时找出 [attrName] 后的内容。
+			 */
+			rRelSelector = /^\s*([>+~,]|\[([^=]+?)\s*(([\^\*\|\~]?=)\s*((['"])([^\6]*)\6|[^'"][^\]]*?)\s*)?\])/;
 	
-	function findBy(elem, selector) {  return  //  TODO
-		switch(selector.charAt(0)) {
-			case '.':
-				elem = elem.getElementsByClassName(selector.replace(/\./g, ' '));
-				break;
-			case '[':
-				var s = rAttr.exec(selector);
-				assert(s && s[1], "Element.prototype.find(selector): 参数 {selector} 不是合法的选择器。 属性选择器如: [checked='checked']", selector);
-				elem = elem.getElementsByAttribute(s[1], s[4]);
-				break;
-			default:
-				elem = elem.getElementsByTagName(selector);
-				break;
+		/**
+		 * 分析选择器，并返回一个等价的函数。
+		 * @param {String} selector css3 选择器。
+		 * @return {Function} 返回执行选择器的函数。函数的参数是 elem, 表示当前的元素。
+		 * 只支持下列选择器及组合：
+		 * #id
+		 * .class
+		 * tagName
+		 * [attr]
+		 * [attr=val]  (val 可以是单引号或双引号或不包围的字符串，但不支持\转义。)
+		 * [attr!=val]
+		 * [attr~=val]
+		 * [attr^=val]
+		 * [attr|=val]
+		 * 
+		 * 选择器组合方式有：
+		 * selctor1selctor2
+		 * selctor1,selector2
+		 * selctor1 selctor2
+		 * selctor1>selctor2
+		 * selctor1~selctor2
+		 * selctor1+selctor2
+		 */
+		function parse(selector, first) {
+		
+			// filter       1   - 对已有元素进行过滤
+			// seperator    2   - 计算分隔操作
+			// map tag     -1  - 根据已有元素重新获取新的数组
+			// map +       -2  - 根据已有元素重新获取新的数组
+			
+			var type,
+				value,
+				tokens = [],
+				matchSize,
+				match,
+				t,
+				codes = ['var c=[elem],n,t,i,j,_;'];
+			
+			// 只要还有没有处理完的选择器。
+			while(selector) {
+				
+				// 执行简单的选择器。
+				match = rSimpleSelector.exec(selector);
+				
+				// 如果不返回 null, 说明这是简单的选择器。
+				// #id .class tagName 选择器 会进入if语句。
+				if(match) {
+					
+					// 记录当前选择器已被处理过的部分的长度。
+					matchSize = match[0].length;
+					
+					// 选择器的内容部分， 如 id class tagName
+					value = match[2];
+					
+					// 根据前缀判断。
+					switch(match[1]){
+						
+						// 类选择器。
+						case '.':
+							type = 1;
+							value = 'Element.hasClass(_,' + toJsString(value) + ')';
+							break;
+						
+						// ID 选择器。
+						case '#':
+							type = 1;
+							value = '_.id===' + toJsString(value);
+							break;
+						
+						// 标签选择器。
+						default:
+							type = -1;
+						
+					}
+					
+					// 如果之后有 . # > + ~ [, 则回退一个字符，下次继续处理。
+					if(match[4]) {
+						matchSize--;
+						
+					} else {
+						
+						// 保存当前的值，以追加空格。
+						tokens.push([type, value]);
+						
+						// 如果末尾有空格，则添加，否则说明已经是选择器末尾，跳出循环:)。
+						if(match[3])
+							type = 2;
+						else {
+							assert(selector.length === matchSize, 'CssSelector.parse(selector): 选择器语法错误(在 "' + selector.substring(matchSize) + ' 附近)');
+							selector = null;
+							break;
+						}
+					}
+				} else {
+					
+					// 处理 ~ + > [ ,  开头的选择器， 不是这些开头的选择器是非法选择器。
+					match = rRelSelector.exec(selector);
+					
+					assert(match, "CssSelector.parse(selector): 选择器语法错误(在 " + selector + ' 附近)');
+					
+					// 记录当前选择器已被处理过的部分的长度。
+					matchSize = match[0].length;
+					
+					// [ 属性 ]
+					if(match[2]) {
+						type = 1;
+						value = 'Element.getAttr(_,' + toJsString(match[2]) + ')';
+						if(match[4])
+							value = '(' + value + '||"")' + attrs[match[4]].replace('#', toJsString(match[6] ? match[7] : match[5]));
+					
+					// ,
+					} else if(match[1] === ',') {
+						
+						// ，  为特殊的关系符，将剩下的选择器保存，并直接退出循环。 
+						// 剩余的部分在 下面转换内处理。
+						selector = selector.substring(matchSize);
+						break;
+					
+					// + > ~
+					} else {
+						type = -2;
+						value = match[1];
+					}
+				}
+				
+				// 经过处理后， token 的出现顺序为   -1 1 1 3 -2 1 1...
+				tokens.push([type, value]);
+					
+				// 去掉已经处理的部分。
+				selector = selector.substring(matchSize);
+			
+			}
+			 
+			 // 计算  map 的个数。
+			match = matchSize = 0;
+			while(value = tokens[match++]) {
+				if(value[0] !== 2) {
+			 		matchSize++;
+			 		while(tokens[match] && tokens[match][0] === 1)
+			 			match++;
+				}
+			}
+			
+			match = 0;
+			// 从第一个 token 开始，生成代码。
+			while(value = tokens[match++]){
+				
+				// 忽视分隔符。
+				if(value[0] !== 2) {
+					
+					// 如果直接就是条件，追加对全部节点筛选处理。
+					if(value[0] === 1) {
+						value = [-1, '*'];
+						match--;
+					}
+					
+					// 是否只需第一个元素。
+					type = first && --matchSize === 0;
+					
+					// 如果返回列表，则创建列表。
+					if(!type)
+						codes.push('n=new ElementList;');
+					
+					// 加入遍历现在集合的代码。
+					codes.push('for(i=0;i<c.length;i++){');
+					
+					// 如果是标签，则运用原生的根据标签返回节点的方法。
+					if(value[0] === -1) {
+						if(value[1] === '*' && 'all' in document) {
+							codes.push('t=c[i].all');
+							
+							// 不需要判断节点类型。
+							t = false;
+						} else {
+							codes.push('t=c[i].getElementsByTagName(',
+								toJsString(value[1]),
+								''
+							); 
+							
+							// 如果是 * ，则判断节点类型。
+							t = value[1] === '*';
+						}
+						
+						codes.push(';for(j=0;j<t.length;j++){_=t[j];');
+						
+					// 否则，直接使用现在的代码。
+					} else {
+						codes.push(maps[value[1]]);
+						t = value[1] !== '+';
+					}
+					
+					// 处理条件。
+					
+					// 如果有条件则处理。
+					while(tokens[match] && tokens[match][0] === 1) {
+						
+						// t: 1: 已经添加过一个条件。
+						if(t === 1)
+							codes.push('&&');
+							
+						// t: 2: 没有添加过条件。
+						else if(t === 2)
+							t = 1;
+							
+						// t: true/false: 第一次执行。
+						else {
+							codes.push('if(');
+							if(t) {
+								codes.push('_.nodeType===1&&');
+								t = 1;
+							} else
+								t = 2;
+						}
+						
+						// 追加检测。
+						codes.push(tokens[match++][1]);
+					}
+					
+					// 如果存在判断。
+					if(t) {
+						
+						// 不是 1,2  说明， 有且仅有一个判断。
+						if(t === true) codes.push('if(_.nodeType===1)');
+						codes.push(')');
+					}				
+					
+					codes.push(type ? 'return JPlus.$(_);}}': 'n.push(_);}}c=n;');
+					
+				}
+				
+			}
+			
+			codes.push('return ');
+			
+			if(selector)
+				codes.push(type ? '(elem.find(' : 'c.concat(elem.findAll(', toJsString(selector), '))');
+			else
+				codes.push(type ? 'null' : 'c');
+			  
+			return new Function('elem', codes.join(''));
 		}
-
-		return elem;
+		
+		/**
+		 * 把一个字符串转为Javascript的字符串。
+		 * @param {String} value 输入的字符串。
+		 * @return {String} 带双引号的字符串。
+		 */
+		function toJsString (value) {
+			return '"' + value.replace(/"/g, '\\"') + '"';
+		}
+		
+		return [
+			
+			function(selector){
+				return (findCache[selector] || (findCache[selector] = parse(selector, true)))(this.dom || this);
+			},
+			
+			function(selector){
+				return (findAllCache[selector] || (findAllCache[selector] = parse(selector)))(this.dom || this);
+			}
+		];
 	}
 
 	/**
@@ -3444,795 +3548,4 @@ var mini = (function(){
 
 })(this);
 
-      
-function Elements(selector){
-    this.hash = {};
-    this.push = Array.prototype.push;
-    this.length = 0;
-    arguments.callee.collect.call(this, selector);
-    delete this.push;
-    //delete this.hash;
-}
-Elements.prototype = function (){
-    var REGEXP_1 = /^(\s)*([\),\+>~]?)\s*\*?([\[\.:#]?)\s*([\w\u0080-\uFFFF_-]*)\(?/;
-    var REGEXP_2 = /^(?:\s*(\S?\=)\s*(?:([\+\-\d\.]+)|(\w+)|"((?:[^"]|`")*)"))?\s*\]/;
-    var REGEXP_3 = /^\s*(?:(even|odd)|(?:(\d*)n)?([\+\-\d]+)?)\s*\)/;
-    var REGEXP_4 = /^(?:([^\)]+)|"((?:[^"]|`")*)")/;
-    var VALUES_MAP = {};
-    VALUES_MAP['true'] = true;
-    VALUES_MAP['false'] = false;
-    VALUES_MAP['null'] = null;
-    VALUES_MAP['undefined'] = undefined;
-    function parse(selector){
-        var tmp,
-            sequence = [],
-            chain = [sequence],
-            group = [chain];
-        while (selector && REGEXP_1.test(selector)){
-            selector = RegExp.rightContext;
-            if (tmp = RegExp.$2 || RegExp.$1){
-                sequence = [];
-                switch (tmp){
-                case ',':
-                    sequence = [];
-                    chain = [sequence];
-                    group.push(chain);
-                    break;
-                case ')':
-                    group.selector = selector;
-                    return group;
-                default:
-                    sequence = [];
-                    sequence.tag = tmp;
-                    chain.push(sequence);
-                    break;
-                }
-            }
-            if (tmp = RegExp.$3 || RegExp.$4){
-                tmp = RegExp.$3 ? tmp : 'T';
-                var token = [];
-                token.tag = tmp;
-                switch (tmp){
-                case ':':
-                    tmp = RegExp.$4;
-                    token.tag = tmp;
-                    switch (tmp){
-                    case 'not':
-                    case 'has':
-                        tmp = parse(selector);
-                        selector = tmp.selector;
-                        //tmp = tmp[0][0][0];
-                        token.push(tmp);
-                        break;
-                    case 'nth-child':
-                    case 'nth-of-type':
-                    case 'nth':
-                        if (REGEXP_3.test(selector)){
-                            selector = RegExp.rightContext;
-                            if (tmp = RegExp.$1){
-                                if (tmp == 'even'){
-                                    token.push(2);
-                                    token.push(0);
-                                } else if (tmp == 'odd'){
-                                    token.push(2);
-                                    token.push(1);
-                                } else throw '';
-                            } else {
-                                tmp = RegExp.$2 || 0;
-                                tmp = Number(tmp);
-                                token.push(tmp);
-                                tmp = RegExp.$3 || 0;
-                                tmp = Number(tmp);
-                                token.push(tmp);
-                            }
-                        }
-                        break;
-                    case 'contains':
-                        if (REGEXP_4.test(selector)){
-                            selector = RegExp.rightContext;
-                            tmp = RegExp.$1 || RegExp.$2.replace(/`(`*")/g, '$1');
-                            token.push(tmp);
-                        }
-                        break;
-                    default:
-                        break;
-                    }
-                    break;
-                case '[':
-                    tmp = RegExp.$4;
-                    if (tmp === 'class') tmp = 'className';
-                    token.push(tmp);
-                    if (REGEXP_2.test(selector)){
-                        selector = RegExp.rightContext;
-                        if (tmp = RegExp.$1){
-                            token.tag = tmp;
-                            if (tmp = RegExp.$2){
-                                tmp = Number(tmp);
-                            } else if (tmp = RegExp.$3){
-                                tmp = VALUES_MAP[tmp] || tmp;
-                            } else if (tmp = RegExp.$4){
-                                tmp = tmp.replace(/`(`*")/g, '$1');
-                            } else throw '';
-                            token.push(tmp);
-                        } else {
 
-                        }
-                    } else throw '';
-                    break;
-                case '#':
-                case '.':
-                case 'T':
-                    token.push(RegExp.$4);
-                    break;
-                }
-                //sequence[ORDERS_MAP[token.tag]] = token;
-                sequence.push(token);
-            }
-        }
-        return group;
-    }
-    var SELECT =
-        'key = node.uid || (node.uid = uid++);' +
-        'key += "[@]" + #0;' +
-        'var #nodes = rcc[key] || (rcc[key] = node.getElementsBy@(#0));' +
-        'for (var #i=0,#l=#nodes.length; #i<#l; #i++){' +
-            'node = #nodes[#i];' +
-            'if (node.nodeType===1){' +
-                '{find}' +
-            '}' +""
-        '}' +
-        '#nodes = null;';
-    var tpl = {
-        '{': {
-            code:
-            'ret = function (){' +
-                'var node, key, hash = this.hash;' +
-                '{next}' +
-                'return this;' +
-            '}'
-        },
-        '}': { next: '' },
-        '(': {
-            next:
-            'node = document;' +
-            '{head}' +
-            '{find}' +
-            '{foot}' +
-            '{next}'
-        },
-        t2f: { test: '{find}' },
-        f2t: { find: '{test}' },
-        finder:
-        {
-            '>': {
-                find:
-                'var #nodes = node.children || node.childNodes;' +
-                'for (var #i=0,#l=#nodes.length; #i<#l; #i++){' +
-                    'node = #nodes[#i];' +
-                    'if (node.nodeType===1){' +
-                        '{find}' +
-                    '}' +
-                '}' +
-                '#nodes = null;'
-            },
-            '+': {
-                find:
-                'var #node = node;' +
-                'while (#node = #node.nextSibling){' +
-                    'if (#node.nodeType == 1){' +
-                        'node = #node;' +
-                        '{find}' +
-                        'break;' +
-                    '}' +
-                '}'
-            },
-            '~': {
-                head:
-                'var #hash = {};{head}',
-                find:
-                'var #node = node;' +
-                'while (#node = #node.nextSibling){' +
-                    'key = #node.uid || (#node.uid = uid++);' +
-                    'if (key in #hash){' +
-                        'break;' +
-                    '} else {' +
-                        'node = #node;' +
-                        'if (node.nodeType===1){' +
-                            '{find}' +
-                        '}' +
-                    '}' +
-                    '#hash[key] = null'+
-                '}',
-                foot:
-                '{foot}#hash = null;'
-            },
-            '#': { find: 'if (node = node.getElementById(#0)){{find}}' },
-            'T': { find: SELECT.replace(/@/g, 'TagName') },
-            '.': { find: SELECT.replace(/@/g, 'ClassName') },
-            'N': { find: SELECT.replace(/@/g, 'Name') },
-            '*': {
-                find:
-                'key = node.uid || (node.uid = uid++);' +
-                'var #nodes = rcc[key] || (rcc[key] = node.all || node.getElementsByTagName("*"));' +
-                'for (var #i=0,#l=#nodes.length; #i<#l; #i++){' +
-                    'node = #nodes[#i];' +
-                    '{find}' +
-                '}' +
-                '#nodes = null;'
-            }
-        },
-        ')': {
-            head: '',
-            find:
-                'key = node.uid || (node.uid = uid++);' +
-                'if (!(key in hash)){' +
-                    'this.push(node);' +
-                    'hash[key] = null;' +
-                '}',
-            foot: ''
-        },
-        '[': {
-            find:
-                'var pass = false;' +
-                'var #node = node;' +
-                '{pass}' +
-                'if (pass){' +
-                    'node = #node;' +
-                    '{find}' +
-                '}'
-        },
-        t2p: { test: '{pass}' },
-        p2t: { pass: '{test}' },
-        passer:
-        {
-            ' ': {
-                head: 'var #hash = {};{head}',
-                pass:
-                'var #pass = [false];' +
-                'var #node = node;' +
-                'while (#node = #node.parentNode){' +
-                    'key = #node.uid || (#node.uid = uid++);' +
-                    'if (key in #hash){' +
-                        'pass = #pass[0] = #hash[key][0];' +
-                        'break;' +
-                    '} else {' +
-                        'pass = false;' +
-                        'node = #node;' +
-                        '{pass}' +
-                        'if (pass){' +
-                            'break;' +
-                        '}' +
-                    '}' +
-                    '#hash[key] = #pass;'+
-                '}' +
-                '#pass[0] = pass;',
-                foot: '{foot}#hash = null;'
-            },
-            '~': {
-                head: 'var #hash = {};{head}',
-                pass:
-                'var #pass = [false];' +
-                'var #node = node;' +
-                'while (#node = #node.previousSibling){' +
-                    'key = #node.uid || (#node.uid = uid++);' +
-                    'if (key in #hash){' +
-                        'pass = #pass[0] = #hash[key][0];' +
-                        'break;' +
-                    '} else {' +
-                        'pass = false;' +
-                        'node = #node;' +
-                        '{pass}' +
-                        'if (pass){' +
-                            'break;' +
-                        '}' +
-                    '}' +
-                    '#hash[key] = #pass;'+
-                '}' +
-                '#pass[0] = pass;',
-                foot: '{foot}#hash = null;'
-            },
-            '>': {
-                pass:
-                'var #node = node;' +
-                'while (#node = #node.parentNode){' +
-                    'node = #node;' +
-                    '{pass}' +
-                    'break;' +
-                '}'
-            },
-            '+': {
-                pass:
-                'var #node = node;' +
-                'while (#node = #node.previousSibling){' +
-                    'node = #node;' +
-                    'if (node.nodeType===1){' +
-                        '{pass}' +
-                    '}' +
-                    'break;' +
-                '}'
-            }
-        },
-        ']': { pass: 'pass = true;' },
-        tester:
-        {
-            'T': { test: 'if (node.tagName.toUpperCase()===#1){{test}}' },
-            '[': { test: 'if (node.getAttribute(#0)){{test}}' },
-            '*': { test: '{test}' },
-            '[href]': { test: 'if (node.getAttribute("href",2)){{test}}' },
-            '[class]': { test: 'if (node.className){{test}}' },
-            '=': { test: 'if (node[#0] == #1){{test}}' },
-            '!=': { test: 'if (node[#0] != #1){{test}}' },
-            '~=': { test: 'if (#1.test(node[#0])){{test}}' },
-            '^=': { test: 'if (node[#0].indexOf(#1)===0){{test}}' },
-            '$=': { test: 'if (node[#0].lastIndexOf(#1)===node[#0].length-#1.length){{test}}' },
-            '*=': { test: 'if (node[#0].indexOf(#1) >= 0){{test}}' },
-            '|=': { test: 'if (#2.test(node[#0])){{test}}' },
-            'contains': { test: 'if (#1.test(node.textContent||node.innerText||"")){{test}}' },
-            'nth-child': { test: 'if ((index.call(node)-#1)%#0===0){{test}}' },
-            'nth-child1': { test: 'if (index.call(node)===#1)){{test}}' }
-        }
-    };
-    var fix = {
-        '#': function (id){
-            this[1] = id;
-            this[0] = 'id';
-            this.tag = '=';
-        },
-        'T': function (tagName){
-            this[1] = tagName.toUpperCase();
-        },
-        '[': function (attrName){
-            if (attrName==='class'){
-                this.tag = '[class]';
-            } else if (attrName==='href'){
-                this.tag = '[href]';
-            }
-        },
-        '.': function (className){
-            this.tag = '~=';
-            this[0] = 'className';
-            this[1] = new RegExp('\\b'+className+'\\b');
-        },
-        '|=': function (){
-            this[2] = new RegExp('^'+this[1]+'(-.*)?');
-        },
-        'contains': function (text){
-            this[1] = new RegExp(text);
-        },
-        '~=': function (){
-            this[1] = new RegExp('\\b'+this[1]+'\\b');
-        },
-        'nth-child': function (a, b){
-            if (!a){
-                if (!b){
-                    this.tag = '*';
-                } else {
-                    this.tag = 'nth-child1';
-                }
-            }
-        },
-        'first-child': function (){
-            this.tag = 'nth-child';
-            this[0] = 0;
-            this[1] = 1;
-        }
-    };
-    var rcc = {};
-    var uid = 11;
-    var fcc = {};
-    var ctx;
-    var cns;
-    function setup(tpl, pms){
-        var ns = 'NS'+(cns++)+'_';
-        return this.replace(/\{(\w+)\}/g, function (m, p1){
-            if (p1){
-                if (p1 in tpl){
-                    m = tpl[p1];
-                    m = m.replace(/#(\d*)/g, function (m, p1){
-                        m = ns;
-                        if (p1){
-                            m += p1;
-                            ctx[m] = pms[p1];
-                        }
-                        return m;
-                    });
-                }
-            } else {
-                m = tpl;
-            }
-            return m;
-        });
-    }
-    function index(){
-        if (!('nodeIndex' in this)){
-            var p = this.parentNode;
-            var index = 1;
-            var nodes = p.children || p.childNodes;
-            for (var i=0,l=nodes.length; i<l; i++){
-                var node = nodes[i];
-                if (node.nodeType === 1){
-                    node.nodeIndex = index ++;
-                }
-            }
-        }
-        return this.nodeIndex;
-    }
-    var ORDER_MAP = { 'T': 4, '#': 1, '.': 3, 'N': 2 };
-    if (!document['getElementsByClassName']){
-        delete ORDER_MAP['.'];
-        delete tpl.finder['.'];
-    }
-    function build(selector){
-        var ret;
-        if (ret = fcc[selector]) return ret;
-        ctx = {};
-        cns = 11;
-        var group = parse(selector);
-        selector = '{code}';
-        selector = setup.call(selector, tpl['{']);
-        for (var i=0,l=group.length; i<l; i++){
-            selector = setup.call(selector, tpl['(']);
-            var chain = group[i];
-            chain[0].tag = ' ';
-            var x = chain.length;
-            var p, q = 9999;
-            while (x > 0){
-                p = ORDER_MAP[chain[x - 1][0].tag] || 9999;
-                if (p > q){
-                    break;
-                } else {
-                    q = p;
-                }
-                x --;
-            }
-            var seq, tag, token;
-            var once = x > 0;
-            for (var j=x,m=chain.length; j<m; j++){
-                var y = 0, n;
-                seq = chain[j];
-                if (seq.length === 0){
-                    token = [];
-                    token.tag = '*';
-                    seq.push(token);
-                }
-                tag = seq.tag;
-                if (tag == ' ' || j === x){
-                    tag = seq[0].tag;
-                    if (tag in tpl.finder){
-                        y = 1;
-                    } else {
-                        tag = '*';
-                    }
-                }
-                selector = setup.call(selector, tpl.finder[tag], seq[0]);
-                selector = setup.call(selector, tpl.f2t);
-                for (n=seq.length; y<n; y++){
-                    token = seq[y];
-                    if (fix[token.tag]){
-                        fix[token.tag].apply(token, token);
-                    }
-                    selector = setup.call(selector, tpl.tester[token.tag], token);
-                }
-                selector = setup.call(selector, tpl.t2f);
-                if (once && j == x){
-                    var k = x;
-                    selector = setup.call(selector, tpl['[']);
-                    while (k-- > 0){
-                        seq = chain[k];
-                        selector = setup.call(selector, tpl.passer[chain[k + 1].tag]);
-                        selector = setup.call(selector, tpl.p2t);
-                        for (y=0,n=seq.length; y<n; y++){
-                            token = seq[y];
-                            if (fix[token.tag]){
-                                fix[token.tag].apply(token, token);
-                            }
-                            selector = setup.call(selector, tpl.tester[token.tag], token);
-                        }
-                        selector = setup.call(selector, tpl.t2p);
-                    }
-                    once = false;
-                    selector = setup.call(selector, tpl[']']);
-                }
-            }
-            selector = setup.call(selector, tpl[')']);
-        }
-        selector = setup.call(selector, tpl['}']);
-        with (ctx){
-            fcc[selector] = ret = eval(selector);
-        }
-        ctx = null;
-        return ret;
-    }
-    function flush(){
-        rcc = {};
-    };
-    document.uid = uid ++;
-    var handle = document.attachEvent ||
-                document.addEventListener;
-    handle('DOMNodeInserted', flush, false);
-    handle('DOMNodeRemoved', flush, false);
-    handle('DOMAttrModified', flush, false);
-    this.flush = flush;
-    this.query = function (selector){
-        return new Elements(selector);
-    };
-    this.collect = function (selector){
-        //TODO: Do not put result into cache directly! should clone it.
-        return rcc[selector] || (rcc[selector] = build(selector).call(this));
-    };
-    return {
-
-    };
-}.call(Elements);
-document.getElementsBySelector = Elements.query;
-
-
-// filter       1   - 对已有元素进行过滤
-// seperator    2   - 计算分隔操作
-// map          -1  - 根据已有元素重新获取新的数组
-// map +        -2  - 根据已有元素重新获取新的数组
-
-
-function CssSelector() {
-	
-	/**
-	 *  属性操作符，#表示值。
-	 */
-	var attrs = {
-			'=': '===#',
-			'^=': '.indexOf(#)===0',
-			'*=': '.indexOf(#)>=0',
-			'|=': '.split(/\\b+/).indexOf(#)===0',
-			'~=': '.split(/\\b+/).indexOf(#)>=0'
-		},
-		
-		/**
-		 * 连接符转为代码。
-		 */
-		maps = {
-			'>': 'for(_=c[i].firstChild;_;_=_.nextSibling){',
-			'~': 'for(_=c[i];_;_=_.nextSibling){',
-			'+': 'for(_=c[i];_&&_.nodeType !== 1;_=_.nextSibling);if(_){'
-		},
-		
-		/**
-		 * 用于提取简单部分的正式表达式。
-		 * 
-		 * 一个简单的表达式由2个部分组成。
-		 * 前面部分可以是
-		 * 	#id
-		 * 	.className
-		 * 	tagName
-		 * 
-		 * 后面部分可以是
-		 * 	(任意空格)
-		 * 	#
-		 * 	.
-		 * 	>
-		 * 	+
-		 * 	~
-		 * 	[
-		 * 	,
-		 * 
-		 * 并不是全部选择器都是简单选择器。下列情况是复杂的表达式。
-		 *  >
-		 *  +
-		 *  ~
-		 * 	,
-		 * 	[attrName]
-		 *  [attrName=attrVal]
-		 *  [attrName='attrVal']
-		 *  [attrName="attrVal"]
-		 */
-		rSimpleSelector = /^\s*([#.]?)([\w\u0080-\uFFFF_-]+)(([\[#.,>+~])|\s*)/,
-		
-		/**
-		 * 复杂的表达式。
-		 * 
-		 * 只匹配 > + ~ , [ 开头的选择器。其它选择器被认为非法表达式。
-		 * 
-		 * 如果是 [ 开头的表达式， 则同时找出 [attrName] 后的内容。
-		 */
-		rRelSelector = /^\s*([>+~,]|\[([^=]+?)\s*(([\^\*\|\~]?=)\s*((['"])([^\5]*)\5|(([^\]]*?)))\s*)?\])/;
-	
-	/**
-	 * 分析选择器，并返回一个等价的函数。
-	 * @param {String} selector css3 选择器。
-	 * @return {Function} 返回执行选择器的函数。函数的参数是 elem, 表示当前的元素。
-	 * 只支持下列选择器及组合：
-	 * #id
-	 * .class
-	 * tagName
-	 * [attr]
-	 * [attr=val]  (val 可以是单引号或双引号或不包围的字符串，但不支持\转义。)
-	 * [attr!=val]
-	 * [attr~=val]
-	 * [attr^=val]
-	 * [attr|=val]
-	 * 
-	 * 选择器组合方式有：
-	 * selctor1selctor2
-	 * selctor1,selector2
-	 * selctor1 selctor2
-	 * selctor1>selctor2
-	 * selctor1~selctor2
-	 * selctor1+selctor2
-	 */
-	function parse(selector) {
-		
-		var type,
-			value,
-			tokens = [],
-			matchSize,
-			match,
-			p;
-		
-		// 只要还有没有处理完的选择器。
-		while(selector) {
-			
-			// 执行简单的选择器。
-			match = rSimpleSelector.exec(selector);
-			
-			// 如果不返回 null, 说明这是简单的选择器。
-			// #id .class tagName 选择器 会进入if语句。
-			if(match) {
-				
-				// 记录当前选择器已被处理过的部分的长度。
-				matchSize = match[0].length;
-				
-				// 选择器的内容部分， 如 id class tagName
-				value = match[2];
-				
-				// 根据前缀判断。
-				switch(match[1]){
-					
-					// 类选择器。
-					case '.':
-						type = 1;
-						value = 'Element.hasClass(_,' + toJsString(value) + ')';
-						break;
-					
-					// ID 选择器。
-					case '#':
-						type = 1;
-						value = '_.id===' + toJsString(value);
-						break;
-					
-					// 标签选择器。
-					default:
-						type = -1;
-					
-				}
-				
-				// 如果之后有 . # > + ~ [, 则回退一个字符，下次继续处理。
-				if(match[4]) {
-					matchSize--;
-					
-				} else {
-					
-					// 保存当前的值，以追加空格。
-					tokens.push([type, value]);
-					
-					// 如果末尾有空格，则添加，否则说明已经是选择器末尾，跳出循环:)。
-					if(match[3])
-						type = 2;
-					else
-						break;
-				}
-			} else {
-				
-				// 处理 ~ + > [ ,  开头的选择器， 不是这些开头的选择器是非法选择器。
-				match = rRelSelector.exec(selector);
-				
-				assert(match, "CssSelector.parse(selector): 选择器语法错误(在 " + selector + ' 附近)');
-				
-				// 记录当前选择器已被处理过的部分的长度。
-				matchSize = match[0].length;
-				
-				// [ 属性 ]
-				if(match[2]) {
-					type = 1;
-					value = 'Element.getAttr(_,' + toJsString(match[2]) + ')';
-					if(match[4])
-						value = '(' + value + '||"")' + attrs[match[4]].replace('#', toJsString(match[6]));
-				
-				// ,
-				} else if(match[1] === ',') {
-					
-					// ，  为特殊的关系符，将剩下的选择器保存，并直接退出循环。 
-					// 剩余的部分在 下面转换内处理。
-					selector = selector.substring(matchSize));
-					break;
-				
-				// + > ~
-				} else {
-					type = -2;
-					value = match[1];
-				}
-			}
-			
-			p = tokens.item(-1);
-			
-			// 条件之前必须是 map。 否则， 增加 * 的节点返回。
-			if(type === 1 && (!p || p[0] === 2))
-				tokens.push([-1, '*']);
-				
-			// 忽略 map 之前的 空格。
-			else if(type < 0 && p && p[0] === 2)
-				tokens.pop();
-			
-			// 经过处理后， token 的出现顺序为   -1 1 1 3 -2 1 1...
-			tokens.push([type, value]);
-				
-			// 去掉已经处理的部分。
-			selector = selector.substring(matchSize);
-		
-		}
-	
-		 trace(tokens);
-		return tokens;
-	}
-	
-	/**
-	 * 把一个字符串转为Javascript的字符串。
-	 * @param {String} value 输入的字符串。
-	 * @return {String} 带双引号的字符串。
-	 */
-	function toJsString (value) {
-		return '"' + value.replace(/"/g, '\\"') + '"';
-	}
-
-}
-	
-
-
-
-function compile(tokens){
-	var codes = ['var c=[elem],n,t,i,j,_;'], token, j, checkElement;
-	for(var i = 0; i < tokens.length;){
-		token = tokens[i++];
-		
-		if(token[0] !== 2) {
-			
-			for(j = i; tokens[i] && tokens[i][0] === 1; i++);
-			
-			codes.push('n=new ElementList;for(i=0;i<c.length;i++){');
-			if(token[0] === -1) {
-				if(token[1] === '*' && 'all' in document) {
-					codes.push('t=c[i].all;');
-					checkElement = true;
-				} else {
-					codes.push('t=c[i].getElementsByTagName(',
-						toJsString(token[1]),
-						');for(j=0;j<t.length;j++){_=t[i];'
-					); 
-					checkElement = false;
-				}
-			} else {
-				codes.push(maps[token[1]]);
-				checkElement = token[1] !== '+';
-			}
-			
-			// 是否需要条件
-			if(i > j) {
-				codes.push('if(_.nodeType===1');
-				while(j < i)
-					codes.push('&&', tokens[j++][1]);
-				codes.push(')');
-			}
-			
-			codes.push('n[n.length++]=_;}}c=n;');
-			
-		}
-		
-	}
-	
-	
-	codes.push('return c;');
-	
-	trace(codes.join('       '));
-	
-	return new Function('elem', codes.join('')).toString();
-	
-	return codes;
-}
