@@ -1760,25 +1760,6 @@ var JPlus = {
 	 */
 	Array.implementIf({
 
-		/// #ifdef SupportIE8
-
-		/**
-		 * 返回数组某个值的第一个位置。值没有,则为-1 。
-		 * @param {Object} item 成员。
-		 * @param {Number} start=0 开始查找的位置。
-		 * @return Number 位置，找不到返回 -1 。 
-		 * 现在大多数浏览器已含此函数.除了 IE8-  。
-		 */
-		indexOf: function (item, startIndex) {
-			startIndex = startIndex || 0;
-			for (var len = this.length; startIndex < len; startIndex++)
-				if (this[startIndex] === item)
-					return startIndex;
-			return -1;
-		},
-		
-		/// #endif
-
 		/**
 		 * 对数组运行一个函数。
 		 * @param {Function} fn 函数.参数 value, index
@@ -1799,6 +1780,21 @@ var JPlus = {
 
 		/// #ifdef SupportIE8
 
+		/**
+		 * 返回数组某个值的第一个位置。值没有,则为-1 。
+		 * @param {Object} item 成员。
+		 * @param {Number} start=0 开始查找的位置。
+		 * @return Number 位置，找不到返回 -1 。 
+		 * 现在大多数浏览器已含此函数.除了 IE8-  。
+		 */
+		indexOf: function (item, startIndex) {
+			startIndex = startIndex || 0;
+			for (var len = this.length; startIndex < len; startIndex++)
+				if (this[startIndex] === item)
+					return startIndex;
+			return -1;
+		},
+		
 		/**
 		 * 对数组每个元素通过一个函数过滤。返回所有符合要求的元素的数组。
 		 * @param {Function} fn 函数。参数 value, index, this。

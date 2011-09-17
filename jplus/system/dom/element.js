@@ -578,6 +578,10 @@
 			 */
 			init: Function.empty,
 			
+			onRender: function (parent, refNode) {
+			 	(parent.dom || parent).insertBefore(this.dom, refNode);
+			},
+			
 			/**
 		     * 创建并返回控件的副本。
 		     * @param {Boolean} keepId=fasle 是否复制 id 。
@@ -602,13 +606,15 @@
 		 */
 		ElementList = namespace(".ElementList", 
 		
-		/// #ifdef SuportIE6
+		/// #ifdef SupportIE6
 		
-		navigator.isQuirks ? p.Object :
+		(navigator.isQuirks ? p.Object : Array)
+		
+		/// #else
+		
+		/// Array
 		
 		/// #endif
-		
-		Array
 		
 		.extend({
 	
@@ -623,7 +629,7 @@
 		
 					assert(doms.length !== undefined, 'ElementList.prototype.constructor(doms): 参数 {doms} 必须是一个 NodeList 或 Array 类型的变量。', doms);
 					
-					var len = this.length = doms.length;alert(doms.length - this.length + '%')
+					var len = this.length = doms.length;
 					while(len--)
 						this[len] = doms[len];
 		
@@ -652,6 +658,15 @@
 				}
 				
 				return this;
+			},
+			
+			/**
+			 * 将当前列表添加到指定父节点。
+			 */
+			onRender: function (parentNode, refNode) {
+				parentNode = parentNode.dom || parentNode;
+				for(var i = 0, len = this.length; i < len; i++)
+					parentNode.insertBefore(this[i], refNode);
 			},
 	
 			/**
@@ -711,9 +726,7 @@
 
 			assert.notNull(html, 'Element.parse(html, context, cachable): 参数 {html} ~。');
 			
-			if(html.nodeType) return html;
-			
-			if(html.dom) return html.dom;
+			if(html.dom || html.nodeType) return html;
 
 			var div = cache[html];
 			
@@ -1438,17 +1451,18 @@
 		 * 将当前节点添加到其它节点。
 		 * @param {Element/String} elem=document.body 节点、控件或节点的 id 字符串。
 		 * @return {Element} this
-		 * this.appendTo(elem)  相当于 elem.appendChild(this) 。
+		 * this.appendTo(parent)  相当于 elem.appendChild(this) 。
+		 * appendTo 同时执行  render(parent, null) 通知当前控件正在执行渲染。
 		 */
-		appendTo: function (elem) {
+		appendTo: function (parent) {
 			
 			// 切换到节点。
-			elem = elem && elem !== true ? $(elem) : document.body;
+			parent = parent && parent !== true ? $(parent) : document.body;
 
-			assert(elem && elem.appendChild, 'Element.prototype.appendTo(elem): 参数 {elem} 必须是 DOM 节点或控件。', elem);
+			assert(parent && parent.appendChild, 'Element.prototype.appendTo(parent): 参数 {parent} 必须是 DOM 节点或控件。', elem);
 			
 			// 插入节点
-			elem.appendChild(this.dom || this);
+			this.render ? this.render(parent, null) : parent.appendChild(this.dom || this);
 
 			// 返回
 			return this;
@@ -2025,6 +2039,8 @@
 		 */
 		getText: function () {
 			var elem = this.dom || this;
+			if(elem.nodeType !== 1)
+				return elem.nodeValue;
 
 			switch(elem.tagName) {
 				case "SELECT":
@@ -2042,7 +2058,7 @@
 				case "TEXTAREA":
 					return elem.value;
 				default:
-					return elem.textContent || elem.innerText || "";
+					return elem[attributes.innerText];
 			}
 		},
 
@@ -2260,9 +2276,10 @@
 		 * @return {Element} 元素。
 		 */
 		append: function (html) {
+			html = e.parse(html, this.dom || this);
 			
-			// this.appendChild 肯能不是原生的
-			return this.appendChild(e.parse(html, this.dom || this));
+			// 如果新元素有适合自己的渲染函数。
+			return html.render ? html.render(this, null) : this.appendChild(html);
 		},
 
 		/**
@@ -2611,30 +2628,10 @@
 	 */
 	Point.format = formatPoint;
 	
-	
-		
-	if(!navigator.isStandard) {
-		ElementList.implement({
-			
-			//push: function(){
-			//	return ap.push.apply(this, o.update(arguments, $));
-			//},
-			
-			unshift: function(){
-				return ap.unshift.apply(this, o.update(arguments, $));
-			},
-			
-			insert: function(index, value){
-				return ap.insert.call(this, index, $(value));
-			}
-			
-		});
-	}
-	
 	/// #ifdef SupportIE6
 	
 	if(navigator.isQuirks) {
-		ElementList.implement({
+		ap, apply(apply(ElementList.prototype, ap), {
 			
 			length: 0,
 			
@@ -2642,6 +2639,10 @@
 				return ap.push.apply(this, o.update(arguments, $));
 			},
 			
+			pop: ap.pop,
+			
+			shift: ap.shift,
+			
 			unshift: function(){
 				return ap.unshift.apply(this, o.update(arguments, $));
 			},
@@ -2651,16 +2652,11 @@
 			}
 			
 		});
-		map("pop shift concat join indexOf forEach insert include", function(func){
-			return function(){
-				return new ElementList(ap[func].apply(this, arguments));
-			};
-		}, ElementList.prototype);
 	}
 	
 	/// #endif
 
-	map("filter slice splice", function(func){
+	map("filter slice splice reverse", function(func){
 		return function(){
 			return new ElementList(ap[func].apply(this, arguments));
 		};
@@ -2724,7 +2720,7 @@
 	
 			// 把 Element 成员复制到节点。
 			// 根据 $version 决定是否需要拷贝，这样保证每个节点只拷贝一次。
-			if(dom && dom.$version !== ep.$version)
+			if(dom && dom.nodeType === 1 && dom.$version !== ep.$version)
 				o.extendIf(dom, ep);
 	
 			return dom;
@@ -3165,6 +3161,8 @@
 
 	/**
 	 * 简单的CSS选择器引擎。
+	 * 只为 IE6/7 FF 2  等老浏览器准备。
+	 * 代码最短优先，效率不高。
 	 */
 	function CssSelector() {
 		
@@ -3183,9 +3181,19 @@
 			 * 连接符转为代码。
 			 */
 			maps = {
-				'>': 'for(_=c[i].firstChild;_;_=_.nextSibling){',
-				'~': 'for(_=c[i];_;_=_.nextSibling){',
-				'+': 'for(_=c[i];_&&_.nodeType !== 1;_=_.nextSibling);if(_){'
+				'': 't=c[i].getElementsByTagName("*");j=0;while(_=t[j++])',
+				'>': 'for(_=c[i].firstChild;_;_=_.nextSibling)',
+				'~': 'for(_=c[i];_;_=_.nextSibling)',
+				'+': 'for(_=c[i];_&&_.nodeType !== 1;_=_.nextSibling);if(_)'
+			},
+			
+			/**
+			 * 基本选择器。
+			 */
+			tests = {
+				'.': 'Element.hasClass(_,#)',
+				'#': '_.id===#',
+				'': '_.tagName===#.toUpperCase()'
 			},
 			
 			/**
@@ -3262,18 +3270,15 @@
 		 */
 		function parse(selector, first) {
 		
-			// filter       1   - 对已有元素进行过滤
-			// seperator    2   - 计算分隔操作
-			// map tag     -1  - 根据已有元素重新获取新的数组
-			// map +       -2  - 根据已有元素重新获取新的数组
+			// filter       0   - 对已有元素进行过滤
+			// seperator    1   - 计算分隔操作
 			
 			var type,
 				value,
-				tokens = [],
+				tokens = [[1, '']],
 				matchSize,
 				match,
-				t,
-				codes = ['var c=[elem],n,t,i,j,_;'];
+				codes = ['var c=[e],n,t,i,j,_;'];
 			
 			// 只要还有没有处理完的选择器。
 			while(selector) {
@@ -3288,29 +3293,11 @@
 					// 记录当前选择器已被处理过的部分的长度。
 					matchSize = match[0].length;
 					
-					// 选择器的内容部分， 如 id class tagName
-					value = match[2];
+					// 条件。
+					type = 0;
 					
-					// 根据前缀判断。
-					switch(match[1]){
-						
-						// 类选择器。
-						case '.':
-							type = 1;
-							value = 'Element.hasClass(_,' + toJsString(value) + ')';
-							break;
-						
-						// ID 选择器。
-						case '#':
-							type = 1;
-							value = '_.id===' + toJsString(value);
-							break;
-						
-						// 标签选择器。
-						default:
-							type = -1;
-						
-					}
+					// 选择器的内容部分， 如 id class tagName
+					value = tests[match[1]].replace('#', toJsString(match[2]));
 					
 					// 如果之后有 . # > + ~ [, 则回退一个字符，下次继续处理。
 					if(match[4]) {
@@ -3322,9 +3309,10 @@
 						tokens.push([type, value]);
 						
 						// 如果末尾有空格，则添加，否则说明已经是选择器末尾，跳出循环:)。
-						if(match[3])
-							type = 2;
-						else
+						if(match[3]) {
+							type = 1;
+							value = '';
+						} else
 							break;
 					}
 				} else {
@@ -3339,128 +3327,72 @@
 					
 					// [ 属性 ]
 					if(match[2]) {
-						type = 1;
+						type = 0;
 						value = 'Element.getAttr(_,' + toJsString(match[2]) + ')';
 						if(match[4])
 							value = '(' + value + '||"")' + attrs[match[4]].replace('#', toJsString(match[6] ? match[7] : match[5]));
 					
 					// + > ~
 					} else {
-						type = -2;
+						type = 1;
 						value = match[1];
 					}
 				}
 				
-				// 经过处理后， token 的出现顺序为   -1 1 1 3 -2 1 1...
+				// 忽略多个空格。
+				if(type === 1 && tokens.item(-1) + '' === '1,')
+				 	tokens.pop();
+				
+				// 经过处理后， token 的出现顺序为  0 1 1 0 1 1...
 				tokens.push([type, value]);
 					
 				// 去掉已经处理的部分。
 				selector = selector.substring(matchSize);
 			
 			}
-			 
+			
+			// 删除最后多余的空格。
+			if(tokens.item(-1) + '' === '1,')
+				tokens.pop();
+		
 			 // 计算  map 的个数。
 			match = matchSize = 0;
-			while(value = tokens[match++]) {
-				if(value[0] !== 2) {
-			 		matchSize++;
-			 		while(tokens[match] && tokens[match][0] === 1)
-			 			match++;
-				}
-			}
+			while(value = tokens[match++])
+				matchSize += value[0];
 			
 			match = 0;
 			// 从第一个 token 开始，生成代码。
 			while(value = tokens[match++]){
 				
-				// 忽视分隔符。
-				if(value[0] !== 2) {
-					
-					// 如果直接就是条件，追加对全部节点筛选处理。
-					if(value[0] === 1) {
-						value = [-1, '*'];
-						match--;
-					}
-					
-					// 是否只需第一个元素。
-					type = --matchSize === 0 && first;
-					
-					// 如果返回列表，则创建列表。
-					if(!type)
-						codes.push(matchSize === 0 ? 'n=new ElementList;' : 'n=[];');
-					
-					// 加入遍历现在集合的代码。
-					codes.push('for(i=0;i<c.length;i++){');
-					
-					// 如果是标签，则运用原生的根据标签返回节点的方法。
-					if(value[0] === -1) {
-						if(value[1] === '*' && 'all' in document) {
-							codes.push('t=c[i].all');
-							
-							// 不需要判断节点类型。
-							t = false;
-						} else {
-							codes.push('t=c[i].getElementsByTagName(',
-								toJsString(value[1]),
-								')'
-							); 
-							
-							// 如果是 * ，则判断节点类型。
-							t = value[1] === '*';
-						}
-						
-						codes.push(';for(j=0;j<t.length;j++){_=t[j];');
-						
-					// 否则，直接使用现在的代码。
-					} else {
-						codes.push(maps[value[1]]);
-						t = value[1] !== '+';
-					}
-					
-					// 处理条件。
-					
-					// 如果有条件则处理。
-					while(tokens[match] && tokens[match][0] === 1) {
-						
-						// t: 1: 已经添加过一个条件。
-						if(t === 1)
-							codes.push('&&');
-							
-						// t: 2: 没有添加过条件。
-						else if(t === 2)
-							t = 1;
-							
-						// t: true/false: 第一次执行。
-						else {
-							codes.push('if(');
-							if(t) {
-								codes.push('_.nodeType===1&&');
-								t = 1;
-							} else
-								t = 2;
-						}
-						
-						// 追加检测。
-						codes.push(tokens[match++][1]);
-					}
-					
-					// 如果存在判断。
-					if(t) {
-						
-						// 不是 1,2  说明， 有且仅有一个判断。
-						if(t === true) codes.push('if(_.nodeType===1)');
-						codes.push(')');
-					}				
-					
-					codes.push(type ? 'return JPlus.$(_);}}': 'n.push(_);}}c=n;');
-					
-				}
+				// 是否只需第一个元素。
+				type = first &&  --matchSize === 0;
 				
+				// 如果返回列表，则创建列表。
+				if(!type)
+					codes.push('n=new ElementList;');
+				
+				// 加入遍历现在集合的代码。
+				codes.push(
+					'for(i=0;i<c.length;i++){',
+						maps[value[1]],
+							'if(_.nodeType===1'
+					);
+				
+				// 处理条件。
+				
+				// 如果有条件则处理。
+				while(tokens[match] && tokens[match][0] === 0)
+					codes.push('&&', tokens[match++][1]);
+				
+				codes.push(')', type ? 'return JPlus.$(_);}': 'n.push(_);}c=n;');
+			
 			}
 			
+			// trace.info(tokens);    
+			//  trace.info(codes.join('      '));
 			codes.push('return ', type ? 'null' : 'c');
 			  
-			return new Function('elem', codes.join(''));
+			return new Function('e', codes.join(''));
 		}
 		
 		/**

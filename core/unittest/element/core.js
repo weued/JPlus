@@ -84,7 +84,7 @@ test("Document.prototype.getDom",  function() {
 
 test("ElementList",  function() {
 	var el = new ElementList(document.getElementsByTagName('span'));
-	var length = el.length ;alert(navigator.isQuirks)
+	var length = el.length ;
 	equals(length > 0, true, "可以获取长度");
 	
 	el.push(document.body);
@@ -111,6 +111,9 @@ test("ElementList",  function() {
 		if ( el[i].foo != "zoo" ) pass = false;
 	}
 	ok( pass, "each() 执行" );
+	
+	ok(el[0].xType, "所有节点都包含 DOM 的方法");
+	equals(el.item(-1), el[el.length -1], "item(-1) 返回最后的节点。");
 });
 
 test("Control",  function() {

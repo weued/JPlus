@@ -13,7 +13,7 @@ function q(){
 }
 
 test("Element.prototype.find", function() {
-	equals( "Yahoo", document.findAll("#foo").findAll(".blogTest").getText().join(''), "Check for find" );
+	equals( document.findAll("#foo").findAll(".blogTest").getText().join(''), "Yahoo", "Check for find" );
 
 	same( document.findAll("#qunit-fixture").findAll("> div"), q("foo", "moretests", "tabindex-tests", "liveHandlerOrder", "siblingTest"), "find child elements" );
 	same( document.findAll("#qunit-fixture").findAll("> #foo > p"), q("sndp", "en", "sap"), "find child elements" );

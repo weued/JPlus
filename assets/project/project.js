@@ -1,8 +1,11 @@
 var core = {
 	'System': '+Object +Navigator +Class +Namespace +Trace',
-	'Element': '+Core #Node +DomReady #Attribute #Event #Dimension',
+	'Element': '+Core +Node +DomReady +Attribute +Event +Dimension',
 	'Ajax': 'Ajax Json Jsonp',
-	'Fx': 'Base Element -Multifade -Transitions -Color'
+	'Fx': 'Base Element -Multifade -Transitions -Color',
+	'UnitTest': '+Index +Element +Traversing +Manipulation +Style +Attributes +Dimension +Offset',
+	'jQuery': '+Core',
+	'Mootools': '+Core'
 };
 
 
