@@ -70,8 +70,8 @@ test("Element.parse", function() {
 });
 
 test("Document.prototype.create",  function() {
-	var el = document.create('AAa');
-	equals(el.tagName, 'AAA', "成功创建");
+	var el = document.create('div');
+	equals(el.tagName, 'DIV', "成功创建");
 	equals(el.append, Element.prototype.append, "包括 Element 方法");
 });
 
@@ -84,7 +84,7 @@ test("Document.prototype.getDom",  function() {
 
 test("ElementList",  function() {
 	var el = new ElementList(document.getElementsByTagName('span'));
-	var length = el.length ;
+	var length = el.length ;alert(navigator.isQuirks)
 	equals(length > 0, true, "可以获取长度");
 	
 	el.push(document.body);

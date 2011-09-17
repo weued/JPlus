@@ -246,9 +246,9 @@
 			if(name in styles) {
 				switch(name) {
 					case 'height':
-						return elem.offsetHeight === 0 ? 'auto' : elem.offsetHeight - e.getSizes(elem, 'y', 'pb') + 'px';
+						return elem.offsetHeight === 0 ? 'auto' : elem.offsetHeight - getSize(elem, 'by+py') + 'px';
 					case 'width':
-						return elem.offsetWidth === 0 ? 'auto' : elem.offsetWidth - e.getSizes(elem, 'x', 'pb') + 'px';
+						return elem.offsetWidth === 0 ? 'auto' : elem.offsetWidth - getSize(elem, 'bx+px') + 'px';
 					case 'opacity':
 						return ep.getOpacity.call(elem).toString();
 		
@@ -600,7 +600,17 @@
 		 * ElementList 允许快速操作多个节点。
 		 * ElementList 的实例一旦创建，则不允许修改其成员。
 		 */
-		ElementList = namespace(".ElementList", Array.extend({
+		ElementList = namespace(".ElementList", 
+		
+		/// #ifdef SuportIE6
+		
+		navigator.isQuirks ? p.Object :
+		
+		/// #endif
+		
+		Array
+		
+		.extend({
 	
 			/**
 			 * 初始化   ElementList  实例。
@@ -613,7 +623,7 @@
 		
 					assert(doms.length !== undefined, 'ElementList.prototype.constructor(doms): 参数 {doms} 必须是一个 NodeList 或 Array 类型的变量。', doms);
 					
-					var len = this.length = doms.length;
+					var len = this.length = doms.length;alert(doms.length - this.length + '%')
 					while(len--)
 						this[len] = doms[len];
 		
@@ -650,61 +660,34 @@
 			xType: "elementlist"
 	
 		}));
-		
-	if(!navigator.isStandard) {
-		ElementList.prototype.push = function(){
-			return ap.push.apply(this, o.update(arguments, $));
-		};	
-	}
 	
-	
-	/**
-	 * @class Document
-	 */
-	p.Native(p.Document);
 	
 	if(div.querySelectorAll) {
-		cssSelector = [];
-		String.map("find findAll", function(func, key){
-			cssSelector[key] = function(selector) {
-				var elem = this.dom || this;
-				if(elem.id)
-					return document[func]('#' + elem.id + ' ' + selector);
-				
-				elem.id = '__cssSelector__';
-				
-				try {
-					return document[func]('#__cssSelector__ ' + selector);
-				} finally {
-					elem.id = null;	
-				}
-			};
-		});
-		
-		p.Document.implement({
+		cssSelector = [function(selector){
+			var elem = this.dom || this;
+			if(elem.id)
+				return this.querySelector('#' + elem.id + ' ' + selector);
 			
-			/**
-			 * 执行一个简单的选择器。
-			 * @param {String} selecter 选择器。 如 h2 .cls attr=value 。
-			 * @return {Element/undefined} 节点。
-			 */
-			find: function (selecter) {
-				assert.isString(selecter, "Element.prototype.find(selecter): 参数 {selecter} ~。");
-				return this.querySelector(selecter);
-			},
-	
-			/**
-			 * 执行一个简单的选择器。
-			 * @method
-			 * @param {String} selecter 选择器。 如 h2 .cls attr=value 。
-			 * @return {Element/undefined} 节点。
-			 */
-			findAll: function (selecter) {
-				assert.isString(selecter, "Element.prototype.findAll(selecter): 参数 {selecter} ~。");
-				return new ElementList(this.querySelectorAll(selecter));
+			elem.id = '__cssSelector__';
+			
+			try {
+				return this.querySelector('#__cssSelector__ ' + selector);
+			} finally {
+				elem.id = null;	
 			}
-	
-		});
+		}, function(selector){
+			var elem = this.dom || this;
+			if(elem.id)
+				return new ElementList(this.querySelectorAll('#' + elem.id + ' ' + selector));
+			
+			elem.id = '__cssSelector__';
+			
+			try {
+				return this.findAll(selector);
+			} finally {
+				elem.id = null;	
+			}
+		}];
 	} else {
 		cssSelector = CssSelector();	
 	}
@@ -768,7 +751,7 @@
 						context = context.createDocumentFragment();
 						
 						while(div.firstChild)
-							context.appendChild($(div.firstChild));
+							context.appendChild(div.firstChild);
 
 						div = context;
 					} else {
@@ -825,6 +808,11 @@
 					return true;
 					
 			return false;
+		},
+		
+		remove: function (elem) {
+			elem.parentNode && elem.parentNode.removeChild(elem);
+			return elem;
 		},
 	
 		/**
@@ -889,7 +877,7 @@
 			// 最相邻的节点。
 			closest: function(elem, args){
 				assert.isFunction(args, "Element.prototype.get('closest', args): 参数 {args} 必须是函数");
-				return args(this) ? this : this.parent(elem, args);
+				return args(elem) ? elem : this.parent(elem, args);
 			},
 	
 			// 全部上级节点。
@@ -915,9 +903,7 @@
 	
 			// 兄弟节点。
 			siblings: function(elem, args){
-				var p = this.previouses(elem, args);
-				p.push.apply(p, this.nexts(elem, args));
-				return p;
+				return this.previouses(elem, args).concat(this.nexts(elem, args));
 			},
 			
 			// 号次。
@@ -970,42 +956,90 @@
 		styleNumber: styleNumber,
 
 		/**
-		 * 将 offsetWidth 转为 style.width。
-		 * @private
+		 * 根据不同的内容进行计算。
 		 * @param {Element} elem 元素。
-		 * @param {Number} width 输入。
-		 * @return {Number} 转换后的大小。
-		 * @static
+		 * @param {String} type 输入。 一个 type 由多个句子用,连接，一个句子由多个词语用+连接，一个词语由两个字组成， 第一个字可以是下列字符之一: m b p t l r b h w  第二个字可以是下列字符之一: x y l t r b。词语也可以是: outer inner  。 
+		 * @return {Number} 计算值。
+		 * mx+sx ->  外大小。
+		 * mx-sx ->  内大小。
 		 */
-		getSizes: window.getComputedStyle ? function (elem, type, names) {
-
-			assert.isElement(elem, "Element.getSizes(elem, type, names): 参数 {elem} ~。");
-			assert(type in e.sizeMap, "Element.getSizes(elem, type, names): 参数 {type} 必须是 \"x\" 或 \"y\"。", type);
-			assert.isString(names, "Element.getSizes(elem, type, names): 参数 {names} ~。");
-
-			// 缓存 currentStyle 可以大大增加标准浏览器执行速度， 因此这里冗余代码。
-			var value = 0, map = e.sizeMap[type], i = names.length, val, currentStyle = elem.ownerDocument.defaultView.getComputedStyle(elem, null);
-			while(i--) {
-				val = map[names.charAt(i)];
-				value += (parseFloat(currentStyle[val[0]]) || 0) + (parseFloat(currentStyle[val[1]]) || 0);
+		getSize: (function(){
+			
+			var borders = {
+					m: 'margin#',
+					b: 'border#Width',
+					p: 'padding#'
+				},
+				map = {
+					t: 'Top',
+					r: 'Right',
+					b: 'Bottom',
+					l: 'Left'
+				},
+				init,
+				tpl;
+				
+			if(window.getComputedStyle){
+				init = 'var c=e.ownerDocument.defaultView.getComputedStyle(e,null);return ';
+				tpl	= '(parseFloat(c["#"]) || 0)';
+			} else {
+				init = 'return ';
+				tpl	= '(parseFloat(Element.getStyle(e, "#")) || 0)';
 			}
-
-			return value;
-		} : function (elem, type, names) {
-
-
-			assert.isElement(elem, "Element.getSizes(elem, type, names): 参数 {elem} ~。");
-			assert(type in e.sizeMap, "Element.getSizes(elem, type, names): 参数 {type} 必须是 \"x\" 或 \"y\"。", type);
-			assert.isString(names, "Element.getSizes(elem, type, names): 参数 {names} ~。");
-
-			var value = 0, map = e.sizeMap[type], i = names.length, val;
-			while(i--) {
-				val = map[names.charAt(i)];
-				value += (parseFloat(getStyle(elem, val[0])) || 0) + (parseFloat(getStyle(elem, val[1])) || 0);
+			
+			/**
+			 * 翻译 type。
+			 * @param {String} type 输入字符串。
+			 * @return {String} 处理后的字符串。
+			 */
+			function format(type){
+				var t, f = type.charAt(0);
+				switch(type.length) {
+					
+					// borders + map
+					// borders + x|y
+					// s + x|y
+					case 2:
+						t = type.charAt(1);
+						assert(f in borders || f === 's', "Element.getSize(e, type): 参数 type 中的 " + type + " 不合法");
+						if(t in map){
+							t = borders[f].replace('#', map[t]);
+						} else {
+							return f === 's' ? 'e.offset' + (t === 'x' ? 'Width' : 'Height')  :
+									'(' + format(f + (t !== 'y' ? 'l' : 't')) + '+' + 
+									format(f + (t === 'x' ? 'r' : 'b')) + ')';
+						}
+							
+						break;
+					
+					// map
+					// w|h
+					case 1:
+						if(f in map) {
+							t = map[f].toLowerCase();
+						} else if(f !== 'x' && f !== 'y') {
+							assert(f === 'h' || f === 'w', "Element.getSize(elem, type): 参数 type 中的 " + type + " 不合法");
+							return 'Element.styleNumber(e,"' + (f === 'h' ? 'height' : 'width') + '")';
+						} else {
+							return f;	
+						}
+						
+						break;
+						
+					default:
+						t = type;
+				}
+				
+				return tpl.replace('#', t);
 			}
-
-			return value;
-		},
+			
+			return function (elem, type) {
+				assert.isElement(elem, "Element.getSize(elem, type): 参数 {elem} ~。");
+				assert.isString(type, "Element.getSize(elem, type): 参数 {type} ~。");
+				return (e.sizeMap[type] || (e.sizeMap[type] = new Function("e", init + type.replace(/\w+/g, format))))(elem);
+			}
+		
+		})(),
 		
 		/**
 		 * 特殊的样式集合。
@@ -1430,7 +1464,7 @@
 			assert(!child || this.hasChild(child.dom || child), 'Element.prototype.remove(child): 参数 {child} 不是当前节点的子节点', child);
 			
 			// 如果指明 child ,则删除 这个子节点， 否则删除自己。
-			child ? this.removeChild(child.dom || child) : ( elem.parentNode && elem.parentNode.removeChild(elem) );
+			child ? this.removeChild(child.dom || child) : e.remove( elem );
 			return this;
 		},
 
@@ -1450,8 +1484,10 @@
 		 * 释放节点所有资源。
 		 */
 		dispose: function () {
-			clean(this.dom || this);
-			this.empty().remove();
+			var elem = this.dom || this;
+			clean(elem);
+			this.empty();
+			e.remove(elem);
 		},
 		
 		/// #endif
@@ -1725,7 +1761,7 @@
 		 */
 		setHtml: function (value) {
 
-			(this.dom || this).innerHTML = value;
+			(this.dom || this).innerHTML = value != null ? value.toString().replace(rXhtmlTag, "<$1></$2>") : '';
 			return this;
 		},
 
@@ -1819,17 +1855,16 @@
 		 * @return {Element} this
 		 */
 		setSize: function (x, y) {
-			return setSize(this, 'pb', x, y);
-		},
+			var me = this,
+				p = formatPoint(x,y);
 
-		/**
-		 * 改变大小。
-		 * @param {Number} x 坐标。
-		 * @param {Number} y 坐标。
-		 * @return {Element} this
-		 */
-		setOuterSize: function (x, y) {
-			return setSize(this, 'mpb', x, y);
+			if(p.x != null)
+				me.setWidth(p.x - getSize(me.dom || me, 'bx+px'));
+	
+			if (p.y != null)
+				me.setHeight(p.y - getSize(me.dom || me, 'by+py'));
+	
+			return me;
 		},
 
 		/**
@@ -2007,7 +2042,7 @@
 				case "TEXTAREA":
 					return elem.value;
 				default:
-					return elem[attributes.innerText];
+					return elem.textContent || elem.innerText || "";
 			}
 		},
 
@@ -2030,15 +2065,6 @@
 			var elem = this.dom || this;
 
 			return new Point(elem.offsetWidth, elem.offsetHeight);
-		},
-
-		/**
-		 * 获取元素可视区域大小。包括 margin 大小。
-		 * @return {Point} 位置。
-		 */
-		getOuterSize: function () {
-			var elem = this.dom || this;
-			return this.getSize().add(e.getSizes(elem, 'x', 'm'), e.getSizes(elem, 'y', 'm'));
 		},
 
 		/**
@@ -2249,7 +2275,7 @@
 			
 			html = e.parse(html, elem);
 			assert.isNode(html, "Element.prototype.replaceWith(html, escape): 参数 {html} ~或 html片段。");
-			elem.parentNode && elem.parentNode.replaceChild(html, me);
+			elem.parentNode && elem.parentNode.replaceChild(html, elem);
 			return html;
 		},
 	
@@ -2382,7 +2408,10 @@
 		return new Point(win.pageXOffset, win.pageYOffset);
 	} : ep.getScroll;
 		
-	p.Document.implement({
+	/**
+	 * @class Document
+	 */
+	p.Native(p.Document).implement({
 		
 		/// #ifdef ElementCore
 
@@ -2489,6 +2518,34 @@
 		}
 		
 	});
+		
+	if(div.querySelectorAll) {
+		cssSelector = null;
+		p.Document.implement({
+			
+			/**
+			 * 执行一个简单的选择器。
+			 * @param {String} selecter 选择器。 如 h2 .cls attr=value 。
+			 * @return {Element/undefined} 节点。
+			 */
+			find: function (selecter) {
+				assert.isString(selecter, "Element.prototype.find(selecter): 参数 {selecter} ~。");
+				return this.querySelector(selecter);
+			},
+	
+			/**
+			 * 执行一个简单的选择器。
+			 * @method
+			 * @param {String} selecter 选择器。 如 h2 .cls attr=value 。
+			 * @return {Element/undefined} 节点。
+			 */
+			findAll: function (selecter) {
+				assert.isString(selecter, "Element.prototype.findAll(selecter): 参数 {selecter} ~。");
+				return new ElementList(this.querySelectorAll(selecter));
+			}
+	
+		});
+	}
 	
 	/**
 	 * @namespace Control
@@ -2553,6 +2610,55 @@
 	 * @private
 	 */
 	Point.format = formatPoint;
+	
+	
+		
+	if(!navigator.isStandard) {
+		ElementList.implement({
+			
+			//push: function(){
+			//	return ap.push.apply(this, o.update(arguments, $));
+			//},
+			
+			unshift: function(){
+				return ap.unshift.apply(this, o.update(arguments, $));
+			},
+			
+			insert: function(index, value){
+				return ap.insert.call(this, index, $(value));
+			}
+			
+		});
+	}
+	
+	/// #ifdef SupportIE6
+	
+	if(navigator.isQuirks) {
+		ElementList.implement({
+			
+			length: 0,
+			
+			push: function(){
+				return ap.push.apply(this, o.update(arguments, $));
+			},
+			
+			unshift: function(){
+				return ap.unshift.apply(this, o.update(arguments, $));
+			},
+			
+			insert: function(index, value){
+				return ap.insert.call(this, index, $(value));
+			}
+			
+		});
+		map("pop shift concat join indexOf forEach insert include", function(func){
+			return function(){
+				return new ElementList(ap[func].apply(this, arguments));
+			};
+		}, ElementList.prototype);
+	}
+	
+	/// #endif
 
 	map("filter slice splice", function(func){
 		return function(){
@@ -2756,15 +2862,6 @@
 	/// #endif
 		
 	/// #ifdef ElementAttribute
-	
-	map('x y', function (c, i) {
-		c = e.sizeMap[c] = {};
-		var tx = i ? ['Top', 'Bottom'] : ['Left', 'Right'];
-		c.d = tx.invoke('toLowerCase', []);
-		String.map('padding~ margin~ border~Width', function (v) {
-			c[v.charAt(0)] = [v.replace('~', tx[0]), v.replace('~', tx[1])];
-		});
-	});
 	
 	//  下列属性应该直接使用。
 	map("checked selected disabled value innerHTML textContent className autofocus autoplay async controls hidden loop open required scoped compact nowrap ismap declare noshade multiple noresize defer readOnly tabIndex defaultValue accessKey defaultChecked cellPadding cellSpacing rowSpan colSpan frameBorder maxLength useMap contentEditable", function (value) {
@@ -3091,8 +3188,14 @@
 				'+': 'for(_=c[i];_&&_.nodeType !== 1;_=_.nextSibling);if(_){'
 			},
 			
+			/**
+			 * find 查询函数缓存。
+			 */
 			findCache = {},
 			
+			/**
+			 * findAll 查询函数缓存。
+			 */
 			findAllCache = {},
 			
 			/**
@@ -3124,7 +3227,7 @@
 			 *  [attrName='attrVal']
 			 *  [attrName="attrVal"]
 			 */
-			rSimpleSelector = /^\s*([#.]?)([*\w\u0080-\uFFFF_-]+)(([\[#.,>+~])|\s*)/,
+			rSimpleSelector = /^\s*([#.]?)([*\w\u0080-\uFFFF_-]+)(([\[#.>+~])|\s*)/,
 			
 			/**
 			 * 复杂的表达式。
@@ -3133,7 +3236,7 @@
 			 * 
 			 * 如果是 [ 开头的表达式， 则同时找出 [attrName] 后的内容。
 			 */
-			rRelSelector = /^\s*([>+~,]|\[([^=]+?)\s*(([\^\*\|\~]?=)\s*((['"])([^\6]*)\6|[^'"][^\]]*?)\s*)?\])/;
+			rRelSelector = /^\s*([>+~]|\[([^=]+?)\s*(([\^\*\|\~]?=)\s*((['"])([^\6]*)\6|[^'"][^\]]*?)\s*)?\])/;
 	
 		/**
 		 * 分析选择器，并返回一个等价的函数。
@@ -3152,7 +3255,6 @@
 		 * 
 		 * 选择器组合方式有：
 		 * selctor1selctor2
-		 * selctor1,selector2
 		 * selctor1 selctor2
 		 * selctor1>selctor2
 		 * selctor1~selctor2
@@ -3222,11 +3324,8 @@
 						// 如果末尾有空格，则添加，否则说明已经是选择器末尾，跳出循环:)。
 						if(match[3])
 							type = 2;
-						else {
-							assert(selector.length === matchSize, 'CssSelector.parse(selector): 选择器语法错误(在 "' + selector.substring(matchSize) + ' 附近)');
-							selector = null;
+						else
 							break;
-						}
 					}
 				} else {
 					
@@ -3244,14 +3343,6 @@
 						value = 'Element.getAttr(_,' + toJsString(match[2]) + ')';
 						if(match[4])
 							value = '(' + value + '||"")' + attrs[match[4]].replace('#', toJsString(match[6] ? match[7] : match[5]));
-					
-					// ,
-					} else if(match[1] === ',') {
-						
-						// ，  为特殊的关系符，将剩下的选择器保存，并直接退出循环。 
-						// 剩余的部分在 下面转换内处理。
-						selector = selector.substring(matchSize);
-						break;
 					
 					// + > ~
 					} else {
@@ -3292,11 +3383,11 @@
 					}
 					
 					// 是否只需第一个元素。
-					type = first && --matchSize === 0;
+					type = --matchSize === 0 && first;
 					
 					// 如果返回列表，则创建列表。
 					if(!type)
-						codes.push('n=new ElementList;');
+						codes.push(matchSize === 0 ? 'n=new ElementList;' : 'n=[];');
 					
 					// 加入遍历现在集合的代码。
 					codes.push('for(i=0;i<c.length;i++){');
@@ -3311,7 +3402,7 @@
 						} else {
 							codes.push('t=c[i].getElementsByTagName(',
 								toJsString(value[1]),
-								''
+								')'
 							); 
 							
 							// 如果是 * ，则判断节点类型。
@@ -3367,12 +3458,7 @@
 				
 			}
 			
-			codes.push('return ');
-			
-			if(selector)
-				codes.push(type ? '(elem.find(' : 'c.concat(elem.findAll(', toJsString(selector), '))');
-			else
-				codes.push(type ? 'null' : 'c');
+			codes.push('return ', type ? 'null' : 'c');
 			  
 			return new Function('elem', codes.join(''));
 		}
@@ -3465,6 +3551,7 @@
 	 * @return {String} 字符串。
 	 */
 	function styleString(elem, name) {
+		assert.isElement(elem, "Element.styleString(elem, name): 参数 {elem} ~。");
 		return elem.style[name] || getStyle(elem, name);
 	}
 
@@ -3475,6 +3562,7 @@
 	 * @return {Number} 数字。
 	 */
 	function styleNumber(elem, name) {
+		assert.isElement(elem, "Element.styleNumber(elem, name): 参数 {elem} ~。");
 		var value = parseFloat(elem.style[name]);
 		if(!value && value !== 0) {
 			value = parseFloat(getStyle(elem, name));
@@ -3510,6 +3598,7 @@
 	 * @return {Boolean} 是否为文档或文档跟节点。
 	 */
 	function isBody(elem) {
+		assert.isNode(elem, "Element.isBody(elem): 参数 {elem} ~。");
 		return rBody.test(elem.nodeName);
 	}
 	
@@ -3523,25 +3612,6 @@
 			x:x,
 			y:y
 		};
-	}
-
-	/**
-	 * 设置元素的宽或高。
-	 * @param {Element/Control} me 元素。
-	 * @param {String} fix 修正的边框。
-	 * @param {Number} x 宽。
-	 * @param {Number} y 宽。
-	 */
-	function setSize(elem, fix, x ,y) {
-		var p = formatPoint(x,y);
-
-		if(p.x != null)
-			elem.setWidth(p.x - e.getSizes(elem.dom || elem, 'x', fix));
-
-		if (p.y != null)
-			elem.setHeight(p.y - e.getSizes(elem.dom || elem, 'y', fix));
-
-		return elem;
 	}
 	
 	/// #endif

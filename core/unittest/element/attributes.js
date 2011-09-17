@@ -296,7 +296,7 @@ test("Element.prototype.getAttr('tabindex')", function() {
 
 	// elements not natively tabbable
 	equals($("listWithTabIndex").getAttr("tabindex"), 5, "not natively tabbable, with tabindex set to 0");
-	//equals($("divWithNoTabIndex").getAttr("tabindex"), -1, "not natively tabbable, no tabindex set");
+	equals($("divWithNoTabIndex").getAttr("tabindex") <= 0, true, "not natively tabbable, no tabindex set");
 
 	// anchor with href
 	equals($("linkWithNoTabIndex").getAttr("tabindex"), 0, "anchor with href, no tabindex set");
@@ -304,7 +304,7 @@ test("Element.prototype.getAttr('tabindex')", function() {
 	equals($("linkWithNegativeTabIndex").getAttr("tabindex"), -1, "anchor with href, tabindex set to -1");
 
 	// anchor without href
-	equals($("linkWithNoHrefWithNoTabIndex").getAttr("tabindex"), 0, "anchor without href, no tabindex set");
+	equals($("linkWithNoHrefWithNoTabIndex").getAttr("tabindex") <= 0, true, "anchor without href, no tabindex set");
 	equals($("linkWithNoHrefWithTabIndex").getAttr("tabindex"), 1, "anchor without href, tabindex set to 2");
 	equals($("linkWithNoHrefWithNegativeTabIndex").getAttr("tabindex"), -1, "anchor without href, no tabindex set");
 });

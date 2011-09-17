@@ -1316,7 +1316,7 @@ var JPlus = {
 			//	return r;
 			//}
 			
-			assert(!iterable || !iterable.item || typeof iterable.length !== 'number', 'Array.create(iterable, startIndex): 参数 {iterable} 不支持 DomCollection 。', iterable);
+			assert(!iterable || toString.call(iterable) !== '[object HTMLCollection]' || typeof iterable.length !== 'number', 'Array.create(iterable, startIndex): 参数 {iterable} 不支持 DomCollection 。', iterable);
 			
 			// 调用 slice 实现。
 			return iterable ? ap.slice.call(iterable, startIndex) : [];
