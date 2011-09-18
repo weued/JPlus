@@ -617,6 +617,8 @@
 		/// #endif
 		
 		.extend({
+			
+			length: 0,
 	
 			/**
 			 * 初始化   ElementList  实例。

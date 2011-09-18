@@ -17,7 +17,7 @@
 				document.findAll('.static').on('click', function() {
 					$('marker').setOffset( $(this).getOffset() );
 					var pos = $(this).getOffset();
-					$(this).set({ position: 'absolute', top: pos.top, left: pos.left });
+					$(this).set({ position: 'absolute', top: pos.y, left: pos.x });
 					return false;
 				});
 			});
