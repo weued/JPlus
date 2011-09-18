@@ -578,8 +578,8 @@
 			 */
 			init: Function.empty,
 			
-			onRender: function (parent, refNode) {
-			 	(parent.dom || parent).insertBefore(this.dom, refNode);
+			cloneNode: function (cloneContent) {
+				return new this.constructor(this.dom.cloneNode(cloneContent));
 			},
 			
 			/**
@@ -663,10 +663,18 @@
 			/**
 			 * 将当前列表添加到指定父节点。
 			 */
-			onRender: function (parentNode, refNode) {
-				parentNode = parentNode.dom || parentNode;
+			render: function (parent, refNode) {
+				parent = parent.dom || parent;
 				for(var i = 0, len = this.length; i < len; i++)
-					parentNode.insertBefore(this[i], refNode);
+					parent.insertBefore(this[i], refNode);
+			},
+			
+			cloneNode: function (cloneContent) {
+				var i = this.length,
+					r = new ElementList();
+				while(i--)
+					r[i] = this[i].cloneNode(cloneContent);
+				return r;
 			},
 	
 			/**
@@ -679,33 +687,65 @@
 	
 	if(div.querySelectorAll) {
 		cssSelector = [function(selector){
-			var elem = this.dom || this;
-			if(elem.id)
-				return this.querySelector('#' + elem.id + ' ' + selector);
+			var elem = this.dom || this,
+				id = e.getAttr(elem, 'id');
+			if(id)
+				return this.querySelector('#' + id + ' ' + selector);
 			
-			elem.id = '__cssSelector__';
+			elem.setAttr('id', '__cssSelector__');
 			
 			try {
 				return this.querySelector('#__cssSelector__ ' + selector);
 			} finally {
-				elem.id = null;	
+				elem.setAttr('id', null);
 			}
 		}, function(selector){
-			var elem = this.dom || this;
-			if(elem.id)
-				return new ElementList(this.querySelectorAll('#' + elem.id + ' ' + selector));
+			var elem = this.dom || this,
+				id = e.getAttr(elem, 'id');
+			if(id)
+				return new ElementList(this.querySelectorAll('#' + id + ' ' + selector));
 			
-			elem.id = '__cssSelector__';
+			elem.setAttr('id', '__cssSelector__');
 			
 			try {
 				return this.findAll(selector);
 			} finally {
-				elem.id = null;	
+				elem.setAttr('id', null);
 			}
 		}];
 	} else {
 		cssSelector = CssSelector();	
 	}
+	
+	/// #ifdef SupportIE6
+	
+	if(navigator.isQuirks) {
+		ap, apply(apply(ElementList.prototype, ap), {
+			
+			length: 0,
+			
+			push: function(){
+				return ap.push.apply(this, o.update(arguments, $));
+			},
+			
+			pop: ap.pop,
+			
+			shift: ap.shift,
+			
+			unshift: function(){
+				return ap.unshift.apply(this, o.update(arguments, $));
+			}
+			
+		});
+	}
+	
+	/// #endif
+
+	map("filter slice splice reverse", function(func){
+		return function(){
+			return new ElementList(ap[func].apply(this, arguments));
+		};
+	}, ElementList.prototype);
 		
 	/**
 	 * @class Element
@@ -726,7 +766,12 @@
 
 			assert.notNull(html, 'Element.parse(html, context, cachable): 参数 {html} ~。');
 			
-			if(html.dom || html.nodeType) return html;
+			// 已经是 Element 或  ElementList。
+			if(html.xType)
+				return html;
+			
+			if(html.nodeType)
+				return new Control(html);
 
 			var div = cache[html];
 			
@@ -761,12 +806,7 @@
 					// 一般使用最后的节点， 如果存在最后的节点，使用父节点。
 					// 如果有多节点，则复制到片段对象。
 					if(div.lastChild !== div.firstChild) {
-						context = context.createDocumentFragment();
-						
-						while(div.firstChild)
-							context.appendChild(div.firstChild);
-
-						div = context;
+						div = new ElementList(div.childNodes);
 					} else {
 						
 						/// #ifdef SupportIE8
@@ -784,6 +824,8 @@
 					// 创建文本节点。
 					div = context.createTextNode(html);
 				}
+				
+				div = div.xType ? div : new Control(div);
 				
 				if(cachable !== undefined ? cachable : !rNoClone.test(html)) {
 					cache[html] = div.cloneNode(true);
@@ -821,11 +863,6 @@
 					return true;
 					
 			return false;
-		},
-		
-		remove: function (elem) {
-			elem.parentNode && elem.parentNode.removeChild(elem);
-			return elem;
 		},
 	
 		/**
@@ -1459,13 +1496,15 @@
 			// 切换到节点。
 			parent = parent && parent !== true ? $(parent) : document.body;
 
-			assert(parent && parent.appendChild, 'Element.prototype.appendTo(parent): 参数 {parent} 必须是 DOM 节点或控件。', elem);
-			
 			// 插入节点
-			this.render ? this.render(parent, null) : parent.appendChild(this.dom || this);
+			return this.render(parent, null);
 
-			// 返回
-			return this;
+		},
+		
+		render: function (parent, refNode) {
+			assert(parent && parent.insertBefore, 'Element.prototype.render(parent, refNode): 参数 {parent} 必须是 DOM 节点或控件。', parent);
+			assert(refNode || refNode === null, 'Element.prototype.render(parent, refNode): 参数 {refNode} 必须是 null 或 DOM 节点或控件。', refNode);
+			return parent.insertBefore(this.dom || this, refNode);
 		},
 
 		/**
@@ -1474,11 +1513,13 @@
 		 * @return {Element} this
 		 */
 		remove: function (child) {
-			var elem = this.dom || this;
-			assert(!child || this.hasChild(child.dom || child), 'Element.prototype.remove(child): 参数 {child} 不是当前节点的子节点', child);
 			
-			// 如果指明 child ,则删除 这个子节点， 否则删除自己。
-			child ? this.removeChild(child.dom || child) : e.remove( elem );
+			// 没有参数， 删除本身。
+			if(!arguments.length)
+				return this.dispose();
+				
+			assert(!child || this.hasChild(child.dom || child), 'Element.prototype.remove(child): 参数 {child} 不是当前节点的子节点', child);
+			child.dispose ? child.dispose() : this.removeChild(child);
 			return this;
 		},
 
@@ -1499,9 +1540,8 @@
 		 */
 		dispose: function () {
 			var elem = this.dom || this;
-			clean(elem);
-			this.empty();
-			e.remove(elem);
+			elem.parentNode && elem.parentNode.removeChild(elem);
+			return this;
 		},
 		
 		/// #endif
@@ -1575,7 +1615,7 @@
 			// 获取真实的滤镜。
 			elem = styleString(elem, 'filter');
 			
-			assert(!/alpha\([^)]*\)/i.test(elem) || rOpacity.test(elem), 'Element.prototype.setOpacity(value): 当前元素的 {filter} CSS属性存在不属于 alpha 的 opacity， 将导致 setOpacity 不能正常工作。', me);
+			assert(!/alpha\([^)]*\)/i.test(elem) || rOpacity.test(elem), 'Element.prototype.setOpacity(value): 当前元素的 {filter} CSS属性存在不属于 alpha 的 opacity， 将导致 setOpacity 不能正常工作。', elem);
 			
 			// 当元素未布局，IE会设置失败，强制使生效。
 			style.zoom = 1;
@@ -1668,14 +1708,14 @@
 
 			if (typeof name === "string") {
 				
-				var dom = me.dom || me;
+				var elem = me.dom || me;
 
 				// event 。
 				if(name.match(rEventName))
 					me.on(RegExp.$1, value);
 
 				// css 。
-				else if(dom.style && (name in dom.style || rStyle.test(name)))
+				else if(elem.style && (name in elem.style || rStyle.test(name)))
 					me.setStyle(name, value);
 
 				// attr 。
@@ -1774,8 +1814,20 @@
 		 * @return {Element} this
 		 */
 		setHtml: function (value) {
-
-			(this.dom || this).innerHTML = value != null ? value.toString().replace(rXhtmlTag, "<$1></$2>") : '';
+			var elem = this.dom || this,
+				map = wrapMap.$default;
+			value = (map[1] + value + map[2]).replace(rXhtmlTag, "<$1></$2>");
+			
+			o.each(elem.getElementsByTagName("*"), clean);
+			elem.innerHTML = value;
+			if(map[0]) {
+				value = elem.lastChild;
+				elem.removeChild(elem.firstChild);
+				elem.removeChild(value);
+				while(value.firstChild)
+					elem.appendChild(value.firstChild);
+			}
+			
 			return this;
 		},
 
@@ -2210,64 +2262,42 @@
 	.implementIf({
 		
 		/// #ifdef ElementNode
+		
 
 		/**
 		 * 在某个位置插入一个HTML 。
 		 * @param {String/Element} html 内容。
-		 * @param {String} [swhere] 插入地点。 beforeBegin   节点外    beforeEnd   节点里
+		 * @param {String} [where] 插入地点。 beforeBegin   节点外    beforeEnd   节点里
 		 * afterBegin    节点外  afterEnd     节点里
 		 * @return {Element} 插入的节点。
 		 */
-		insert: 'insertAdjacentElement' in div ? function (html, swhere) {
-			var elem = this.dom || this;
-			assert.isNode(elem, "Element.prototype.insert(html, swhere): this.dom || this 返回的必须是 DOM 节点。");
-			assert(!swhere || 'afterEnd beforeBegin afterBegin beforeEnd '.indexOf(swhere + ' ') != -1, "Element.prototype.insert(html, swhere): 参数  {swhere} 必须是 beforeBegin、beforeEnd、afterBegin 或 afterEnd 。", swhere);
-			if(typeof html === 'string')
-				elem.insertAdjacentHTML(swhere, html);
-			else
-				elem.insertAdjacentElement(swhere, html.dom || html);
-			
-			return $(elem[{
-				afterEnd: 'nextSibling',
-				beforeBegin: 'previousSibling',
-				afterBegin: 'firstChild'
-			}[swhere] || 'lastChild']);
-			
-		} : function (html, swhere) {
+		insert: function (html, where) {
 
-			var elem = this.dom || this;
+			var elem = this.dom || this, p, refNode = elem;
 
-			assert.isNode(elem, "Element.prototype.insert(html, swhere): this.dom || this 返回的必须是 DOM 节点。");
-			assert(!swhere || 'afterEnd beforeBegin afterBegin beforeEnd '.indexOf(swhere + ' ') != -1, "Element.prototype.insert(html, swhere): 参数 {swhere} 必须是 beforeBegin、beforeEnd、afterBegin 或 afterEnd 。", swhere);
+			assert.isNode(elem, "Element.prototype.insert(html, where): this.dom || this 返回的必须是 DOM 节点。");
+			assert(!where || 'afterEnd beforeBegin afterBegin beforeEnd '.indexOf(where + ' ') != -1, "Element.prototype.insert(html, where): 参数 {where} 必须是 beforeBegin、beforeEnd、afterBegin 或 afterEnd 。", where);
 			html = e.parse(html, elem);
 
-			switch (swhere) {
-				case "afterEnd":
-					if(!elem.nextSibling) {
-
-						assert(elem.parentNode != null, "Element.prototype.insert(html, swhere): 节点无父节点时无法插入 {this}", elem);
-
-						elem.parentNode.appendChild(html);
-						break;
-					}
-
-					elem = elem.nextSibling;
-				case "beforeBegin":
-					assert(elem.parentNode != null, "Element.prototype.insert(html, swhere): 节点无父节点时无法插入 {this}", elem);
-					elem.parentNode.insertBefore(html, elem);
-					break;
+			switch (where) {
 				case "afterBegin":
-					if (elem.firstChild) {
-						elem.insertBefore(html, elem.firstChild);
-						break;
-					}
-				default:
-					assert(arguments.length == 1 || !swhere || swhere == 'beforeEnd' || swhere == 'afterBegin', 'Element.prototype.insert(html, swhere): 参数 {swhere} 必须是 beforeBegin、beforeEnd、afterBegin 或 afterEnd 。', swhere);
-					elem.appendChild(html);
+					p = this;
+					refNode = elem.firstChild;
 					break;
+				case "afterEnd":
+					refNode = elem.nextSibling;
+				case "beforeBegin":
+					p = elem.parentNode;
+					assert(p, "Element.prototype.insert(html, where): 节点无父节点时无法插入 {this}", elem);
+					break;
+				default:
+					assert(!where || where == 'beforeEnd' || where == 'afterBegin', 'Element.prototype.insert(html, where): 参数 {where} 必须是 beforeBegin、beforeEnd、afterBegin 或 afterEnd 。', where);
+					p = this;
+					refNode = null;
 			}
-
-			return html;
+			
+			// 调用 HTML 的渲染。
+			return html.render(p, refNode);
 		},
 
 		/**
@@ -2276,10 +2306,9 @@
 		 * @return {Element} 元素。
 		 */
 		append: function (html) {
-			html = e.parse(html, this.dom || this);
 			
 			// 如果新元素有适合自己的渲染函数。
-			return html.render ? html.render(this, null) : this.appendChild(html);
+			return e.parse(html, this.dom || this).render(this, null);
 		},
 
 		/**
@@ -2291,8 +2320,11 @@
 			var elem = this.dom || this;
 			
 			html = e.parse(html, elem);
-			assert.isNode(html, "Element.prototype.replaceWith(html, escape): 参数 {html} ~或 html片段。");
-			elem.parentNode && elem.parentNode.replaceChild(html, elem);
+			//  assert.isNode(html, "Element.prototype.replaceWith(html): 参数 {html} ~或 html片段。");
+			if(elem.parentNode) {
+				html.render(elem.parentNode, elem);
+				this.dispose();
+			}
 			return html;
 		},
 	
@@ -2353,7 +2385,7 @@
 				clone = elem.cloneNode(contents = contents !== false);
 
 			if (contents)
-				for (var elemChild = elem.getElementsByTagName('*'), cloneChild = clone.getElementsByTagName('*'), i = elemChild.length; i--;)
+				for (var elemChild = elem.getElementsByTagName('*'), cloneChild = clone.getElementsByTagName('*'), i = 0; cloneChild[i]; i++)
 					cleanClone(elemChild[i], cloneChild[i], cloneEvent, keepId);
 
 			cleanClone(elem, clone, cloneEvent, keepId);
@@ -2627,40 +2659,6 @@
 	 * @private
 	 */
 	Point.format = formatPoint;
-	
-	/// #ifdef SupportIE6
-	
-	if(navigator.isQuirks) {
-		ap, apply(apply(ElementList.prototype, ap), {
-			
-			length: 0,
-			
-			push: function(){
-				return ap.push.apply(this, o.update(arguments, $));
-			},
-			
-			pop: ap.pop,
-			
-			shift: ap.shift,
-			
-			unshift: function(){
-				return ap.unshift.apply(this, o.update(arguments, $));
-			},
-			
-			insert: function(index, value){
-				return ap.insert.call(this, index, $(value));
-			}
-			
-		});
-	}
-	
-	/// #endif
-
-	map("filter slice splice reverse", function(func){
-		return function(){
-			return new ElementList(ap[func].apply(this, arguments));
-		};
-	}, ElementList.prototype);
 
 	/// #ifdef ElementCore
 	
@@ -3096,7 +3094,7 @@
 				r = new ElementList;
 			while (node) {
 				if (node.nodeType === 1 && args.call(elem, node))
-					r[r.length++] = node;
+					r.push(node);
 				node = node[next];
 			}
 			return r;
@@ -3112,6 +3110,7 @@
 	 * @return {Element} 元素。
 	 */
 	function cleanClone(srcElem, destElem, cloneEvent, keepId) {
+		
 		if (!keepId)
 			destElem.removeAttribute('id');
 
@@ -3244,7 +3243,7 @@
 			 * 
 			 * 如果是 [ 开头的表达式， 则同时找出 [attrName] 后的内容。
 			 */
-			rRelSelector = /^\s*([>+~]|\[([^=]+?)\s*(([\^\*\|\~]?=)\s*((['"])([^\6]*)\6|[^'"][^\]]*?)\s*)?\])/;
+			rRelSelector = /^\s*([>+~]|\[([^=]+?)\s*(([\^\*\|\~]?=)\s*('([^']*?)'|"([^"]*?)"|([^'"][^\]]*?))\s*)?\])/;
 	
 		/**
 		 * 分析选择器，并返回一个等价的函数。
@@ -3330,7 +3329,7 @@
 						type = 0;
 						value = 'Element.getAttr(_,' + toJsString(match[2]) + ')';
 						if(match[4])
-							value = '(' + value + '||"")' + attrs[match[4]].replace('#', toJsString(match[6] ? match[7] : match[5]));
+							value = '(' + value + '||"")' + attrs[match[4]].replace('#', toJsString(match[8] || match[6]));
 					
 					// + > ~
 					} else {

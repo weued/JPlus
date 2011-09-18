@@ -11,8 +11,8 @@
 		<script src="../../../../jplus/system.js"></script>
 		<script src="../../../../jplus/system/dom/element.js"></script>
 		<script type="text/javascript" charset="utf-8">
-			document.onReady(function($) {
-				document.body.on('click', function() {
+			document.onReady(function() {
+				$(document.body).on('click', function() {
 					$('marker').setOffset( $(this).getOffset() );
 					return false;
 				});

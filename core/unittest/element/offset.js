@@ -122,7 +122,7 @@ testoffset("relative", function( iframe ) {
 	var document = iframe.document ;
 
 	// IE is collapsing the top margin of 1px
-	var ie = navigator.isQuriks;
+	var ie = navigator.isQuirks;
 
 	// get offset
 	var tests = [
@@ -189,7 +189,7 @@ testoffset("static", function( iframe ) {
 	var document = iframe.document ;
 
 	// IE is collapsing the top margin of 1px
-	var ie = navigator.isQuriks;
+	var ie = navigator.isQuirks;
 
 	// get offset
 	var tests = [
@@ -259,6 +259,10 @@ testoffset("static", function( iframe ) {
 });
 
 testoffset("fixed", function( iframe ) {
+
+
+if(navigator.isIE6)
+	return
 
 	var document = iframe.document ;
 
@@ -359,7 +363,6 @@ testoffset("scroll", function( iframe ) {
 
 testoffset("body", function( iframe ) {
 	expect(2);
-
 	equals( iframe.document.body.getPosition().y, 1, "document.body.getPosition().y" );
 	equals( iframe.document.body.getPosition().x, 1, "document.body.getPosition().x" );
 });

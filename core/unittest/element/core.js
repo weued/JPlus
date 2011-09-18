@@ -8,7 +8,7 @@ test("System.Dom.Element", function() {
 
 test("Element.parse", function() {
 	var elem = Element.parse("<div/><hr/><code/><b/>");
-	equals( elem.childNodes.length, 4, "节点个数" );
+	equals( elem.length, 4, "节点个数" );
 
 	for ( var i = 0; i < 3; ++i ) {
 		elem = Element.parse("<input type='text' value='TEST' />");
@@ -18,7 +18,7 @@ test("Element.parse", function() {
 	elem.remove();
 
 	equals( Element.parse(" <div/> ").tagName, 'DIV', "确保空白被删除" );
-	equals( Element.parse(" a<div/>b ").childNodes.length, 3, "确保空白被删除" );
+	equals( Element.parse(" a<div/>b ").length, 3, "确保空白被删除" );
 
 	var long1 = "";
 	for ( var i = 0; i < 128; i++ ) {
@@ -26,7 +26,7 @@ test("Element.parse", function() {
 	}
 
 	equals( Element.parse(" <div/> ").tagName, 'DIV', "确保空白被删除" );
-	equals( Element.parse(" a<div/>b ").childNodes.length, 3, "确保空白被删除" );
+	equals( Element.parse(" a<div/>b ").length, 3, "确保空白被删除" );
 
 	// Test multi-line HTML
 	var div = Element.parse("<div>\r\nsome text\n<p>some p</p>\nmore text\r\n</div>");
@@ -42,7 +42,7 @@ test("Element.parse", function() {
 	//  ok( Element.parse("<input/>").setAttr("type", "hidden"), "Create an input and set the type." );
 
 	var j = Element.parse("<span>hi</span> there <!-- mon ami -->");
-	ok( j.childNodes.length >= 2, "Check node,textnode,comment creation (some browsers delete comments)" );
+	ok( j.length >= 2, "Check node,textnode,comment creation (some browsers delete comments)" );
 
 	ok( !Element.parse("<option>test</option>").selected, "Make sure that options are auto-selected" );
 

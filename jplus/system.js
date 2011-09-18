@@ -2327,6 +2327,7 @@ Object.extendIf(trace, {
 				prefix: '',
 				
 				getPrefix: function (obj) {
+					if(!obj) return "";
 					for(var i = 0; i < definedClazz.length; i++) {
 						if(window[definedClazz[i]] === obj) {
 							return this.memberName = definedClazz[i];
@@ -2361,7 +2362,7 @@ Object.extendIf(trace, {
 				},
 				
 				getBaseClassDescription: function (obj) {
-					if(obj.base) {
+					if(obj && obj.base) {
 						var extObj = this.getTypeName(obj.base, window, "", 3);
 						return " 类" + (extObj && extObj != "JPlus.Object"  ? "(继承于 " + extObj + " 类)" : "");
 					}
@@ -2454,7 +2455,7 @@ Object.extendIf(trace, {
 						// 否则，获取当前实例下的成员。
 						this.addStaticMembers(obj);
 						
-						if(this.showPredefinedMembers) {
+						if(this.showPredefinedMembers && obj.constructor) {
 							this.addPredefinedNonStaticMembers(obj.constructor, obj);
 						}
 					

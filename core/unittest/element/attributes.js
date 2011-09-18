@@ -161,7 +161,8 @@ test("Element.prototype.setAttr", function() {
 	equal( $text.setAttr("required", false).getAttr("required"), false, "Setting required attribute to false removes it" );
 
 	var $details = Element.parse("<details open></details>");
- 	$details = $details.firstChild ? $( $details.firstChild) : $details;
+	
+	$details = $details[0] || $details;
 	$details.appendTo("qunit-fixture");
 	//equal( !$details.getAttr("open"), true, "open attribute presense indicates true" );
 	equal( $details.setAttr("open", false).getAttr("open"), false, "Setting open attribute to false removes it" );
@@ -247,13 +248,13 @@ test("Element.prototype.setAttr", function() {
 	//equals( "button", button.getAttr("type"), "Verify that you can't change the type of a button element" );
 
 	var $radio = Element.parse("<input value='sup' type='radio'>").appendTo("testForm");
+	
 	equals( $radio.getText(), "sup", "Value is not reset when type is set after value on a radio" );
 	// Setting attributes on svg element
 	var $svg = Element.parse("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1' baseProfile='full' width='200' height='200'>"
 		+ "<circle cx='200' cy='200' r='150' />"
-	+ "</svg>")
-	
-	$svg = $svg.tagName === 'SVG' ? $svg : $(  $svg.firstChild   );
+	+ "</svg>");
+	$svg = $svg[0] || $svg;
 	$svg.appendTo();
 	equals( $svg.setAttr("cx", 100).getAttr("cx"), "100", "Set attribute on svg element" );
 	$svg.remove();
