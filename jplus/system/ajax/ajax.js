@@ -3,88 +3,53 @@
 //===========================================
 
 
+using("System.Ajax.Request");
+
 
 /**
  * 处理异步请求的功能。
  * @class Ajax
  */
-namespace(".Ajax", Class({
+namespace(".Ajax", Request.extend({
 	
-	onStart: function(data){
-		this.trigger("start", data);
-	},
-	
-	onSuccess: function(response, xhr){
-		this.trigger("success", response);
-	},
-	
-	onError: function(e, xhr){
-		this.trigger("error", e);
-	},
-	
-	onTimeout: function(xhr){
-		this.trigger("timeout");
-	},
-	
-	onComplete: function(xhr, status){
-		this.trigger("complete", xhr);
+	onError: function(errorMessage){
+		this.trigger("error", errorMessage);
 	},
 
-	onAbort: function(){
-		this.trigger("abort");
-	},
-
-	onStateChange: function(isTimeout){
-		var me = this, xhr = me.xhr, status;
+	onReadyStateChange: function(exception){
+		var me = this, xhr = me.xhr;
 			
-		if(xhr && (xhr.readyState === 4 || isTimeout)) {
+		if(xhr && (exception || xhr.readyState === 4)) {
 			
-		
 			// 删除 readystatechange  。
 			xhr.onreadystatechange = Function.empty;
 			
-			// 删除目前的活动对象。
-			me.xhr = null;
-			
-			if(isTimeout === true){
-				xhr.abort();
-				me.onTimeout(xhr);
-				status = 'Request Timeout';
-			} else if(isTimeout) {
-				status = 'error';
-			} else {
-				isTimeout = true;
-			
-				status = !JPlus.checkStatusCode(xhr.statusCode) && (xhr.statusText || 'error');
-			}
-			
-			
-			
-			if (!status) {
-				// xhr[/xml/.test(xhr.getResponseHeader('content-type')) ? 'responseXML' : 'responseText']
-				me.onSuccess(xhr.responseText, xhr);
-			} else {
-				if(isTimeout === true) {
-					isTimeout = new Error(status);
-				}
+			try{
 				
-				isTimeout.xhr = xhr;
-				me.onError(isTimeout, xhr);
-			}
-			
-			me.onComplete(xhr, status);
+				if(exception) {
+					if(exception === true) {
+						xhr.abort();
+						me.onTimeout(xhr);
+						exception = 'Request Timeout';
+					}
+				} else {
+					exception = !JPlus.checkStatusCode(xhr.status) && xhr.statusText;
+				}
+					
+				if (exception)
+					me.onError(exception, xhr);
+				else
+					// xhr[/xml/.test(xhr.getResponseHeader('content-type')) ? 'responseXML' : 'responseText']
+					me.onSuccess(xhr.responseText, xhr);
+				
+				me.onComplete(exception, xhr);
+					
+			} finally {
 		
-			xhr = null;
+				xhr = me.xhr = null;
+			
+			}
 		}
-	},
-
-	/**
-	 * 初始化当前请求。
-	 * @param {Object} obj 配置对象。
-	 * @constructor Ajax
-	 */
-	constructor: function(obj) {
-		Object.extend(this, obj);
 	},
 	
 	/**
@@ -98,11 +63,6 @@ namespace(".Ajax", Class({
 	async: true,
 	
 	/**
-	 * 多个请求同时发生后的处理方法。 wait - 等待上个请求。 cancel - 中断上个请求。 ignore - 忽略新请求。
-	 */
-	link: 'wait',
-	
-	/**
 	 * 获取请求头。
 	 */
 	headers: {
@@ -112,39 +72,8 @@ namespace(".Ajax", Class({
 	
 	/**
 	 * 获取或设置是否忽略缓存。
+	 * @property disableCache=false
 	 */
-	disableCache: false,
-	
-	/**
-	 * 发送请求前检查。
-	 * @param {Object} data 数据。
-	 * @return {Boolean} 是否可发。
-	 */
-	check: function(data) {
-		var me = this;
-		
-		// 当前无请求， 可请求。
-		if (!me.xhr) return true;
-		switch (me.link) {
-			case 'wait':
-			
-				// 在 complete 事件中处理下一个请求。
-				me.one('complete', function() {
-					this.send(data, true);
-					return false;
-				});
-				return false;
-			case 'cancel':
-			
-				// 中止请求。
-				me.abort();
-				return true;
-			default:
-				assert(!link || link == 'ignore', "Ajax.prototype.send(data): 成员 {link} 必须是 wait、cancel、ignore 之一。", me.link);
-				return false;
-		}
-		return true;
-	},
 	
 	/**
 	 * 超时的时间大小。 (单位: 毫秒)
@@ -191,8 +120,11 @@ namespace(".Ajax", Class({
 			 * @type Boolean
 			 */
 			async = me.async;
+			
+		assert(url != undefined, "Ajax.prototype.send(data): 当前请求不存在 url 属性，无法提交请求。");
+		assert(["GET", "POST", "PUT", "DELETE"].indexOf(type) > -1, "Ajax.prototype.send(data): 当前请求的 {type} 不合法， type 应该是 GET POST PUT DELETE 之一(注意全大写)。", type);
 		
-		if (!me.check(data)) {
+		if (me.xhr && !me.delay(data)) {
 			return me;
 		}
 		
@@ -206,13 +138,13 @@ namespace(".Ajax", Class({
 		
 		// get  请求
 		if (data && type == 'GET') {
-			url += (url.indexOf('?') >= 0 ? '&' : '?') + data;
+			url = me.combineUrl(url, data);
 			data = null;
 		}
 		
 		// 禁止缓存，为地址加上随机数。
 		if(me.disableCache){
-			url += (url.indexOf('?') >= 0 ? '&' : '?') + JPlus.id++;
+			url = me.combineUrl(url, JPlus.id++);
 		}
 		
 		/// #endregion
@@ -235,11 +167,8 @@ namespace(".Ajax", Class({
 				
 		} catch (e) {
 		
-			me.xhr = null;
-			e.xhr = xhr;
 			//  出现错误地址时  ie 在此产生异常
-			me.onError(e, xhr);
-			me.onComplete(xhr, "error");
+			me.onReadyStateChange(e.message);
 			return me;
 		}
 		
@@ -260,23 +189,23 @@ namespace(".Ajax", Class({
 		
 		// 监视 提交是否完成
 		xhr.onreadystatechange = function(){
-			me.onStateChange(false);
+			me.onReadyStateChange();
 		};
 		
 		
 		try {
 			xhr.send(data);
 		} catch (e) {
-			me.onStateChange(e);
+			me.onReadyStateChange(e.message);
 			return me;
 		}
 		
 		// 不是同步时，火狐不会自动调用 onreadystatechange
 		if (!async)
-			me.onStateChange();
+			me.onReadyStateChange();
 		else if (me.timeouts > 0) {
 			setTimeout(function() {
-				me.onStateChange(true);
+				me.onReadyStateChange(true);
 			}, me.timeouts);
 		}
 		
@@ -334,7 +263,7 @@ namespace(".Ajax", Class({
 	 */
 	xType: "ajax"
 	
-}).addEvents());
+}));
 
 String.map("get post", function(k) {
 	
@@ -362,15 +291,18 @@ String.map("get post", function(k) {
 	 * @method Ajax.post
 	 */
 	
-	return function(url, data, onsuccess, onerror, timeouts, ontimeout) {
-		assert.isString(url, "Ajax." + k + "(url, data, onsuccess, onerror, timeouts, ontimeout): 参数{url} 必须是一个地址。如果需要提交至本页，使用 location.href。");
+	k = k.toUpperCase();
+	
+	return function(url, data, onsuccess, onerror, timeouts, ontimeout, oncomplete) {
+		assert.isString(url, "Ajax." + k.toLowerCase() + "(url, data, onsuccess, onerror, timeouts, ontimeout, oncomplete): 参数{url} 必须是一个地址。如果需要提交至本页，使用 location.href。");
 		new Ajax({
 			url: url,
 			onSuccess: onsuccess || emptyFn,
 			onError: onerror || emptyFn,
 			timeouts: timeouts,
 			onTimeout: ontimeout || emptyFn,
-			type: k.toUpperCase()
+			onComplete: oncomplete || emptyFn,
+			type: k
 		}).send(data);
 	};
 }, Ajax);

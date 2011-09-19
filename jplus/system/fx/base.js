@@ -128,7 +128,7 @@
 			 * @param {String} link='wait' 变化串联的方法。 可以为 wait, 等待当前队列完成。 restart 柔和转换为目前渐变。 cancel 强制关掉已有渐变。 ignore 忽视当前的效果。
 			 * @return {Boolean} 是否可发。
 			 */
-			check: function() {
+			delay: function() {
 				var me = this, args = arguments;
 				
 				//如正在运行。
@@ -191,7 +191,7 @@
 			start: function() {
 				var me = this, args = arguments;
 				
-				if (me.check.apply(me, args)) {
+				if (!me.timer || me.delay.apply(me, args)) {
 					
 					// 如果 duration > 0  更新。
 					if (args[2] > 0) this.duration = args[2];

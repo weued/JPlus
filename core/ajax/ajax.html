@@ -4,6 +4,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>Ajax</title>
         <script type="text/javascript" src="../../jplus/system.js" ></script>
+		<script type="text/javascript" src="../../jplus/system/ajax/request.js" ></script>
 		<script type="text/javascript" src="../../jplus/system/ajax/ajax.js" ></script>
 		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
     </head>
@@ -11,18 +12,22 @@
         <script>
             var url = './ajax.html';
             var ajax = new Ajax({
-                url: url,
-                onSuccess: function(m){
-                    trace.info(m);
-                },
                 data: {
                     "d1": "内容"
                 },
-                onComplete: function(m){
-                    trace.info("finish->" + m);
+                url: url,
+                onSuccess: function(m){
+                    trace.log("成功 =>", m);
                 },
-                onError: trace.error,
-                onTimeout: trace.error
+                onComplete: function(m){
+                    trace.info("完成 => " + m);
+                },
+                onError: function(m){
+                    trace.error("错误 => " + m);
+                },
+                onTimeout: function(m){
+                    trace.error("超时 => " + m);
+                }
             });
             
             var testcases = {

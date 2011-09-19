@@ -3,65 +3,129 @@
 //===========================================
 
 
+
+
+
+
+using("System.Ajax.Request");
+
 namespace(".Ajax.", null);
 
 
-Ajax.JSONP = Class({
-	/*
-	 * 
-	 */
-	constructor: function(obj) {
-		Object.extend(this, obj);
-	},parseJSON:function(response){
-		return eval("(" + response + ")");
-	}
-	/*
-	 * 
-	 */
-	,setEncoding: function(value){
-		if(value)
-			this.setHeader("Accept-Charset", value);
-		return this.setHeader('contentType', 'application/x-www-form-urlencoded' + (value ? '; charset=' + value : ''));
-	},createFunction:function(time){
-		var me = this;
-		window["jsonp"+time] = function(){
-			me.success(arguments[0]);
+Ajax.JSONP = Request.extend({
+
+	onReadyStateChange: function(exception){
+		var me = this, script = me.script;
+		if(script && (exception || !script.readyState || /loaded|complete/.test(script.readyState))) {
 			
-		};
+			// 删除全部绑定的函数。
+			script.onload = script.onreadystatechange = null;
+			
+			// 删除当前脚本。
+			script.parentNode.removeChild(script);
+			
+			// 删除回调。
+			delete window[me.callback];
+			
+			try{
+			
+				if(exception === true) {
+					me.onTimeout(script);
+					exception = 'Request Timeout';	
+				}
+					
+				me.onComplete(script);
+			
+			} finally {
+			
+				script = me.script = null;
+				
+			}
+		}
 	},
+	
+	jsonp: 'callback',
+	
 	/*
 	 * 
 	 */
 	getId:function(){
 		return Date.now();
-	},parseData:function(){
+	},
+	
+	parseData:function(){
 		var data = this.data ,query = "";
 		for(var name in data){
 			query  = name +"=";
 			query += data[name];
 		}
 		return query;
-	},parseUrl:function(time){
+	},
+	
+	parseUrl:function(time){
 		var me = this,url = me.url;
 		return url.replace("jsonp=?","jsonp="+time)+ me.parseData();
-	},initScript:function(time){
+	},
+	
+	createScript:function(time){
 		var me = this;
 		me.createFunction(time);
 		var script = document.createElement("script");
 		script.src = me.parseUrl(time);
 		script.type = "text/javascript";
 		return script;
-	},send: function(){
-		var head = document.getElementsByTagName("head")[0],me = this
-			,time = me.getId(),script = me.initScript(time);
-		head.appendChild(script);
-		script.onload = script.onreadystatechange = function(){
-			if(!this.readyState || this.readyState === 'loaded' || this.readyState === 'complete'){
-				script.onload = script.onreadystatechange = null;
-				head.removeChild(script);
-				delete window["jsonp"+time];
-			}
+	},
+	
+	send: function(data){
+		var me = this,
+			url = me.url,
+			callback,
+			script,
+			t;
+		
+		if(me.script && !me.delay(data))
+			return me;
+			
+		me.onStart(data);
+			
+		// 改成字符串。
+		if(typeof data !== 'string')
+			data = String.param(data);
+			
+		callback = me.callback || (me.callback = 'jsonp' + JPlus.id++);
+			
+		url = me.combineUrl(url, data);
+		
+		url = url.replace(/([=&?])(\?)(&|$)/, function (match, group1, group2, group3) {
+			return group1 + (group1 === '=' ? '' : me.jsonp + '=') + callback + group3;
+		});
+			
+		script = me.script = document.createElement("script");
+		t = document.getElementsByTagName("script")[0];
+			
+		window[callback] = function(){
+			me.onSuccess.apply(me, arguments);
+		};
+			
+		script.src = url;
+		script.type = "text/javascript";
+			
+		t.parentNode.insertBefore(script, t);
+		
+		if (me.timeouts > 0) {
+			setTimeout(function() {
+				me.onReadyStateChange(true);
+			}, me.timeouts);
 		}
+		
+		script.onload = script.onreadystatechange = function(){
+			me.onReadyStateChange();
+		};
+	},
+	
+	abort: function () {
+		this.onAbort();
+		this.onReadyStateChange('Aborted');
 	}
 });
 
@@ -69,8 +133,16 @@ Ajax.JSONP = Class({
 
 
 
-Ajax.getJSONP = function(json){
-	new JSONP({url:json.url,success:json.success}).send();
+Ajax.getJSONP = function(url, data, onsuccess, timeouts, ontimeout, oncomplete){
+	assert.isString(url, "Ajax.getJSONP(url, data, onsuccess, timeouts, ontimeout): 参数{url} 必须是一个地址。如果需要提交至本页，使用 location.href。");
+	var emptyFn = Function.empty;
+	new Ajax.JSONP({
+		url: url,
+		onSuccess: onsuccess || emptyFn,
+		timeouts: timeouts,
+		onTimeout: ontimeout || emptyFn,
+		onComplete: oncomplete || emptyFn
+	}).send(data);
 };
 
 
