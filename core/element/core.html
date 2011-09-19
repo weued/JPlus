@@ -65,7 +65,9 @@
 				'$': '"o" => assert.isTrue(value.a)',
 				'Element.prototype.xType': {doCall: false, overrides: '@o; =>   "element"'},
 				'Element.parse': '"<div/>" ; "<div><div />a<\/div>"; "   <div/> f <div/>"; "<object />"; "<input type=\'radio\' checked=\'checked\'>"', 
+				'Element.getDocument': 'a=>document; document=>document', 
 				'ElementList': '-',
+				'ElementList.prototype.length': {doCall: false, overrides:  '@abcd;4'},
 				'ElementList.prototype.each': '@abcd; function(value){ assert.log(value.id)} => assert.logged("abcd")',
 				'ElementList.prototype.filter': '@abcd; function(value) {return value === a || value === c} => assert.areEqual(value, [a, c])',
 				'ElementList.prototype.invoke': '@abcd; "setAttr", ["ff", 1] => assert.isTrue(a.getAttr("ff") == 1),  assert.isTrue(d.getAttr("ff") == 1) ',
@@ -88,9 +90,9 @@
 			// 1.  Style:   g/setStyle   show/hide   g/setOpcaity   isHidden
 // 2.  Attribute   g/setAttr   g/setHtml   g/setText    add/remove/toggle/hasClass   
 // 3. Dimension     g/setHeight/Width  g/setSize   getScroolSize
-// 4. Offset   g/setOffset    g/setPosition getOffsets   g/setScroll
+// 4. Offset   g/setOffset    g/setPosition    g/setScroll
 // 5.  Transfersing   find  findAll   get
-// 6.  Manipulation  append  appendTo  clone  insert     empty  contains  hasChild   dispose    remove  replaceWith
+// 6.  Manipulation  append  appendTo  clone  insert     empty   detach contains  hasChild   dispose    remove  replaceWith
 // 7. Event  on one trigger un
 // 8.     $     document.create   Element.parse
 

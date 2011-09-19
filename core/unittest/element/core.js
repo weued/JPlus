@@ -101,7 +101,9 @@ test("ElementList",  function() {
 	equals(el.pop(), document.body, "pop() 移除返回最后一个。");
 	equals(el.length, length, "pop() 减少长度");
 	
-	same(el.filter(Function.returnTrue), el, "filter() 返回");
+	same(el.filter(Function.returnTrue).length, el.length, "filter() 返回");
+	
+	same(el.filter(Function.returnFalse).length, 0, "filter() 返回");
 	
 	equals(el.indexOf(document), -1, "indexOf() 返回");
 	

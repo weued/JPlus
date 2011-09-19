@@ -1808,7 +1808,7 @@ var JPlus = {
 		 */
 		filter: function (fn, bind) {
 			var r = [];
-			this.forEach(function (value, i, array) {
+			ap.forEach.call(this, function (value, i, array) {
 				
 				// 过滤布存在的成员。
 				if(fn.call(this, value, i, array))
@@ -1869,10 +1869,10 @@ var JPlus = {
 			
 			assert.isNumber(index, "Array.prototype.insert(index, value): 参数 index ~。");
 			var me = this,
-				tmp = me.slice(index);
+				tmp = ap.slice.call(me, index);
 			me.length = index;
 			this[index] = value;
-			ap.push.apply(me, tmp);
+			this.push.apply(me, tmp);
 			return me;
 			
 		},
@@ -1890,7 +1890,7 @@ var JPlus = {
 		invoke: function (func, args) {
 			assert(args && typeof args.length === 'number', "Array.prototype.invoke(func, args): 参数 {args} 必须是数组, 无法省略。", args);
 			var r = [];
-			this.forEach(function (value) { 
+			ap.forEach.call(this, function (value) { 
 				assert(value != null && value[func] && value[func].apply, "Array.prototype.invoke(func, args): {value} 不包含函数 {func}。", value, func);
 				r.push(value[func].apply(value, args));
 			});
@@ -1909,7 +1909,12 @@ var JPlus = {
 		unique: function () {
 			
 			// 删除从 i + 1 之后的当前元素。
-			for(var i = 0; i < this.length; this.remove(this[i], ++i)) ;
+			for(var i = 0, t; i < this.length; ) {
+				t = ++i;
+				do {
+					t = ap.remove.call(this, this[i], t);
+				} while(t >= 0);
+			}
 			
 			return this;
 		},
@@ -1926,8 +1931,8 @@ var JPlus = {
 		remove: function (value, startIndex) {
 			
 			// 找到位置， 然后删。
-			var i = this.indexOf(value, startIndex);
-			if(i !== -1) this.splice(i, 1);
+			var i = ap.indexOf.call(this, value, startIndex);
+			if(i !== -1) ap.splice.call(this, i, 1);
 			return i;
 		},
 			

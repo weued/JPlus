@@ -1,0 +1,57 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>专题： Attribute</title>
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+		<script type="text/javascript" src="../../jplus/system.js" ></script>
+		<script type="text/javascript" src="../../jplus/system/dom/element.js" ></script>
+	</head>
+	<body>
+		<h2>专题： querySelector</h2>
+		<p>文/xuld</p>
+		<h4>背景</h4>
+		<p class="content">querySelector 是 DOM 新增的方法，可以根据CSS选择器返回节点。 </p>
+		<h4>问题描述</h4>
+		<p class="content">有 3 个对象都有 querySelector 方法： Document Element DocumentFragment。这里主要讨论 Element 的querySelector。
+			比如节点 a.的querySelector("body a"); 应该返回  null， 因为节点 a 里不存在 body 标签。而实际上，却返回 a 标签。</p>
+		<p class="content">看一个例子：
+			<div id="ct">
+				<div id="a" myData="b" data-c="c" class="box purple">
+					这是节点
+				</div>
+				<a href="#" id="b"></a>
+				<form id="c"><input name="id"></form>
+			</div>
+			<script>
+				var node = document.getElementById('ct');
+				
+				//   Property
+				console.log("p a => ",  node.querySelector("p a"));
+			
+			</script>
+			</p>
+		<h4>解决目标</h4>
+		<ol>
+			<li>
+				实现各个浏览器兼容的 CloneNode 事件: 复制节点
+			</li>
+			<li>
+				当复制 &lt;select&gt;等输入框时，同时复制内容。
+			</li>
+			<li>
+				支持事件复制。
+			</li>
+		</ol>
+		<h4>解决方案</h4>
+		<p class="content">定义清除的复制方式。</p>
+		<h4>测试</h4>
+		<script>
+			
+			
+
+
+
+		</script>
+	</body>
+</html>

@@ -41,30 +41,9 @@
 			
 			
 			var testcases = {
-				'Query': '-',
 				'Element.prototype.find': '@a; "div" => b; ".b" => b; "[_tag=\\\"b\\\"]" => b',
 				'Element.prototype.findAll': '@a; "div" => assert.areEqual(value[0], b); ".b" => assert.areEqual(value[0], b); "[_tag=\\\"b\\\"]" => assert.areEqual(value[0], b)',
 				'Element.prototype.get': '@b; "previous" => null; "next" => d; "first" => c; "parent" => a; "last" => c',
-				'Element.prototype.get("all")': function(){
-					b.get('all', 'a');
-				},
-				
-				'Insert': '-',
-				'Element.prototype.append': '@a; "appended"',
-				'Element.prototype.insert': '@a; "inserted", "beforeEnd"',
-				'Element.prototype.wrapWith': '@a; "<i></i>"',
-				'Element.prototype.replaceWith': '@a; ab',
-				
-				'Action': '-',
-				'Element.hasChild': '@a; a, b => true; c => true; d => false',
-				'Element.prototype.appendTo': '@a; document.body',
-				'Element.prototype.contains': '@a; b => true; c => true; d => false',
-				'Element.prototype.clone': '@a;',
-				
-				'Remove': '-',
-				'Element.prototype.remove': '@a; b',
-				'Element.prototype.empty': '@a; ',
-				'Element.prototype.dispose': '@a; '
 			};
 			
 			initTestCases(testcases);

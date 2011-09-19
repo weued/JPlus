@@ -41,6 +41,12 @@
 			
 			
 			var testcases = {
+				'Select': '-',
+				'Element.hasChild': 'a, b => true',
+				'Element.prototype.hasChild': '@a; a => false; b => true; c => true; d => true',
+				'Element.prototype.contains': '@a; a => true; b => true; c => true; d => true',
+				'Element.prototype.clone': '@a;',
+				
 				'Insert': '-',
 				'Element.prototype.append': '@a; "appended"',
 				'Element.prototype.insert': '@a; "inserted", "beforeEnd"',
@@ -49,18 +55,11 @@
 				'Remove': '-',
 				'Element.prototype.remove': '@a; b',
 				'Element.prototype.empty': '@a; ',
+				'Element.prototype.detach': '@a; ',
 				'Element.prototype.dispose': '@a; ',
 				
 				'Update': '-',
-				'Element.prototype.wrap': '@a; "<i><\/i>"',
-				'Element.prototype.unwrap': '@a; "<i><\/i>"',
-				'Element.prototype.replaceWith': '@a; ab',
-				'Element.prototype.clone': '@a; ab',
-				
-				'Select': '-',
-				'Element.hasChild': '@a; a, b => true; c => true; d => false',
-				'Element.prototype.contains': '@a; b => true; c => true; d => false',
-				'Element.prototype.clone': '@a;'
+				'Element.prototype.replaceWith': '@a; b'
 			};
 			
 			initTestCases(testcases);

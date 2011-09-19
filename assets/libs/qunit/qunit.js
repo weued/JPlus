@@ -453,7 +453,7 @@ var config = {
 	// by default, modify document.title when suite is done
 	altertitle: true,
 
-	urlConfig: ['禁用全局对象', '允许未处理的异常']
+	urlConfig: ['禁用全局对象', '不拦截异常']
 };
 
 // Load paramaters
