@@ -2523,6 +2523,10 @@ Object.extendIf(trace, {
 						this.baseClasses.each(function (baseClass, i) {
 							if(baseClass.prototype[memberName] === base[memberName] && hasOwnProperty.call(baseClass.prototype, memberName)) {
 								prefix = this.baseClassNames[i] + ".prototype.";
+								
+								if(nonStatic)
+									extInfo = '(继承的)';
+									
 								return  false;
 							}
 						}, this);

@@ -1,6 +1,6 @@
 var core = {
 	'System': '+Object +Navigator +Class +Namespace +Trace',
-	'Element': '+Core +Node +DomReady +Attribute +Event +Dimension',
+	'Element': '+Core +Traversing +Manipulation +Style +Attributes +Dimension +Offset',
 	'Ajax': 'Ajax Json Jsonp',
 	'Fx': 'Base Element -Multifade -Transitions -Color',
 	'UnitTest': '+Index +Element +Traversing +Manipulation +Style +Attributes +Dimension +Offset',
