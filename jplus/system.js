@@ -183,13 +183,19 @@ var JPlus = {
 		 * 匹配第一个字符。
 		 * @type RegExp
 		 */
-		rFirstChar = /\b[a-z]/g,
+		rFirstChar = /(\b[a-z])/g,
 		
 		/**
 		 * 表示空白字符。
 		 * @type RegExp
 		 */
 		rWhite = /%20/g,
+		
+		/**
+	     * 转为骆驼格式的正则表达式。
+	     * @type RegExp
+	     */
+		rToCamelCase = /-(\w)/g,
 		
 		/**
 		 * 管理所有事件类型的工具。
@@ -1740,6 +1746,19 @@ var JPlus = {
 		/// #endif
 		
 		/**
+	     * 转为骆驼格式。
+	     * @param {String} value 内容。
+	     * @return {String} 返回的内容。
+	     * @example
+		 * <code>
+		 * "font-size".toCamelCase(); //     "fontSize"
+		 * </code>
+	     */
+		toCamelCase: function () {
+	        return this.replace(rToCamelCase, toUpperCase);
+	    },
+		
+		/**
 		 * 将字符首字母大写。
 		 * @return {String} 大写的字符串。
 	     * @example
@@ -2124,7 +2143,7 @@ var JPlus = {
 	 * 将一个字符转为大写。
 	 * @param {String} match 字符。
 	 */
-	function toUpperCase(match) {
+	function toUpperCase(ch, match) {
 		return match.toUpperCase();
 	}
 	

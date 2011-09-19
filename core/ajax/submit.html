@@ -1,0 +1,31 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Ajax</title>
+		<script type="text/javascript" src="../../jplus/system.js" ></script>
+		<script type="text/javascript" src="../../jplus/system/ajax/json.js" ></script>
+		<script type="text/javascript" src="../../jplus/system/ajax/submit.js" ></script>
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+	</head>
+	<body>  
+		<form id='s' action="./ajax.asp" method="get" id="asd">
+			<input type="text" name="asdasd">
+			<input type="submit" value="dasdasd">
+			<input type="checkbox" name="asd" value="2">
+			<input type="checkbox" name="asd" value="3434">
+			<select name="asd" multiple="multiple" size=2 id="s">
+				<option value="sss">ss</option>
+				<option value="2222">ss</option>
+			</select>
+		</form>
+		<script>
+			var fns = [
+				["submit", function(){ 
+					Ajax.submit(document.getElementById('s'), trace.info);
+				 }, null, 10]
+			];
+		
+		</script>
+	</body>
+</html>

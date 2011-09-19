@@ -215,18 +215,7 @@ initUserMenu(todo, done);
 		
 		
 		
-		// /**
-	     // * 转为骆驼格式。
-	     // * @param {String} value 内容。
-	     // * @return {String} 返回的内容。
-	     // * @example
-		 // * <code>
-		 // * "font-size".toCamelCase(); //     "fontSize"
-		 // * </code>
-	     // */
-		// toCamelCase: function () {
-	        // return this.replace(rToCamelCase, toCamelCase);
-	    // },
+		
 
 //
 //

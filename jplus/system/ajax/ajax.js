@@ -55,7 +55,7 @@ namespace(".Ajax", Class({
 			} else {
 				isTimeout = true;
 			
-				status = !XMLHttpRequest.isOk(xhr) && (xhr.statusText || 'error');
+				status = !JPlus.checkStatusCode(xhr.statusCode) && (xhr.statusText || 'error');
 			}
 			
 			

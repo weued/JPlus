@@ -100,12 +100,48 @@ using("System.Fx.Base");
 		 * @return {Object} 结果。
 		 */
 		c = Fx.compute,
+		
+		/**
+		 * 缓存已解析的属性名。
+		 */
+		cache = {
+			opacity: {
+				set: function(target, name, from, to, delta){
+					target.setOpacity(c(from, to, delta));
+				},
+				parse: self,
+				get: function(target){
+					return target.getOpacity();
+				}
+			},
+			
+			scrollTop:{
+				set: function (target, name, from, to, delta) {
+					target.setScroll(null, c(from, to, delta));
+				},
+				parse: self,
+				get: function(target){
+					return target.getScroll().y;
+				}
+			},
+			
+			scrollLeft:{
+				set: function (target, name, from, to, delta) {
+					target.setScroll(c(from, to, delta));
+				},
+				parse: self,
+				get: function(target){
+					return target.getScroll().x;
+				}
+			}
+			
+		},
 	
 		/**
 		 * @class Animate
 		 * @extends Fx.Base
 		 */
-		pfe = namespace(".Fx.Animate", p.Fx.Base.extend({
+		fap = namespace(".Fx.Animate", Fx.Base.extend({
 			
 			/**
 			 * 当前绑定的节点。
@@ -165,39 +201,50 @@ using("System.Fx.Base");
 				assert.notNull(to, "Fx.Animate.prototype.start(from, to, duration, callback, link): 参数 {to} ~。");
 					
 				// 对每个设置属性
-				var me = this, key, cache = pfe.cachedParsers;
+				var me = this,
+					key;
 				
+				// 生成新的 current 对象。
 				me.current = {};
 				
 				for (key in to) {
 					
-					var parsed = undefined, fromV = from[key], toV = to[key], parser = cache[key = key.toCamelCase()];
+					var parsed = undefined,
+						fromValue = from[key],
+						toValue = to[key],
+						parser = cache[key = key.toCamelCase()];
 					
-					// 已经编译过，直接使用
+					// 已经编译过，直接使用， 否则找到合适的解析器。
 					if (!parser) {
+						
+						if(key in e.styleNumbers) {
+							cache[key] = numberParser;
+						} else {
 							
-						// 尝试使用每个转换器
-						for (parser in pfe.parsers) {
-							
-							// 获取转换器
-							parser = pfe.parsers[parser];
-							parsed = parser.parse(toV, key);
-							
-							// 如果转换后结果合格，证明这个转换器符合此属性。
-							if (parsed || parsed === 0) {
-								me.dom = me.dom.dom || me.dom;
-								// 指明值
-								cache[key] = parser;
-								break;
+							// 尝试使用每个转换器
+							for (parser in fap.parsers) {
+								
+								// 获取转换器
+								parser = fap.parsers[parser];
+								parsed = parser.parse(toValue, key);
+								
+								// 如果转换后结果合格，证明这个转换器符合此属性。
+								if (parsed || parsed === 0) {
+									me.dom = me.dom.dom || me.dom;
+									// 缓存，下次直接使用。
+									cache[key] = parser;
+									break;
+								}
 							}
+							
 						}
 					}
 					
 					// 找到合适转换器
 					if (parser) {
 						me.current[key] = {
-							from: parser.parse((fromV ? fromV === 'auto' : fromV !== 0) ? parser.get(me.dom, key) : fromV),
-							to: parsed === undefined ? parser.parse(toV, key) : parsed,
+							from: parser.parse((fromValue ? fromValue === 'auto' : fromValue !== 0) ? parser.get(me.dom, key) : fromValue),
+							to: parsed === undefined ? parser.parse(toValue, key) : parsed,
 							parser: parser
 						};
 						
@@ -209,61 +256,36 @@ using("System.Fx.Base");
 				return me;
 			}
 		
-		}));
-	
-	pfe.cachedParsers = {
-		opacity: {
+		})),
+		
+		numberParser = {
 			set: function(target, name, from, to, delta){
-				target.setOpacity(c(from, to, delta));
-			},
-			parse: self,
-			get: function(target){
-				return target.getOpacity();
-			}
-		},
-		
-		scrollTop:{
-			set: function (target, name, from, to, delta) {
-				target.setScroll(null, c(from, to, delta));
-			},
-			parse: self,
-			get: function(target){
-				return target.getScroll().y;
-			}
-		},
-		
-		scrollLeft:{
-			set: function (target, name, from, to, delta) {
-				target.setScroll(c(from, to, delta));
-			},
-			parse: self,
-			get: function(target){
-				return target.getScroll().x;
-			}
-		}
-		
-	};
-	
-	pfe.parsers = {
-		
-		/**
-		 * 数字。
-		 */
-		number: {
-			set: !navigator.isStd ?  function(target, name, from, to, delta){
-				try {
-					
-					// ie 对某些负属性内容报错
-					target.style[name] = c(from, to, delta);
-				}catch(e){}
-			} : function(target, name, from, to, delta){
-				
-				target.style[name] = c(from, to, delta) + 'px';
+				target.style[name] = c(from, to, delta);
 			},
 			parse: function(value){
 				return typeof value == "number" ? value : parseFloat(value);
 			},
 			get: e.styleNumber
+		};
+	
+	fap.parsers = {
+		
+		/**
+		 * 数字。
+		 */
+		number: {
+			set: navigator.isStandard ? function(target, name, from, to, delta){
+				
+				target.style[name] = c(from, to, delta) + 'px';
+			} : function(target, name, from, to, delta){
+				try {
+					
+					// ie 对某些负属性内容报错
+					target.style[name] = c(from, to, delta);
+				}catch(e){}
+			},
+			parse: numberParser.parse,
+			get: numberParser.get
 			
 		},
 		
@@ -279,8 +301,7 @@ using("System.Fx.Base");
 				]);
 			},
 			parse: function(value){
-				return String.hexToArray(value) ||
-					String.rgbToArray(value);
+				return String.hexToArray(value) || String.rgbToArray(value);
 			},
 			get: e.getStyle
 			
@@ -296,7 +317,7 @@ using("System.Fx.Base");
 	
 	var height = 'height marginTop paddingTop marginBottom paddingBottom',
 		
-		maps = pfe.maps = {
+		maps = fap.maps = {
 			all: height + ' opacity width',
 			opacity: 'opacity',
 			height: height,
@@ -368,28 +389,28 @@ using("System.Fx.Base");
 		show: function(duration, callBack, type){
 			var me = this;
 			if (duration) {
-				var dom = me.dom || me, savedStyle = {};
+				var elem = me.dom || me, savedStyle = {};
 		       
-				me.fx().start(getAnimate(dom, type),  {}, duration, function(){
-					Element.setStyles(dom, savedStyle);
+				me.fx().start(getAnimate(type),  {}, duration, function(){
+					Element.setStyles(elem, savedStyle);
 					
 					if(callBack)
 						callBack.call(me, true);
 				}, function(from, to){
 					if(!me.isHidden())
 						return false;
-					e.show(dom);
+					e.show(elem);
 					
 					if(from.$slide){
-						initSlide(from, dom, type, savedStyle);
+						initSlide(from, elem, type, savedStyle);
 					} else {
-						savedStyle.overflow = dom.style.overflow;
-						dom.style.overflow = 'hidden';
+						savedStyle.overflow = elem.style.overflow;
+						elem.style.overflow = 'hidden';
 					}
 					
 					for(var style in from){
-						savedStyle[style] = dom.style[style];
-						to[style] = e.styleNumber(dom, style);
+						savedStyle[style] = elem.style[style];
+						to[style] = e.styleNumber(elem, style);
 					}
 				});
 			} else {
@@ -408,23 +429,23 @@ using("System.Fx.Base");
 		hide: function(duration, callBack, type){
 			var me = this;
 			if (duration) {
-				var  dom = me.dom || me, savedStyle = {};
-				me.fx().start({}, getAnimate(dom, type), duration, function(){  
-					e.hide(dom);
-					e.setStyles(dom, savedStyle);
+				var  elem = me.dom || me, savedStyle = {};
+				me.fx().start({}, getAnimate(type), duration, function(){  
+					e.hide(elem);
+					e.setStyles(elem, savedStyle);
 					if(callBack)
 						callBack.call(me, false);
 				}, function (from, to) {
 					if(me.isHidden())
 						return false;
 					if(to.$slide) {
-						initSlide(to, dom, type, savedStyle);
+						initSlide(to, elem, type, savedStyle);
 					} else {
-						savedStyle.overflow = dom.style.overflow;
-						dom.style.overflow = 'hidden';
+						savedStyle.overflow = elem.style.overflow;
+						elem.style.overflow = 'hidden';
 					}
 					for(var style in to){
-						savedStyle[style] = dom.style[style];
+						savedStyle[style] = elem.style[style];
 					}
 				});
 			}else{
@@ -460,26 +481,26 @@ using("System.Fx.Base");
 	/**
 	 * 获取变换。
 	 */
-	function getAnimate(elem, type){
+	function getAnimate(type){
 		return Object.extend({}, maps[type || 'all']);
 	}
 	
 	/**
 	 * 初始化滑动变换。
 	 */
-	function initSlide(animate, dom, type, savedStyle){
+	function initSlide(animate, elem, type, savedStyle){
 		delete animate.$slide;
-		dom.parentNode.style.overflow = 'hidden';
+		elem.parentNode.style.overflow = 'hidden';
 		var margin = 'margin' + type.charAt(0).toUpperCase() + type.substr(1);
 		if(/^(l|r)/.test(type)){
-			animate[margin] = -dom.offsetWidth;
+			animate[margin] = -elem.offsetWidth;
 			var margin2 = type.length === 4 ? 'marginRight' : 'marginLeft';
-			animate[margin2] = dom.offsetWidth;
-			savedStyle[margin2] = dom.style[margin2];
+			animate[margin2] = elem.offsetWidth;
+			savedStyle[margin2] = elem.style[margin2];
 		} else {
-			animate[margin] = -dom.offsetHeight;
+			animate[margin] = -elem.offsetHeight;
 		}
-		 savedStyle[margin] = dom.style[margin];
+		 savedStyle[margin] = elem.style[margin];
 	}
 	
 
