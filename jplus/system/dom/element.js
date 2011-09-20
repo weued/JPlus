@@ -217,9 +217,9 @@
 		 * @param {String} name 需要获取的CSS属性名字。
 		 * @return {String} 返回样式字符串，肯能是 undefined、 auto 或空字符串。
 		 */
-		
-		// getComputedStyle为FF获取样式
 		getStyle = window.getComputedStyle ? function (elem, name) {
+			
+			// getComputedStyle为标准浏览器获取样式。
 	
 			assert.isElement(elem , "Element.getStyle(elem, name): 参数 {elem} ~。");
 			
