@@ -41,7 +41,14 @@ var notes = {
 		'J+ 介绍': 'notes/library/introduction.html',
 		'J+ 在技术上相对于其它框架的最大不同点': 'notes/library/features.html',
 		'为什么 J+': 'notes/library/whyjplus.html',
-		'J+ 最快入门': 'notes/library/helloworld.html'
+		'J+ 最快上手': 'notes/library/helloworld.html'
+	},
+	
+	'这不是浪漫': {
+		'怎么才是喜欢编程': 'notes/coder/canibeacoder.html',
+		'有互联网的今天': 'notes/coder/whenigrowup.html',
+		'慢慢老去的90初们': 'notes/coder/the90s.html',
+		'有没有这样一个人': 'notes/coder/isthereaperson.html'
 	}
 };
 

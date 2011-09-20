@@ -44,6 +44,15 @@ code {
 	font-family: "Courier New";
 }
 
+table {
+	border-collapse: collapse;
+	empty-cells: show;
+}
+
+th, td {
+	border: 1px solid  #E27B00;
+}
+
 pre {
 	line-height:18px;
 }
