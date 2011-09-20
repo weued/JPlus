@@ -217,11 +217,14 @@
 		 * @param {String} name 需要获取的CSS属性名字。
 		 * @return {String} 返回样式字符串，肯能是 undefined、 auto 或空字符串。
 		 */
+		
+		// getComputedStyle为FF获取样式
 		getStyle = window.getComputedStyle ? function (elem, name) {
 	
 			assert.isElement(elem , "Element.getStyle(elem, name): 参数 {elem} ~。");
 			
-			// 获取真实的样式
+			// 获取真实的样式owerDocument返回elem所属的文档对象
+			// 调用getComputeStyle的方式为(elem,null)
 			var computedStyle = elem.ownerDocument.defaultView.getComputedStyle(elem, null);
 	
 			// 返回 , 在 火狐如果存在 IFrame， 则  computedStyle == null
@@ -241,10 +244,10 @@
 						return elem.offsetWidth === 0 ? 'auto' : elem.offsetWidth - e.getSize(elem, 'bx+px') + 'px';
 					case 'opacity':
 						return ep.getOpacity.call(elem).toString();
-		
 				}
 			}
-			
+			// currentStyle：IE的样式获取方法,runtimeStyle是获取运行时期的样式。
+			// currentStyle是运行时期样式与style属性覆盖之后的样式
 			var r = elem.currentStyle;
 			
 			if(!r)
@@ -302,6 +305,8 @@
 		 * float 属性的名字。
 		 * @type String
 		 */
+		
+		// IE：styleFloat Other：cssFloat
 		styleFloat = 'cssFloat' in div.style ? 'cssFloat' : 'styleFloat',
 	
 		/// #endif
@@ -426,10 +431,10 @@
 			 * });
 			 * </code>
 			 */
-			removeEventListener: document.removeEventListener ? function (type, listener,state) {
+			removeEventListener: document.removeEventListener ? function (type, listener) {
 			
 				//  因为 IE 不支持，所以忽略 第三个参数。
-				this.removeEventListener(type, listener, state);
+				this.removeEventListener(type, listener, false);
 				
 			}:function (type, listener) {
 			
