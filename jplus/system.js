@@ -1885,13 +1885,12 @@ var JPlus = {
 		 * </code>
 		 */
 		insert: function (index, value) {
-			
 			assert.isNumber(index, "Array.prototype.insert(index, value): 参数 index ~。");
 			var me = this,
 				tmp = ap.slice.call(me, index);
-			me.length = index;
+			me.length = index + 1;
 			this[index] = value;
-			this.push.apply(me, tmp);
+			ap.push.apply(me, tmp);
 			return me;
 			
 		},

@@ -66,7 +66,7 @@ namespace(".Tpl.", {
 	 */
 	compile: function(tpl){
 		
-		var output = 'var $tpl = "";with($data) {',
+		var output = 'var $tpl="";with($data){',
 			
 			// 块的开始位置。
 			blockStart = -1,

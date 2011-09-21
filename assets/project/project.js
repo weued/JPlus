@@ -2,10 +2,15 @@ var core = {
 	'System': '+Object +Navigator +Class +Namespace +Trace',
 	'Element': '+Core +Traversing +Manipulation +Style +Attributes +Event +DomReady +Dimension +Offset',
 	'Ajax': 'Ajax Json Jsonp',
-	'Fx': '+Base +Element -Multifade -Transitions -Color',
+	'Fx': '+Base +Element Multifade Transitions Color',
 	'UnitTest': '+Index +Element +Traversing +Manipulation +Style +Attributes +Dimension +Offset',
-	'jQuery': '+Core',
-	'Mootools': '+Core'
+	'jQuery': '+Core +Offset',
+	'Mootools': '+Core',
+	'Data': '+Collection',
+	'Broswer': '+Cookies',
+	'Algorithm': 'Sort Encryption BigNumber',
+	'Core': 'Array Check Date DateEx Function Json Number Object RegExp SimpleJson String',
+	'Utils': 'Check ChineseCheck ChineseId Tpl'
 };
 
 
@@ -35,6 +40,10 @@ var notes = {
 		'项目文件夹结构': 'notes/standards/struct.html',
 		'Javascript 编码规范': 'notes/standards/javascript.html',
 		'浏览器': 'notes/standards/browser.html'
+	},
+	
+	'前端': {
+		'IE6  实现 Fixed': 'notes/frontend/fixed.html'
 	},
 	
 	'库': {
