@@ -15,7 +15,7 @@ namespace(".Draggable", Class({
 	 */
 	onDragStart: function(e){
 		
-		e.data = this;
+		e.dragTarget = this;
 		
 		// 如果都正常。
 		return this.dom.trigger('dragstart', e);
@@ -27,7 +27,7 @@ namespace(".Draggable", Class({
 	 */
 	onDrag: function(e){
 		
-		e.data = this;
+		e.dragTarget = this;
 		
 		this.dom.trigger('drag', e);
 			
@@ -39,7 +39,7 @@ namespace(".Draggable", Class({
 	 */
 	onDragEnd: function(e){
 
-		e.data = this;
+		e.dragTarget = this;
 		
 		return this.dom.trigger('dragend', e);
 	},

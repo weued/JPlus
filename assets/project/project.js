@@ -11,7 +11,7 @@ var core = {
 	'Algorithm': 'Sort Encryption BigNumber',
 	'Core': 'Array Check Date DateEx Function Json Number Object RegExp SimpleJson String',
 	'Utils': 'Check ChineseCheck ChineseId Tpl',
-	'Dom': 'Drag Drop'
+	'Dom': '+Drag +Drop'
 };
 
 

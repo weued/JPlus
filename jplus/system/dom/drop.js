@@ -27,7 +27,7 @@ using("System.Dom.Drag");
 			 * @param {Event} e 事件参数。
 			 */
 			onDragEnter: function(draggable, e){
-				e.data = draggable;
+				e.dragTarget = draggable;
 				return this.dom.trigger('dragenter', e);
 			},
 			
@@ -37,7 +37,7 @@ using("System.Dom.Drag");
 			 * @param {Event} e 事件参数。
 			 */
 			onDragOver: function(draggable, e){
-				e.data = draggable;
+				e.dragTarget = draggable;
 				return this.dom.trigger('dragover', e);
 			},
 
@@ -47,7 +47,7 @@ using("System.Dom.Drag");
 			 * @param {Event} e 事件参数。
 			 */
 			onDrop: function(draggable, e){
-				e.data = draggable;
+				e.dragTarget = draggable;
 				return this.dom.trigger('drop', e);
 			},
 			
@@ -57,7 +57,7 @@ using("System.Dom.Drag");
 			 * @param {Event} e 事件参数。
 			 */
 			onDragLeave: function(draggable, e){
-				e.data = draggable;
+				e.dragTarget = draggable;
 				return this.dom.trigger('dragleave', e);
 			},
 			
@@ -198,7 +198,7 @@ using("System.Dom.Drag");
 		},
 		remove: function(elem, type, fn){
 			elem.removeListener(type, fn, false);
-			p.data(elem, 'droppable').setDisabled();
+			p.getData(elem, 'droppable').setDisabled();
 		}
 	}, mouseEvent)), {}));
 

@@ -56,14 +56,14 @@
 			$('drag').findAll('.box').setDraggable(true);
 			
 			$('drop').findAll('.zone').on('dragenter', function (e) {
-				this.hover = document.create('div', 'box hover').setHtml(e.data.dom.id.substr(1));
+				this.hover = document.create('div', 'box hover').setHtml(e.dragTarget.dom.id.substr(1));
 				this.append(this.hover);
 			}).on('dragleave', function (e) {
 				this.hover.remove();
 			}).on('drop', function (e) {
 				this.hover.remove();
-				e.data.dom.setOffset({x:0, y: 0});
-				this.append(e.data.dom);
+				e.dragTarget.dom.setOffset({x:0, y: 0});
+				this.append(e.dragTarget.dom);
 			});
 			
 		</script>

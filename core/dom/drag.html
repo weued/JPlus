@@ -36,13 +36,13 @@
 			var d1 = $('d1').setDraggable(true).on('dragstart', function(e){
 				this.text = this.getHtml();
 			}).on('drag', function(e){
-			   	this.setHtml(e.data.to.x + "," + e.data.to.y);
+			   	this.setHtml(e.dragTarget.to.x + "," + e.dragTarget.to.y);
 			}).on('dragend', function(e){
 				this.setHtml(this.text);
 			});
 			
 			var d2 = $('d2').setDraggable(true).on('dragend', function (e) {
-				e.data.revert();
+				e.dragTarget.revert();
 			});
 			
 			var d3 = $('d3').setDraggable($('d3').find('button'));
@@ -50,17 +50,17 @@
 			var d4 = $('d4').setDraggable(true).on('drag', function(e){
 				
 				var STHREH = 60;
-				e.data.setStep('x', STHREH);
-				e.data.setStep('y', STHREH);
+				e.dragTarget.setStep('x', STHREH);
+				e.dragTarget.setStep('y', STHREH);
 			});
 			
 			var d5 = $('d5').setDraggable(true).on('drag', function(e){
 				var container = this.get('parent', 1);
-				e.data.limit(container.getPosition(), container.getSize()) ;
+				e.dragTarget.limit(container.getPosition(), container.getSize()) ;
 			});
 			
 			var d6 = $('d6').setDraggable(true).on('drag', function(e){
-				e.data.autoScroll(document);
+				e.dragTarget.autoScroll(document);
 
 			});
 			
