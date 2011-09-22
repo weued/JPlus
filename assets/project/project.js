@@ -10,7 +10,8 @@ var core = {
 	'Broswer': '+Cookies',
 	'Algorithm': 'Sort Encryption BigNumber',
 	'Core': 'Array Check Date DateEx Function Json Number Object RegExp SimpleJson String',
-	'Utils': 'Check ChineseCheck ChineseId Tpl'
+	'Utils': 'Check ChineseCheck ChineseId Tpl',
+	'Dom': 'Drag Drop'
 };
 
 

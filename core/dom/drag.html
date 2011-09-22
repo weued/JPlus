@@ -5,70 +5,65 @@
 		<title>J+ Core 测试</title>
 		<script type="text/javascript" src="../../jplus/system.js" ></script>
 		<script type="text/javascript" src="../../jplus/system/dom/element.js" ></script>
+		<script type="text/javascript" src="../../jplus/system/fx/base.js" ></script>
+		<script type="text/javascript" src="../../jplus/system/fx/element.js" ></script>
 		<script type="text/javascript" src="../../jplus/system/dom/drag.js" ></script>
+		<script type="text/javascript" src="../../jplus/system/dom/dragex.js" ></script>
 		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+		<style>
+			#drag div {
+				cursor: move;
+			}
+			
+			
+		</style>
 	</head>
 	<body>
 		<div id="drag">
-			<div id="d1" class="box blue">最简单的拖动</div>
+			<div id="d1" class="box blue">普通拖动</div>
 			<div id="d2" class="box purple">返回原地</div>
-			<div id="d3" class="box indigo">拖动事件</div>
-			<div id="d4" class="box green"><button>拖动句柄</button></div>
-			<div id="d5" class="box purple">多像素拖动</div>
-			<div id="d6" class="box indigo">限制位置</div>
-			<div id="d7" class="box blue">自动刷屏</div>
+			<div id="d3" class="box green"><button>拖动句柄</button></div>
+			<div id="d4" class="box purple">多像素拖动</div>
+			<div id="d5" class="box indigo">限制位置</div>
+			<div id="d6" class="box blue">自动刷屏</div>
 		</div>
 		<script>
 			
-			$('d1').setDraggable(true);
-
-			$('d3').setDraggable(true).on('dragstart', function(e){
-				trace.log("开始   ", e);
+		
+		
+		
+			
+			var d1 = $('d1').setDraggable(true).on('dragstart', function(e){
+				this.text = this.getHtml();
 			}).on('drag', function(e){
-			   	trace.log("拖动   ", e);
+			   	this.setHtml(e.data.to.x + "," + e.data.to.y);
 			}).on('dragend', function(e){
-				trace.log("结束   ", e);
+				this.setHtml(this.text);
 			});
 			
-			$('d2').setDraggable(true).on('dragend', Function.returnFalse);
+			var d2 = $('d2').setDraggable(true).on('dragend', function (e) {
+				e.data.revert();
+			});
 			
-			$('d4').setDraggable($('d4').find('button'));
+			var d3 = $('d3').setDraggable($('d3').find('button'));
 			
-			$('d5').setDraggable(true).on('drag', function(e){
+			var d4 = $('d4').setDraggable(true).on('drag', function(e){
 				
 				var STHREH = 60;
-				
-				var d = Py.DragDrop.Manager;
-				
-				var value = parseInt(d.delta.x / STHREH);
-				
-				if(value != d.value){
-					
-					d.value = value;
-				}
-				
-				e.data.to.x = e.data.from.x + value * STHREH;
-				e.data.to.y = e.data.from.y;
+				e.data.setStep('x', STHREH);
+				e.data.setStep('y', STHREH);
 			});
 			
-			$('d6').setDraggable(true).on('drag', function(e){
-				
-				
-				e.data.limit($('zone1').getBound()) ;
+			var d5 = $('d5').setDraggable(true).on('drag', function(e){
+				var container = this.get('parent', 1);
+				e.data.limit(container.getPosition(), container.getSize()) ;
 			});
 			
-			$('d7').setDraggable(true).on('drag', function(e){
-				var d = e.target;
-				
-				var scroll = document.getScroll(), win = document.getSize();
-				
-				scroll.y = e.data.calcBound().bottom - win.y;
-				
-				if(scroll.y > 0){
-					document.setScroll(scroll);
-				}
+			var d6 = $('d6').setDraggable(true).on('drag', function(e){
+				e.data.autoScroll(document);
 
 			});
+			
 			
 		</script>
 	</body>

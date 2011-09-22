@@ -1469,11 +1469,11 @@
 			assert(!initEvent || ee[baseEvent], "Element.addEvents(events, baseEvent, initEvent): 不存在基础事件 {baseEvent}。");
 	
 			// 对每个事件执行定义。
-			map(events, Function.from(Function.isFunction(baseEvent) ? o.extendIf({
+			map(events, Function.from(o.extendIf(Function.isFunction(baseEvent) ? {
 	
 				initEvent: baseEvent
 	
-			}, ee.$default) : {
+			} : {
 	
 				initEvent: initEvent ? function (e) {
 					return ee[baseEvent].initEvent.call(this, e) !== false && initEvent.call(this, e);
@@ -1488,7 +1488,7 @@
 					elem.removeEventListener(baseEvent, fn, false);
 				}
 	
-			}), ee);
+			}, ee.$default)), ee);
 	
 			return e.addEvents;
 		},
