@@ -116,12 +116,4 @@ label .x-icon{
 	color: gray;
 }
 
-/* box */
-.x-box{
-	border:solid 1px #B8D0D6!important;
-}
 
-/* 醒目 */
-.x-hign {
-	background: orange;
-}

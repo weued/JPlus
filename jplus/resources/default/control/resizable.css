@@ -1,0 +1,128 @@
+/*  可变区代理	 */
+.x-resize-proxy {
+	border-style: dashed;
+	border-width: 1px;
+	opacity: 0.5;
+	filter: alpha(opacity=50);
+	z-index: 100000;
+} 
+
+/* 可变区 */
+.x-resizable{
+	position:absolute;
+	/*overflow:hidden;*/  /*  IE 6	 */
+	
+	/*_height: expression(this.firstChild.nextSibling.offsetHeight + 33);*/
+}
+
+.x-resizable-lt, .x-resizable-t, .x-resizable-rt, .x-resizable-l, .x-resizable-r, .x-resizable-lb, .x-resizable-b, .x-resizable-rb {
+	overflow: hidden;
+	width: 6px;
+	height: 6px;
+	position: absolute;
+	display: block;
+	
+	/* IE 6/7无视高度，显示内容。  */
+	*font-size: 0px;
+	/* 触发 IE6 layout */
+	_background: #ffffff;
+	_filter: alpha(opacity = 0);
+}
+
+.x-resizable-lt {
+	top: 0;
+	left: 0;
+	z-index: 2;
+	cursor: nw-resize;
+}
+
+.x-resizable-t {
+	top: 0;
+	cursor: n-resize;
+}
+
+.x-resizable-rt {
+	top: 0;
+	right: 0;
+	z-index: 2;
+	cursor: ne-resize;
+}
+
+.x-resizable-l {
+	left: 0;
+	cursor: w-resize;
+}
+
+.x-resizable-r {
+	right: 0;
+	cursor: e-resize;
+}
+
+.x-resizable-lb {
+	bottom: 0;
+	left: 0;
+	z-index: 2;
+	cursor: sw-resize;
+}
+
+.x-resizable-b {
+	bottom: 0;
+	cursor: s-resize;
+}
+
+.x-resizable-rb {
+	bottom: 0;
+	right: 0;
+	z-index: 2;
+	cursor: se-resize;
+} 
+
+.x-resizable-t, .x-resizable-b{
+	width: 100%;
+	left: 0;
+	z-index: 1;
+	
+	/*  当父元素有 padding， IE6 width: 100% 失效。 */
+	_width: expression(this.parentNode.clientHeight);
+}
+
+.x-resizable-l, .x-resizable-r{
+	top: 0px;
+	z-index: 1;
+	height: 100%;
+	
+	/*  当父元素没有定义高度 或 有 padding， IE6/7 height: 100% 失效。 */
+	*height: expression(this.parentNode.clientHeight);
+}
+
+
+.x-resizable-rt, .x-resizable-rb{
+	/*_left: expression(this.parentNode.clientWidth - 6);*/
+}
+
+
+.x-resizable-r {
+	/*_left: expression(this.parentNode.clientWidth - 5);*/
+}
+
+
+
+
+/*****************************/
+
+
+
+.x-resize-proxy {
+	border-color: #C3E9ED;
+	background-color: #c3d7dc;
+}
+
+/*
+
+.x-shadow-lt, .x-shadow-rt, .x-shadow-t, .x-shadow-lb, .x-shadow-rb, .x-shadow-r, .x-shadow-b, .x-shadow-l {
+	_background: url(images/pixel.gif);
+}
+
+
+
+*/

@@ -10,7 +10,9 @@
 
 .x-shadow-lt, .x-shadow-rt, .x-shadow-t, .x-shadow-lb, .x-shadow-rb, .x-shadow-r, .x-shadow-b, .x-shadow-l  {
 	position: absolute; 
-	font-size: 0px; /* IE  */
+	
+	/* IE 6/7无视高度，显示内容。  */
+	*font-size: 0px; 
 	
 }
 
