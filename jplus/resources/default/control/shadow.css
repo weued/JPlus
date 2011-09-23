@@ -17,12 +17,17 @@
 .x-shadow-b, .x-shadow-c, .x-shadow-t{
 	left: 0px;
 	width: 100%;
+	
+	/*  当父元素有 padding， IE6 width: 100% 失效。 */
+	_width: expression(this.parentNode.clientWidth);
 }
 
 .x-shadow-l, .x-shadow-c, .x-shadow-r{
 	top: 0px;
 	height: 100%;
-	_height: expression(this.parentNode.clientHeight);
+	
+	/*  当父元素没有定义高度 或 有 padding， IE6/7 height: 100% 失效。 */
+	*height: expression(this.parentNode.clientHeight);
 }
 
 .x-shadow-lt, .x-shadow-rt, .x-shadow-t{
@@ -43,11 +48,11 @@
 .x-shadow-r, .x-shadow-rb, .x-shadow-rt{
 	right: -4px;
 	width: 4px;
-	_left: expression(this.parentNode.clientWidth);
+	/*_left: expression(this.parentNode.clientWidth);*/
 }
 
 .x-shadow-r{
-	_width: 5px;
+	/*_width: 5px;*/
 }
 
 
@@ -59,8 +64,8 @@
  ***********************************************/
 
 
-.x-shadow-lt, .x-shadow-rt, .x-shadow-lb, .x-shadow-rb{
-	background:url(images/shadow-lrtb.png)  no-repeat;
+.x-shadow-t, .x-shadow-b, .x-shadow-lt, .x-shadow-rt, .x-shadow-lb, .x-shadow-rb{
+	background:url(images/shadow-tbc.png)  no-repeat;
 }
 
 .x-shadow-c{
@@ -72,25 +77,29 @@
 }
 
 .x-shadow-t, .x-shadow-b{
-	background:url(images/shadow-tb.png) repeat-x;
+	background-repeat: repeat-x;
 }
 
 .x-shadow-rt {
     background-position: 0 -4px;
 }
 
-.x-shadow-r {
-    background-position: -4px 0;
-}
-
 .x-shadow-lb {
-    background-position: 0 -12px;
-}
-
-.x-shadow-b {
-    background-position: 0 -4px;
+    background-position: 0 -8px;
 }
 
 .x-shadow-rb {
-    background-position: 0 -18px;
+    background-position: 0 -12px;
+}
+
+.x-shadow-t {
+    background-position: 0 -16px;
+}
+
+.x-shadow-b {
+    background-position: 0 -20px;
+}
+
+.x-shadow-r {
+    background-position: -4px 0;
 }

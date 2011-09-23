@@ -8,20 +8,45 @@
 		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
 	</head>
 	<body>
-		<div id="shadow" class="x-shadow" style=" position:relative;  width:100px; height: 100px; border:1px solid  #90D9E8; ">
-			<div style=""> 阴影  <input type="button"  onclick="var shadow = this.parentNode.parentNode;shadow.style.height = shadow.style.width =  '80px'; shadow.style.left = shadow.style.top = '10px'" value="更改大小" /> </div>
-			<div  class="x-shadow-lt"></div>
-			<div class="x-shadow-t"  ></div>
-			<div class="x-shadow-rt"></div>
-			<div class="x-shadow-l"></div>
-			<div  class="x-shadow-lb"></div>
-			<div class="x-shadow-r"></div>
-			<div class="x-shadow-b"></div>
-			<div class="x-shadow-rb"></div>
-		</div>
-		
-		<div id="shadow" class="x-shadow" style=" position:relative;  width:100px; height: 100px; border:1px solid  #90D9E8;  box-shadow: 0 0 4px 0 #888888;">
-			<div style=""> CSS3 阴影  <input type="button"  onclick="var shadow = this.parentNode.parentNode;shadow.style.height = shadow.style.width =  '80px'; shadow.style.left = shadow.style.top = '10px'" value="更改大小" /> </div>
+		<div>
+			<style>
+				.x-shadow {
+					display: inline-block;
+					margin: 10px;
+					position:relative;
+					width:100px;
+					height: 100px;
+					border:1px solid  #90D9E8;
+					*display: inline;
+					*zoom: 1;
+					padding: 10px;
+				}
+			</style>
+			<script>
+			
+				function toggleSize(node){
+					var shadow = node.parentNode.parentNode,
+						togged = shadow.togged = !shadow.togged;
+					shadow.style.height = shadow.style.width = togged ?  '80px' : '100px';
+					shadow.style.left = shadow.style.top = togged ? '10px' : '0px'
+				}
+				
+			</script>
+			<div id="shadow" class="x-shadow" style=" ">
+				<div style=""> 阴影  <input type="button"  onclick="toggleSize(this)" value="更改大小" /> </div>
+				<div  class="x-shadow-lt"></div>
+				<div class="x-shadow-t"  ></div>
+				<div class="x-shadow-rt"></div>
+				<div class="x-shadow-l"></div>
+				<div  class="x-shadow-lb"></div>
+				<div class="x-shadow-r"></div>
+				<div class="x-shadow-b"></div>
+				<div class="x-shadow-rb"></div>
+			</div>
+			
+			<div id="shadow2" class="x-shadow" style="box-shadow: 0 0 4px 0 #888888; -moz-box-shadow: 0 0 4px 0 #888888;  -webkit-box-shadow: 0 0 4px 0 #888888;   ">
+				<div style=""> CSS3 阴影  <input type="button"  onclick="toggleSize(this)" value="更改大小" /> </div>
+			</div>
 		</div>
 		<hr>
 	</body>

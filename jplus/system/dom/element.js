@@ -755,7 +755,7 @@
 	/// #ifdef SupportIE6
 	
 	if(navigator.isQuirks) {
-		map("pop shift", apply(apply(ElementList.prototype, ap), {
+		map("pop shift", ap, apply(apply(ElementList.prototype, ap), {
 			
 			push: function() {
 				return ap.push.apply(this, o.update(arguments, $));
@@ -765,7 +765,7 @@
 				return ap.unshift.apply(this, o.update(arguments, $));
 			}
 			
-		}), ap);
+		}));
 	}
 	
 	/// #endif
