@@ -1,0 +1,47 @@
+/*  文本框  */
+.x-textbox  {
+	padding: 2px;
+	vertical-align: middle;
+}
+
+/***********************/
+
+input.x-textbox{
+	height: 16px;
+	line-height: 16px;
+}
+
+/*  文本框  */
+.x-textbox{
+	font-size:small;
+    border-width: 1px;
+	border-style: solid;
+	border-color: #a2bac0 #b8d0d6 #b8d0d6 #a2bac0;
+	background: url(images/textbox-shadow.gif) repeat-x left top; 
+}
+
+.x-textbox:hover{
+    border-color: #64aabc #a9d7e3 #a9d7e3 #64aabc;
+} 
+
+.x-textbox:focus{
+    border-color: #75BBCD #BAC8F4 #BAC8F4 #75BBCD;
+}
+
+.x-textbox-clear {
+	background: url(../control/images/icons.gif) no-repeat 0 -50px;
+	
+	width: 21px;
+	text-decoration: none;
+	display: inline-block;
+	height: 21px;
+	position: relative;
+	left: -21px;
+	margin-right: -21px;
+	vertical-align: middle;
+	
+}
+
+.x-textbox-clear:hover{
+	background-position: 0 -75px;
+}

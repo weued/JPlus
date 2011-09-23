@@ -5,7 +5,7 @@
 	position: absolute;
 }
 
-.x-splitter-vertical {
+.x-splitter-left, .x-splitter-right {
 	cursor: e-resize;
 	cursor: col-resize;
 	width: 6px;
@@ -13,7 +13,7 @@
 	top: 0;
 }
 
-.x-splitter-horizonal {
+.x-splitter-top, .x-splitter-bottom {
 	cursor:n-resize;
 	cursor: row-resize;
 	width: 100%;
@@ -30,11 +30,10 @@
 	filter: alpha(opacity=50);
 	width: 6px;
 	height: 35px;
-	background-position: 0 center;
 	margin-left: -3px;
-	margin-top: -17px;
-	_margin-left: -2px;
-	_margin-top: -2px;
+	margin-top: -19px;
+	top: 50%;
+	left: 50%;
 }
 
 a.x-splitter-handle:hover{
@@ -42,14 +41,34 @@ a.x-splitter-handle:hover{
 	opacity:1;
 }
 
-.x-splitter-horizonal .x-splitter-handle {
+.x-splitter-top .x-splitter-handle, .x-splitter-bottom .x-splitter-handle {
 	width: 35px;
 	height: 6px;
-	background: center 0  no-repeat;
-	top: 50%;
-	left: 50%;
 	margin-left: -17px;
 	margin-top: -3px;
+}
+
+
+/**************************/
+
+.x-splitter-handle {
+	background-repeat: no-repeat;
+}
+
+.x-splitter-top .x-splitter-handle {
+	background-image: url(images/mini-top.gif);
+}
+
+.x-splitter-right .x-splitter-handle {
+	background-image: url(images/mini-right.gif);
+}
+
+.x-splitter-bottom .x-splitter-handle {
+	background-image: url(images/mini-bottom.gif);
+}
+
+.x-splitter-left .x-splitter-handle {
+	background-image: url(images/mini-left.gif);
 }
 
 .x-splitter-proxy {

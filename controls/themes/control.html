@@ -88,23 +88,45 @@
 			
 			
 			<style>
-				.x-splitter-horizonal {
-					width: 60px;
+				.x-splitter-top {
+					width: 120px;
 					position: absolute;
-					top: 54px;
+					top: 16px;
 				}
-				.x-splitter-vertical {
-					height: 120px;
+				.x-splitter-right {
+					height: 80px;
 					position: absolute;
-					left: 60px;
+					top:20px;
+					right: 16px;
+				}
+				.x-splitter-bottom {
+					width: 120px;
+					position: absolute;
+					bottom: 16px;
+				}
+				.x-splitter-left {
+					height: 80px;
+					position: absolute;
+					top:20px;
+					left: 16px;
 				}
 				
 			</style>
 			
 			<div class="x-box">
-				分隔
-		        <div class="x-splitter x-splitter-horizonal x-splitter-proxy"></div>
-		        <div class="x-splitter x-splitter-vertical x-splitter-proxy"></div>
+				<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 分隔
+		        <div class="x-splitter x-splitter-top x-splitter-proxy">
+		        	<div class="x-splitter-handle"></div>
+		        </div>
+		        <div class="x-splitter x-splitter-right x-splitter-proxy">
+		        	<div class="x-splitter-handle"></div>
+		        </div>
+		        <div class="x-splitter x-splitter-bottom x-splitter-proxy">
+		        	<div class="x-splitter-handle"></div>
+		        </div>
+		        <div class="x-splitter x-splitter-left x-splitter-proxy">
+		        	<div class="x-splitter-handle"></div>
+		        </div>
 		    </div>
 
 		</div>

@@ -13,12 +13,6 @@ html, body {
 	border: 0;
 }
 
-/* 文本框 */
-input {
-	vertical-align: bottom;
-	*vertical-align: middle;
-}
-
 /**  公共    */
  
 /* 删除浮动 */
