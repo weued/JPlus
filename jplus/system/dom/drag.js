@@ -53,8 +53,12 @@ namespace(".Draggable", Class({
 	initDrag: function(e){
 
 		// 左键才继续
-		if(e.which !== 1 || Draggable.current)
+		if(e.which !== 1)
 			return;
+		
+		if(Draggable.current) {
+			Draggable.current.stopDrag(e);
+		}
 		
 		e.preventDefault();
 		
@@ -147,14 +151,18 @@ namespace(".Draggable", Class({
 		// 为了安全起见，检查 current 变量。
 		if (Draggable.current === this) {
 			
+			this.stopDragging();
+			
 			this.onDragEnd(e);
 
 			// 改变结束的鼠标类型，一般这个函数将恢复鼠标样式。
 			this.afterDrag(e);
 		
+		} else {
+
+			this.stopDragging();
+			
 		}
-		
-		this.stopDragging();
 	},
 	
 	beforeDrag: function(e){

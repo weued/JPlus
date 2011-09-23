@@ -1,0 +1,96 @@
+
+/* 阴影区 */ 
+.x-shadow{
+	/*overflow:visible!important ; */
+}
+
+.x-shadow-c{
+	overflow:hidden;
+}
+
+.x-shadow-lt, .x-shadow-rt, .x-shadow-t, .x-shadow-lb, .x-shadow-rb, .x-shadow-r, .x-shadow-b, .x-shadow-l  {
+	position: absolute; 
+	font-size: 0px; /* IE  */
+	
+}
+
+.x-shadow-b, .x-shadow-c, .x-shadow-t{
+	left: 0px;
+	width: 100%;
+}
+
+.x-shadow-l, .x-shadow-c, .x-shadow-r{
+	top: 0px;
+	height: 100%;
+	_height: expression(this.parentNode.clientHeight);
+}
+
+.x-shadow-lt, .x-shadow-rt, .x-shadow-t{
+	top: -4px;
+	height: 4px;
+}
+
+.x-shadow-lb, .x-shadow-rb, .x-shadow-b{
+	bottom: -4px;
+	height: 4px;
+}
+
+.x-shadow-lt, .x-shadow-l, .x-shadow-lb{
+	left: -4px;
+	width: 4px;
+}
+
+.x-shadow-r, .x-shadow-rb, .x-shadow-rt{
+	right: -4px;
+	width: 4px;
+	_left: expression(this.parentNode.clientWidth);
+}
+
+.x-shadow-r{
+	_width: 5px;
+}
+
+
+
+
+
+/***********************************************
+ *	阴影和可变区
+ ***********************************************/
+
+
+.x-shadow-lt, .x-shadow-rt, .x-shadow-lb, .x-shadow-rb{
+	background:url(images/shadow-lrtb.png)  no-repeat;
+}
+
+.x-shadow-c{
+	background:url(images/shadow-c.png);
+}
+
+.x-shadow-l, .x-shadow-r {
+	background:url(images/shadow-lr.png) repeat-y;
+}
+
+.x-shadow-t, .x-shadow-b{
+	background:url(images/shadow-tb.png) repeat-x;
+}
+
+.x-shadow-rt {
+    background-position: 0 -4px;
+}
+
+.x-shadow-r {
+    background-position: -4px 0;
+}
+
+.x-shadow-lb {
+    background-position: 0 -12px;
+}
+
+.x-shadow-b {
+    background-position: 0 -4px;
+}
+
+.x-shadow-rb {
+    background-position: 0 -18px;
+}

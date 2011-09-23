@@ -71,18 +71,6 @@ using("System.Dom.Drag");
 			},
 			
 			/**
-			 * 判断参数的 bound 是否在指定点和大小表示的矩形是否在本区范围内。
-			 * @param {Rectange} bound 。
-			 * @param {Rectange} box 范围。
-			 * @return {Boolean} 在上面返回 true
-			 * @private
-			 */
-			isOver: function(position1, size1, position2, size2){
-				return ((position1.right < box.right && bound.right > box.left) || (bound.left < box.right && bound.left > box.left)) &&
-				  ((bound.bottom < box.bottom && bound.bottom > box.top) || (bound.top < box.bottom && bound.top > box.top)) ;
-			},
-			
-			/**
 			 * 判断当前的 bound 是否在指定点和大小表示的矩形是否在本区范围内。
 			 * @param {Rectange} box 范围。
 			 * @return {Boolean} 在上面返回 true

@@ -1583,6 +1583,7 @@
 		detach: function() {
 			var elem = this.dom || this;
 			elem.parentNode && elem.parentNode.removeChild(elem);
+			return this;
 		},
 
 		/**

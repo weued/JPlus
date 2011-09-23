@@ -1,12 +1,13 @@
 
 
 var todo = {
-	'Element -        Mini Selector                   getOuterSize': '',
-	'Select 处理': ''
+	'Fx -  Base    Complete': '',
+	'Drag -  Snap  功能': ''
 };
 
 
-var done = {
+var done = {,
+	'Select 处理': '',
 	'核心部分 - System': '',
 	'定义项目结构、文件夹的结构': '',
 	'制作测试页，包括单元测试、速度测试。': ''

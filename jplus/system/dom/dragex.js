@@ -48,7 +48,7 @@ Draggable.implement({
 	},
 	
 	revert: function(){
-		var me = this.dom;
+		var me = this.proxy;
 		me.setDraggable(false);
 		me.animate({
 			left: this.offset.x,
@@ -67,7 +67,7 @@ Draggable.implement({
 	autoScroll: function(target){
 		
 		var scroll = target.getScroll(),
-			top = this.dom.getPosition().sub(target.getPosition()),
+			top = this.proxy.getPosition().sub(target.getPosition()),
 			size = target.getSize(),
 			scollSize = target.getScrollSize().sub(size),
 			delta;
@@ -78,7 +78,7 @@ Draggable.implement({
 		if(top.x < 0)
 			scroll.x += top.x;
 		
-		top = top.add(this.dom.getSize());
+		top = top.add(this.proxy.getSize());
 		
 		delta = top.y - size.y;
 		

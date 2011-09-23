@@ -141,7 +141,7 @@ using("System.Fx.Base");
 		 * @class Animate
 		 * @extends Fx.Base
 		 */
-		fap = namespace(".Fx.Animate", Fx.Base.extend({
+		Animate = namespace(".Fx.Animate", Fx.Base.extend({
 			
 			/**
 			 * 当前绑定的节点。
@@ -222,10 +222,10 @@ using("System.Fx.Base");
 						} else {
 							
 							// 尝试使用每个转换器
-							for (parser in fap.parsers) {
+							for (parser in Animate.parsers) {
 								
 								// 获取转换器
-								parser = fap.parsers[parser];
+								parser = Animate.parsers[parser];
 								parsed = parser.parse(toValue, key);
 								
 								// 如果转换后结果合格，证明这个转换器符合此属性。
@@ -268,7 +268,7 @@ using("System.Fx.Base");
 			get: e.styleNumber
 		};
 	
-	fap.parsers = {
+	Animate.parsers = {
 		
 		/**
 		 * 数字。
@@ -317,7 +317,7 @@ using("System.Fx.Base");
 	
 	var height = 'height marginTop paddingTop marginBottom paddingBottom',
 		
-		maps = fap.maps = {
+		maps = Animate.maps = {
 			all: height + ' opacity width',
 			opacity: 'opacity',
 			height: height,

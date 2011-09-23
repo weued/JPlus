@@ -1,0 +1,127 @@
+
+
+/**    修复      */
+
+/* 删除标签自带 mragin， padding */
+html, body, object, iframe {
+	padding: 0;
+	margin: 0;
+}
+
+/* 删除标签自带 border   */
+html, body {
+	border: 0;
+}
+
+/* 文本框 */
+input {
+	vertical-align: bottom;
+	*vertical-align: middle;
+}
+
+/**  公共    */
+ 
+/* 删除浮动 */
+.x-clear {
+	clear: both;
+}
+
+ /* 图标 */
+.x-icon {
+	float: left;
+	display: block;
+	width: 19px;
+	height: 19px;
+	overflow: hidden;
+    color: transparent;
+	background-repeat: no-repeat;
+	text-decoration: none;
+}
+
+label .x-icon{
+	float: none;
+	display: inline-block;
+}
+
+
+/** 列表  */
+
+/* 删原有属性 */
+.x-list-container , .x-list-content {
+	list-style-type: none;
+	margin: 0px;
+	padding: 0px;
+}
+
+/** 布局  */
+
+/* 绝对定位  */
+.x-layout-absolute {
+	position: absolute;
+}
+
+/* 自动溢出  */
+.x-layout-flow{
+	display: -moz-inline-stack;
+    display: inline-block;
+    vertical-align: top;
+    *zoom: 1;
+    *display: inline;
+	letter-spacing: 0px;
+}
+
+/* 代理    */
+.x-proxy {
+	z-index: 100000;
+	position: absolute;
+	overflow: hidden;
+}
+
+
+
+
+/************************************/
+
+
+
+
+
+/**  公共    */
+
+/* 图标 */
+
+.x-icon {
+	background-image:url(images/icons.gif);
+}
+
+/* 只读 , 禁用  */
+.x-readonly, input.x-disabled, textarea.x-disabled{
+	border-color: #9eabb3 #d5dbdf #d5dbdf #9eabb3;
+    background: #F6F6F6;
+}
+
+.x-disabled{
+	color: gray!important;
+	cursor: default;
+}
+
+/* 错误  */
+.x-error {
+    border-color: #F80C11 #FB7E81 #FB7E81 #F80C11;
+}
+
+/* 提示 */
+.x-empty  {
+	font-style: oblique;
+	color: gray;
+}
+
+/* box */
+.x-box{
+	border:solid 1px #B8D0D6!important;
+}
+
+/* 醒目 */
+.x-hign {
+	background: orange;
+}

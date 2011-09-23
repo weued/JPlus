@@ -1,0 +1,28 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>控件</title>
+		<link href="../../jplus/resources/default/control/core.css" rel="stylesheet" type="text/css" />
+		<link href="../../jplus/resources/default/control/shadow.css" rel="stylesheet" type="text/css" />
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+	</head>
+	<body>
+		<div id="shadow" class="x-shadow" style=" position:relative;  width:100px; height: 100px; border:1px solid  #90D9E8; ">
+			<div style=""> 阴影  <input type="button"  onclick="var shadow = this.parentNode.parentNode;shadow.style.height = shadow.style.width =  '80px'; shadow.style.left = shadow.style.top = '10px'" value="更改大小" /> </div>
+			<div  class="x-shadow-lt"></div>
+			<div class="x-shadow-t"  ></div>
+			<div class="x-shadow-rt"></div>
+			<div class="x-shadow-l"></div>
+			<div  class="x-shadow-lb"></div>
+			<div class="x-shadow-r"></div>
+			<div class="x-shadow-b"></div>
+			<div class="x-shadow-rb"></div>
+		</div>
+		
+		<div id="shadow" class="x-shadow" style=" position:relative;  width:100px; height: 100px; border:1px solid  #90D9E8;  box-shadow: 0 0 4px 0 #888888;">
+			<div style=""> CSS3 阴影  <input type="button"  onclick="var shadow = this.parentNode.parentNode;shadow.style.height = shadow.style.width =  '80px'; shadow.style.left = shadow.style.top = '10px'" value="更改大小" /> </div>
+		</div>
+		<hr>
+	</body>
+</html>
