@@ -5,7 +5,7 @@
 
 using("System.Ajax.Request");
 
-
+ 
 /**
  * 处理异步请求的功能。
  * @class Ajax
