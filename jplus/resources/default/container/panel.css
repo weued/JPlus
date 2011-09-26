@@ -1,0 +1,143 @@
+
+
+/** 标准面板 */
+
+/* 顶部和底部 */
+.x-header, .x-footer {
+	padding-left: 4px;
+	background-repeat: no-repeat;
+	overflow: hidden;
+	cursor: default;
+}
+
+.x-header-container, .x-footer-container{
+	padding-right: 4px;
+	background-repeat: no-repeat;
+}
+
+/* 顶部*/
+.x-header {
+	height:28px;
+	color: #183152;
+}
+
+.x-header-content {
+	background-repeat: repeat-x;
+	padding: 3px 1px 1px 5px;
+	line-height: 24px;
+	overflow: hidden;
+}
+
+.x-movable .x-header {
+	cursor: move;
+}
+
+.x-header h3 {
+	padding: 0;
+	margin: 0;
+}
+
+/* 工具按钮   */
+.x-header a.x-icon {
+	float:right;
+	margin-top: 2px;
+	margin-right: 1px;
+}
+
+.x-header h3 .x-icon {
+	margin-top: 2px;
+}
+
+.x-body-container{
+	overflow: hidden;
+}
+
+/* 正文 */
+.x-body-content {
+	padding: 5px;
+	overflow: auto;
+	
+	/*  IE6 必须在有 width 才可支持 overflow 属性  */
+
+	_width: expression(parseInt(this.parentNode.parentNode.currentStyle.width) - 2);
+
+}
+
+.x-fill {
+	padding: 0;
+}
+
+/* 底部内容 */
+.x-footer-content  {
+	height: 5px;
+	font-size: 0;
+	background-repeat: repeat-x;
+	overflow: hidden;
+}
+
+
+
+
+
+.x-panel {
+	border-color: #b8d0d6;
+	border-width: 0 1px;
+	border-style: solid;
+	background: #ffffff;
+}
+
+.x-panel-header {
+	background: url(images/header.gif);
+	margin: 1px 1px 0 1px;
+}
+
+
+.x-panel-header {
+    background-position: 0 0;
+}
+
+.x-panel-header .x-header-container {
+    background-position: 100% -60px;
+}
+
+.x-panel-header .x-header-content {
+    background-position: 0 -30px;
+}
+
+.x-panel-body {
+	background-color: #eef4f5;
+}
+
+.x-panel-footer {
+    background-position: 0 -90px;
+}
+
+.x-panel-footer .x-footer-container {
+	background-position: 100% -110px;
+}
+
+.x-panel-footer .x-footer-content{
+	background-position: 0 -100px;
+}
+
+
+
+
+/* 折叠  */
+
+
+.x-icon-collapsable {
+	background-position: -75px 0px;
+}
+
+.x-icon-collapsable:hover {
+    background-position: -75px -25px;
+}
+
+.x-icon-expandable {
+    background-position: -75px -50px;
+}
+
+.x-icon-expandable:hover {
+    background-position: -75px -75px;
+}

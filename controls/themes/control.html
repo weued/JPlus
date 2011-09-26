@@ -5,24 +5,130 @@
 		<title>控件</title>
 		<link href="../../jplus/resources/default/control/core.css" rel="stylesheet" type="text/css" />
 		<link href="../../jplus/resources/default/control/shadow.css" rel="stylesheet" type="text/css" />
+		<link href="../../jplus/resources/default/control/resizable.css" rel="stylesheet" type="text/css" />
+		<link href="../../jplus/resources/default/control/mask.css" rel="stylesheet" type="text/css" />
+		<link href="../../jplus/resources/default/control/splitter.css" rel="stylesheet" type="text/css" />
 		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+		
+		<style>
+			.x-shadow, .x-resize-proxy, .x-resizable, .x-box    {
+				display: inline-block;
+				margin: 10px;
+				position:relative;
+				width:100px;
+				height: 100px;
+				border:1px solid  #90D9E8;
+				*display: inline;
+				*zoom: 1;
+				padding: 10px;
+				vertical-align: top;
+			}
+		</style>
+		<script>
+		
+			function toggleSize(node){
+				var shadow = node.parentNode.parentNode,
+					togged = shadow.togged = !shadow.togged;
+				shadow.style.height = shadow.style.width = togged ?  '80px' : '100px';
+				shadow.style.left = shadow.style.top = togged ? '10px' : '0px'
+			}
+			
+		</script>
+	
 	</head>
 	<body>
-		<div id="shadow" class="x-shadow" style=" position:relative;  width:100px; height: 100px; border:1px solid  #90D9E8; ">
-			<div style=""> 阴影  <input type="button"  onclick="var shadow = this.parentNode.parentNode;shadow.style.height = shadow.style.width =  '80px'; shadow.style.left = shadow.style.top = '10px'" value="更改大小" /> </div>
-			<div  class="x-shadow-lt"></div>
-			<div class="x-shadow-t"  ></div>
-			<div class="x-shadow-rt"></div>
-			<div class="x-shadow-l"></div>
-			<div  class="x-shadow-lb"></div>
-			<div class="x-shadow-r"></div>
-			<div class="x-shadow-b"></div>
-			<div class="x-shadow-rb"></div>
+		<div>
+			
+			<div class="x-shadow">
+				<div style=""> 阴影  <input type="button"  onclick="toggleSize(this)" value="更改大小" /> </div>
+				<div  class="x-shadow-lt"></div>
+				<div class="x-shadow-t"  ></div>
+				<div class="x-shadow-rt"></div>
+				<div class="x-shadow-l"></div>
+				<div  class="x-shadow-lb"></div>
+				<div class="x-shadow-r"></div>
+				<div class="x-shadow-b"></div>
+				<div class="x-shadow-rb"></div>
+			</div>
+			
+			<div class="x-shadow" style="box-shadow: 0 0 4px 0 #888888; -moz-box-shadow: 0 0 4px 0 #888888;  -webkit-box-shadow: 0 0 4px 0 #888888;   ">
+				<div style=""> CSS3 阴影  <input type="button"  onclick="toggleSize(this)" value="更改大小" /> </div>
+			</div>
+			
+			<div class="x-resizable">
+				<div>
+				大小调整区 <input type="button"  onclick="toggleSize(this)" value="更改大小" />
+				</div>
+		    	<div class="x-resizable-lt"></div>
+				<div class="x-resizable-t"></div>
+				<div class="x-resizable-rt"></div>
+				<div class="x-resizable-l"></div>
+				<div class="x-resizable-r"></div>
+				<div class="x-resizable-lb"></div>
+				<div class="x-resizable-b"></div>
+				<div class="x-resizable-rb"></div>
+			</div>
+			
+			<div class="x-resize-proxy">
+				大小改变的代理
+			</div>
 		</div>
 		
-		<div id="shadow" class="x-shadow" style=" position:relative;  width:100px; height: 100px; border:1px solid  #90D9E8;  box-shadow: 0 0 4px 0 #888888;">
-			<div style=""> CSS3 阴影  <input type="button"  onclick="var shadow = this.parentNode.parentNode;shadow.style.height = shadow.style.width =  '80px'; shadow.style.left = shadow.style.top = '10px'" value="更改大小" /> </div>
-		</div>
 		<hr>
+		
+		<div>
+			
+			<div class="x-box">
+				遮罩
+				<div class="x-mask">
+					<div class="x-mask-container"></div>
+					<div class="x-mask-content" style="margin-left: -26px; margin-top: -21px; width: 30px;">文字</div>
+				</div>
+			</div>
+			
+			
+			<style>
+				.x-splitter-top {
+					width: 120px;
+					position: absolute;
+					top: 16px;
+				}
+				.x-splitter-right {
+					height: 80px;
+					position: absolute;
+					top:20px;
+					right: 16px;
+				}
+				.x-splitter-bottom {
+					width: 120px;
+					position: absolute;
+					bottom: 16px;
+				}
+				.x-splitter-left {
+					height: 80px;
+					position: absolute;
+					top:20px;
+					left: 16px;
+				}
+				
+			</style>
+			
+			<div class="x-box">
+				<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 分隔
+		        <div class="x-splitter x-splitter-top x-splitter-proxy">
+		        	<div class="x-splitter-handle"></div>
+		        </div>
+		        <div class="x-splitter x-splitter-right x-splitter-proxy">
+		        	<div class="x-splitter-handle"></div>
+		        </div>
+		        <div class="x-splitter x-splitter-bottom x-splitter-proxy">
+		        	<div class="x-splitter-handle"></div>
+		        </div>
+		        <div class="x-splitter x-splitter-left x-splitter-proxy">
+		        	<div class="x-splitter-handle"></div>
+		        </div>
+		    </div>
+
+		</div>
 	</body>
 </html>

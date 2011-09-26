@@ -4,22 +4,26 @@
 //===========================================
 
 
-/*
- * 
- * 
- * 
- * 
- * 
- * <div>{if a==2}{else}{end}</div>
- * 
- * 
- * 
- * 
- */
-
-
 /**
  * @class Tpl
+ * @example Tpl.parse("{if a}OK{end}", {a:1}); //=> OK
+ * 模板解析字符串语法:
+ * 模板字符串由静态数据和解析单元组成。
+ * 普通的内容叫静态的数据，解析前后，静态数据不变。
+ * 解析单元由 { 开始， } 结束。解析单元可以是:
+ * 1. Javascript 变量名: 这些变量名来自 Tpl.parse 的第2个参数， 比如第二个参数是 {a:[1]} ，那 {a[0]}将返回 1 。
+ * 2. if/for/end/else/eval 语句，这5个是内置支持的语法。
+ * 2.1 if: {if a} 或  {if(a)} 用来判断一个变量，支持全部Javascript表达式，如 {if a==1} 。语句 {if} 必须使用 {end} 关闭。
+ * 2.2 else 等价于 Javascript 的 else， else后可同时有 if语句，比如: {else if a}
+ * 2.3 for: {for a in data} for用来遍历对象或数组。  语句 {for} 必须使用 {end} 关闭。
+ * 2.4 eval: eval 后可以跟任何 Javascript 代码。 比如 {eval nativeFn(1)}
+ * 2.5 其它数据，将被处理为静态数据。
+ * 3 如果需要在模板内输出 { 或 }，使用 {\{} 和 {\}} 。
+ * 4 特殊变量，模板解析过程中将生成4个特殊变量，这些变量将可以方便操作模板
+ * 4.1 $output 模板最后将编译成函数，这个函数返回最后的内容， $output表示这个函数的组成代码。
+ * 4.2 $data 表示  Tpl.parse 的第2个参数。
+ * 4.3 $index 在 for 循环中，表示当前循环的次号。
+ * 4.4 $value 在 for 循环中，表示当前被循环的目标。
  */
 namespace(".Tpl.", {
 	
@@ -40,7 +44,7 @@ namespace(".Tpl.", {
 					return this._blockStatck.pop() === "for" ? "});" : "}";
 				case 'if':
 					this._blockStatck.push('if');
-					assert(command, "Tpl.processCommand(command): 无法处理命令{if " + command + " } (for 命名的格式为 {for condition}");
+					assert(command, "Tpl.processCommand(command): 无法处理命令{if " + command + " } (if 命名的格式为 {if condition}");
 					return "if(" + command + ") {";
 				case 'eval':
 					return command;
@@ -50,7 +54,7 @@ namespace(".Tpl.", {
 					this._blockStatck.push('for');
 					command = command.split(/\s*in\s*/);
 					assert(command.length === 2 && command[0] && command[1], "Tpl.processCommand(command): 无法处理命令{for " + c[2] + " } (for 命名的格式为 {for var_name in obj}");
-					return 'Object.each(' + command[1] + ', function(' + command[0] + ', $index, $value) {';
+					return 'Object.each(' + command[1] + ', function(' + command[0] + ', $index, $value){';
 				default:
 					return '$tpl += "' + this.encodeJs(c[0]) + '";';
 			}
@@ -75,7 +79,7 @@ namespace(".Tpl.", {
 			blockEnd;
 		
 		while((blockStart = tpl.indexOf('{', blockStart + 1)) >= 0) {
-			output += '$tpl += "' + this.encodeJs(tpl.substring(blockEnd + 1, blockStart)) + '";';
+			output += '$tpl+="' + this.encodeJs(tpl.substring(blockEnd + 1, blockStart)) + '";';
 			
 			// 从  blockStart 处搜索 }
 			blockEnd = blockStart;

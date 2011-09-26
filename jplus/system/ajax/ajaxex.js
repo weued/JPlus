@@ -13,7 +13,7 @@ using("System.Ajax.Ajax");
  * @param {String} url 地址。
  * @return {Boolean} 布尔值。
  */
-XMLHttpRequest.httpNotModified = function( xhr, url ){
+Ajax.httpNotModified = function( xhr, url ){
 	try{
 		var xhrRes = xhr.getResponseHeader('Last-Modified');
 
@@ -25,7 +25,7 @@ XMLHttpRequest.httpNotModified = function( xhr, url ){
  
  
  
- JPlus.Ajax.implement({
+Ajax.implement({
  
 	setModifiedSince: function(data){
 	

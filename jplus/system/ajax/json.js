@@ -1,5 +1,6 @@
 //===========================================
-//  请求处理JSON数据            A
+//  请求处理JSON数据            
+//   A: xuld
 //===========================================
 
 using("System.Ajax.Ajax");
@@ -31,21 +32,23 @@ Ajax.JSON = Ajax.extend({
 
 String.map("get post", function(k) {
 	
-	JPlus.Ajax[k + 'JSON'] = function(url, data, onsuccess, onerror, timeouts, ontimeout){
+	JPlus.Ajax[k + 'JSON'] = function(url, data, onsuccess, onerror, timeouts, ontimeout, oncomplete){
 		var emptyFn = Function.empty;
 		new Ajax.JSON({
 			url: url,
-			onSuccess: onsuccess && function(){
+			onSuccess: function(response){
 				try{
 					var json = this.parseJSON(response);
 				} catch(e) {
+					this.onError(e.message);
 					return null;
 				}
-				return onsuccess.call(json);
+				return onsuccess && onsuccess.call(this,  json);
 			},
 			onError: onerror || emptyFn,
 			timeouts: timeouts,
 			onTimeout: ontimeout || emptyFn,
+			onComplete: oncomplete || emptyFn,
 			type: k.toUpperCase()
 		}).send(data);
 	};

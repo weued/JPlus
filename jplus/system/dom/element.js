@@ -755,7 +755,7 @@
 	/// #ifdef SupportIE6
 	
 	if(navigator.isQuirks) {
-		map("pop shift", apply(apply(ElementList.prototype, ap), {
+		map("pop shift", ap, apply(apply(ElementList.prototype, ap), {
 			
 			push: function() {
 				return ap.push.apply(this, o.update(arguments, $));
@@ -765,7 +765,7 @@
 				return ap.unshift.apply(this, o.update(arguments, $));
 			}
 			
-		}), ap);
+		}));
 	}
 	
 	/// #endif
@@ -1915,30 +1915,35 @@
 		 */
 		setText: function (value) {
 			var elem = this.dom || this;
-
-			switch(elem.tagName) {
-				case "SELECT":
-					if(elem.type === 'select-multiple' && value != null) {
+			
+			if(elem.nodeType !== 1)
+				elem.nodeValue = value;
+			else 
+				switch(elem.tagName) {
+					case "SELECT":
+						if(elem.type === 'select-multiple' && value != null) {
+							
+							assert.isString(value, "Element.prototype.setText(value): 参数  {value} ~。");
 						
-						assert.isString(value, "Element.prototype.setText(value): 参数  {value} ~。");
-					
-						value = value.split(',');
-						o.each(elem.options, function (e) {
-							e.selected = value.indexOf(e.value) > -1;
-						});
-						
+							value = value.split(',');
+							o.each(elem.options, function (e) {
+								e.selected = value.indexOf(e.value) > -1;
+							});
+							
+							break;
+	
+						}
+	
+					//  继续执行
+					case "INPUT":
+					case "TEXTAREA":
+						elem.value = value;
 						break;
-
-					}
-
-				//  继续执行
-				case "INPUT":
-				case "TEXTAREA":
-					elem.value = value;
-					break;
-				default:
-					elem[attributes.innerText] = value;
-			}
+					default:
+						elem[attributes.innerText] = value;
+				}
+				
+				
 			return  this;
 		},
 

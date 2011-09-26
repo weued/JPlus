@@ -17,7 +17,7 @@
 /// #ifndef Compact
 
  
-// 配置。编译后会删除以下代码。
+// 配置。可以删除以下代码。
 
 /**
  * @type Object
@@ -1927,10 +1927,11 @@ var JPlus = {
 		unique: function () {
 			
 			// 删除从 i + 1 之后的当前元素。
-			for(var i = 0, t; i < this.length; ) {
+			for(var i = 0, t, v; i < this.length; ) {
+				v = this[i];
 				t = ++i;
 				do {
-					t = ap.remove.call(this, this[i], t);
+					t = ap.remove.call(this, v, t);
 				} while(t >= 0);
 			}
 			

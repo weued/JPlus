@@ -182,11 +182,12 @@ using("System.Dom.Drag");
 	Element.addEvents(String.map('dragenter dragleave dragover drop', Object.extendIf(Function.from({
 		add:  function(elem, type, fn){
 			elem.addEventListener(type, fn, false);
-			(p.getData(elem, 'droppable') || p.setData(elem, 'droppable', new Droppable(elem))).setDisabled(false);
+			p.getData(elem, 'droppable') || p.setData(elem, 'droppable', new Droppable(elem));
 		},
 		remove: function(elem, type, fn){
 			elem.removeListener(type, fn, false);
 			p.getData(elem, 'droppable').setDisabled();
+			p.setData(elem, 'droppable', null);
 		}
 	}, mouseEvent)), {}));
 

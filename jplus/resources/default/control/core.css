@@ -13,12 +13,6 @@ html, body {
 	border: 0;
 }
 
-/* 文本框 */
-input {
-	vertical-align: bottom;
-	*vertical-align: middle;
-}
-
 /**  公共    */
  
 /* 删除浮动 */
@@ -116,12 +110,4 @@ label .x-icon{
 	color: gray;
 }
 
-/* box */
-.x-box{
-	border:solid 1px #B8D0D6!important;
-}
 
-/* 醒目 */
-.x-hign {
-	background: orange;
-}

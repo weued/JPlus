@@ -17,9 +17,9 @@ using("System.Ajax.Ajax");
  * @param {Object} timeouts=-1 超时时间， -1 表示不限。
  * @param {Function} [ontimeout] 超时回调函数。
  */
-JPlus.Ajax.submit = function(form, onsuccess, onerror, timeouts, ontimeout) {
+Ajax.submit = function(form, onsuccess, onerror, timeouts, ontimeout, oncomplete) {
 	assert.isNode(form, "Ajax.submit(form, onsuccess, onerror, timeouts, ontimeout): 参数 {form} 必须是一个节点，如果已知节点的 ID， 使用 document.getElementById 函数转换为相应节点。");
-	return Ajax[/^post$/i.test(form.method) ? "post" : "get"](form.action || location.href, HTMLFormElement.param(form), onsuccess, onerror, timeouts, ontimeout);
+	return Ajax[/^post$/i.test(form.method) ? "post" : "get"](form.action || location.href, HTMLFormElement.param(form), onsuccess, onerror, timeouts, ontimeout, oncomplete);
 };
 
 /**
@@ -27,44 +27,38 @@ JPlus.Ajax.submit = function(form, onsuccess, onerror, timeouts, ontimeout) {
  * @param {HTMLFormElement} formElem 表单元素。
  * @return {String} 参数形式。
  */
-namespace("HTMLFormElement.", {
-
-	"param": function(formElem) {
-		assert(formElem && formElem.tagName == "FORM", "HTMLFormElement.param(formElem): 参数 {formElem} 不是合法的 表单 元素", formElem);
-		var s = [], input, e = encodeURIComponent, value, name;
-		for (var i = 0, len = formElem.length; i < len; i++) {
-			input = formElem[i];
-			
-			// 如果存在名字。
-			if (name = input.name) {
-			
-				// 增加多行列表。
-				if (input.type == "select-multiple") {
-					
-					// 多行列表  selectedIndex 返回第一个被选中的索引。
-					// 遍历列表，如果 selected 是 true， 表示选中。
+namespace("HTMLFormElement.param", function(formElem) {
+	assert(formElem && formElem.tagName == "FORM", "HTMLFormElement.param(formElem): 参数 {formElem} 不是合法的 表单 元素", formElem);
+	var s = [], input, e = encodeURIComponent, value, name;
+	for (var i = 0, len = formElem.length; i < len; i++) {
+		input = formElem[i];
+		
+		// 如果存在名字。
+		if (!input.disabled && (name = input.name)) {
+		
+			// 增加多行列表。
+			if (input.type == "select-multiple") {
 				
-					var j = input.selectedIndex;
-					if (j != -1) {
-						input = input.options;
-						for (var l = input.length; j < l; j++) {
-							if (input[j].selected) {
-								s.push(e(name) + "=" + e(input[j].value));
-							}
+				// 多行列表  selectedIndex 返回第一个被选中的索引。
+				// 遍历列表，如果 selected 是 true， 表示选中。
+			
+				var j = input.selectedIndex;
+				if (j != -1) {
+					input = input.options;
+					for (var l = input.length; j < l; j++) {
+						if (input[j].selected) {
+							s.push(e(name) + "=" + e(input[j].value));
 						}
 					}
-					continue;
 				}
 				
-				
-				if (!/checkbox|radio/.test(input.type) || input.checked !== false){
-					s.push(e(name) + "=" + e(input.value));
-				}
+			} else if (!/checkbox|radio/.test(input.type) || input.checked !== false){
+				s.push(e(name) + "=" + e(input.value));
 			}
 		}
-		
-		return s.join('&');
 	}
 	
+	return s.join('&');
+
 });
 

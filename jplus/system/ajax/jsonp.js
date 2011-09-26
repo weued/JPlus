@@ -1,5 +1,6 @@
 //===========================================
-//  请求处理JSON-P数据            A
+//  请求处理JSON-P数据          
+//   A: aki xuld
 //===========================================
 
 
@@ -46,40 +47,9 @@ Ajax.JSONP = Request.extend({
 	
 	jsonp: 'callback',
 	
-	/*
-	 * 
-	 */
-	getId:function(){
-		return Date.now();
-	},
-	
-	parseData:function(){
-		var data = this.data ,query = "";
-		for(var name in data){
-			query  = name +"=";
-			query += data[name];
-		}
-		return query;
-	},
-	
-	parseUrl:function(time){
-		var me = this,url = me.url;
-		return url.replace("jsonp=?","jsonp="+time)+ me.parseData();
-	},
-	
-	createScript:function(time){
-		var me = this;
-		me.createFunction(time);
-		var script = document.createElement("script");
-		script.src = me.parseUrl(time);
-		script.type = "text/javascript";
-		return script;
-	},
-	
 	send: function(data){
 		var me = this,
 			url = me.url,
-			callback,
 			script,
 			t;
 		
@@ -89,21 +59,24 @@ Ajax.JSONP = Request.extend({
 		me.onStart(data);
 			
 		// 改成字符串。
-		if(typeof data !== 'string')
+		if(typeof data !== 'string') {
+			
+			if(data && data[me.jsonp]){
+				me.callback = data[me.jsonp];
+				delete data[me.jsonp];
+			}
+			
 			data = String.param(data);
+		}
 			
-		callback = me.callback || (me.callback = 'jsonp' + JPlus.id++);
-			
-		url = me.combineUrl(url, data);
-		
-		url = url.replace(/([=&?])(\?)(&|$)/, function (match, group1, group2, group3) {
-			return group1 + (group1 === '=' ? '' : me.jsonp + '=') + callback + group3;
+		url = me.combineUrl(url, data).replace(/(.)=(\?)(&|$)/, function (match, group1, group2, group3) {
+			return (group1 === '?' ? me.jsonp : group1) + '=' + (me.callback || (me.callback = 'jsonp' + JPlus.id++)) + group3;
 		});
 			
 		script = me.script = document.createElement("script");
 		t = document.getElementsByTagName("script")[0];
 			
-		window[callback] = function(){
+		window[me.callback] = function(){
 			me.onSuccess.apply(me, arguments);
 		};
 			
