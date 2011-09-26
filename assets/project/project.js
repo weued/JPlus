@@ -25,12 +25,13 @@ var controls = {
 
 var notes = {
 	
-	'教程': {
+	'教程资源': {
 		'Javascript 学习方法': 'notes/javascript/studymethod.html',
 		'Javascript 基础教程': 'notes/javascript/basic.html',
 		'DOM 基础': 'notes/javascript/dom.html',
 		'Javascript 高级教程': 'notes/javascript/advance.html',
-		'Javascript 学习资源': 'notes/javascript/links.html'
+		'Javascript 学习资源': 'notes/javascript/links.html',
+		'Javascript 框架/库': 'notes/javascript/libs.html'
 	}, 
 	
 	'开发工具': {
