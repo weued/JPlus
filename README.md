@@ -3,9 +3,9 @@
 J+ is a libaray of javascript in purpose of:
 
 
-1. Providing common functions.
-2. Working as a ui library.
-3. Making code more meaningful and letting lifes easier.
+1. Provids common functions.
+2. Works as a ui library.
+3. Makes code more meaningful and lifes easier.
 
 This libaray try to write **oop javascript code**. For example: 
 	
