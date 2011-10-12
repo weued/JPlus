@@ -142,7 +142,7 @@ namespace(".Ajax", Request.extend({
 			data = null;
 		}
 		
-		// 禁止缓存，为地址加上随机数。
+		// 禁止缓存，为地址加上随机数。@AKI 禁止缓存的话，点击几次就是几个ajax请求，这个可以根据需要考虑
 		if(me.disableCache){
 			url = me.combineUrl(url, JPlus.id++);
 		}

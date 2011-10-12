@@ -24,6 +24,31 @@ Array.implementIf({
 		return true;
 	},
 	
+	toArray:function(o){
+		return [].slice.call(o);
+	},
+	
+	isArray:function(o){
+		return o!=null && Object.prototype.toString.call(o).slice(8, -1) === "array"; 
+	},
+	
+	// 遍历执行方法
+	eachExec:function(fn){
+		var l = this.length;
+		while(l--){
+			fn.call(fn,this[l]);
+		}
+	},
+	
+	// 执行
+	func:function(json){
+		var l = this.length;
+		while(l--){
+			if(typeof this[l] === "function")
+				this[l].call(this[l],json);
+		}
+	},
+	
 	filter: function(fn, bind){
 		var results = [];
 		for (var i = 0, l = this.length; i < l; i++){
@@ -35,13 +60,14 @@ Array.implementIf({
 	map: function(fn, bind){
 		var results = [];
 		for (var i = 0, l = this.length; i < l; i++){
+			//i 本来就是小于 this.length 还用判断么？
 			if (i in this) results[i] = fn.call(bind, this[i], i, this);
 		}
 		return results;
 	},
 
 	some: function(fn, bind){
-		for (var i = 0, l = this.length; i < l; i++){
+		for (var i = 0, l = this.length; i < l; i++){//跟上边一样
 			if ((i in this) && fn.call(bind, this[i], i, this)) return true;
 		}
 		return false;
@@ -66,10 +92,12 @@ Array.implementIf({
 	/// <params name="length" type="Number" optional="true">长度</params>
 	/// <returns type="Array" > 拷贝的数组 </returns>
 	clone : function(start,length){
-		var m = [];
-		for(var i = start || 0,len = length || this.length - i;i<len;i++)
-			m[i] = Object.clone(this[i]);
-		return m;
+//		var m = [];
+//		for(var i = start || 0,len = length || this.length - i;i<len;i++)
+//			m[i] = Object.clone(this[i]);
+//		return m;
+		var start = start || 0, len = length || 0;
+		return len === 0 ? this.slice(start) : this.slice(start,start+len);
 	},
 	
 	/// <summary>
@@ -109,17 +137,35 @@ Array.implementIf({
 	},
     
 	append: function(array){
-		this.push.apply(this, array);
-		return this;
+		return this.push.apply(this, array);
 	},
 
 	/**
-     * 
+     * 没看懂这个函数的意义
+     * sortFn:排序规则
      */
-    sortByRandom: function(array, sortFn) {
-        
+    sortByRandom: function(sortFn) {
+        var result = [], array = this , sortFn = sortFn || function(){return Math.rand(0, array.length - 1);};
+		while(array.length > 0){
+			var index = sortFn();
+			result.push(array[index]);
+			array.remove(index);
+		}
+		return result;
     },
-
+	
+	// 删除下标为index,亦可用splice
+	remove:function(index){
+		var tmp = this.slice(index + 1);
+		this.length = index;
+		return this.append(tmp);
+	},
+	
+	// 是否包含某项
+	contains:function(item){
+		return RegExp("\\b"+item+"\\b").test(this);
+	},
+	
 	first: function(){
 		return this[0];
 	},

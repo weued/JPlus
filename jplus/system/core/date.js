@@ -110,7 +110,7 @@ Object.extendIf(Date, {
 			a = new Date(date2.toString()) - new Date(date1.toString());
 		else
 			a = date2 - date1;
-		return parseInt(a/86400000);
+		return parseInt(a/86400000 );
 	},
 	
 	/**
