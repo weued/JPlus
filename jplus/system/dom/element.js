@@ -331,7 +331,7 @@
 				
 				var me = this;
 				me.target = target;
-				me.srcElement = target.dom || target;
+				me.srcElement = $(target.dom || target);
 				me.type = type;
 				apply(me, e);
 			},

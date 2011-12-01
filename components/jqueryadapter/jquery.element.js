@@ -118,7 +118,7 @@
 				
 				var me = this;
 				me.target = target;
-				me.srcElement = target.dom || target;
+				me.srcElement = $$(target.dom || target);
 				me.type = type;
 				apply(me, e);
 			},
@@ -581,7 +581,7 @@
 
 				var div =  $(html, context);
 				
-				return div.length === 1 ? div[0] : new ElementList(div);
+				return div.length === 1 ? $$(div[0]) : new ElementList(div);
 			
 			}
 			
@@ -1520,7 +1520,7 @@
 		 * @return {Element/undefined} 节点。
 		 */
 		findAll: function(selecter){
-			return new ElementList($(this).find(selecter));
+			return new ElementList($(this.dom || this).find(selecter));
 		},
 
 		/**
@@ -1639,7 +1639,7 @@
 		 * @return {Element/undefined} 节点。
 		 */
 		find: function (selector) {
-			return $(this).find(selector)[0];
+			return $$($(this.dom || this).find(selector)[0]);
 		},
 		
 		/// #endif
@@ -1721,7 +1721,7 @@
 
 			/// #ifdef SupportIE6
 
-			var div = $(this.createElement(tagName));
+			var div = $$(this.createElement(tagName));
 
 			/// #else
 

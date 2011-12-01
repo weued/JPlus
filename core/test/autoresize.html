@@ -1,0 +1,25 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>J+ Core 测试</title>
+		<script type="text/javascript" src="../../jplus/system.js" ></script>
+		<script type="text/javascript" src="../../jplus/system/dom/element.js" ></script>
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+		
+	</head>
+	<body>
+		
+		<textarea id="a"></textarea>
+		
+		<script>
+		
+			
+			$('a').setStyle('overflow', 'hidden').on('keypress', function () {
+				//this.setHeight('auto');
+				this.setHeight(this.getScrollSize().y);
+			}).trigger('keypress');
+			
+		</script>
+	</body>
+</html>

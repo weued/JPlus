@@ -36,7 +36,7 @@ namespace(".Tpl.", {
 	_blockStatck: [],
 	
 	processCommand: function(command){
-		var c = command.match(/^(if|for|end|else|eval|\W+)(\b[\s\S]*)?$/);
+		var c = command.match(/^(if|for|end|else|eval|\$|\W+)(\b[\s\S]*)?$/);
 		if(c) {
 			command = c[2];
 			switch(c[1]) {
@@ -55,6 +55,8 @@ namespace(".Tpl.", {
 					command = command.split(/\s*in\s*/);
 					assert(command.length === 2 && command[0] && command[1], "Tpl.processCommand(command): 无法处理命令{for " + c[2] + " } (for 命名的格式为 {for var_name in obj}");
 					return 'Object.each(' + command[1] + ', function(' + command[0] + ', $index, $value){';
+				case '$':
+					return '$tpl += ' + c[0] + ';';
 				default:
 					return '$tpl += "' + this.encodeJs(c[0]) + '";';
 			}
