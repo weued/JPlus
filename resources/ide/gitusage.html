@@ -1,0 +1,72 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>如何使用 GIT - 开发工具 - J+ 文档库</title>
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+	</head>
+	<body>
+		<h2>如何使用 Git</h2>
+		<span>文/xuld</span>
+		<p class="content">
+			GIT 是一个类似 SVN、CVS 的版本控制软件。它能方便地管理代码分支。
+		</p>
+		<h4>图标</h4>
+		<p class="content">
+			<ul>
+				<li><img src="images/image11.jpg"> - 已同步，本地的文件和远程的一致。
+				</li>
+				<li><img src="images/image12.jpg"> -  新文件， 本地存在，但远程不存在的文件。
+				</li>
+				<li><img src="images/image13.jpg">- 已更新，本地和远程都存在，但2个文件内容有差别。
+				</li>
+			</ul>
+		</p>
+		<h4>常用菜单</h4>
+		<p class="content">
+			<img src="images/image14.jpg"> <br>
+			常用的菜单有：
+			<ul>
+				<li>
+					<strong>拉(Pull) </strong>：从服务器获取最新版本。它不会强制覆盖本地的更改，如果远程的版本和本地的不同，会引发一个冲突。
+				</li>
+				<li>
+					<strong>合并(Merge)</strong>： 发生冲突后，将发生冲突的文件合并成新的版本。
+				</li>
+				<li>
+					<strong>提交(Commit)</strong>： 将本地的修改在本地提交。注意这里的 Commit 不会提交到服务器，而只是本地的提交。在提交的时候，必须说明此次修改的内容。
+				</li>
+				<li>
+					<strong>远程/推(Remote/Push)</strong>：把本地经过提交的文件保存到服务器。
+				</li>
+				<li>
+					<strong>忽略(Ignore)</strong>： 在提交的时候忽略当前文件。
+				</li>
+				<li>
+					<strong>恢复(Revert)</strong>：把本地已提交的文件恢复成上次提交的状态。
+				</li>
+			</ul>
+		</p>
+		<p class="content">
+			从这些命令可知: 在每次开始工作前,先执行Pull, 以将其它人的修改下载到本地。在工作中，每完成一段工作后，就执行 Commit ，以保存阶段性的结果。在工作结束前，执行 Push， 将全部Commit的结果反馈到服务器。
+		</p>
+		<p class="content">
+			其它命令读者可参考其它专业的 GIT 教程。
+		</p>
+		<h4>原 SVN 用户转型 GIT 指南</h4>
+		<p class="content">
+			SVN 和GIT 主要区别有：
+			<ul>
+				<li>
+					GIT 规定每次 Commit 都要有说明。
+				</li>
+				<li>
+					GIT 的 Commit 和 SVN 的 Commit 不同， GIT 中的 Commit 和 Push 一起就是SVN 的 Commit 。
+				</li>
+				<li>
+					GIT 允许多个分支并行， SVN 只能有一个主分支。
+				</li>
+			</ul>
+		</p>
+	</body>
+</html>

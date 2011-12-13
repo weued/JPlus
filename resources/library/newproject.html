@@ -1,0 +1,46 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>新建项目 - 项目 - J+ 文档库</title>
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+	</head>
+	<body>
+		<h2>新建项目</h2>
+		<p class="content">
+			要加入J+，就需要先在J+中创建一个项目。本文将指导您如何新建项目。
+		</p>
+		<h4>第一步、取一个英文项目名(可以使用数字、下划线，但不能有空格和其它特殊符号)</h4>
+		<p class="content">
+			本页面假设项目名为<em>weued</em> 。 
+		</p>
+		<h4>第二步、在   assets/project/ 新建 <em>weued</em>.js</h4>
+		<p class="content">
+			在这里定义项目的导航页。其内容比如：
+			<pre><code>var menus = {
+				
+	'菜单类目1': {
+		'子菜单1': '点击子菜单1后到的链接',
+		'子菜单2': '点击子菜单2后到的链接'	
+	},
+	
+	'菜单类目2': {
+		'子菜单3': '点击子菜单3后到的链接'
+	}	
+			
+};   </code></pre>
+		</p>
+		<h4>第二步、在 src/ 新建 <em>weued</em>.js </h4>
+		<p class="content">
+			这个文件用于定义您的项目的基础文件，所有用到您的项目下的代码时，都必须先引入此文件。默认情况下，此为空文件。
+		</p>
+		<h4>第四步、在跟目录新建一个 <em>weued</em> 文件夹。</h4>
+		<p class="content">
+			此文件夹存放您项目的所有文件。
+		</p>
+		<h4>第五步、在 assets/project/project.js 找到 navs 对象，添加新的导航菜单。</h4>
+		<p class="content">
+			到此，项目已初始化完成。
+		</p>
+	</body>
+</html>

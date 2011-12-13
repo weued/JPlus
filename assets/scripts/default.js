@@ -2,9 +2,7 @@
  * @fileOverview J+ 测试系统核心引擎。
  */
 
-
 (function(){
-	
 			
 	var root = getRoot(),
 		moduleName = location.href.replace(root, '') + '/',
@@ -19,13 +17,24 @@
 	moduleName = moduleName.substr(0, moduleName.indexOf('/'));
 	
 	document.write('<link type="text/css" rel="stylesheet" href="' + root + 'assets/styles/default.css" />');
+	document.write('<script type="text/javascript" src="' + root + 'assets/libs/firebug-lite/firebug-lite.js"></script>');
+	document.write('<script type="text/javascript" src="' + root + 'assets/project/' + moduleName + '.js"></script>');
 	document.write('<script type="text/javascript" src="' + root + 'assets/project/project.js"></script>');
-	document.write('<script type="text/javascript" src="' + root + 'assets/libs/firebug-lite/build/firebug-lite.js"></script>');
 	
-	apply(window, {
+	window._ = window._ || console.log;
+	window.System = window.System || {};
+	
+	apply(System, {
 		
-		_: window.console,
+		title: 'J+',
 		
+		subtitle: '让 Javascript 成为一门艺术',
+		
+		copyright: 'Copyright &copy; 2011 JPlus Team',
+		
+		/**
+		 * 初始化整个页面。
+		 */
 		initPage: function (navs) {
 			var result = [];
 			for(var nav in navs){
@@ -35,13 +44,12 @@
 			result[result.length - 1] = result[result.length - 1].replace('<a href="', '<a class="last" href="');
 			navs =  result.join('\r\n');
 			
-			
 			document.write('\
 				<div id="wrap" style="visibility: visible">\
 					<div id="toolbar"></div>\
 					<div id="header">\
-						<h1>J+</h1>\
-						<em>让 Javascript 成为一门艺术</em>\
+						<h1>' + System.title + '</h1>\
+						<em>' + System.subtitle + '</em>\
 						<div id="navbar">' + 
 						navs +	
 						'</div>\
@@ -51,14 +59,16 @@
 						正在载入...\
 						</div>\
 					</div>\
-					<div id="footer">\
-						Copyright &copy; 2011 JPlus Team\
-					</div>\
+					<div id="footer">' + 
+						System.copyright + 
+					'</div>\
 				</div>');
 			
 			try{
 				document.body.style.visibility = 'hidden';
 			}catch(e){
+				
+				// 修正 Chrome 在没刷新时，  无法获取 body
 				location.reload();
 			}
 			
@@ -76,15 +86,17 @@
 				document.body.style.visibility = '';
 				
 			});
+
 			
-			if(window[moduleName]){
-				
-				this.initMenu(window[moduleName]);
+			if(window.menus) {
+				System.initMenu(window.menus);
 			}
-			
 			
 		},
 		
+		/**
+		 * 初始化右边的菜单。
+		 */
 		initMenu: function (menus){
 			var sidebar = document.getElementById('sidebar');
 			if(!sidebar){
@@ -152,9 +164,12 @@
 			sidebar.innerHTML = result.join('\r\n');
 			
 		},
-
+		
+		/**
+		 * 初始化测试用例。
+		 */
 		initTestCases: function (testcases, dftOptions) {
-			document.write('<div class="right small"><a href="javascript:;" onclick="doRunAll();">全部测试</a> | <a href="javascript:;" onclick="doTimeAll();">全部时间</a> | <a href="javascript:;" onclick="doTestAll();">恶意测试</a></div>');
+			document.write('<div class="right small"><a href="javascript:;" onclick="System.doRunAll();">全部测试</a> | <a href="javascript:;" onclick="System.doTimeAll();">全部时间</a> | <a href="javascript:;" onclick="System.doTestAll();">恶意测试</a></div>');
 			
 			document.write('<div id="testcases" class="clear">');
 			
@@ -180,6 +195,36 @@
 			}
 			
 			document.write('</div>');
+		},
+		
+		initTreeView: function (list){
+			document.write('<ul>');
+			for(var item in list) {
+				document.write('<li>');
+				if(typeof list[item] === 'string'){
+					document.write('<a href="' + list[item] + '" target="_blank">');
+					item = item.split(/\s*-\s*/);
+					if(item[0].charAt(0) === '#') {
+						document.write('<b>');
+						document.write(item[0].substring(1));
+						document.write('</b>');
+					} else {
+						document.write(item[0]);
+					}
+					
+					document.write('</a>');
+					if(item[1]) {
+						document.write('<span> - <i>');
+						document.write(item[1]);
+						document.write('</i></span>');
+					}
+				} else {
+					document.write(item);
+					System.initTreeView(list[item]);
+				}
+				document.write('</li>');
+			}
+			document.write('</ul>');
 		},
 		
 		doRun: function (name, showSuccess){
@@ -281,7 +326,7 @@
 				
 			}
 			
-			document.write('<input type="button" onclick="checkAnswers()" value="验证">');
+			document.write('<input type="button" onclick="System.checkAnswers()" value="验证">');
 			document.write('<div id="info"></div>');
 			
 		},
@@ -311,21 +356,6 @@
 			document.getElementById('info').innerHTML = '要认真哦';
 			document.getElementById('info').className = 'error';
 					
-		},
-		
-		initUserMenu: function(todo,  done){
-			initMenu({
-				'现在完成': todo,
-				'已完成': done
-			});
-		},
-		
-		initUser: function(){
-			
-			var currentUser = location.href.match(/\/([^\/]*).htm/)[1];
-			
-			document.write('<script src="' + root + 'assets/members/' + currentUser +'.js" type="text/javascript"></' + 'script>');
-			
 		},
 		
 		createTestCases: function (obj){
@@ -481,17 +511,17 @@
 			    encodeHTML(this.method),
 			    '" onclick="doRun(\'',
 			    this.id,
-			    '\');">测试</a> | <a href="javascript://测试速度" onclick="doTime(\'',
+			    '\');">测试</a> | <a href="javascript://测试速度" onclick="System.doTime(\'',
 			    this.id,
 			    '\');">执行   ',
 			    this.times || defaultTimes,
-			    ' 次</a> | <a href="javascript://使用多个不同类型的参数进行测试" onclick="doTest(\'',
+			    ' 次</a> | <a href="javascript://使用多个不同类型的参数进行测试" onclick="System.doTest(\'',
 			    this.id,
 			    '\');">恶意测试</a></span>',
 			    '<a href="javascript://',
 			    encodeHTML(this.method), '(', encodeHTML(p || ''), ')',
 			    encodeHTML(this.overrides[p] ? ' => ' + this.overrides[p] : ''),
-			    '" onclick="doRun(\'', 
+			    '" onclick="System.doRun(\'', 
 			    this.id,
 			    '\', false)">', encodeHTML(this.name || this.id),
 			    '</a>',
@@ -632,7 +662,6 @@
 			
 			
 	};
-	
 	
 	function getRoot() { 
 		var b = document.getElementsByTagName("script");

@@ -1,0 +1,68 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>J+ Core 测试</title>
+		<script type="text/javascript" src="../../src/system.js" ></script>
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+	</head>
+	<body>
+		<script>
+			var ar = [1, 2, 3];
+
+			var testcases = {
+				'Object': '-',
+				'Object.type': '1 => "number"',
+				//'Object.clone': {
+				//	params: '',
+				//	overrides: '[5] => [5]'
+				//},
+				'Object.extendIf': '{"a":"g"}, [] => assert.areEqual(value["a"], "g")',
+				'Object.extend': '{"a":"g"}, [] => assert.areEqual(value["a"], "g")',
+				'Object.isObject': '{} => true, null => false, 2 => false',
+				'Object.each': '{a:1, b:2, c:3}, assert.log => assert.areEqual(value, true), assert.logged("123") ; [1,2,3], assert.log => assert.logged("123")',
+				'Object.set': '{a:assert.log}, {a:2, b:4} => assert.logged("2")',
+				//'Object.addCallback': {
+				//	init: 'var a = {click: assert.log}',
+				//	overrides: 'a, "click", function(){assert.log(2)} =>assert, a.click(1), assert.logged("12")'
+				//},
+				'Object.update': '["aa","aa23"], "length", [] => [2, 4]; [{a: 1},{a: 4}], "a", [{},{}], true => [{a: 1},{a: 4}]',
+				'Array': '-',
+				'Array.isArray': '[] => true',
+				'Array.create': '["a","a",null,"a"] => ["a","a",null,"a"]',
+				//'Array.copyIf': '[3,5], [6, 5, 2] => [6, 5, 2, 3]',
+				//'Array.plain': '[3,5], [6], 3, 2 => [3, 5, 6, 2]',
+				'Array.prototype.forEach': '@ar; assert.log => assert.logged("123")',
+				'Array.prototype.indexOf': '@ar = [5,4]; 4 => 1, 5 => 0, "5" => -1',
+				'Array.prototype.filter': '@ar = [5,4]; function(v){return v > 2} => [5,4]',
+				'Array.prototype.each': '@ar = [5,4]; assert.log => assert.logged("54")',
+				//'Array.prototype.select': '@ar = [5,4]; function(v){return v > 2} => [5,4]',
+				'Array.prototype.item': '@ar = [5,4]; 0 => 5; 1 => 4; -1 => 4; 2 => undefined',
+				'Array.prototype.include': '@ar = [5,4]; 4 => true; 2 => assert.areEqual(ar, [5, 4, 2])',
+				'Array.prototype.insert': '@ar = [5,4]; 1, "1" => [5, "1", 4]',
+				'Array.prototype.invoke': '@ar = [5,4]; "toString", [] => ["5", "4"]',
+				'Array.prototype.unique': {overrides:'@ar = [2, 5, 7, 5]; => [2, 5, 7]', time: 10000},
+				'Array.prototype.remove': '@ar = [5,4]; 5 =>assert,  true, assert.areEqual(ar, [4])',
+				'Function': '-',
+				'Function.empty': '=> undefined',
+				'Function.returnTrue': '=> true',
+				'Function.returnFalse': '=> false',
+				'Function.isFunction': 'function(){} => true; new Function() => true; [] => false',
+				'Function.bind': 'function(){assert.log(this)}, 2 => assert, value(), assert.logged("2")',
+				'Function.from': '1 => assert, assert.areEqual(value(), 1)',
+				'String': '-',
+				'String.ellipsis': '"saasasdasd", 7 => "saas..."; "aba", 3 => "aba"',
+				'String.format': '"{0} {1}", "h", "v" => "h v"; "{a}", {a: 1} => "1"',
+				'String.map': '"1 2 3", assert.log => assert.logged("123")',
+				'String.prototype.capitalize': '@str = "ab"; => "Ab"',
+				'String.prototype.toCamelCase': '@str = "a-b"; => "aB"',
+				'Date': '-',
+				'Date.now': '=>assert.isTrue(value > 0)',
+				'XMLHttpRequest': '-',
+				'new XMLHttpRequest': '=>assert.isTrue(value.open)'
+			};
+			
+			System.initTestCases(testcases);
+		</script>
+	</body>
+</html>

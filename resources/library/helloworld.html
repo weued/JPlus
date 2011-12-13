@@ -1,0 +1,98 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>J+ 最快上手- 项目 - J+ 文档库</title>
+		<script type="text/javascript" src="../../src/system.js" ></script>
+		<script type="text/javascript" src="../../src/system/dom/element.js" ></script>
+		<script type="text/javascript" src="../../src/system/fx/base.js" ></script>
+		<script type="text/javascript" src="../../src/system/fx/element.js" ></script>
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+	</head>
+	<body>
+		<h2>J+ 最快上手</h2>
+		
+		<script>
+			var h = new Date().getHours();
+			if(h >= 0 && h < 4)
+				document.write("<h3>通宵读教程不是好习惯，洗洗睡吧。</h3>");
+			else if(h == 12 || h == 6)
+				document.write("<h3>吃过饭了吗? 没有的话抓紧哦。</h3>");
+			
+		</script>
+		
+		<p class="content">
+			计算机是最听话的仆人。只要人们发命令，它就会乖乖执行。当然，不是所有人都能对计算机下命令的:只有会写代码的人才可以。
+		</p>
+		
+		<p class="content">
+			你有在 Javascript 和浏览器的漩涡中摆脱吗?
+			这篇 《J+ 最快上手》将告诉你一个新的编码思维，如果能了解这个思维方式，编码将是一件轻松的事。
+		</p>
+		<p class="content">
+			计算机世界内，有很多仆人(变量)，你就是这些仆人的主人，这些仆人可以随便被你操作，没有怨言。
+			计算机代码千变万化，但每行代码本质都其实是: 命令一个仆人做一件事。 
+		</p>
+		<p class="content">
+			每行代码，你总能找到 [谁][做][什么]。记住这个原则，你会发现代码也就是那么一回事。 
+		</p>
+		<p class="content">
+			比如下面的代码: document.getElementById("id"); 谁: document, 做: getElementById, 什么: "id"
+		</p>
+		<p class="content">
+			比如下面的代码: 3 + 4; 谁: 3 ，做: +， 什么: 4
+		</p>
+		<p class="content">
+			所以，当你要实现一个功能时，就要想清楚，[谁] [做] [什么] 。
+		</p>
+		<p class="content">
+			每个仆人(变量)都有自己的能力(类型)，这个能力决定了他能做什么，不能做什么。你可不能强迫一个人做出艰难的决定。
+		</p>
+		<p class="content">
+			为了更好地管好这些仆人(变量)，你需要多了解这些类型。比如 Javascript 内置的 类型有 Array(数组类), String(字符串类), Number(数字类) 等。 
+		</p>
+		<p class="content">
+			已知一个字符串  "abcdef", 现在要求找出这个字符串里 b 的位置， 可以使用字符串(因为  "abcdef" 是字符串)的方法(函数): indexOf(不知道有这个方法? 可以查MDN文档) 。
+			所以代码是 "abcdef".indexOf("b");
+		</p>
+		<p class="content">
+			同理，如果想要字符串首字母变大写， Javascript 系统本身没提供这个方法。
+			J+为字符串类拓展了 captialize 方法以实现 这个功能，所以代码是
+			"abcdef".captialize();
+		</p>
+		<p class="content">
+			如果现在要实现这个功能: 把页面内的id=a的节点慢慢隐藏掉。
+			思维方式就是: 先找到这个节点， 然后对节点操作(根据这个节点的类型，搜索相关的方法)。
+		</p>
+		<p class="content">
+			已知id的情况可以使用 $("a") 获取这个节点。
+		</p>
+		<p class="content">
+			然后使用 hide隐藏。
+		</p>
+		<p class="content">
+			最后代码是 $("a").hide();
+		</p>
+		<p class="content">
+			到这里，你应该已经学会如何去写代码了。但还有一个重要的问题，如何知道这个变量点后面可以放什么?比如上面的hide，如果没人介绍的
+			话就不知道了。
+		</p>
+		<p class="content">
+			J+(调试版) 单独提供一个函数用来查看接口信息: trace.api
+		</p>
+		<p class="content">
+			比如 trace.api( $("a") )  ， 你可以知道 $("a") 的类型、支持的方法。比如找到一个 show，你应该马上就知道它是显示元素的了。
+		</p>
+		<p class="content">
+			当然 trace.api 不提供太多信息，更多的信息应该查阅文档。
+		</p>
+		<p class="content">
+			总结: 找到你需要操作的变量: 获取这个变量的类型，搜索这个类型的方法。
+			代码也就是那么简单的一句话:  [谁] [做] [什么] 而已 。
+		</p>
+		<p class="content">
+			右下角有个虫子，点击后出现个输入框，那里可以输入代码，你可以马上开始实践。
+		 	先输入 trace.api() 试试...
+		</p>
+	</body>
+</html>

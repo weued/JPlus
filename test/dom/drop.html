@@ -1,0 +1,71 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>J+ Core 测试</title>
+		<script type="text/javascript" src="../../src/system.js" ></script>
+		<script type="text/javascript" src="../../src/system/dom/element.js" ></script>
+		<script type="text/javascript" src="../../src/system/dom/drag.js" ></script>
+		<script type="text/javascript" src="../../src/system/dom/drop.js" ></script>
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+		<style>
+			
+			#drag {
+				height: 60px;
+			}
+			
+			.zone{
+				height: 53px;	
+				padding: 10px;
+				border: 1px #C6D880 solid;
+				margin-bottom: 30px;
+			}
+			
+			.box {
+				width: 30px;
+				height: 30px;	
+				line-height: 30px;
+				cursor: move;
+			}
+			
+			.hover {
+				border: 1px dotted  blue;
+			}
+			
+		</style>
+	</head>
+	<body>
+		<div id="drag">
+			<div id="d1" class="box blue">1</div>
+			<div id="d2" class="box purple">2</div>
+			<div id="d3" class="box indigo">3</div>
+			<div id="d4" class="box green">4</div>
+			<div id="d5" class="box purple">5</div>
+			<div id="d6" class="box indigo">6</div>
+			<div id="d7" class="box blue">7</div>
+		</div>
+		<div id="drop">
+			<div id="z1" class="zone"></div>
+			<div id="z2" class="zone"></div>
+			<div id="z3" class="zone"></div>
+		</div>
+		<script>
+		
+		
+		
+			$('drag').findAll('.box').setDraggable(true);
+			
+			$('drop').findAll('.zone').on('dragenter', function (e) {
+				this.hover = document.create('div', 'box hover').setHtml(e.dragTarget.dom.id.substr(1));
+				this.append(this.hover);
+			}).on('dragleave', function (e) {
+				this.hover.remove();
+			}).on('drop', function (e) {
+				this.hover.remove();
+				e.dragTarget.dom.setOffset({x:0, y: 0});
+				this.append(e.dragTarget.dom);
+			});
+			
+		</script>
+	</body>
+</html>

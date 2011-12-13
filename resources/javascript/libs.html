@@ -1,0 +1,134 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Javascript 框架/库 - Javascript - J+ 文档库</title>
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+	</head>
+	<body>
+		<h2>Javascript 框架/库</h2>
+		<p>
+			整理/xuld
+		</p>
+		<script>
+			var urls = {
+				'底层功能' : {
+					'框架' : {
+						'jQuery - 最流行的 Javascript 框架': 'http://jquery.com/',
+						'Prototype - 最早的 Javascript 框架': 'http://prototypejs.org/',
+						'MooTools - 面向对象的  Javascript 框架': 'http://mootools.net',
+						'Comojs - 一款代码简易而功能强大的Javascript框架': 'http://www.comojs.com/',
+						'UIZE': 'http://www.uize.com/',
+						'Midori JS': 'http://www.midorijs.com/',
+						'Modello - 小型的JavaScript的类框架，其本身也提供了一个ajax框架。': 'http://modello.sourceforge.net/',
+						'Karmagination': 'http://www.karmagination.com/',
+						'modulejs - 极致模块化的且面向对象的javascript框架': 'http://madscript.com/modulejs/'
+					},
+					'Mobile': {
+						'xui.js - 小型的JS框架': 'http://xuijs.com/',
+						'jqtouch': 'http://jqtouch.com/',
+						'Jo': 'http://joapp.com/',
+						'jQuery Mobile': 'http://jquerymobile.com/',
+						'Zepto': 'http://zeptojs.com/'
+					},
+					'Ajax': {
+						'AJAXPRC - 快速、简单的Javascript远程方法调用': 'http://www.ajaxrpc.com/',
+						'': ''
+					},
+					'键盘': {
+						'Shortcuts.js - 在web2.0+时代，web应用中的快捷键开始大量使用,而且开始流行起来，google reader 和 Gmail等应用更是引领这一潮流，但是作为开发者，搞定键盘的绑定却不是一件轻松的事情，而shortCuts则以更优的方式解决了这一问题。': 'http://www.openjs.com/scripts/events/keyboard_shortcuts/',	
+					},
+					'算法': {
+						'CryptoJS - 为 JavaScript 提供了各种各样的加密算法': 'http://code.google.com/p/crypto-js/'
+					},
+					'核心工具': {
+						'Underscore.js - 实用的JavaScript工具库，提供了类似 Prototype 功能的编程支持，但没有对 JavaScript 内置的对象进行扩展。': 'http://documentcloud.github.com/underscore/',
+						'Datejs - 解析、格式化和处理日期数据，支持多种语言的日期格式处理': 'http://www.datejs.com/'
+					},
+					'DOM': {
+						'wForms - 低调的开源项目，简化了绝大多数常用 JavaScript 表单功能，包含可以直接使用的表单验证功能，另外，还包含强大的表单同步以及表单条件判断功能。': 'http://code.google.com/p/wforms/'
+					},
+					'数据': {
+						'SQLike': 'http://www.thomasfrank.se/sqlike.html'
+					},
+					'模块': {
+						'seajs': 'http://seajs.com/',
+						'Sammy.js - 微型的 JavaScript 框架用来简化 JavaScript 应用程序的编写，其核心只有 16K，压缩后 5.2K 大小': 'http://sammyjs.org/'
+					},
+					'媒体': {
+						'Jsfx - 使得 JavaScript 程序可轻松生成各种特殊声音效果': 'https://github.com/egonelbre/jsfx/',
+					},
+					'网络': {
+						'jSocket - JavaScript 实现 Socket 通讯的解决方案': 'http://code.google.com/p/jsocket/',
+					},
+					'调试': {
+						'Blackbird - alert()的替代方案，现如今耳目下通常开发者都是使用自己制造的弹出层对话框，但是这款的设计思路确是仿照一些软件的控制台日志的方式，把信息都集中于一个面板上，对于用户来说，这其实是一件好事，对自己的操作所产生的结果至少一目了然，web 应用发展新时代，这个东东会成为一个趋势吧。对了，还支持快捷键. ': 'http://www.gscottolson.com/blackbirdjs/'	
+					}
+				},
+				'界面组件' : {
+					'框架': {
+						'#ExtJS - 跨浏览器的RIA框架': 'http://www.sencha.com/products/extjs/',
+						'Sencha - ExtJS、jQTouch 以及 Raphael 三个项目合并而成的一个新项目': 'http://www.sencha.com/',
+						'#DWZJS - 国产jQuery UI框架': 'http://demo.dwzjs.com/',
+						'YUI - Yahoo UI库': 'http://developer.yahoo.com/yui/',
+						'jsLinb': 'http://www.linb.net/',
+						'#RightJS': 'http://rightjs.org/',
+						'Dojo': 'http://dojotoolkit.org/',
+						'Vaadin - RIA的基于浏览器的富客户端的Web框架': 'https://vaadin.com/home',
+						'qooxdoo - 用于开发Ajax应用程序的GUI框架，使用它可以开发出类似于Window桌面风格的Web应用程序。使用Qooxdoo并不需要你具备HTML, CSS 和 DOM 的知识。': 'http://qooxdoo.org/',
+						'Echo': 'http://echo.nextapp.com/site/',
+						'dhtmlxAjax': 'http://dhtmlx.com/docs/products/dhtmlxAjax/index.shtml',
+						'#JxLib - 建立在MooTools 之上，基于浏览器用户界面的工具': 'http://jxlib.org/',
+						'Rialto - 跨浏览器的基于 Ajax 的 浏览器组件库': 'http://rialto.improve-technologies.com/wiki/',
+						'MochaUI - 开发网页上的界面库，基于 Mootools 框架。': 'http://mochaui.org/',
+						'Edojs': 'http://www.edojs.com/demo/',
+						'kissy': 'https://github.com/kissyteam/kissy',
+						'MyUI - 用于Web界面的用户接口JavaScript框架，可用来提高用户的使用体验。使用非常简单易于理解': 'http://my-ui.sourceforge.net/demo/index.html'
+					},
+					'对话框': {
+						'jsdialog': 'http://code.google.com/p/jsdialog/',
+						'CeraBox - 基于 MooTools 1.3 的一个类似 FancyBox 的弹出窗口库，支持图片、Flash 和 HTML 内容显示，可加载 iframe 和 Ajax 请求。': 'http://cerabox.net/',
+						'Lightbox JS - 简单而又谦恭的用来把图片覆盖在当前页面上的脚本.就是一个页面上的弹出式对话框的组件， 它能被快速安装并且运作于所有流行的浏览器': 'http://www.huddletogether.com/projects/lightbox/',
+						'art.Dialog - 轻巧且高度兼容的javascript对话框组件，可让你的网页交互拥有桌面软件般的用户体验': 'http://code.google.com/p/artdialog/'
+					},
+					'数据显示': {
+						'SlickGrid - 简单的、快速、灵活的表格控件。可以隐藏/显示列，调整列宽度，排序，自定义单元格展示格式和编辑器，支持编辑和创建新记录': 'https://github.com/mleibman/SlickGrid/tree/master/examples',
+						'moodgets Grid - 基于Mootools框架开发，易于使用，可扩展的表格控件。拖动调整表格列宽，排序，多行或单行选择，单击表格单元格 可编辑，分页，通过Ajax加载数据': 'http://code.google.com/p/moodgets/'
+					},
+					'表单': {
+						'My97 DatePicker - JavaScript 的日历选择控件': 'http://www.my97.net/dp/index.asp',
+						'Javascript 虚拟键盘 - 适合在浏览器中的可视化编辑器中使用。支持多种语言。': 'http://debugger.ru/projects/virtualkeyboard',
+						'KindEditor - 开源的HTML可视化编辑器': 'http://kindsoft.net/demo.php'
+					},
+					'内容': {
+						'SuperNote - 鼠标移动或者点击的弹出提示框，提示框可以设置自动关闭或者是手动点击关闭': 'http://www.twinhelix.com/dhtml/supernote/',
+						'qTip - 漂亮的 jQuery 的工具提示插件': 'http://craigsworks.com/projects/qtip/demos/'
+					}
+				},
+				'图表': {
+					'jsDraw2D - jsFiction公司提供的第一个产品，他们计划创造各种各样的革命性的JavaScript库和应用，来帮助JavaScript 开发者，Web开发者以及Web站长扩展JavaScript的内涵和功能': 'http://jsdraw2d.jsfiction.com/',
+					'CamanJS - HTML5 Canvas 和 JavaScript 实现的用来对图像进行处理的 JavaScript库，提供一些易用接口来对图像进行处理，例如加亮等等': 'http://camanjs.com/',
+					'#JsMath - 在网页中显示数学公式的方法，通过解析 TeX 代码，结合 JavaScript 和 CSS 以及 unicode 字体 来显示数学公式，支持多浏览器和平台，无需 MathML 支持': 'http://www.oschina.net/p/jsmath',
+					'Raphaël - 小型的 JavaScript 库，用来简化在页面上显示向量图的工作。你可以用它在页面上绘制各种图表、并进行图片的剪切、旋转等操作': 'http://raphaeljs.com/'
+				},
+				'效果': {
+					'JSTweener - 原始大小14K，支持大多数的动画特效 ': 'http://svn.coderepos.org/share/lang/javascript/jstweener/trunk/examples/transitions.html',
+					'FX 2.0 - 代码清晰，支持多种形变动画，而且2.0版本在不局限于px单位，支持了em, %': 'http://www.ryanmorr.com/tests/fx2/',
+					'Reflection.js - 倒影实现,如果是在个人项目中，还是可以用得上的，唉，感叹，现在是可供选择的效果太充足了，而实际真正用到项目中的确是寥寥无几，只能这么说，就目前的web项目在交互方面 只能打个不及格。现在貌似国外都是研究者，而我们只是应用者，而且应用得还不到位。 ': 'http://cow.neondragon.net/stuff/reflection/',
+					'leigeber - 准确的说 这不是一个库，而是一些效果集，但是这对于我们来说却是非常实用的，每个效果都在3K左右': 'http://www.leigeber.com/category/javascript/',
+					'Amberjack - 这个效果我觉得用在商城上 挺合适的，比如一些打折信息，热卖商品等，只是网站官方极力推销的，用这种方式到不失为一种好方法，当然反对的声音肯定挺多的... ': 'http://amberjack.org/skins/customize/?travel=1&tourId=AJTour&skinId=black_beauty',
+					'moo.fx - 超级轻量级的javascript特效库,能够与prototype.js或mootools框架一起使用': 'http://moofx.mad4milk.net/',
+					'Script.aculo.us - Prototype效果库': 'http://script.aculo.us'
+				},
+				'完整作品': {
+					'Ajax Animator - 使用了AJAX技术，提供完全标准化的、在线的、协作的、基于Web的动画开发工具包。0.2版显示了AJAX动画在RIA世界的良好潜质': 'http://code.google.com/p/ajaxanimator/'
+					
+				}
+
+			};
+
+			System.initTreeView(urls);
+
+		</script>
+	</body>
+</html>

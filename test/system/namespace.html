@@ -1,0 +1,29 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>J+ Core 测试</title>
+		<script type="text/javascript" src="../../src/system.js" ></script>
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+	</head>
+	<body>
+		<script>
+			
+			var testcases = {
+				'namespace': '-',
+				'namespace': '"MyName.MyClass", {a:1} => assert.isTrue(typeof MyName != "undefined" && MyName.MyClass)',
+				'using': '"System.Ajax.Ajax" => assert.isTrue(window.Ajax)',
+				'Load': '-',
+				'JPlus.eval': '"assert.log(false)" => assert.logged("false")',
+				'JPlus.loadStyle': '"../../assets/styles/default.css"',
+				'JPlus.loadScript': '"../../src/system/ajax/ajax.js"',
+				'JPlus.loadText': '"namespace.html", function(v){alert(v)}',
+				'JPlus.rootPath': {doCall: false},
+				'JPlus.checkStatusCode': '200 => true ; 500 => false'
+			};
+			
+			System.initTestCases(testcases);
+			
+		</script>
+	</body>
+</html>

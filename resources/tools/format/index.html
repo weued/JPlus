@@ -1,110 +1,117 @@
 ﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<head>
-<title>Javascript格式化工具</title>
-<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-<script type="text/javascript">
-window.onload = function() {
-    var c = document.forms[0].content;
-    c && c.setSelectionRange && c.setSelectionRange(0, 0);
-    c && c.focus && c.focus();
-}
-function do_js_beautify()
-{
-    document.getElementById('beautify').disabled = true;
-    var js_source = document.getElementById('content').value.replace(/^\s+/, '');
-    var indent_size = document.getElementById('tabsize').value;
-    var indent_char = ' ';
-    var preserve_newlines = document.getElementById('preserve-newlines').checked;
+	<head>
+		<title>Javascript 格式化- J+ 资源</title>
+		<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+		<script type="text/javascript">
+			window.onload = function() {
+				var c = document.forms[0].content;
+				c && c.setSelectionRange && c.setSelectionRange(0, 0);
+				c && c.focus && c.focus();
+			}
+			function do_js_beautify() {
+				document.getElementById('beautify').disabled = true;
+				var js_source = document.getElementById('content').value.replace(/^\s+/, '');
+				var indent_size = document.getElementById('tabsize').value;
+				var indent_char = ' ';
+				var preserve_newlines = document.getElementById('preserve-newlines').checked;
 
-    if (indent_size == 1) {
-        indent_char = '\t';
-    }
+				if(indent_size == 1) {
+					indent_char = '\t';
+				}
 
+				if(js_source && js_source[0] === '<') {
+					document.getElementById('content').value = style_html(js_source, indent_size, indent_char, 80);
+				} else {
+					document.getElementById('content').value = js_beautify(js_source, {
+						indent_size : indent_size,
+						indent_char : indent_char,
+						preserve_newlines : preserve_newlines
+					});
+				}
 
-    if (js_source && js_source[0] === '<') {
-        document.getElementById('content').value = style_html(js_source, indent_size, indent_char, 80);
-    } else {
-        document.getElementById('content').value =
-        js_beautify(js_source, {indent_size: indent_size, indent_char: indent_char, preserve_newlines:preserve_newlines});
-    }
-
-    document.getElementById('beautify').disabled = false;
-    return false;
-}
-</script>
-<script type="text/javascript" src="../../../assets/scripts/default.js"></script>
-<script type="text/javascript" src="beautify.js"></script>
-<script type="text/javascript" src="HTML-Beautify.js"></script>
-<style type="text/css">
-form {
-	MARGIN: 0px 10px
-}
-textarea {
-	BORDER-BOTTOM: #ccc 1px solid;
-	BORDER-LEFT: #ccc 1px solid;
-	PADDING-BOTTOM: 3px;
-	PADDING-LEFT: 3px;
-	WIDTH: 100%;
-	PADDING-RIGHT: 3px;
-	HEIGHT: 320px;
-	BORDER-TOP: #ccc 1px solid;
-	BORDER-RIGHT: #ccc 1px solid;
-	PADDING-TOP: 3px
-}
-select {
-	WIDTH: 19%
-}
-button {
-	WIDTH: 100px;
-	CURSOR: pointer
-}
-label {
-	FONT-FAMILY: arial, helvetica, sans-serif
-}
-textarea {
-	FONT-FAMILY: terminus, consolas, "lucida console", "courier new", courier, monospace;
-	FONT-SIZE: 12px
-}
-pre {
-	FONT-FAMILY: terminus, consolas, "lucida console", "courier new", courier, monospace;
-	FONT-SIZE: 12px
-}
-span.code {
-	FONT-FAMILY: terminus, consolas, "lucida console", "courier new", courier, monospace;
-	FONT-SIZE: 12px
-}
-pre {
-	MARGIN: 20px 0px;
-	COLOR: #777
-}
-div#bottom {
-	MARGIN: 20px;
-	FONT-FAMILY: arial, helvetica, sans-serif;
-	COLOR: #333;
-	FONT-SIZE: 90%;
-	BORDER-TOP: #ccc 1px solid
-}
-</style>
-</head>
-<body>
-<h2>Javascript格式化工具</h2>
-<p>粘贴代码到这个文本框然后点击格式化按格式化 </p>
-<form method="post" action="?">
-  <textarea id="content" rows="30" cols="30" name="content"></textarea>
-  <br>
-  <br>
-  <button id="beautify" onClick="return do_js_beautify()" type="submit">格式化</button>
-  <select id="tabsize" name="tabsize">
-    <option selected="selected" value="1">用&quot;tab&quot;键缩进</option>
-    <option value="2">缩进2个空格</option>
-    <option value="4">缩进4个空格</option>
-    <option value="8">缩进6个空格</option>
-  </select>
-  <input id="preserve-newlines" checked="checked" type="checkbox">
-  <label for="preserve-newlines">保留现有的换行符</label>
-</form>
-<p style="text-align: right">由<a href="http://jsbeautifier.org/" 
-target="_blank">http://jsbeautifier.org/</a>提供技术支持</p>
-</body>
+				document.getElementById('beautify').disabled = false;
+				return false;
+			}
+		</script>
+		<script type="text/javascript" src="../../../assets/scripts/default.js"></script>
+		<script type="text/javascript" src="beautify.js"></script>
+		<script type="text/javascript" src="HTML-Beautify.js"></script>
+		<style type="text/css">
+			form {
+				MARGIN: 0px 10px
+			}
+			textarea {
+				BORDER-BOTTOM: #ccc 1px solid;
+				BORDER-LEFT: #ccc 1px solid;
+				PADDING-BOTTOM: 3px;
+				PADDING-LEFT: 3px;
+				WIDTH: 100%;
+				PADDING-RIGHT: 3px;
+				HEIGHT: 320px;
+				BORDER-TOP: #ccc 1px solid;
+				BORDER-RIGHT: #ccc 1px solid;
+				PADDING-TOP: 3px
+			}
+			select {
+				WIDTH: 19%
+			}
+			button {
+				WIDTH: 100px;
+				CURSOR: pointer
+			}
+			label {
+				FONT-FAMILY: arial, helvetica, sans-serif
+			}
+			textarea {
+				FONT-FAMILY: terminus, consolas, "lucida console", "courier new", courier, monospace;
+				FONT-SIZE: 12px
+			}
+			pre {
+				FONT-FAMILY: terminus, consolas, "lucida console", "courier new", courier, monospace;
+				FONT-SIZE: 12px
+			}
+			span.code {
+				FONT-FAMILY: terminus, consolas, "lucida console", "courier new", courier, monospace;
+				FONT-SIZE: 12px
+			}
+			pre {
+				MARGIN: 20px 0px;
+				COLOR: #777
+			}
+			div#bottom {
+				MARGIN: 20px;
+				FONT-FAMILY: arial, helvetica, sans-serif;
+				COLOR: #333;
+				FONT-SIZE: 90%;
+				BORDER-TOP: #ccc 1px solid
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Javascript 格式化</h1>
+		<p>
+			粘贴代码到这个文本框然后点击格式化按格式化
+		</p>
+		<form method="post" action="?">
+			<textarea id="content" rows="30" cols="30" name="content"></textarea>
+			<br>
+			<br>
+			<button id="beautify" onClick="return do_js_beautify()" type="submit">
+				格式化
+			</button>
+			<select id="tabsize" name="tabsize">
+				<option selected="selected" value="1">用&quot;tab&quot;键缩进</option>
+				<option value="2">缩进2个空格</option>
+				<option value="4">缩进4个空格</option>
+				<option value="8">缩进6个空格</option>
+			</select>
+			<input id="preserve-newlines" checked="checked" type="checkbox">
+			<label for="preserve-newlines">保留现有的换行符</label>
+		</form>
+		<p style="text-align: right">
+			由<a href="http://jsbeautifier.org/"
+			target="_blank">http://jsbeautifier.org/</a>提供技术支持
+		</p>
+	</body>
 </html>

@@ -26,6 +26,6 @@ The dom helper looks like:
 In which $ is an alternative name of document.getDom  .
 
 
-## What's the main difference of this libaray with other frameworks?
+## What's the main difference with other frameworks?
 
-The object-orient programming style.
+The object-orient programming style, which supports the component develop.
