@@ -17,8 +17,10 @@
 	moduleName = moduleName.substr(0, moduleName.indexOf('/'));
 	
 	document.write('<link type="text/css" rel="stylesheet" href="' + root + 'assets/styles/default.css" />');
-	document.write('<script type="text/javascript" src="' + root + 'assets/libs/firebug-lite/firebug-lite.js"></script>');
-	document.write('<script type="text/javascript" src="' + root + 'assets/project/' + moduleName + '.js"></script>');
+	document.write('<script type="text/javascript" src="' + root + 'assets/libs/firebug-lite/build/firebug-lite.js"></script>');
+	
+	if(moduleName.indexOf('.') == -1)
+		document.write('<script type="text/javascript" src="' + root + 'assets/project/' + moduleName + '.js"></script>');
 	document.write('<script type="text/javascript" src="' + root + 'assets/project/project.js"></script>');
 	
 	window._ = window._ || console.log;

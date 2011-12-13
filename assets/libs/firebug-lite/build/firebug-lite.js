@@ -1,5 +1,5 @@
 (function(){
-/**************************************************************
+	/**************************************************************
  *
  *    Firebug Lite 1.4.0
  * 
@@ -94,7 +94,7 @@ sharedEnv=null
 }}else{FBL.FirebugChrome.create()
 }};
 var sharedEnv;
-this.Env={Options:{saveCookies:true,saveWindowPosition:false,saveCommandLineHistory:false,startOpened:false,startInNewWindow:false,showIconWhenHidden:true,overrideConsole:true,ignoreFirebugElements:true,disableWhenFirebugActive:true,disableXHRListener:false,disableResourceFetching:false,enableTrace:false,enablePersistent:false},Location:{sourceDir:null,baseDir:null,skinDir:null,skin:null,app:null},skin:"xp",useLocalSkin:false,isDevelopmentMode:false,isDebugMode:false,isChromeContext:false,browser:null,chrome:null};
+this.Env={Options:{saveCookies:true,saveWindowPosition:true,saveCommandLineHistory:true,startOpened:false,startInNewWindow:false,showIconWhenHidden:true,overrideConsole:false,ignoreFirebugElements:true,disableWhenFirebugActive:true,disableXHRListener:false,disableResourceFetching:false,enableTrace:false,enablePersistent:false},Location:{sourceDir:null,baseDir:null,skinDir:null,skin:null,app:null},skin:"xp",useLocalSkin:true,isDevelopmentMode:false,isDebugMode:false,isChromeContext:false,browser:null,chrome:null};
 var destroyEnvironment=function destroyEnvironment(){setTimeout(function(){FBL=null
 },100)
 };
@@ -2635,7 +2635,11 @@ if(isFirefox){this.node.style.display="block"
 }if(Env.Options.startInNewWindow){this.close();
 this.toggle(true,true);
 return
-}if(Env.Options.startOpened){this.open()
+}
+Firebug.instance = this;
+this.close(true);
+return;
+if(Env.Options.startOpened){this.open()
 }else{this.close()
 }},destroy:function(){var size=Firebug.chrome.getWindowSize();
 Firebug.context.persistedState.height=size.height;
@@ -2676,7 +2680,7 @@ setTimeout(function(){self.initialize();
 if(noFixedPosition){self.fixIEPosition()
 }self.draw()
 },10)
-}},close:function(){if(Firebug.context.persistedState.isOpen){if(this.isInitialized){this.shutdown()
+}},close:function(force){if(Firebug.context.persistedState.isOpen || force){if(this.isInitialized){this.shutdown()
 }Firebug.context.persistedState.isOpen=false;
 if(Env.isChromeExtension){localStorage.setItem("Firebug","1,0")
 }var node=this.node;
