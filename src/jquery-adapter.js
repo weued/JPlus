@@ -5,13 +5,13 @@
 (function ($) {
 	
 	/**
-	 * Object  ¼òĞ´¡£
+	 * Object  ç®€å†™ã€‚
 	 * @type Function
 	 */
 	var o = window.Object,
 		
 		/**
-		 * Object.prototype.hasOwnProperty ¼òĞ´¡£
+		 * Object.prototype.hasOwnProperty ç®€å†™ã€‚
 		 * @type Function
 		 */
 		hasOwnProperty = o.prototype.hasOwnProperty,
@@ -21,37 +21,37 @@
 		emptyFn = $.noop,
 		
 		/**
-		 * ¸ñÊ½»¯×Ö·û´®ÓÃµÄÕıÔò±í´ïÊ½¡£
+		 * æ ¼å¼åŒ–å­—ç¬¦ä¸²ç”¨çš„æ­£åˆ™è¡¨è¾¾å¼ã€‚
 		 * @type RegExp
 		 */
 		rFormat = /\{+?(\S*?)\}+/g,
 		
 		/**
-		 * Æ¥ÅäµÚÒ»¸ö×Ö·û¡£
+		 * åŒ¹é…ç¬¬ä¸€ä¸ªå­—ç¬¦ã€‚
 		 * @type RegExp
 		 */
 		rFirstChar = /(\b[a-z])/g,
 		
 		/**
-		 * ±íÊ¾¿Õ°××Ö·û¡£
+		 * è¡¨ç¤ºç©ºç™½å­—ç¬¦ã€‚
 		 * @type RegExp
 		 */
 		rWhite = /%20/g,
 		
 		/**
-	     * ×ªÎªÂæÍÕ¸ñÊ½µÄÕıÔò±í´ïÊ½¡£
+	     * è½¬ä¸ºéª†é©¼æ ¼å¼çš„æ­£åˆ™è¡¨è¾¾å¼ã€‚
 	     * @type RegExp
 	     */
 		rToCamelCase = /-(\w)/g,
 		
 		/**
-		 * ¹ÜÀíËùÓĞÊÂ¼şÀàĞÍµÄ¹¤¾ß¡£
+		 * ç®¡ç†æ‰€æœ‰äº‹ä»¶ç±»å‹çš„å·¥å…·ã€‚
 		 * @type Object
 		 */
 		eventMgr = {
 			
 			/**
-			 * ¹ÜÀíÄ¬ÈÏµÄÀàÊÂ¼ş¡£
+			 * ç®¡ç†é»˜è®¤çš„ç±»äº‹ä»¶ã€‚
 			 * @type Object
 			 */
 			$default: {
@@ -63,18 +63,18 @@
 		},
 
 		/**
-		 * Py¾²Ì¬¶ÔÏó¡£
+		 * Pyé™æ€å¯¹è±¡ã€‚
 		 * @namespace JPlus
 		 */
 		p = namespace('JPlus.', {
 			
 			/**
-			 * »ñÈ¡ÊôÓÚÒ»¸öÔªËØµÄÊı¾İ¡£
-			 * @param {Object} obj ÔªËØ¡£
-			 * @param {String} dataType ÀàĞÍ¡£
-			 * @return {Object} Öµ¡£
-			 * Õâ¸öº¯Êı»áÔÚ¶ÔÏóÄÚÉú³ÉÒ»¸ö data ×Ö¶Î£¬ ²¢Éú³ÉÒ»¸ö data.dataType ¶ÔÏó·µ»Ø¡£
-			 * Èç¹ûÔ­ÏÈ´æÔÚ data.dataType, ÔòÖ±½Ó·µ»Ø¡£
+			 * è·å–å±äºä¸€ä¸ªå…ƒç´ çš„æ•°æ®ã€‚
+			 * @param {Object} obj å…ƒç´ ã€‚
+			 * @param {String} dataType ç±»å‹ã€‚
+			 * @return {Object} å€¼ã€‚
+			 * è¿™ä¸ªå‡½æ•°ä¼šåœ¨å¯¹è±¡å†…ç”Ÿæˆä¸€ä¸ª data å­—æ®µï¼Œ å¹¶ç”Ÿæˆä¸€ä¸ª data.dataType å¯¹è±¡è¿”å›ã€‚
+			 * å¦‚æœåŸå…ˆå­˜åœ¨ data.dataType, åˆ™ç›´æ¥è¿”å›ã€‚
 			 * @example
 			 * <code>
 			 * var obj = {};
@@ -85,40 +85,40 @@
 			data: function (obj, dataType) {
 				
 				
-				// ´´½¨»ò»ñÈ¡ '$data'¡£
+				// åˆ›å»ºæˆ–è·å– '$data'ã€‚
 				var d = obj.$data || (obj.$data = {}) ;
 				
-				// ´´½¨»ò»ñÈ¡ dataType¡£
+				// åˆ›å»ºæˆ–è·å– dataTypeã€‚
 				return d[dataType] || (d[dataType] = {});
 			},
 		
 			/**
-			 * Èç¹û´æÔÚ£¬»ñÈ¡ÊôÓÚÒ»¸öÔªËØµÄÊı¾İ¡£
-			 * @param {Object} obj ÔªËØ¡£
-			 * @param {String} dataType ÀàĞÍ¡£
-			 * @return {Object} Öµ¡£
-			 * Õâ¸öº¯Êı»áÔÚ¶ÔÏóÄÚÉú³ÉÒ»¸ö data ×Ö¶Î£¬ ²¢Éú³ÉÒ»¸ö data.dataType ¶ÔÏó·µ»Ø¡£
-			 * Èç¹ûÔ­ÏÈ´æÔÚ data.dataType, ÔòÖ±½Ó·µ»Ø¡£
+			 * å¦‚æœå­˜åœ¨ï¼Œè·å–å±äºä¸€ä¸ªå…ƒç´ çš„æ•°æ®ã€‚
+			 * @param {Object} obj å…ƒç´ ã€‚
+			 * @param {String} dataType ç±»å‹ã€‚
+			 * @return {Object} å€¼ã€‚
+			 * è¿™ä¸ªå‡½æ•°ä¼šåœ¨å¯¹è±¡å†…ç”Ÿæˆä¸€ä¸ª data å­—æ®µï¼Œ å¹¶ç”Ÿæˆä¸€ä¸ª data.dataType å¯¹è±¡è¿”å›ã€‚
+			 * å¦‚æœåŸå…ˆå­˜åœ¨ data.dataType, åˆ™ç›´æ¥è¿”å›ã€‚
 			 * @example
 			 * <code>
 			 * var obj = {};
-			 * if(JPlus.getData(obj, 'a')) // Èç¹û´æÔÚ a ÊôĞÔ¡£ 
+			 * if(JPlus.getData(obj, 'a')) // å¦‚æœå­˜åœ¨ a å±æ€§ã€‚ 
 			 *     trace(  JPlus.data(obj, 'a')  )
 			 * </code>
 			 */
 			getData:function (obj, dataType) {
 				
 				
-				// »ñÈ¡ÊôĞÔ'$data'¡£
+				// è·å–å±æ€§'$data'ã€‚
 				var d = obj.$data;
 				return d && d[dataType];
 			},
 			
 			/**
-			 * ÉèÖÃÊôÓÚÒ»¸öÔªËØµÄÊı¾İ¡£
-			 * @param {Object} obj ÔªËØ¡£
-			 * @param {String} dataType ÀàĞÍ¡£
-			 * @param {Object} data ÄÚÈİ¡£
+			 * è®¾ç½®å±äºä¸€ä¸ªå…ƒç´ çš„æ•°æ®ã€‚
+			 * @param {Object} obj å…ƒç´ ã€‚
+			 * @param {String} dataType ç±»å‹ã€‚
+			 * @param {Object} data å†…å®¹ã€‚
 			 * @return data
 			 * @example
 			 * <code>
@@ -129,22 +129,22 @@
 			setData: function (obj, dataType, data) {
 				
 				
-				// ¼òµ¥ÉèÖÃ±äÁ¿¡£
+				// ç®€å•è®¾ç½®å˜é‡ã€‚
 				return (obj.$data || (obj.$data = {}))[dataType] = data;
 			},
 			
 			/**
-			 * ´´½¨Ò»¸öÀà¡£
-			 * @param {Object/Function} [methods] ³ÉÔ±»ò¹¹Ôìº¯Êı¡£
-			 * @return {Class} Éú³ÉµÄÀà¡£
-			 * ´´½¨Ò»¸öÀà£¬Ïàµ±ÓÚ¼Ì³ĞÓÚ JPlus.Object´´½¨¡£
+			 * åˆ›å»ºä¸€ä¸ªç±»ã€‚
+			 * @param {Object/Function} [methods] æˆå‘˜æˆ–æ„é€ å‡½æ•°ã€‚
+			 * @return {Class} ç”Ÿæˆçš„ç±»ã€‚
+			 * åˆ›å»ºä¸€ä¸ªç±»ï¼Œç›¸å½“äºç»§æ‰¿äº JPlus.Objectåˆ›å»ºã€‚
 			 * @see JPlus.Object.extend
 			 * @example
 			 * <code>
 			 * var MyCls = Class({
 			 * 
 			 *    constructor: function (g, h) {
-			 * 	      alert('¹¹Ôìº¯Êı' + g + h)
+			 * 	      alert('æ„é€ å‡½æ•°' + g + h)
 			 *    }	
 			 * 
 			 * });
@@ -155,26 +155,26 @@
 			 */
 			Class: function (members) {
 					
-				// ´´½¨Àà£¬ÆäÊµ¾ÍÊÇ ¼Ì³Ğ Object £¬´´½¨Ò»¸öÀà¡£
+				// åˆ›å»ºç±»ï¼Œå…¶å®å°±æ˜¯ ç»§æ‰¿ Object ï¼Œåˆ›å»ºä¸€ä¸ªç±»ã€‚
 				return Object.extend(members);
 			},
 			
 			/**
-			 * ËùÓĞÀàµÄ»ùÀà¡£
+			 * æ‰€æœ‰ç±»çš„åŸºç±»ã€‚
 			 * @class JPlus.Object
 			 */
 			Object: Object,
 			
 			/**
-			 * ÓÉ´æÔÚµÄÀàĞŞ¸Ä´´½¨Àà¡£
-			 * @param {Function/Class} constructor ½«´´½¨µÄÀà¡£
-			 * @return {Class} Éú³ÉµÄÀà¡£
+			 * ç”±å­˜åœ¨çš„ç±»ä¿®æ”¹åˆ›å»ºç±»ã€‚
+			 * @param {Function/Class} constructor å°†åˆ›å»ºçš„ç±»ã€‚
+			 * @return {Class} ç”Ÿæˆçš„ç±»ã€‚
 			 */
 			Native: function (constructor) {
 				
-				// ¼òµ¥¿½±´  Object µÄ³ÉÔ±£¬¼´ÓµÓĞÀàµÄÌØĞÔ¡£
-				// ÔÚ JavaScript£¬ Ò»ÇĞº¯Êı¶¼¿É×÷ÎªÀà£¬¹Ê´Ëº¯Êı´æÔÚ¡£
-				// Object µÄ³ÉÔ±Ò»°ã¶Ôµ±Ç°Àà¹¹Ôìº¯ÊıÔ­ĞÍ¸¨Öú¡£
+				// ç®€å•æ‹·è´  Object çš„æˆå‘˜ï¼Œå³æ‹¥æœ‰ç±»çš„ç‰¹æ€§ã€‚
+				// åœ¨ JavaScriptï¼Œ ä¸€åˆ‡å‡½æ•°éƒ½å¯ä½œä¸ºç±»ï¼Œæ•…æ­¤å‡½æ•°å­˜åœ¨ã€‚
+				// Object çš„æˆå‘˜ä¸€èˆ¬å¯¹å½“å‰ç±»æ„é€ å‡½æ•°åŸå‹è¾…åŠ©ã€‚
 				return applyIf(constructor, Object);
 			},
 			
@@ -183,46 +183,46 @@
 			/// #endif
 	
 			/**
-			 * ¶¨ÒåÃû×Ö¿Õ¼ä¡£
-			 * @param {String} name Ãû×Ö¿Õ¼ä¡£
-			 * @param {Object} [obj] Öµ¡£
+			 * å®šä¹‰åå­—ç©ºé—´ã€‚
+			 * @param {String} name åå­—ç©ºé—´ã€‚
+			 * @param {Object} [obj] å€¼ã€‚
 			 * <p>
-			 * Ãû×Ö¿Õ¼äÊÇÏîÄ¿ÖĞ±íÊ¾×ÊÔ´µÄ·ûºÏ¡£
+			 * åå­—ç©ºé—´æ˜¯é¡¹ç›®ä¸­è¡¨ç¤ºèµ„æºçš„ç¬¦åˆã€‚
 			 * </p>
 			 * 
 			 * <p>
-			 * ±ÈÈç  system/dom/keys.js ÎÄ¼ş£¬ Ãû×Ö¿Õ¼äÊÇ System.Dom.Keys
-			 * Ãû×Ö¿Õ¼äÓÃÀ´¿ìËÙ±íÊ¾×ÊÔ´¡£ {@link using} ºÍ  {@link imports} ¿ÉÒÔ¸ù¾İÖÆ¶¨µÄÃû×Ö¿Õ¼äÔØÈëÏàÓ¦µÄÄÚÈİ¡£
+			 * æ¯”å¦‚  system/dom/keys.js æ–‡ä»¶ï¼Œ åå­—ç©ºé—´æ˜¯ System.Dom.Keys
+			 * åå­—ç©ºé—´ç”¨æ¥å¿«é€Ÿè¡¨ç¤ºèµ„æºã€‚ {@link using} å’Œ  {@link imports} å¯ä»¥æ ¹æ®åˆ¶å®šçš„åå­—ç©ºé—´è½½å…¥ç›¸åº”çš„å†…å®¹ã€‚
 			 * </p>
 			 * 
 			 * <p>
-			 * namespace º¯ÊıÓĞ¶à¸öÖØÔØ£¬ Èç¹ûÖ»ÓĞ1¸ö²ÎÊı:
+			 * namespace å‡½æ•°æœ‰å¤šä¸ªé‡è½½ï¼Œ å¦‚æœåªæœ‰1ä¸ªå‚æ•°:
 			 * <code>
 			 * namespace("System.Dom.Keys"); 
 			 * </code>
-			 * ±íÊ¾ÏµÍ³ÒÑ¾­ÔØÈëÁËÕâ¸öÃû×Ö¿Õ¼äµÄ×ÊÔ´£¬ using ºÍ imports ½«ºöÊÓÕâ¸ö×ÊÔ´µÄÔØÈë¡£
+			 * è¡¨ç¤ºç³»ç»Ÿå·²ç»è½½å…¥äº†è¿™ä¸ªåå­—ç©ºé—´çš„èµ„æºï¼Œ using å’Œ imports å°†å¿½è§†è¿™ä¸ªèµ„æºçš„è½½å…¥ã€‚
 			 * </p>
 			 * 
 			 * <p>
-			 * namespace Èç¹ûÓĞ2¸ö²ÎÊı£¬ ±íÊ¾ÔÚÖ¸¶¨µÄÎ»ÖÃ´´½¨¶ÔÏó¡£
+			 * namespace å¦‚æœæœ‰2ä¸ªå‚æ•°ï¼Œ è¡¨ç¤ºåœ¨æŒ‡å®šçš„ä½ç½®åˆ›å»ºå¯¹è±¡ã€‚
 			 * <code>
-			 * namespace("A.B.C", 5); // ×îºó A = {B: {C: 5}}  
+			 * namespace("A.B.C", 5); // æœ€å A = {B: {C: 5}}  
 			 * </code>
-			 * Õâ¸öĞ´·¨×îºó¸²¸ÇÁË C µÄÖµ£¬µ«²»Ó°Ïì A ºÍ B¡£ 
+			 * è¿™ä¸ªå†™æ³•æœ€åè¦†ç›–äº† C çš„å€¼ï¼Œä½†ä¸å½±å“ A å’Œ Bã€‚ 
 			 * 
 			 * <p>
-			 * Èç¹ûÕâ¸öÃû×Ö¿Õ¼äµÄÊ××Ö·ûÊÇ . ÔòÏµÍ³»á²¹ÉÏ 'JPlus'
+			 * å¦‚æœè¿™ä¸ªåå­—ç©ºé—´çš„é¦–å­—ç¬¦æ˜¯ . åˆ™ç³»ç»Ÿä¼šè¡¥ä¸Š 'JPlus'
 			 * </p> 
 			 * 
 			 * <p>
-			 * Èç¹ûÕâ¸öÃû×Ö¿Õ¼äµÄ×îºóµÄ×Ö·ûÊÇ . ÔòÏµÍ³²»»á¸²¸ÇÒÑÓĞ¶ÔÏó£¬¶øÊÇ¸´ÖÆ³ÉÔ±µ½´æÔÚµÄ³ÉÔ±¡£
+			 * å¦‚æœè¿™ä¸ªåå­—ç©ºé—´çš„æœ€åçš„å­—ç¬¦æ˜¯ . åˆ™ç³»ç»Ÿä¸ä¼šè¦†ç›–å·²æœ‰å¯¹è±¡ï¼Œè€Œæ˜¯å¤åˆ¶æˆå‘˜åˆ°å­˜åœ¨çš„æˆå‘˜ã€‚
 			 * </p> 
 			 * 
 			 * </p>
 			 * 
 			 * @example
 			 * <code>
-			 * namespace("System.Dom.Keys");  // ±ÜÃâ ÖØĞÂÈ¥ÒıÈë   System.Dom.Keys
+			 * namespace("System.Dom.Keys");  // é¿å… é‡æ–°å»å¼•å…¥   System.Dom.Keys
 			 * 
 			 * var A = {   B:  {b: 5},  C: {b: 5}    };
 			 * namespace("A.B", {a: 6})  // A = { B: {a: 6}, C: {b: 5}  }
@@ -236,35 +236,35 @@
 			namespace: namespace,
 	
 			/**
-			 * Ä¬ÈÏµÄÈ«¾ÖÃû×Ö¿Õ¼ä¡£
+			 * é»˜è®¤çš„å…¨å±€åå­—ç©ºé—´ã€‚
 			 * @config {Object}
 			 * @value window
 			 */
 			defaultNamespace: 'JPlus',
 			
 			/**
-			 * ¹ÜÀíËùÓĞÊÂ¼şÀàĞÍµÄ¹¤¾ß¡£
+			 * ç®¡ç†æ‰€æœ‰äº‹ä»¶ç±»å‹çš„å·¥å…·ã€‚
 			 * @property
 			 * @type Object
 			 * @private
-			 * ËùÓĞÀàµÄÊÂ¼şĞÅÏ¢´æ´¢ÔÚÕâ¸ö±äÁ¿¡£Ê¹ÓÃ xType -> nameµÄ½á¹¹¡£
+			 * æ‰€æœ‰ç±»çš„äº‹ä»¶ä¿¡æ¯å­˜å‚¨åœ¨è¿™ä¸ªå˜é‡ã€‚ä½¿ç”¨ xType -> nameçš„ç»“æ„ã€‚
 			 */
 			Events: eventMgr, 
 			
 			/**
-			 * ±íÊ¾Ò»¸öÊÂ¼ş½Ó¿Ú¡£
+			 * è¡¨ç¤ºä¸€ä¸ªäº‹ä»¶æ¥å£ã€‚
 			 * @interface
 			 * @singleton
-			 * JPlus.IEvent Ìá¹©ÁËÊÂ¼ş»úÖÆµÄ»ù±¾½Ó¿Ú£¬·²ÊµÏÖÕâ¸ö½Ó¿ÚµÄÀàµê¶¼ÓĞÊÂ¼şµÄ´¦ÀíÄÜÁ¦¡£
-			 * ÔÚµ÷ÓÃ  {@link JPlus.Object.addEvents} µÄÊ±ºò£¬½«×Ô¶¯ÊµÏÖÕâ¸ö½Ó¿Ú¡£
+			 * JPlus.IEvent æä¾›äº†äº‹ä»¶æœºåˆ¶çš„åŸºæœ¬æ¥å£ï¼Œå‡¡å®ç°è¿™ä¸ªæ¥å£çš„ç±»åº—éƒ½æœ‰äº‹ä»¶çš„å¤„ç†èƒ½åŠ›ã€‚
+			 * åœ¨è°ƒç”¨  {@link JPlus.Object.addEvents} çš„æ—¶å€™ï¼Œå°†è‡ªåŠ¨å®ç°è¿™ä¸ªæ¥å£ã€‚
 			 */
 			IEvent: {
 			
 				/**
-				 * Ôö¼ÓÒ»¸ö¼àÌıÕß¡£
-				 * @param {String} type ¼àÌıÃû×Ö¡£
-				 * @param {Function} listener µ÷ÓÃº¯Êı¡£
-				 * @param {Object} bind=this listener Ö´ĞĞÊ±µÄ×÷ÓÃÓò¡£
+				 * å¢åŠ ä¸€ä¸ªç›‘å¬è€…ã€‚
+				 * @param {String} type ç›‘å¬åå­—ã€‚
+				 * @param {Function} listener è°ƒç”¨å‡½æ•°ã€‚
+				 * @param {Object} bind=this listener æ‰§è¡Œæ—¶çš„ä½œç”¨åŸŸã€‚
 				 * @return Object this
 				 * @example
 				 * <code>
@@ -276,20 +276,20 @@
 				on: function (type, listener, bind) {
 					
 					
-					// »ñÈ¡±¾¶ÔÏó     ±¾¶ÔÏóµÄÊı¾İÄÚÈİ   ±¾ÊÂ¼şÖµ
+					// è·å–æœ¬å¯¹è±¡     æœ¬å¯¹è±¡çš„æ•°æ®å†…å®¹   æœ¬äº‹ä»¶å€¼
 					var me = this, d = p.data(me, 'event'), evt = d[type];
 					
-					// Èç¹ûÎ´°ó¶¨¹ıÕâ¸öÊÂ¼ş¡£
+					// å¦‚æœæœªç»‘å®šè¿‡è¿™ä¸ªäº‹ä»¶ã€‚
 					if (!evt) {
 						
-						// Ö§³Ö×Ô¶¨Òå°²×°¡£
+						// æ”¯æŒè‡ªå®šä¹‰å®‰è£…ã€‚
 						d[type] = evt = function (e) {
 							var listener = arguments.callee,
 								handlers = listener.handlers.slice(0), 
 								i = -1,
 								len = handlers.length;
 							
-							// Ñ­»·Ö±µ½ return false¡£ 
+							// å¾ªç¯ç›´åˆ° return falseã€‚ 
 							while (++i < len) 
 								if (handlers[i][0].call(handlers[i][1], e) === false) 										
 									return false;
@@ -297,34 +297,34 @@
 							return true;
 						};
 						
-						// »ñÈ¡ÊÂ¼ş¹ÜÀí¶ÔÏó¡£ 
+						// è·å–äº‹ä»¶ç®¡ç†å¯¹è±¡ã€‚ 
 						d = getMgr(me, type);
 						
-						// µ±Ç°ÊÂ¼şµÄÈ«²¿º¯Êı¡£
+						// å½“å‰äº‹ä»¶çš„å…¨éƒ¨å‡½æ•°ã€‚
 						evt.handlers = [[d.initEvent, me]];
 						
-						// Ìí¼ÓÊÂ¼ş¡£
+						// æ·»åŠ äº‹ä»¶ã€‚
 						d.add(me, type, evt);
 						
 					}
 					
-					// Ìí¼Óµ½ handlers ¡£
+					// æ·»åŠ åˆ° handlers ã€‚
 					evt.handlers.push([listener, bind || me]);
 						
 					return me;
 				},
 				
 				/**
-				 * É¾³ıÒ»¸ö¼àÌıÆ÷¡£
-				 * @param {String} [type] ¼àÌıÃû×Ö¡£
-				 * @param {Function} [listener] »Øµ÷Æ÷¡£
+				 * åˆ é™¤ä¸€ä¸ªç›‘å¬å™¨ã€‚
+				 * @param {String} [type] ç›‘å¬åå­—ã€‚
+				 * @param {Function} [listener] å›è°ƒå™¨ã€‚
 				 * @return Object this
-				 * ×¢Òâ: function () {} !== function () {}, ÕâÒâÎ¶×ÅÕâ¸ö´úÂëÓĞÎÊÌâ:
+				 * æ³¨æ„: function () {} !== function () {}, è¿™æ„å‘³ç€è¿™ä¸ªä»£ç æœ‰é—®é¢˜:
 				 * <code>
 				 * elem.on('click', function () {});
 				 * elem.un('click', function () {});
 				 * </code>
-				 * ÄãÓ¦¸Ã°Ñº¯Êı±£´æÆğÀ´¡£
+				 * ä½ åº”è¯¥æŠŠå‡½æ•°ä¿å­˜èµ·æ¥ã€‚
 				 * <code>
 				 * var c =  function () {};
 				 * elem.on('click', c);
@@ -340,7 +340,7 @@
 				un: function (type, listener) {
 					
 					
-					// »ñÈ¡±¾¶ÔÏó     ±¾¶ÔÏóµÄÊı¾İÄÚÈİ   ±¾ÊÂ¼şÖµ
+					// è·å–æœ¬å¯¹è±¡     æœ¬å¯¹è±¡çš„æ•°æ®å†…å®¹   æœ¬äº‹ä»¶å€¼
 					var me = this, d = p.getData(me, 'event'), evt, handlers, i;
 					if (d) {
 						 if (evt = d[type]) {
@@ -349,7 +349,7 @@
 						 	
 							if (listener) {
 								
-								// ËÑË÷·ûºÏµÄ¾ä±ú¡£
+								// æœç´¢ç¬¦åˆçš„å¥æŸ„ã€‚
 								for(i = handlers.length - 1; i; i--) {
 									if(handlers[i][0] === listener)	{
 										handlers.splice(i, 1);
@@ -359,13 +359,13 @@
 								
 							}
 								
-							// ¼ì²éÊÇ·ñ´æÔÚÆäËüº¯Êı»òÃ»ÉèÖÃÉ¾³ıµÄº¯Êı¡£
+							// æ£€æŸ¥æ˜¯å¦å­˜åœ¨å…¶å®ƒå‡½æ•°æˆ–æ²¡è®¾ç½®åˆ é™¤çš„å‡½æ•°ã€‚
 							if (!listener || handlers.length < 2) {
 								
-								// É¾³ı¶ÔÊÂ¼ş´¦Àí¾ä±úµÄÈ«²¿ÒıÓÃ£¬ÒÔÔÊĞíÄÚÈİ»ØÊÕ¡£
+								// åˆ é™¤å¯¹äº‹ä»¶å¤„ç†å¥æŸ„çš„å…¨éƒ¨å¼•ç”¨ï¼Œä»¥å…è®¸å†…å®¹å›æ”¶ã€‚
 								delete d[type];
 								
-								// ÄÚ²¿ÊÂ¼ş¹ÜÀíµÄÉ¾³ı¡£
+								// å†…éƒ¨äº‹ä»¶ç®¡ç†çš„åˆ é™¤ã€‚
 								getMgr(me, type).remove(me, type, evt);
 							}
 						}else if (!type) {
@@ -377,11 +377,11 @@
 				},
 				
 				/**
-				 * ´¥·¢Ò»¸ö¼àÌıÆ÷¡£
-				 * @param {String} type ¼àÌıÃû×Ö¡£
-				 * @param {Object} [e] ÊÂ¼ş²ÎÊı¡£
+				 * è§¦å‘ä¸€ä¸ªç›‘å¬å™¨ã€‚
+				 * @param {String} type ç›‘å¬åå­—ã€‚
+				 * @param {Object} [e] äº‹ä»¶å‚æ•°ã€‚
 				 * @return Object this
-				 * trigger Ö»ÊÇÊÖ¶¯´¥·¢°ó¶¨µÄÊÂ¼ş¡£
+				 * trigger åªæ˜¯æ‰‹åŠ¨è§¦å‘ç»‘å®šçš„äº‹ä»¶ã€‚
 				 * @example
 				 * <code>
 				 * elem.trigger('click');
@@ -389,19 +389,19 @@
 				 */
 				trigger: function (type, e) {
 					
-					// »ñÈ¡±¾¶ÔÏó     ±¾¶ÔÏóµÄÊı¾İÄÚÈİ   ±¾ÊÂ¼şÖµ ¡£
+					// è·å–æœ¬å¯¹è±¡     æœ¬å¯¹è±¡çš„æ•°æ®å†…å®¹   æœ¬äº‹ä»¶å€¼ ã€‚
 					var me = this, evt = p.getData(me, 'event'), eMgr;
 					
-					// Ö´ĞĞÊÂ¼ş¡£
+					// æ‰§è¡Œäº‹ä»¶ã€‚
 					return !evt || !(evt = evt[type]) || ((eMgr = getMgr(me, type)).trigger ? eMgr.trigger(me, type, evt, e) : evt(e) );
 					
 				},
 				
 				/**
-				 * Ôö¼ÓÒ»¸öÖ»Ö´ĞĞÒ»´ÎµÄ¼àÌıÕß¡£
-				 * @param {String} type ¼àÌıÃû×Ö¡£
-				 * @param {Function} listener µ÷ÓÃº¯Êı¡£
-				 * @param {Object} bind=this listener Ö´ĞĞÊ±µÄ×÷ÓÃÓò¡£
+				 * å¢åŠ ä¸€ä¸ªåªæ‰§è¡Œä¸€æ¬¡çš„ç›‘å¬è€…ã€‚
+				 * @param {String} type ç›‘å¬åå­—ã€‚
+				 * @param {Function} listener è°ƒç”¨å‡½æ•°ã€‚
+				 * @param {Object} bind=this listener æ‰§è¡Œæ—¶çš„ä½œç”¨åŸŸã€‚
 				 * @return Object this
 				 * @example
 				 * <code>
@@ -409,20 +409,20 @@
 				 * 		trace('a');  
 				 * });
 				 * 
-				 * elem.trigger('click');   //  Êä³ö  a
-				 * elem.trigger('click');   //  Ã»ÓĞÊä³ö 
+				 * elem.trigger('click');   //  è¾“å‡º  a
+				 * elem.trigger('click');   //  æ²¡æœ‰è¾“å‡º 
 				 * </code>
 				 */
 				one: function (type, listener, bind) {
 					
 					
-					// one ±¾ÖÊÉÏÊÇ on ,  Ö»ÊÇ×Ô¶¯Îª listener Ö´ĞĞ un ¡£
+					// one æœ¬è´¨ä¸Šæ˜¯ on ,  åªæ˜¯è‡ªåŠ¨ä¸º listener æ‰§è¡Œ un ã€‚
 					return this.on(type, function () {
 						
-						// É¾³ı£¬±ÜÃâ±Õ°ü¡£
+						// åˆ é™¤ï¼Œé¿å…é—­åŒ…ã€‚
 						this.un( type, arguments.callee);
 						
-						// È»ºóµ÷ÓÃ¡£
+						// ç„¶åè°ƒç”¨ã€‚
 						return listener.apply(this, arguments);
 					}, bind);
 				}
@@ -434,7 +434,7 @@
 	
 	/// #endregion
 		
-	/// #region È«¾Öº¯Êı
+	/// #region å…¨å±€å‡½æ•°
 	
 	/**
 	 * @namespace JPlus.Object
@@ -442,8 +442,8 @@
 	apply(Object, {
 	
 		/**
-		 * À©Õ¹µ±Ç°ÀàµÄ¶¯Ì¬·½·¨¡£
-		 * @param {Object} members ³ÉÔ±¡£
+		 * æ‰©å±•å½“å‰ç±»çš„åŠ¨æ€æ–¹æ³•ã€‚
+		 * @param {Object} members æˆå‘˜ã€‚
 		 * @return this
 		 * @seeAlso JPlus.Object.implementIf
 		 * @example
@@ -459,15 +459,15 @@
 		 */
 		implement: function (members) {
 
-			// ¸´ÖÆµ½Ô­ĞÍ ¡£
+			// å¤åˆ¶åˆ°åŸå‹ ã€‚
 			o.extend(this.prototype, members);
 	        
 			return this;
 		},
 		
 		/**
-		 * Èç¹û²»´æÔÚ³ÉÔ±, À©Õ¹µ±Ç°ÀàµÄ¶¯Ì¬·½·¨¡£
-		 * @param {Object} members ³ÉÔ±¡£
+		 * å¦‚æœä¸å­˜åœ¨æˆå‘˜, æ‰©å±•å½“å‰ç±»çš„åŠ¨æ€æ–¹æ³•ã€‚
+		 * @param {Object} members æˆå‘˜ã€‚
 		 * @return this
 		 * @seeAlso JPlus.Object.implement
 		 */
@@ -480,94 +480,94 @@
 		},
 		
 		/**
-		 * Îªµ±Ç°ÀàÌí¼ÓÊÂ¼ş¡£
-		 * @param {Object} [evens] ËùÓĞÊÂ¼ş¡£ ¾ßÌå¼ûÏÂ¡£
+		 * ä¸ºå½“å‰ç±»æ·»åŠ äº‹ä»¶ã€‚
+		 * @param {Object} [evens] æ‰€æœ‰äº‹ä»¶ã€‚ å…·ä½“è§ä¸‹ã€‚
 		 * @return this
 		 * <p>
-		 * ÓÉÓÚÒ»¸öÀàµÄÊÂ¼şÊÇ°´ÕÕ xType ÊôĞÔ´æ·ÅµÄ£¬ÓµÓĞÏàÍ¬  xType µÄÀà½«ÓĞÏàÍ¬µÄÊÂ¼ş£¬ÎªÁË±ÜÃâÃ»ÓĞ xType ÊôĞÔµÄÀà³öÏÖÊÂ¼ş³åÍ»£¬ Õâ¸ö·½·¨»á×Ô¶¯²¹È«  xType ÊôĞÔ¡£
+		 * ç”±äºä¸€ä¸ªç±»çš„äº‹ä»¶æ˜¯æŒ‰ç…§ xType å±æ€§å­˜æ”¾çš„ï¼Œæ‹¥æœ‰ç›¸åŒ  xType çš„ç±»å°†æœ‰ç›¸åŒçš„äº‹ä»¶ï¼Œä¸ºäº†é¿å…æ²¡æœ‰ xType å±æ€§çš„ç±»å‡ºç°äº‹ä»¶å†²çªï¼Œ è¿™ä¸ªæ–¹æ³•ä¼šè‡ªåŠ¨è¡¥å…¨  xType å±æ€§ã€‚
 		 * </p>
 		 * 
 		 * <p>
-		 * Õâ¸öº¯ÊıÊÇÊµÏÖ×Ô¶¨ÒåÊÂ¼şµÄ¹Ø¼ü¡£
+		 * è¿™ä¸ªå‡½æ•°æ˜¯å®ç°è‡ªå®šä¹‰äº‹ä»¶çš„å…³é”®ã€‚
 		 * </p>
 		 * 
 		 * <p>
-		 * addEvents º¯ÊıµÄ²ÎÊıÊÇÒ»¸öÊÂ¼şĞÅÏ¢£¬¸ñÊ½Èç:  {click: { add: ..., remove: ..., initEvent: ..., trigger: ...} ¡£
-		 * ÆäÖĞ click ±íÊ¾ÊÂ¼şÃû¡£Ò»°ã½¨ÒéÊÂ¼şÃûÊÇĞ¡Ğ´µÄ¡£
+		 * addEvents å‡½æ•°çš„å‚æ•°æ˜¯ä¸€ä¸ªäº‹ä»¶ä¿¡æ¯ï¼Œæ ¼å¼å¦‚:  {click: { add: ..., remove: ..., initEvent: ..., trigger: ...} ã€‚
+		 * å…¶ä¸­ click è¡¨ç¤ºäº‹ä»¶åã€‚ä¸€èˆ¬å»ºè®®äº‹ä»¶åæ˜¯å°å†™çš„ã€‚
 		 * </p>
 		 * 
 		 * <p>
-		 * Ò»¸öÊÂ¼şÓĞ¶à¸öÏàÓ¦£¬·Ö±ğÊÇ: °ó¶¨(add), É¾³ı(remove), ´¥·¢(trigger), ³õÊ¼»¯ÊÂ¼ş²ÎÊı(initEvent)
+		 * ä¸€ä¸ªäº‹ä»¶æœ‰å¤šä¸ªç›¸åº”ï¼Œåˆ†åˆ«æ˜¯: ç»‘å®š(add), åˆ é™¤(remove), è§¦å‘(trigger), åˆå§‹åŒ–äº‹ä»¶å‚æ•°(initEvent)
 		 * </p>
 		 * 
 		 * </p>
-		 * µ±ÓÃ»§Ê¹ÓÃ   o.on('ÊÂ¼şÃû', º¯Êı)  Ê±£¬ ÏµÍ³»áÅĞ¶ÏÕâ¸öÊÂ¼şÊÇ·ñÒÑ¾­°ó¶¨¹ı£¬
-		 * Èç¹ûÖ®Ç°Î´°ó¶¨ÊÂ¼ş£¬Ôò»á´´½¨ĞÂµÄº¯Êı evtTrigger£¬
-		 * evtTrigger º¯Êı½«±éÀú²¢Ö´ĞĞ evtTrigger.handlers ÀïµÄ³ÉÔ±, Èç¹ûÆäÖĞÒ»¸öº¯ÊıÖ´ĞĞºó·µ»Ø false£¬ ÔòÖĞÖ¹Ö´ĞĞ£¬²¢·µ»Ø false£¬ ·ñÔò·µ»Ø true¡£
-		 * evtTrigger.handlers ±íÊ¾ µ±Ç°Õâ¸öÊÂ¼şµÄËùÓĞÊµ¼Êµ÷ÓÃµÄº¯ÊıµÄÊı×é¡£ evtTrigger.handlers[0] ÊÇÊÂ¼şµÄ initEvent º¯Êı¡£
-		 * È»ºóÏµÍ³»áµ÷ÓÃ add(o, 'ÊÂ¼şÃû', evtTrigger)
-		 * È»ºó°Ñ evtTrigger ±£´æÔÚ o.data.event['ÊÂ¼şÃû'] ÖĞ¡£
-		 * Èç¹û Ö®Ç°ÒÑ¾­°ó¶¨ÁËÕâ¸öÊÂ¼ş£¬Ôò evtTrigger ÒÑ´æÔÚ£¬ÎŞĞè´´½¨¡£
-		 * ÕâÊ±ÏµÍ³Ö»Ğè°Ñ º¯Êı ·Åµ½ evtTrigger.handlers ¼´¿É¡£
-		 * </p>
-		 * 
-		 * <p>
-		 * Ò²¾ÍÊÇËµ£¬ÕæÕıµÄÊÂ¼ş´¥·¢º¯ÊıÊÇ evtTrigger£¬ evtTriggerÈ¥Ö´ĞĞÓÃ»§¶¨ÒåµÄÒ»¸öÊÂ¼şÈ«²¿º¯Êı¡£
+		 * å½“ç”¨æˆ·ä½¿ç”¨   o.on('äº‹ä»¶å', å‡½æ•°)  æ—¶ï¼Œ ç³»ç»Ÿä¼šåˆ¤æ–­è¿™ä¸ªäº‹ä»¶æ˜¯å¦å·²ç»ç»‘å®šè¿‡ï¼Œ
+		 * å¦‚æœä¹‹å‰æœªç»‘å®šäº‹ä»¶ï¼Œåˆ™ä¼šåˆ›å»ºæ–°çš„å‡½æ•° evtTriggerï¼Œ
+		 * evtTrigger å‡½æ•°å°†éå†å¹¶æ‰§è¡Œ evtTrigger.handlers é‡Œçš„æˆå‘˜, å¦‚æœå…¶ä¸­ä¸€ä¸ªå‡½æ•°æ‰§è¡Œåè¿”å› falseï¼Œ åˆ™ä¸­æ­¢æ‰§è¡Œï¼Œå¹¶è¿”å› falseï¼Œ å¦åˆ™è¿”å› trueã€‚
+		 * evtTrigger.handlers è¡¨ç¤º å½“å‰è¿™ä¸ªäº‹ä»¶çš„æ‰€æœ‰å®é™…è°ƒç”¨çš„å‡½æ•°çš„æ•°ç»„ã€‚ evtTrigger.handlers[0] æ˜¯äº‹ä»¶çš„ initEvent å‡½æ•°ã€‚
+		 * ç„¶åç³»ç»Ÿä¼šè°ƒç”¨ add(o, 'äº‹ä»¶å', evtTrigger)
+		 * ç„¶åæŠŠ evtTrigger ä¿å­˜åœ¨ o.data.event['äº‹ä»¶å'] ä¸­ã€‚
+		 * å¦‚æœ ä¹‹å‰å·²ç»ç»‘å®šäº†è¿™ä¸ªäº‹ä»¶ï¼Œåˆ™ evtTrigger å·²å­˜åœ¨ï¼Œæ— éœ€åˆ›å»ºã€‚
+		 * è¿™æ—¶ç³»ç»Ÿåªéœ€æŠŠ å‡½æ•° æ”¾åˆ° evtTrigger.handlers å³å¯ã€‚
 		 * </p>
 		 * 
 		 * <p>
-		 * µ±ÓÃ»§Ê¹ÓÃ  o.un('ÊÂ¼şÃû', º¯Êı)  Ê±£¬ ÏµÍ³»áÕÒµ½ÏàÓ¦ evtTrigger£¬ ²¢´Ó
-		 * evtTrigger.handlers É¾³ı º¯Êı¡£
-		 * Èç¹û  evtTrigger.handlers ÊÇ¿ÕÊı×é£¬ ÔòÊ¹ÓÃ
-		 * remove(o, 'ÊÂ¼şÃû', evtTrigger)  ÒÆ³ıÊÂ¼ş¡£
+		 * ä¹Ÿå°±æ˜¯è¯´ï¼ŒçœŸæ­£çš„äº‹ä»¶è§¦å‘å‡½æ•°æ˜¯ evtTriggerï¼Œ evtTriggerå»æ‰§è¡Œç”¨æˆ·å®šä¹‰çš„ä¸€ä¸ªäº‹ä»¶å…¨éƒ¨å‡½æ•°ã€‚
 		 * </p>
 		 * 
 		 * <p>
-		 * µ±ÓÃ»§Ê¹ÓÃ  o.trigger(²ÎÊı)  Ê±£¬ ÏµÍ³»áÕÒµ½ÏàÓ¦ evtTrigger£¬ 
-		 * Èç¹ûÊÂ¼şÓĞtrigger£¬ ÔòÊ¹ÓÃ trigger(¶ÔÏó, 'ÊÂ¼şÃû', evtTrigger, ²ÎÊı) ´¥·¢ÊÂ¼ş¡£
-		 * Èç¹ûÃ»ÓĞ£¬ ÔòÖ±½Óµ÷ÓÃ evtTrigger(²ÎÊı)¡£
+		 * å½“ç”¨æˆ·ä½¿ç”¨  o.un('äº‹ä»¶å', å‡½æ•°)  æ—¶ï¼Œ ç³»ç»Ÿä¼šæ‰¾åˆ°ç›¸åº” evtTriggerï¼Œ å¹¶ä»
+		 * evtTrigger.handlers åˆ é™¤ å‡½æ•°ã€‚
+		 * å¦‚æœ  evtTrigger.handlers æ˜¯ç©ºæ•°ç»„ï¼Œ åˆ™ä½¿ç”¨
+		 * remove(o, 'äº‹ä»¶å', evtTrigger)  ç§»é™¤äº‹ä»¶ã€‚
 		 * </p>
 		 * 
 		 * <p>
-		 * ÏÂÃæ·Ö±ğ½éÉÜ¸÷º¯ÊıµÄ¾ßÌåÄÚÈİ¡£
+		 * å½“ç”¨æˆ·ä½¿ç”¨  o.trigger(å‚æ•°)  æ—¶ï¼Œ ç³»ç»Ÿä¼šæ‰¾åˆ°ç›¸åº” evtTriggerï¼Œ 
+		 * å¦‚æœäº‹ä»¶æœ‰triggerï¼Œ åˆ™ä½¿ç”¨ trigger(å¯¹è±¡, 'äº‹ä»¶å', evtTrigger, å‚æ•°) è§¦å‘äº‹ä»¶ã€‚
+		 * å¦‚æœæ²¡æœ‰ï¼Œ åˆ™ç›´æ¥è°ƒç”¨ evtTrigger(å‚æ•°)ã€‚
 		 * </p>
 		 * 
 		 * <p>
-		 * add ±íÊ¾ ÊÂ¼ş±»°ó¶¨Ê±µÄ²Ù×÷¡£  Ô­ĞÍÎª: 
+		 * ä¸‹é¢åˆ†åˆ«ä»‹ç»å„å‡½æ•°çš„å…·ä½“å†…å®¹ã€‚
+		 * </p>
+		 * 
+		 * <p>
+		 * add è¡¨ç¤º äº‹ä»¶è¢«ç»‘å®šæ—¶çš„æ“ä½œã€‚  åŸå‹ä¸º: 
 		 * </p>
 		 * 
 		 * <code>
 		 * function add(elem, type, fn) {
-		 * 	   // ¶ÔÓÚ±ê×¼µÄ DOM ÊÂ¼ş£¬ Ëü»áµ÷ÓÃ elem.addEventListener(type, fn, false);
+		 * 	   // å¯¹äºæ ‡å‡†çš„ DOM äº‹ä»¶ï¼Œ å®ƒä¼šè°ƒç”¨ elem.addEventListener(type, fn, false);
 		 * }
 		 * </code>
 		 * 
 		 * <p>
-		 *  elem±íÊ¾°ó¶¨ÊÂ¼şµÄ¶ÔÏó£¬¼´ÀàÊµÀı¡£ type ÊÇÊÂ¼şÀàĞÍ£¬ Ëü¾ÍÊÇÊÂ¼şÃû£¬ÒòÎª¶à¸öÊÂ¼şµÄ add º¯Êı¿ÏÄÜÒ»ÑùµÄ£¬ Òò´Ë type ÊÇÇø·ÖÊÂ¼şÀàĞÍµÄ¹Ø¼ü¡£fn ÔòÊÇ°ó¶¨ÊÂ¼şµÄº¯Êı¡£
+		 *  elemè¡¨ç¤ºç»‘å®šäº‹ä»¶çš„å¯¹è±¡ï¼Œå³ç±»å®ä¾‹ã€‚ type æ˜¯äº‹ä»¶ç±»å‹ï¼Œ å®ƒå°±æ˜¯äº‹ä»¶åï¼Œå› ä¸ºå¤šä¸ªäº‹ä»¶çš„ add å‡½æ•°è‚¯èƒ½ä¸€æ ·çš„ï¼Œ å› æ­¤ type æ˜¯åŒºåˆ†äº‹ä»¶ç±»å‹çš„å…³é”®ã€‚fn åˆ™æ˜¯ç»‘å®šäº‹ä»¶çš„å‡½æ•°ã€‚
 		 * </p>
 		 * 
 		 * <p>
-		 * remove Í¬Àí¡£
+		 * remove åŒç†ã€‚
 		 * </p>
 		 * 
 		 * <p>
-		 * initEvent µÄ²ÎÊıÊÇÒ»¸öÊÂ¼ş²ÎÊı£¬ËüÖ»ÄÜÓĞ1¸ö²ÎÊı¡£
+		 * initEvent çš„å‚æ•°æ˜¯ä¸€ä¸ªäº‹ä»¶å‚æ•°ï¼Œå®ƒåªèƒ½æœ‰1ä¸ªå‚æ•°ã€‚
 		 * </p>
 		 * 
 		 * <p>
-		 * trigger ÊÇ¸ß¼¶µÄÊÂ¼ş¡£²Î¿¼ÉÏÃæµÄËµÃ÷¡£ 
+		 * trigger æ˜¯é«˜çº§çš„äº‹ä»¶ã€‚å‚è€ƒä¸Šé¢çš„è¯´æ˜ã€‚ 
 		 * </p>
 		 * 
 		 * <p>
-		 * Èç¹ûÄã²»ÖªµÀÆäÖĞµÄ¼¸¸ö²ÎÊı¹¦ÄÜ£¬ÌØ±ğÊÇ  trigger £¬Çë²»Òª×Ô¶¨Òå¡£
+		 * å¦‚æœä½ ä¸çŸ¥é“å…¶ä¸­çš„å‡ ä¸ªå‚æ•°åŠŸèƒ½ï¼Œç‰¹åˆ«æ˜¯  trigger ï¼Œè¯·ä¸è¦è‡ªå®šä¹‰ã€‚
 		 * </p>
 		 * 
 		 * @example
-		 * ÏÂÃæ´úÂëÑİÊ¾ÁËÈçºÎ¸øÒ»¸öÀà×Ô¶¨ÒåÊÂ¼ş£¬²¢´´½¨ÀàµÄÊµÀı£¬È»ºó°ó¶¨´¥·¢Õâ¸öÊÂ¼ş¡£
+		 * ä¸‹é¢ä»£ç æ¼”ç¤ºäº†å¦‚ä½•ç»™ä¸€ä¸ªç±»è‡ªå®šä¹‰äº‹ä»¶ï¼Œå¹¶åˆ›å»ºç±»çš„å®ä¾‹ï¼Œç„¶åç»‘å®šè§¦å‘è¿™ä¸ªäº‹ä»¶ã€‚
 
 		 * <code>
 		 * 
-		 * // ´´½¨Ò»¸öĞÂµÄÀà¡£
+		 * // åˆ›å»ºä¸€ä¸ªæ–°çš„ç±»ã€‚
 		 * var MyCls = new Class();
 		 * 
 		 * MyCls.addEvents({
@@ -575,11 +575,11 @@
 		 *     click: {
 		 * 			
 		 * 			add:  function (elem, type, fn) {
-		 * 	   			alert("Îª  elem °ó¶¨ ÊÂ¼ş " + type );
+		 * 	   			alert("ä¸º  elem ç»‘å®š äº‹ä»¶ " + type );
 		 * 			},
 		 * 
 		 * 			initEvent: function (e) {
-		 * 	   			alert("³õÊ¼»¯ ÊÂ¼ş²ÎÊı  " + e );
+		 * 	   			alert("åˆå§‹åŒ– äº‹ä»¶å‚æ•°  " + e );
 		 * 			}
 		 * 
 		 * 		}
@@ -588,7 +588,7 @@
 		 * 
 		 * var m = new MyCls;
 		 * m.on('click', function () {
-		 * 	  alert(' ÊÂ¼ş ´¥·¢ ');
+		 * 	  alert(' äº‹ä»¶ è§¦å‘ ');
 		 * });
 		 * 
 		 * m.trigger('click', 2);
@@ -600,19 +600,19 @@
 			var ep = this.prototype;
 			
 			
-			// ÊµÏÖ ÊÂ¼ş ½Ó¿Ú¡£
+			// å®ç° äº‹ä»¶ æ¥å£ã€‚
 			applyIf(ep, p.IEvent);
 			
-			// Èç¹ûÓĞ×Ô¶¨ÒåÊÂ¼ş£¬ÔòÌí¼Ó¡£
+			// å¦‚æœæœ‰è‡ªå®šä¹‰äº‹ä»¶ï¼Œåˆ™æ·»åŠ ã€‚
 			if (events) {
 				
 				var xType = hasOwnProperty.call(ep, 'xType') ? ep.xType : ( ep.xType = (p.id++).toString() );
 				
-				// ¸üĞÂÊÂ¼ş¶ÔÏó¡£
+				// æ›´æ–°äº‹ä»¶å¯¹è±¡ã€‚
 				o.update(events, function (e) {
 					return applyIf(e, eventMgr.$default);
 					
-					// Ìí¼Ó JPlus.Events ÖĞÊÂ¼ş¡£
+					// æ·»åŠ  JPlus.Events ä¸­äº‹ä»¶ã€‚
 				}, eventMgr[xType] || (eventMgr[xType] = {}));
 			
 			}
@@ -622,75 +622,75 @@
 		},
 	
 		/**
-		 * ¼Ì³Ğµ±Ç°Àà²¢·µ»Ø×ÓÀà¡£
-		 * @param {Object/Function} [methods] ³ÉÔ±»ò¹¹Ôìº¯Êı¡£
-		 * @return {Class} ¼Ì³ĞµÄ×ÓÀà¡£
+		 * ç»§æ‰¿å½“å‰ç±»å¹¶è¿”å›å­ç±»ã€‚
+		 * @param {Object/Function} [methods] æˆå‘˜æˆ–æ„é€ å‡½æ•°ã€‚
+		 * @return {Class} ç»§æ‰¿çš„å­ç±»ã€‚
 		 * <p>
-		 * Õâ¸öº¯ÊıÊÇÊµÏÖ¼Ì³ĞµÄºËĞÄ¡£
+		 * è¿™ä¸ªå‡½æ•°æ˜¯å®ç°ç»§æ‰¿çš„æ ¸å¿ƒã€‚
 		 * </p>
 		 * 
 		 * <p>
-		 * ÔÚ Javascript ÖĞ£¬¼Ì³ĞÊÇÒÀ¿¿Ô­ĞÍÁ´ÊµÏÖµÄ£¬ Õâ¸öº¯Êı½ö½öÊÇ¶ÔËüµÄ°ü×°£¬¶øÃ»ÓĞ×ö¶îÍâµÄ¶¯×÷¡£
+		 * åœ¨ Javascript ä¸­ï¼Œç»§æ‰¿æ˜¯ä¾é åŸå‹é“¾å®ç°çš„ï¼Œ è¿™ä¸ªå‡½æ•°ä»…ä»…æ˜¯å¯¹å®ƒçš„åŒ…è£…ï¼Œè€Œæ²¡æœ‰åšé¢å¤–çš„åŠ¨ä½œã€‚
 		 * </p>
 		 * 
 		 * <p>
-		 * ³ÉÔ±ÖĞµÄ  constructor ³ÉÔ± ±»ÈÏÎªÊÇ¹¹Ôìº¯Êı¡£
+		 * æˆå‘˜ä¸­çš„  constructor æˆå‘˜ è¢«è®¤ä¸ºæ˜¯æ„é€ å‡½æ•°ã€‚
 		 * </p>
 		 * 
 		 * <p>
-		 * Õâ¸öº¯ÊıÊµÏÖµÄÊÇ µ¥¼Ì³Ğ¡£Èç¹û×ÓÀàÓĞ¶¨Òå¹¹Ôìº¯Êı£¬Ôò½öµ÷ÓÃ×ÓÀàµÄ¹¹Ôìº¯Êı£¬·ñÔòµ÷ÓÃ¸¸ÀàµÄ¹¹Ôìº¯Êı¡£
+		 * è¿™ä¸ªå‡½æ•°å®ç°çš„æ˜¯ å•ç»§æ‰¿ã€‚å¦‚æœå­ç±»æœ‰å®šä¹‰æ„é€ å‡½æ•°ï¼Œåˆ™ä»…è°ƒç”¨å­ç±»çš„æ„é€ å‡½æ•°ï¼Œå¦åˆ™è°ƒç”¨çˆ¶ç±»çš„æ„é€ å‡½æ•°ã€‚
 		 * </p>
 		 * 
 		 * <p>
-		 * ÒªÏëÔÚ×ÓÀàµÄ¹¹Ôìº¯Êıµ÷ÓÃ¸¸ÀàµÄ¹¹Ôìº¯Êı£¬¿ÉÒÔÊ¹ÓÃ  {@link JPlus.Object.prototype.base} ¡£
+		 * è¦æƒ³åœ¨å­ç±»çš„æ„é€ å‡½æ•°è°ƒç”¨çˆ¶ç±»çš„æ„é€ å‡½æ•°ï¼Œå¯ä»¥ä½¿ç”¨  {@link JPlus.Object.prototype.base} ã€‚
 		 * </p>
 		 * 
 		 * <p>
-		 * Õâ¸öº¯Êı·µ»ØµÄÀàÊµ¼ÊÊÇÒ»¸öº¯Êı£¬µ«Ëü±»Ê¹ÓÃ JPlus.Object ĞŞÊÎ¹ı¡£
+		 * è¿™ä¸ªå‡½æ•°è¿”å›çš„ç±»å®é™…æ˜¯ä¸€ä¸ªå‡½æ•°ï¼Œä½†å®ƒè¢«ä½¿ç”¨ JPlus.Object ä¿®é¥°è¿‡ã€‚
 		 * </p>
 		 * 
 		 * <p>
-		 * ÓÉÓÚÔ­ĞÍÁ´µÄ¹ØÏµ£¬ ¿ÏÄÜ´æÔÚ¹²ÏíµÄÒıÓÃ¡£
+		 * ç”±äºåŸå‹é“¾çš„å…³ç³»ï¼Œ è‚¯èƒ½å­˜åœ¨å…±äº«çš„å¼•ç”¨ã€‚
 		 * 
-		 * Èç: Àà A £¬  A.prototype.c = [];
+		 * å¦‚: ç±» A ï¼Œ  A.prototype.c = [];
 		 * 
-		 * ÄÇÃ´£¬AµÄÊµÀı b , d ¶¼ÓĞ c ³ÉÔ±£¬ µ«ËüÃÇ¹²ÏíÒ»¸ö   A.prototype.c ³ÉÔ±¡£
+		 * é‚£ä¹ˆï¼ŒAçš„å®ä¾‹ b , d éƒ½æœ‰ c æˆå‘˜ï¼Œ ä½†å®ƒä»¬å…±äº«ä¸€ä¸ª   A.prototype.c æˆå‘˜ã€‚
 		 * 
-		 * ÕâÏÔÈ»ÊÇ²»ÕıÈ·µÄ¡£ËùÒÔÄãÓ¦¸Ã°Ñ ²ÎÊı quick ÖÃÎª false £¬ ÕâÑù£¬ A´´½¨ÊµÀıµÄÊ±ºò£¬»á×Ô¶¯½â³ı¹²ÏíµÄÒıÓÃ³ÉÔ±¡£
+		 * è¿™æ˜¾ç„¶æ˜¯ä¸æ­£ç¡®çš„ã€‚æ‰€ä»¥ä½ åº”è¯¥æŠŠ å‚æ•° quick ç½®ä¸º false ï¼Œ è¿™æ ·ï¼Œ Aåˆ›å»ºå®ä¾‹çš„æ—¶å€™ï¼Œä¼šè‡ªåŠ¨è§£é™¤å…±äº«çš„å¼•ç”¨æˆå‘˜ã€‚
 		 * 
-		 * µ±È»£¬ÕâÊÇÒ»¸ö±È½Ï·ÑÊ±µÄ²Ù×÷£¬Òò´Ë£¬Ä¬ÈÏ  quick ÊÇ true ¡£
+		 * å½“ç„¶ï¼Œè¿™æ˜¯ä¸€ä¸ªæ¯”è¾ƒè´¹æ—¶çš„æ“ä½œï¼Œå› æ­¤ï¼Œé»˜è®¤  quick æ˜¯ true ã€‚
 		 * </p>
 		 * 
 		 * <p>
-		 * ÄãÒ²¿ÉÒÔ°Ñ¶¯Ì¬³ÉÔ±µÄ¶¨Òå·Åµ½ ¹¹Ôìº¯Êı£¬ Èç: this.c = [];
+		 * ä½ ä¹Ÿå¯ä»¥æŠŠåŠ¨æ€æˆå‘˜çš„å®šä¹‰æ”¾åˆ° æ„é€ å‡½æ•°ï¼Œ å¦‚: this.c = [];
 		 * 
-		 * ÕâÊÇ×îºÃµÄ½â¾ö·½°¸¡£
+		 * è¿™æ˜¯æœ€å¥½çš„è§£å†³æ–¹æ¡ˆã€‚
 		 * </p>
 		 */
 	 	extend: function (members) {
 	
-			// Î´Ö¸¶¨º¯Êı   Ê¹ÓÃÄ¬ÈÏ¹¹Ôìº¯Êı(Object.prototype.constructor);
+			// æœªæŒ‡å®šå‡½æ•°   ä½¿ç”¨é»˜è®¤æ„é€ å‡½æ•°(Object.prototype.constructor);
 			
-			// Éú³É×ÓÀà ¡£
+			// ç”Ÿæˆå­ç±» ã€‚
 			var subClass = hasOwnProperty.call(members =  members instanceof Function ? {
 					constructor: members
 				} : (members || {}), "constructor") ? members.constructor : function () {
 					
-					// µ÷ÓÃ¸¸Àà¹¹Ôìº¯Êı ¡£
+					// è°ƒç”¨çˆ¶ç±»æ„é€ å‡½æ•° ã€‚
 					arguments.callee.base.apply(this, arguments);
 					
 				};
 				
-			// ´úÀíÀà ¡£
+			// ä»£ç†ç±» ã€‚
 			emptyFn.prototype = (subClass.base = this).prototype;
 			
-			// Ö¸¶¨³ÉÔ± ¡£
+			// æŒ‡å®šæˆå‘˜ ã€‚
 			subClass.prototype = o.extend(new emptyFn, members);
 			
-			// ¸²¸Ç¹¹Ôìº¯Êı¡£
+			// è¦†ç›–æ„é€ å‡½æ•°ã€‚
 			subClass.prototype.constructor = subClass;
 
-			// Ö¸¶¨ClassÄÚÈİ ¡£
+			// æŒ‡å®šClasså†…å®¹ ã€‚
 			return p.Native(subClass);
 
 		}
@@ -698,16 +698,16 @@
 	});
 	
 	/**
-	 * Object  ¼òĞ´¡£
+	 * Object  ç®€å†™ã€‚
 	 * @namespace Object
 	 */
 	apply(o, {
 
 		/**
-		 * ¸´ÖÆ¶ÔÏóµÄËùÓĞÊôĞÔµ½ÆäËü¶ÔÏó¡£ 
-		 * @param {Object} dest ¸´ÖÆÄ¿±ê¡£
-		 * @param {Object} obj Òª¸´ÖÆµÄÄÚÈİ¡£
-		 * @return {Object} ¸´ÖÆºóµÄ¶ÔÏó (dest)¡£
+		 * å¤åˆ¶å¯¹è±¡çš„æ‰€æœ‰å±æ€§åˆ°å…¶å®ƒå¯¹è±¡ã€‚ 
+		 * @param {Object} dest å¤åˆ¶ç›®æ ‡ã€‚
+		 * @param {Object} obj è¦å¤åˆ¶çš„å†…å®¹ã€‚
+		 * @return {Object} å¤åˆ¶åçš„å¯¹è±¡ (dest)ã€‚
 		 * @seeAlso Object.extendIf
 		 * @example
 		 * <code>
@@ -719,43 +719,43 @@
 		extend: $.extend,
 
 		/**
-		 * Èç¹ûÄ¿±ê³ÉÔ±²»´æÔÚ¾Í¸´ÖÆ¶ÔÏóµÄËùÓĞÊôĞÔµ½ÆäËü¶ÔÏó¡£ 
-		 * @param {Object} dest ¸´ÖÆÄ¿±ê¡£
-		 * @param {Object} obj Òª¸´ÖÆµÄÄÚÈİ¡£
-		 * @return {Object} ¸´ÖÆºóµÄ¶ÔÏó (dest)¡£
+		 * å¦‚æœç›®æ ‡æˆå‘˜ä¸å­˜åœ¨å°±å¤åˆ¶å¯¹è±¡çš„æ‰€æœ‰å±æ€§åˆ°å…¶å®ƒå¯¹è±¡ã€‚ 
+		 * @param {Object} dest å¤åˆ¶ç›®æ ‡ã€‚
+		 * @param {Object} obj è¦å¤åˆ¶çš„å†…å®¹ã€‚
+		 * @return {Object} å¤åˆ¶åçš„å¯¹è±¡ (dest)ã€‚
 		 * @seeAlso Object.extend
 		 * <code>
 		 * var a = {v: 3, g: 5}, b = {g: 2};
 		 * Object.extendIf(a, b);
-		 * trace(a); // {v: 3, g: 5}  b Î´¸²¸Ç a ÈÎºÎ³ÉÔ±¡£
+		 * trace(a); // {v: 3, g: 5}  b æœªè¦†ç›– a ä»»ä½•æˆå‘˜ã€‚
 		 * </code>
 		 */
 		extendIf: applyIf,
 		
 		/**
-		 * ÔÚÒ»¸ö¿Éµü´ú¶ÔÏóÉÏ±éÀú¡£
-		 * @param {Array/Object} iterable ¶ÔÏó£¬²»Ö§³Öº¯Êı¡£
-		 * @param {Function} fn ¶ÔÃ¿¸ö±äÁ¿µ÷ÓÃµÄº¯Êı¡£ {@param {Object} value µ±Ç°±äÁ¿µÄÖµ} {@param {Number} key µ±Ç°±äÁ¿µÄË÷Òı} {@param {Number} index µ±Ç°±äÁ¿µÄË÷Òı} {@param {Array} array Êı×é±¾Éí} {@return {Boolean} Èç¹ûÖĞÖ¹Ñ­»·£¬ ·µ»Ø false¡£}
-	 	 * @param {Object} bind º¯ÊıÖ´ĞĞÊ±µÄ×÷ÓÃÓò¡£
-		 * @return {Boolean} Èç¹ûÒÑ¾­±éÀúÍêËù´«µÄËùÓĞÖµ£¬ ·µ»Ø true£¬ Èç¹û±éÀú±»ÖĞ¶Ï¹ı£¬·µ»Ø false¡£
+		 * åœ¨ä¸€ä¸ªå¯è¿­ä»£å¯¹è±¡ä¸Šéå†ã€‚
+		 * @param {Array/Object} iterable å¯¹è±¡ï¼Œä¸æ”¯æŒå‡½æ•°ã€‚
+		 * @param {Function} fn å¯¹æ¯ä¸ªå˜é‡è°ƒç”¨çš„å‡½æ•°ã€‚ {@param {Object} value å½“å‰å˜é‡çš„å€¼} {@param {Number} key å½“å‰å˜é‡çš„ç´¢å¼•} {@param {Number} index å½“å‰å˜é‡çš„ç´¢å¼•} {@param {Array} array æ•°ç»„æœ¬èº«} {@return {Boolean} å¦‚æœä¸­æ­¢å¾ªç¯ï¼Œ è¿”å› falseã€‚}
+	 	 * @param {Object} bind å‡½æ•°æ‰§è¡Œæ—¶çš„ä½œç”¨åŸŸã€‚
+		 * @return {Boolean} å¦‚æœå·²ç»éå†å®Œæ‰€ä¼ çš„æ‰€æœ‰å€¼ï¼Œ è¿”å› trueï¼Œ å¦‚æœéå†è¢«ä¸­æ–­è¿‡ï¼Œè¿”å› falseã€‚
 		 * @example
 		 * <code> 
 		 * Object.each({a: '1', c: '3'}, function (value, key) {
 		 * 		trace(key + ' : ' + value);
 		 * });
-		 * // Êä³ö 'a : 1' 'c : 3'
+		 * // è¾“å‡º 'a : 1' 'c : 3'
 		 * </code>
 		 */
 		each: function (iterable, fn, bind) {
 
 			
-			// Èç¹û iterable ÊÇ null£¬ ÎŞĞè±éÀú ¡£
+			// å¦‚æœ iterable æ˜¯ nullï¼Œ æ— éœ€éå† ã€‚
 			if (iterable != null) {
 				
-				//ÆÕÍ¨¶ÔÏóÊ¹ÓÃ for( in ) , Êı×éÓÃ 0 -> length  ¡£
+				//æ™®é€šå¯¹è±¡ä½¿ç”¨ for( in ) , æ•°ç»„ç”¨ 0 -> length  ã€‚
 				if (iterable.length === undefined) {
 					
-					// Object ±éÀú¡£
+					// Object éå†ã€‚
 					for (var t in iterable) 
 						if (fn.call(bind, iterable[t], t, iterable) === false) 
 							return false;
@@ -765,19 +765,19 @@
 				
 			}
 			
-			// Õı³£½áÊø¡£
+			// æ­£å¸¸ç»“æŸã€‚
 			return true;
 		},
 
 		/**
-		 * ¸üĞÂÒ»¸ö¿Éµü´ú¶ÔÏó¡£
-		 * @param {Array/Object} iterable ¶ÔÏó£¬²»Ö§³Öº¯Êı¡£
-		 * @param {Function} fn ¶ÔÃ¿¸ö±äÁ¿µ÷ÓÃµÄº¯Êı¡£ {@param {Object} value µ±Ç°±äÁ¿µÄÖµ} {@param {Number} key µ±Ç°±äÁ¿µÄË÷Òı} {@param {Array} array Êı×é±¾Éí} {@return {Boolean} Èç¹ûÖĞÖ¹Ñ­»·£¬ ·µ»Ø false¡£}
-	 	 * @param {Object} bind=iterable º¯ÊıÖ´ĞĞÊ±µÄ×÷ÓÃÓò¡£
-		 * @param {Object/Boolean} [args] ²ÎÊı/ÊÇ·ñ¼ä½Ó´«µİ¡£
-		 * @return {Object}  ·µ»ØµÄ¶ÔÏó¡£
+		 * æ›´æ–°ä¸€ä¸ªå¯è¿­ä»£å¯¹è±¡ã€‚
+		 * @param {Array/Object} iterable å¯¹è±¡ï¼Œä¸æ”¯æŒå‡½æ•°ã€‚
+		 * @param {Function} fn å¯¹æ¯ä¸ªå˜é‡è°ƒç”¨çš„å‡½æ•°ã€‚ {@param {Object} value å½“å‰å˜é‡çš„å€¼} {@param {Number} key å½“å‰å˜é‡çš„ç´¢å¼•} {@param {Array} array æ•°ç»„æœ¬èº«} {@return {Boolean} å¦‚æœä¸­æ­¢å¾ªç¯ï¼Œ è¿”å› falseã€‚}
+	 	 * @param {Object} bind=iterable å‡½æ•°æ‰§è¡Œæ—¶çš„ä½œç”¨åŸŸã€‚
+		 * @param {Object/Boolean} [args] å‚æ•°/æ˜¯å¦é—´æ¥ä¼ é€’ã€‚
+		 * @return {Object}  è¿”å›çš„å¯¹è±¡ã€‚
 		 * @example 
-		 * ¸Ãº¯ÊıÖ§³Ö¶à¸ö¹¦ÄÜ¡£Ö÷Òª¹¦ÄÜÊÇ½«Ò»¸ö¶ÔÏó¸ù¾İÒ»¸ö¹ØÏµ±ä³ÉĞÂµÄ¶ÔÏó¡£
+		 * è¯¥å‡½æ•°æ”¯æŒå¤šä¸ªåŠŸèƒ½ã€‚ä¸»è¦åŠŸèƒ½æ˜¯å°†ä¸€ä¸ªå¯¹è±¡æ ¹æ®ä¸€ä¸ªå…³ç³»å˜æˆæ–°çš„å¯¹è±¡ã€‚
 		 * <code>
 		 * Object.update(["aa","aa23"], "length", []); // => [2, 4];
 		 * Object.update([{a: 1},{a: 4}], "a", [{},{}], true); // => [{a: 1},{a: 4}];
@@ -785,45 +785,45 @@
 		 * */
 		update: function (iterable, fn, dest, args) {
 			
-			// Èç¹ûÃ»ÓĞÄ¿±ê£¬Ô´ºÍÄ¿±êÒ»ÖÂ¡£
+			// å¦‚æœæ²¡æœ‰ç›®æ ‡ï¼Œæºå’Œç›®æ ‡ä¸€è‡´ã€‚
 			dest = dest || iterable;
 			
-			// ±éÀúÔ´¡£
+			// éå†æºã€‚
 			o.each(iterable, Function.isFunction(fn) ? function (value, key) {
                 
-				// Ö´ĞĞº¯Êı»ñµÃ·µ»Ø¡£
+				// æ‰§è¡Œå‡½æ•°è·å¾—è¿”å›ã€‚
 				value = fn.call(args, value, key);
 				
-				// Ö»ÓĞ²»ÊÇ undefined ¸üĞÂ¡£
+				// åªæœ‰ä¸æ˜¯ undefined æ›´æ–°ã€‚
                 if(value !== undefined)
 				    dest[key] = value;
 			} : function (value, key) {
 				
-				// Èç¹û´æÔÚÕâ¸öÖµ¡£¼´Ô´ÓĞ fn ÄÚÈİ¡£
+				// å¦‚æœå­˜åœ¨è¿™ä¸ªå€¼ã€‚å³æºæœ‰ fn å†…å®¹ã€‚
 				if(value != undefined) {
 					
 					value = value[fn];
 					
 					
-					// Èç¹ûÊôĞÔÊÇ·Çº¯Êı£¬ÔòËµÃ÷¸üĞÂ¡£ a.value -> b.value
+					// å¦‚æœå±æ€§æ˜¯éå‡½æ•°ï¼Œåˆ™è¯´æ˜æ›´æ–°ã€‚ a.value -> b.value
 					if(args)
 						dest[key][fn] = value;
 						
-					// ÀàËÆº¯ÊıµÄ¸üĞÂ¡£ a.value -> value
+					// ç±»ä¼¼å‡½æ•°çš„æ›´æ–°ã€‚ a.value -> value
 					else
 						dest[key] = value;
 				}
                     
 			});
 			
-			// ·µ»ØÄ¿±ê¡£
+			// è¿”å›ç›®æ ‡ã€‚
 			return dest;
 		},
 
 		/**
-		 * ÅĞ¶ÏÒ»¸ö±äÁ¿ÊÇ·ñÊÇÒıÓÃ±äÁ¿¡£
-		 * @param {Object} object ±äÁ¿¡£
-		 * @return {Boolean} ËùÓĞ¶ÔÏó±äÁ¿·µ»Ø true, null ·µ»Ø false ¡£
+		 * åˆ¤æ–­ä¸€ä¸ªå˜é‡æ˜¯å¦æ˜¯å¼•ç”¨å˜é‡ã€‚
+		 * @param {Object} object å˜é‡ã€‚
+		 * @return {Boolean} æ‰€æœ‰å¯¹è±¡å˜é‡è¿”å› true, null è¿”å› false ã€‚
 		 * @example
 		 * <code>
 		 * Object.isObject({}); // true
@@ -832,22 +832,22 @@
 		 */
 		isObject: function (obj) {
 			
-			// Ö»¼ì²é null ¡£
+			// åªæ£€æŸ¥ null ã€‚
 			return obj !== null && typeof obj == "object";
 		},
 		
 		/**
-		 * ½«Ò»¸ö¶ÔÏó½âÎö³ÉÒ»¸öÀàµÄÊôĞÔ¡£
-		 * @param {Object} obj ÀàÊµÀı¡£
-		 * @param {Object} options ²ÎÊı¡£
-		 * Õâ¸öº¯Êı»á·ÖÎö¶ÔÏó£¬²¢ÊÔÍ¼ÕÒµ½Ò»¸ö ÊôĞÔÉèÖÃº¯Êı¡£
-		 * µ±ÉèÖÃ¶ÔÏó obj µÄ ÊôĞÔ key Îª value:
-		 * ·¢ÉúÁËÕâĞ©ÊÂ:
-		 *      ¼ì²é£¬Èç¹û´æÔÚ¾Íµ÷ÓÃ: obj.setKey(value)
-		 * ·ñÔò£¬ ¼ì²é£¬Èç¹û´æÔÚ¾Íµ÷ÓÃ: obj.key(value)
-		 * ·ñÔò£¬ ¼ì²é£¬Èç¹û´æÔÚ¾Íµ÷ÓÃ: obj.key.set(value)
-		 * ·ñÔò£¬¼ì²é£¬Èç¹û´æÔÚ¾Íµ÷ÓÃ: obj.set(value)
-		 * ·ñÔò£¬Ö´ĞĞ obj.key = value;
+		 * å°†ä¸€ä¸ªå¯¹è±¡è§£ææˆä¸€ä¸ªç±»çš„å±æ€§ã€‚
+		 * @param {Object} obj ç±»å®ä¾‹ã€‚
+		 * @param {Object} options å‚æ•°ã€‚
+		 * è¿™ä¸ªå‡½æ•°ä¼šåˆ†æå¯¹è±¡ï¼Œå¹¶è¯•å›¾æ‰¾åˆ°ä¸€ä¸ª å±æ€§è®¾ç½®å‡½æ•°ã€‚
+		 * å½“è®¾ç½®å¯¹è±¡ obj çš„ å±æ€§ key ä¸º value:
+		 * å‘ç”Ÿäº†è¿™äº›äº‹:
+		 *      æ£€æŸ¥ï¼Œå¦‚æœå­˜åœ¨å°±è°ƒç”¨: obj.setKey(value)
+		 * å¦åˆ™ï¼Œ æ£€æŸ¥ï¼Œå¦‚æœå­˜åœ¨å°±è°ƒç”¨: obj.key(value)
+		 * å¦åˆ™ï¼Œ æ£€æŸ¥ï¼Œå¦‚æœå­˜åœ¨å°±è°ƒç”¨: obj.key.set(value)
+		 * å¦åˆ™ï¼Œæ£€æŸ¥ï¼Œå¦‚æœå­˜åœ¨å°±è°ƒç”¨: obj.set(value)
+		 * å¦åˆ™ï¼Œæ‰§è¡Œ obj.key = value;
 		 * 
 		 * @example
 		 * <code>
@@ -857,7 +857,7 @@
 		 * 
 		 * Object.set(document, 'a', 3); 
 		 * 
-		 * // ÕâÑù»áµ÷ÓÃ     document.setA(3);
+		 * // è¿™æ ·ä¼šè°ƒç”¨     document.setA(3);
 		 * 
 		 * </code>
 		 */
@@ -865,7 +865,7 @@
 			
 			for(var key in options) {
 				
-				// ¼ì²é setValue ¡£
+				// æ£€æŸ¥ setValue ã€‚
 				var setter = 'set' + key.capitalize(),
 					val = options[key];
 		
@@ -873,19 +873,19 @@
 				if (Function.isFunction(obj[setter]))
 					obj[setter](val);
 				
-				// ÊÇ·ñ´æÔÚº¯Êı¡£
+				// æ˜¯å¦å­˜åœ¨å‡½æ•°ã€‚
 				else if(Function.isFunction(obj[key]))
 					obj[key](val);
 				
-				// ¼ì²é value.set ¡£
+				// æ£€æŸ¥ value.set ã€‚
 				else if (obj[key] && obj[key].set)
 					obj[key].set(val);
 				
-				// ¼ì²é set ¡£
+				// æ£€æŸ¥ set ã€‚
 				else if(obj.set)
 					obj.set(key, val);
 				
-				// ×îºó£¬¾ÍÖ±½Ó¸³Óè¡£
+				// æœ€åï¼Œå°±ç›´æ¥èµ‹äºˆã€‚
 				else
 					obj[key] = val;
 		
@@ -894,9 +894,9 @@
 		},
 		
 		/**
-		 * ·µ»ØÒ»¸ö±äÁ¿µÄÀàĞÍµÄ×Ö·û´®ĞÎÊ½¡£
-		 * @param {Object} obj ±äÁ¿¡£
-		 * @return {String} ËùÓĞ¿ÉÒÔ·µ»ØµÄ×Ö·û´®£º  string  number   boolean   undefined	null	array	function   element  class   date   regexp object¡£
+		 * è¿”å›ä¸€ä¸ªå˜é‡çš„ç±»å‹çš„å­—ç¬¦ä¸²å½¢å¼ã€‚
+		 * @param {Object} obj å˜é‡ã€‚
+		 * @return {String} æ‰€æœ‰å¯ä»¥è¿”å›çš„å­—ç¬¦ä¸²ï¼š  string  number   boolean   undefined	null	array	function   element  class   date   regexp objectã€‚
 		 * @example
 		 * <code> 
 		 * Object.type(null); // "null"
@@ -909,10 +909,10 @@
 		 * */
 		type: function (obj) {
 			
-			//»ñµÃÀàĞÍ  ¡£
+			//è·å¾—ç±»å‹  ã€‚
 			var typeName = typeof obj;
 			
-			// ¶ÔÏó£¬ Ö±½Ó»ñÈ¡ xType ¡£
+			// å¯¹è±¡ï¼Œ ç›´æ¥è·å– xType ã€‚
 			return obj ? obj.xType || typeName : obj === null ? "null" : typeName;
 			
 		}
@@ -920,15 +920,15 @@
 	});
 
 	/**
-	 * Êı×é¡£
+	 * æ•°ç»„ã€‚
 	 * @namespace Array
 	 */
 	applyIf(Array, {
 		
 		/**
-		 * ÅĞ¶ÏÒ»¸ö±äÁ¿ÊÇ·ñÊÇÊı×é¡£
-		 * @param {Object} object ±äÁ¿¡£
-		 * @return {Boolean} Èç¹ûÊÇÊı×é£¬·µ»Ø true£¬ ·ñÔò·µ»Ø false¡£
+		 * åˆ¤æ–­ä¸€ä¸ªå˜é‡æ˜¯å¦æ˜¯æ•°ç»„ã€‚
+		 * @param {Object} object å˜é‡ã€‚
+		 * @return {Boolean} å¦‚æœæ˜¯æ•°ç»„ï¼Œè¿”å› trueï¼Œ å¦åˆ™è¿”å› falseã€‚
 		 * @example
 		 * <code> 
 		 * Array.isArray([]); // true
@@ -939,10 +939,10 @@
 		isArray: $.isArray,
 
 		/**
-		 * ÔÚÔ­ÓĞ¿Éµü´ú¶ÔÏóÉú³ÉÒ»¸öÊı×é¡£
-		 * @param {Object} iterable ¿Éµü´úµÄÊµÀı¡£
-		 * @param {Number} startIndex=0 ¿ªÊ¼µÄÎ»ÖÃ¡£
-		 * @return {Array} ¸´ÖÆµÃµ½µÄÊı×é¡£
+		 * åœ¨åŸæœ‰å¯è¿­ä»£å¯¹è±¡ç”Ÿæˆä¸€ä¸ªæ•°ç»„ã€‚
+		 * @param {Object} iterable å¯è¿­ä»£çš„å®ä¾‹ã€‚
+		 * @param {Number} startIndex=0 å¼€å§‹çš„ä½ç½®ã€‚
+		 * @return {Array} å¤åˆ¶å¾—åˆ°çš„æ•°ç»„ã€‚
 		 * @example
 		 * <code>
 		 * Array.create([4,6], 1); // [6]
@@ -953,16 +953,16 @@
 	});
 
 	/**
-	 * º¯Êı¡£
+	 * å‡½æ•°ã€‚
 	 * @namespace Function
 	 */
 	apply(Function, {
 		
 		/**
-		 * °ó¶¨º¯Êı×÷ÓÃÓò¡£
-		 * @param {Function} fn º¯Êı¡£
-		 * @param {Object} bind Î»ÖÃ¡£
-		 * ×¢Òâ£¬Î´À´ Function.prototype.bind ÊÇÏµÍ³º¯Êı£¬ Òò´ËÕâ¸öº¯Êı½«ÔÚÄÇ¸öÊ±ºò±» Ìæ»»µô¡£
+		 * ç»‘å®šå‡½æ•°ä½œç”¨åŸŸã€‚
+		 * @param {Function} fn å‡½æ•°ã€‚
+		 * @param {Object} bind ä½ç½®ã€‚
+		 * æ³¨æ„ï¼Œæœªæ¥ Function.prototype.bind æ˜¯ç³»ç»Ÿå‡½æ•°ï¼Œ å› æ­¤è¿™ä¸ªå‡½æ•°å°†åœ¨é‚£ä¸ªæ—¶å€™è¢« æ›¿æ¢æ‰ã€‚
 		 * @example
 		 * <code>
 		 * Function.bind(function () {return this}, 0)()    ; // 0
@@ -970,38 +970,38 @@
 		 */
 		bind: function (fn, bind) {
 			
-			// ·µ»Ø¶Ô bind °ó¶¨¡£
+			// è¿”å›å¯¹ bind ç»‘å®šã€‚
 			return function () {
 				return fn.apply(bind, arguments);
 			}
 		},
 		
 		/**
-		 * ¿Õº¯Êı¡£
+		 * ç©ºå‡½æ•°ã€‚
 		 * @property
 		 * @type Function
-		 * Function.empty·µ»Ø¿Õº¯ÊıµÄÒıÓÃ¡£
+		 * Function.emptyè¿”å›ç©ºå‡½æ•°çš„å¼•ç”¨ã€‚
 		 */
 		empty: emptyFn,
 
 		/**
-		 * Ò»¸ö·µ»Ø true µÄº¯Êı¡£
+		 * ä¸€ä¸ªè¿”å› true çš„å‡½æ•°ã€‚
 		 * @property
 		 * @type Function
 		 */
 		returnTrue: from(true),
 
 		/**
-		 * Ò»¸ö·µ»Ø false µÄº¯Êı¡£
+		 * ä¸€ä¸ªè¿”å› false çš„å‡½æ•°ã€‚
 		 * @property
 		 * @type Function
 		 */
 		returnFalse: from(false),
 
 		/**
-		 * ÅĞ¶ÏÒ»¸ö±äÁ¿ÊÇ·ñÊÇº¯Êı¡£
-		 * @param {Object} object ±äÁ¿¡£
-		 * @return {Boolean} Èç¹ûÊÇº¯Êı£¬·µ»Ø true£¬ ·ñÔò·µ»Ø false¡£
+		 * åˆ¤æ–­ä¸€ä¸ªå˜é‡æ˜¯å¦æ˜¯å‡½æ•°ã€‚
+		 * @param {Object} object å˜é‡ã€‚
+		 * @return {Boolean} å¦‚æœæ˜¯å‡½æ•°ï¼Œè¿”å› trueï¼Œ å¦åˆ™è¿”å› falseã€‚
 		 * @example
 		 * <code>
 		 * Function.isFunction(function () {}); // true
@@ -1012,9 +1012,9 @@
 		isFunction: $.isFunction,
 		
 		/**
-		 * ·µ»Ø×ÔÉíµÄº¯Êı¡£
-		 * @param {Object} v ĞèÒª·µ»ØµÄ²ÎÊı¡£
-		 * @return {Function} Ö´ĞĞµÃµ½²ÎÊıµÄÒ»¸öº¯Êı¡£
+		 * è¿”å›è‡ªèº«çš„å‡½æ•°ã€‚
+		 * @param {Object} v éœ€è¦è¿”å›çš„å‚æ•°ã€‚
+		 * @return {Function} æ‰§è¡Œå¾—åˆ°å‚æ•°çš„ä¸€ä¸ªå‡½æ•°ã€‚
 		 * @hide
 		 * @example
 		 * <code>
@@ -1026,50 +1026,50 @@
 	});
 
 	/**
-	 * ×Ö·û´®¡£
+	 * å­—ç¬¦ä¸²ã€‚
 	 * @namespace String
 	 */
 	apply(String, {
 
 		/**
-		 * ¸ñÊ½»¯×Ö·û´®¡£
-		 * @param {String} format ×Ö·û¡£
-		 * @param {Object} ... ²ÎÊı¡£
-		 * @return {String} ¸ñÊ½»¯ºóµÄ×Ö·û´®¡£
+		 * æ ¼å¼åŒ–å­—ç¬¦ä¸²ã€‚
+		 * @param {String} format å­—ç¬¦ã€‚
+		 * @param {Object} ... å‚æ•°ã€‚
+		 * @return {String} æ ¼å¼åŒ–åçš„å­—ç¬¦ä¸²ã€‚
 		 * @example
 		 * <code>
-		 *  String.format("{0}×ª»»", 1); //  "1×ª»»"
-		 *  String.format("{1}·­Òë",0,1); // "1·­Òë"
-		 *  String.format("{a}·­Òë",{a:"Ò²¿ÉÒÔ"}); // Ò²¿ÉÒÔ·­Òë
-		 *  String.format("{{0}}²»×ª»», {0}×ª»»", 1); //  "{0}²»×ª»»1×ª»»"
-		 *  ¸ñÊ½»¯µÄ×Ö·û´®{}²»ÔÊĞí°üº¬¿Õ¸ñ¡£
-		 *  ²»Òª³öÏÖ{{{ ºÍ  }}} ÕâÑù½«»ñµÃ²»¿ÉÔ¤ÖªµÄ½á¹û¡£
+		 *  String.format("{0}è½¬æ¢", 1); //  "1è½¬æ¢"
+		 *  String.format("{1}ç¿»è¯‘",0,1); // "1ç¿»è¯‘"
+		 *  String.format("{a}ç¿»è¯‘",{a:"ä¹Ÿå¯ä»¥"}); // ä¹Ÿå¯ä»¥ç¿»è¯‘
+		 *  String.format("{{0}}ä¸è½¬æ¢, {0}è½¬æ¢", 1); //  "{0}ä¸è½¬æ¢1è½¬æ¢"
+		 *  æ ¼å¼åŒ–çš„å­—ç¬¦ä¸²{}ä¸å…è®¸åŒ…å«ç©ºæ ¼ã€‚
+		 *  ä¸è¦å‡ºç°{{{ å’Œ  }}} è¿™æ ·å°†è·å¾—ä¸å¯é¢„çŸ¥çš„ç»“æœã€‚
 		 * </code>
 		 */
 		format: function (format, args) {
 					
 
-			//Ö§³Ö²ÎÊı2ÎªÊı×é»ò¶ÔÏóµÄÖ±½Ó¸ñÊ½»¯¡£
+			//æ”¯æŒå‚æ•°2ä¸ºæ•°ç»„æˆ–å¯¹è±¡çš„ç›´æ¥æ ¼å¼åŒ–ã€‚
 			var toString = this;
 			
 			args = arguments.length === 2 && o.isObject(args) ? args: [].slice.call(arguments, 1);
 
-			//Í¨¹ı¸ñÊ½»¯·µ»Ø
+			//é€šè¿‡æ ¼å¼åŒ–è¿”å›
 			return (format || "").replace(rFormat, function (match, name) {
 				var start = match.charAt(1) == '{',
 					end = match.charAt(match.length - 2) == '}';
 				if (start || end) return match.slice(start, match.length - end);
-				//LOG : {0, 2;yyyy} ÎªÁËÖ§³ÖÕâ¸ö¸ñÊ½, ±ØĞëÔÚÕâÀï´¦Àí match , Í¬Ê±ÎªÁË´úÂë¼ò¶Ì, ¹ÊÈ¥¸Ã¹¦ÄÜ¡£
+				//LOG : {0, 2;yyyy} ä¸ºäº†æ”¯æŒè¿™ä¸ªæ ¼å¼, å¿…é¡»åœ¨è¿™é‡Œå¤„ç† match , åŒæ—¶ä¸ºäº†ä»£ç ç®€çŸ­, æ•…å»è¯¥åŠŸèƒ½ã€‚
 				return name in args ? toString(args[name]) : "";
 			});
 		},
 		
 		/**
-		 * ½«Ò»¸öÊı×éÔ´ĞÎÊ½µÄ×Ö·û´®ÄÚÈİ¿½±´¡£
-		 * @param {Object} str ×Ö·û´®¡£ÓÃ¿Õ¸ñ¸ô¿ª¡£
-		 * @param {Object/Function} source ¸üĞÂµÄº¯Êı»òÔ´¡£
-		 * @param {Object} [dest] Èç¹ûÖ¸Ã÷ÁË£¬ Ôò¿½±´½á¹ûµ½Õâ¸öÄ¿±ê¡£
-		 * @param {Boolean} copyIf=false ÊÇ·ñÌø¹ı±¾À´´æÔÚµÄÊı¾İ¡£
+		 * å°†ä¸€ä¸ªæ•°ç»„æºå½¢å¼çš„å­—ç¬¦ä¸²å†…å®¹æ‹·è´ã€‚
+		 * @param {Object} str å­—ç¬¦ä¸²ã€‚ç”¨ç©ºæ ¼éš”å¼€ã€‚
+		 * @param {Object/Function} source æ›´æ–°çš„å‡½æ•°æˆ–æºã€‚
+		 * @param {Object} [dest] å¦‚æœæŒ‡æ˜äº†ï¼Œ åˆ™æ‹·è´ç»“æœåˆ°è¿™ä¸ªç›®æ ‡ã€‚
+		 * @param {Boolean} copyIf=false æ˜¯å¦è·³è¿‡æœ¬æ¥å­˜åœ¨çš„æ•°æ®ã€‚
 		 * @example
 		 * <code>
 		 * String.map("aaa bbb ccc", trace); //  aaa bbb ccc
@@ -1080,13 +1080,13 @@
 					
 			
 			var isFn = Function.isFunction(src);
-			// Ê¹ÓÃ ' '¡¢·Ö¸ô, ÕâÊÇÔ¼¶¨µÄ¡£
+			// ä½¿ç”¨ ' 'ã€åˆ†éš”, è¿™æ˜¯çº¦å®šçš„ã€‚
 			str.split(' ').forEach(function (value, index, array) {
 				
-				// Èç¹ûÊÇº¯Êı£¬µ÷ÓÃº¯Êı£¬ ·ñÔòÊÇÊôĞÔ¡£
+				// å¦‚æœæ˜¯å‡½æ•°ï¼Œè°ƒç”¨å‡½æ•°ï¼Œ å¦åˆ™æ˜¯å±æ€§ã€‚
 				var val = isFn ? src(value, index, array) : src[value];
 				
-				// Èç¹ûÓĞ dest £¬Ôò¸´ÖÆ¡£
+				// å¦‚æœæœ‰ dest ï¼Œåˆ™å¤åˆ¶ã€‚
 				if(dest && !(copyIf && (value in dest)))
 					dest[value] = val;
 			});
@@ -1094,9 +1094,9 @@
 		},
 		
 		/**
-		 * ·µ»Ø±äÁ¿µÄµØÖ·ĞÎÊ½¡£
-		 * @param {Object} obj ±äÁ¿¡£
-		 * @return {String} ×Ö·û´®¡£
+		 * è¿”å›å˜é‡çš„åœ°å€å½¢å¼ã€‚
+		 * @param {Object} obj å˜é‡ã€‚
+		 * @return {String} å­—ç¬¦ä¸²ã€‚
 		 * @example
 		 * <code>
 		 * String.param({a: 4, g: 7}); //  a=4&g=7
@@ -1105,9 +1105,9 @@
 		param: $.param,
 	
 		/**
-		 * °Ñ×Ö·û´®×ªÎªÖ¸¶¨³¤¶È¡£
-		 * @param {String} value   ×Ö·û´®¡£
-		 * @param {Number} len ĞèÒªµÄ×î´ó³¤¶È¡£
+		 * æŠŠå­—ç¬¦ä¸²è½¬ä¸ºæŒ‡å®šé•¿åº¦ã€‚
+		 * @param {String} value   å­—ç¬¦ä¸²ã€‚
+		 * @param {Number} len éœ€è¦çš„æœ€å¤§é•¿åº¦ã€‚
 		 * @example
 		 * <code>
 		 * String.ellipsis("123", 2); //   '1...'
@@ -1122,63 +1122,63 @@
 	Date.now =  $.now;
 
 	/**
-	 * ä¯ÀÀÆ÷¡£
+	 * æµè§ˆå™¨ã€‚
 	 * @namespace navigator
 	 */
 	applyIf(navigator, (function (ua, isNonStandard) {
 
-		//¼ì²éĞÅÏ¢
+		//æ£€æŸ¥ä¿¡æ¯
 		var match = ua.match(/(IE|Firefox|Chrome|Safari|Opera|Navigator).((\d+)\.?[\d.]*)/i) || ["", "Other", 0, 0],
 			
-			// °æ±¾ĞÅÏ¢¡£
+			// ç‰ˆæœ¬ä¿¡æ¯ã€‚
 			version = ua.match(/(Version).((\d+)\.?[\d.]*)/i) || match,
 			
-			// ä¯ÀÀÆ÷Ãû×Ö¡£
+			// æµè§ˆå™¨åå­—ã€‚
 			browser = match[1];
 		
 		
 		navigator["is" + browser] = navigator["is" + browser + version[3]] = true;
 		
 		/**
-		 * »ñÈ¡Ò»¸öÖµ£¬¸ÃÖµÖ¸Ê¾ÊÇ·ñÎª IE ä¯ÀÀÆ÷¡£
+		 * è·å–ä¸€ä¸ªå€¼ï¼Œè¯¥å€¼æŒ‡ç¤ºæ˜¯å¦ä¸º IE æµè§ˆå™¨ã€‚
 		 * @getter isIE
 		 * @type Boolean
 		 */
 		
 		
 		/**
-		 * »ñÈ¡Ò»¸öÖµ£¬¸ÃÖµÖ¸Ê¾ÊÇ·ñÎª Firefox ä¯ÀÀÆ÷¡£
+		 * è·å–ä¸€ä¸ªå€¼ï¼Œè¯¥å€¼æŒ‡ç¤ºæ˜¯å¦ä¸º Firefox æµè§ˆå™¨ã€‚
 		 * @getter isFirefox
 		 * @type Boolean
 		 */
 		
 		/**
-		 * »ñÈ¡Ò»¸öÖµ£¬¸ÃÖµÖ¸Ê¾ÊÇ·ñÎª Chrome ä¯ÀÀÆ÷¡£
+		 * è·å–ä¸€ä¸ªå€¼ï¼Œè¯¥å€¼æŒ‡ç¤ºæ˜¯å¦ä¸º Chrome æµè§ˆå™¨ã€‚
 		 * @getter isChrome
 		 * @type Boolean
 		 */
 		
 		/**
-		 * »ñÈ¡Ò»¸öÖµ£¬¸ÃÖµÖ¸Ê¾ÊÇ·ñÎª Opera ä¯ÀÀÆ÷¡£
+		 * è·å–ä¸€ä¸ªå€¼ï¼Œè¯¥å€¼æŒ‡ç¤ºæ˜¯å¦ä¸º Opera æµè§ˆå™¨ã€‚
 		 * @getter isOpera
 		 * @type Boolean
 		 */
 		
 		/**
-		 * »ñÈ¡Ò»¸öÖµ£¬¸ÃÖµÖ¸Ê¾ÊÇ·ñÎª Safari ä¯ÀÀÆ÷¡£
+		 * è·å–ä¸€ä¸ªå€¼ï¼Œè¯¥å€¼æŒ‡ç¤ºæ˜¯å¦ä¸º Safari æµè§ˆå™¨ã€‚
 		 * @getter isSafari
 		 * @type Boolean
 		 */
 		
-		//½á¹û
+		//ç»“æœ
 		return {
 			
 			/// #ifdef SupportIE6
 			
 			/**
-			 * »ñÈ¡Ò»¸öÖµ£¬¸ÃÖµÖ¸Ê¾µ±Ç°ä¯ÀÀÆ÷ÊÇ·ñÖ§³Ö±ê×¼ÊÂ¼ş¡£¾ÍÄ¿Ç°ä¯ÀÀÆ÷×´¿ö£¬ IE6£¬7 ÖĞ isQuirks = true  ÆäËü½Ô false ¡£
+			 * è·å–ä¸€ä¸ªå€¼ï¼Œè¯¥å€¼æŒ‡ç¤ºå½“å‰æµè§ˆå™¨æ˜¯å¦æ”¯æŒæ ‡å‡†äº‹ä»¶ã€‚å°±ç›®å‰æµè§ˆå™¨çŠ¶å†µï¼Œ IE6ï¼Œ7 ä¸­ isQuirks = true  å…¶å®ƒçš† false ã€‚
 			 * @type Boolean
-			 * ´Ë´¦ÈÏÎª IE6,7 ÊÇ¹Öñ±µÄ¡£
+			 * æ­¤å¤„è®¤ä¸º IE6,7 æ˜¯æ€ªç™–çš„ã€‚
 			 */
 			isQuirks: isNonStandard && !o.isObject(document.constructor),
 			
@@ -1187,25 +1187,25 @@
 			/// #ifdef SupportIE8
 			
 			/**
-			 * »ñÈ¡Ò»¸öÖµ£¬¸ÃÖµÖ¸Ê¾µ±Ç°ä¯ÀÀÆ÷ÊÇ·ñÎª±ê×¼ä¯ÀÀÆ÷¡£
+			 * è·å–ä¸€ä¸ªå€¼ï¼Œè¯¥å€¼æŒ‡ç¤ºå½“å‰æµè§ˆå™¨æ˜¯å¦ä¸ºæ ‡å‡†æµè§ˆå™¨ã€‚
 			 * @type Boolean
-			 * ´Ë´¦ÈÏÎª IE6, 7, 8 ²»ÊÇ±ê×¼µÄä¯ÀÀÆ÷¡£
+			 * æ­¤å¤„è®¤ä¸º IE6, 7, 8 ä¸æ˜¯æ ‡å‡†çš„æµè§ˆå™¨ã€‚
 			 */
 			isStandard: !isNonStandard,
 			
 			/// #endif
 			
 			/**
-			 * »ñÈ¡µ±Ç°ä¯ÀÀÆ÷µÄ¼òĞ´¡£
+			 * è·å–å½“å‰æµè§ˆå™¨çš„ç®€å†™ã€‚
 			 * @type String
 			 */
 			name: browser,
 			
 			/**
-			 * »ñÈ¡µ±Ç°ä¯ÀÀÆ÷°æ±¾¡£
+			 * è·å–å½“å‰æµè§ˆå™¨ç‰ˆæœ¬ã€‚
 			 * @type String
-			 * Êä³öµÄ¸ñÊ½±ÈÈç 6.0.0 ¡£
-			 * ÕâÊÇÒ»¸ö×Ö·û´®£¬Èç¹ûĞèÒª±È½Ï°æ±¾£¬Ó¦¸ÃÊ¹ÓÃ parseFloat(navigator.version) < 4 ¡£
+			 * è¾“å‡ºçš„æ ¼å¼æ¯”å¦‚ 6.0.0 ã€‚
+			 * è¿™æ˜¯ä¸€ä¸ªå­—ç¬¦ä¸²ï¼Œå¦‚æœéœ€è¦æ¯”è¾ƒç‰ˆæœ¬ï¼Œåº”è¯¥ä½¿ç”¨ parseFloat(navigator.version) < 4 ã€‚
 			 */
 			version: version[2]
 			
@@ -1214,17 +1214,17 @@
 	})(navigator.userAgent, !-[1,]));
 
 	/**
-	 * xType¡£
+	 * xTypeã€‚
 	 */
 	Date.prototype.xType = "date";
 	
 	/**
-	 * xType¡£
+	 * xTypeã€‚
 	 */
 	RegExp.prototype.xType = "regexp";
 	
 	
-	// °ÑËùÓĞÄÚ½¨¶ÔÏó±¾µØ»¯ ¡£
+	// æŠŠæ‰€æœ‰å†…å»ºå¯¹è±¡æœ¬åœ°åŒ– ã€‚
 	each.call([String, Array, Function, Date, Number], p.Native);
 	
 	/**
@@ -1233,11 +1233,11 @@
 	Object.implement({
 		
 		/**
-		 * µ÷ÓÃ¸¸ÀàµÄ³ÉÔ±±äÁ¿¡£
-		 * @param {String} methodName ÊôĞÔÃû¡£
-		 * @param {Object} ... µ÷ÓÃµÄ²ÎÊıÊı×é¡£
-		 * @return {Object} ¸¸Àà·µ»Ø¡£
-		 * ×¢ÒâÖ»ÄÜ´Ó×ÓÀàÖĞµ÷ÓÃ¸¸ÀàµÄÍ¬Ãû³ÉÔ±¡£
+		 * è°ƒç”¨çˆ¶ç±»çš„æˆå‘˜å˜é‡ã€‚
+		 * @param {String} methodName å±æ€§åã€‚
+		 * @param {Object} ... è°ƒç”¨çš„å‚æ•°æ•°ç»„ã€‚
+		 * @return {Object} çˆ¶ç±»è¿”å›ã€‚
+		 * æ³¨æ„åªèƒ½ä»å­ç±»ä¸­è°ƒç”¨çˆ¶ç±»çš„åŒåæˆå‘˜ã€‚
 		 * @protected
 		 * @example
 		 * <code>
@@ -1250,7 +1250,7 @@
 		 * 
 		 * var MyCls = MyBa.extend({
 		 * 	  a: function (g, b) {
-		 * 	    this.base('a', g, b);   // »ò   this.base('a', arguments);
+		 * 	    this.base('a', g, b);   // æˆ–   this.base('a', arguments);
 		 *    }
 		 * });
 		 * 
@@ -1264,11 +1264,11 @@
 				fn = this[methodName];
 				
 			
-			// ±ê¼Çµ±Ç°ÀàµÄ fn ÒÑÖ´ĞĞ¡£
+			// æ ‡è®°å½“å‰ç±»çš„ fn å·²æ‰§è¡Œã€‚
 			fn.$bubble = true;
 				
 			
-			// ±£Ö¤µÃµ½µÄÊÇ¸¸ÀàµÄ³ÉÔ±¡£
+			// ä¿è¯å¾—åˆ°çš„æ˜¯çˆ¶ç±»çš„æˆå‘˜ã€‚
 			
 			do {
 				me = me.base;
@@ -1277,7 +1277,7 @@
 			
 			fn.$bubble = true;
 			
-			// È·±£ bubble ¼ÇºÅ±»ÒÆ³ı¡£
+			// ç¡®ä¿ bubble è®°å·è¢«ç§»é™¤ã€‚
 			try {
 				if(args === arguments.callee.caller.arguments)
 					return fn.apply(this, args);
@@ -1298,8 +1298,8 @@
 		/// #ifdef SupportIE8
 
 		/**
-		 * È¥³ıÊ×Î²¿Õ¸ñ¡£
-		 * @return {String}    ´¦ÀíºóµÄ×Ö·û´®¡£
+		 * å»é™¤é¦–å°¾ç©ºæ ¼ã€‚
+		 * @return {String}    å¤„ç†åçš„å­—ç¬¦ä¸²ã€‚
 	     * @example
 		 * <code>
 		 * "   g h   ".trim(); //     "g h"
@@ -1307,16 +1307,16 @@
 		 */
 		trim: function () {
 			
-			// Ê¹ÓÃÕıÔòÊµÏÖ¡£
+			// ä½¿ç”¨æ­£åˆ™å®ç°ã€‚
 			return $.trim(this);
 		},
 		
 		/// #endif
 		
 		/**
-	     * ×ªÎªÂæÍÕ¸ñÊ½¡£
-	     * @param {String} value ÄÚÈİ¡£
-	     * @return {String} ·µ»ØµÄÄÚÈİ¡£
+	     * è½¬ä¸ºéª†é©¼æ ¼å¼ã€‚
+	     * @param {String} value å†…å®¹ã€‚
+	     * @return {String} è¿”å›çš„å†…å®¹ã€‚
 	     * @example
 		 * <code>
 		 * "font-size".toCamelCase(); //     "fontSize"
@@ -1327,8 +1327,8 @@
 	    },
 		
 		/**
-		 * ½«×Ö·ûÊ××ÖÄ¸´óĞ´¡£
-		 * @return {String} ´óĞ´µÄ×Ö·û´®¡£
+		 * å°†å­—ç¬¦é¦–å­—æ¯å¤§å†™ã€‚
+		 * @return {String} å¤§å†™çš„å­—ç¬¦ä¸²ã€‚
 	     * @example
 		 * <code>
 		 * "bb".capitalize(); //     "Bb"
@@ -1336,7 +1336,7 @@
 		 */
 		capitalize: function () {
 			
-			// Ê¹ÓÃÕıÔòÊµÏÖ¡£
+			// ä½¿ç”¨æ­£åˆ™å®ç°ã€‚
 			return this.replace(rFirstChar, toUpperCase);
 		}
 
@@ -1348,10 +1348,10 @@
 	Array.implementIf({
 
 		/**
-		 * ¶ÔÊı×éÔËĞĞÒ»¸öº¯Êı¡£
-		 * @param {Function} fn º¯Êı.²ÎÊı value, index
-		 * @param {Object} bind ¶ÔÏó¡£
-		 * @return {Boolean} ÓĞÎŞÖ´ĞĞÍê¡£
+		 * å¯¹æ•°ç»„è¿è¡Œä¸€ä¸ªå‡½æ•°ã€‚
+		 * @param {Function} fn å‡½æ•°.å‚æ•° value, index
+		 * @param {Object} bind å¯¹è±¡ã€‚
+		 * @return {Boolean} æœ‰æ— æ‰§è¡Œå®Œã€‚
 		 * @method
 		 * @seeAlso Array.prototype.forEach
 		 * @example
@@ -1360,7 +1360,7 @@
 		 * 		trace(value);
 		 * 		return false
 		 * });
-		 * // Êä³ö '2'
+		 * // è¾“å‡º '2'
 		 * </code>
 		 */
 		each: each,
@@ -1368,11 +1368,11 @@
 		/// #ifdef SupportIE8
 
 		/**
-		 * ·µ»ØÊı×éÄ³¸öÖµµÄµÚÒ»¸öÎ»ÖÃ¡£ÖµÃ»ÓĞ,ÔòÎª-1 ¡£
-		 * @param {Object} item ³ÉÔ±¡£
-		 * @param {Number} start=0 ¿ªÊ¼²éÕÒµÄÎ»ÖÃ¡£
-		 * @return Number Î»ÖÃ£¬ÕÒ²»µ½·µ»Ø -1 ¡£ 
-		 * ÏÖÔÚ´ó¶àÊıä¯ÀÀÆ÷ÒÑº¬´Ëº¯Êı.³ıÁË IE8-  ¡£
+		 * è¿”å›æ•°ç»„æŸä¸ªå€¼çš„ç¬¬ä¸€ä¸ªä½ç½®ã€‚å€¼æ²¡æœ‰,åˆ™ä¸º-1 ã€‚
+		 * @param {Object} item æˆå‘˜ã€‚
+		 * @param {Number} start=0 å¼€å§‹æŸ¥æ‰¾çš„ä½ç½®ã€‚
+		 * @return Number ä½ç½®ï¼Œæ‰¾ä¸åˆ°è¿”å› -1 ã€‚ 
+		 * ç°åœ¨å¤§å¤šæ•°æµè§ˆå™¨å·²å«æ­¤å‡½æ•°.é™¤äº† IE8-  ã€‚
 		 */
 		indexOf: function (item, startIndex) {
 			startIndex = startIndex || 0;
@@ -1383,10 +1383,10 @@
 		},
 		
 		/**
-		 * ¶ÔÊı×éÃ¿¸öÔªËØÍ¨¹ıÒ»¸öº¯Êı¹ıÂË¡£·µ»ØËùÓĞ·ûºÏÒªÇóµÄÔªËØµÄÊı×é¡£
-		 * @param {Function} fn º¯Êı¡£²ÎÊı value, index, this¡£
-		 * @param {Object} bind °ó¶¨µÄ¶ÔÏó¡£
-		 * @return {Array} ĞÂµÄÊı×é¡£
+		 * å¯¹æ•°ç»„æ¯ä¸ªå…ƒç´ é€šè¿‡ä¸€ä¸ªå‡½æ•°è¿‡æ»¤ã€‚è¿”å›æ‰€æœ‰ç¬¦åˆè¦æ±‚çš„å…ƒç´ çš„æ•°ç»„ã€‚
+		 * @param {Function} fn å‡½æ•°ã€‚å‚æ•° value, index, thisã€‚
+		 * @param {Object} bind ç»‘å®šçš„å¯¹è±¡ã€‚
+		 * @return {Array} æ–°çš„æ•°ç»„ã€‚
 		 * @seeAlso Array.prototype.select
 		 * @example
 		 * <code> 
@@ -1397,7 +1397,7 @@
 			var r = [];
 			[].forEach.call(this, function (value, i, array) {
 				
-				// ¹ıÂË²¼´æÔÚµÄ³ÉÔ±¡£
+				// è¿‡æ»¤å¸ƒå­˜åœ¨çš„æˆå‘˜ã€‚
 				if(fn.call(this, value, i, array))
 					r.push(value);
 			}, bind);
@@ -1407,17 +1407,17 @@
 		},
 
 		/**
-		 * ¶ÔÊı×éÄÚµÄËùÓĞ±äÁ¿Ö´ĞĞº¯Êı£¬²¢¿ÉÑ¡ÉèÖÃ×÷ÓÃÓò¡£
+		 * å¯¹æ•°ç»„å†…çš„æ‰€æœ‰å˜é‡æ‰§è¡Œå‡½æ•°ï¼Œå¹¶å¯é€‰è®¾ç½®ä½œç”¨åŸŸã€‚
 		 * @method
-		 * @param {Function} fn ¶ÔÃ¿¸ö±äÁ¿µ÷ÓÃµÄº¯Êı¡£ {@param {Object} value µ±Ç°±äÁ¿µÄÖµ} {@param {Number} key µ±Ç°±äÁ¿µÄË÷Òı} {@param {Number} index µ±Ç°±äÁ¿µÄË÷Òı} {@param {Array} array Êı×é±¾Éí}
-		 * @param {Object} bind º¯ÊıÖ´ĞĞÊ±µÄ×÷ÓÃÓò¡£
+		 * @param {Function} fn å¯¹æ¯ä¸ªå˜é‡è°ƒç”¨çš„å‡½æ•°ã€‚ {@param {Object} value å½“å‰å˜é‡çš„å€¼} {@param {Number} key å½“å‰å˜é‡çš„ç´¢å¼•} {@param {Number} index å½“å‰å˜é‡çš„ç´¢å¼•} {@param {Array} array æ•°ç»„æœ¬èº«}
+		 * @param {Object} bind å‡½æ•°æ‰§è¡Œæ—¶çš„ä½œç”¨åŸŸã€‚
 		 * @seeAlso Array.prototype.each
 		 * @example
 		 * <code> 
 		 * [2, 5].forEach(function (value, key) {
 		 * 		trace(value);
 		 * });
-		 * // Êä³ö '2' '5'
+		 * // è¾“å‡º '2' '5'
 		 * </code>
 		 * */
 		forEach: each,
@@ -1425,9 +1425,9 @@
 		/// #endif
 
 		/**
-		 * °üº¬Ò»¸öÔªËØ¡£ÔªËØ´æÔÚÖ±½Ó·µ»Ø¡£
-		 * @param {Object} value Öµ¡£
-		 * @return {Boolean} ÊÇ·ñ°üº¬ÔªËØ¡£
+		 * åŒ…å«ä¸€ä¸ªå…ƒç´ ã€‚å…ƒç´ å­˜åœ¨ç›´æ¥è¿”å›ã€‚
+		 * @param {Object} value å€¼ã€‚
+		 * @return {Boolean} æ˜¯å¦åŒ…å«å…ƒç´ ã€‚
 		 * @example
 		 * <code>
 		 * ["", "aaa", "zzz", "qqq"].include(""); //   true
@@ -1436,7 +1436,7 @@
 		 */
 		include: function (value) {
 			
-			//Î´°üº¬£¬Ôò¼ÓÈë¡£
+			//æœªåŒ…å«ï¼Œåˆ™åŠ å…¥ã€‚
 			var b = this.indexOf(value) !== -1;
 			if(!b)
 				this.push(value);
@@ -1444,9 +1444,9 @@
 		},
 		
 		/**
-		 * ÔÚÖ¸¶¨Î»ÖÃ²åÈëÏî¡£
-		 * @param {Number} index ²åÈëµÄÎ»ÖÃ¡£
-		 * @param {Object} value ²åÈëµÄÄÚÈİ¡£
+		 * åœ¨æŒ‡å®šä½ç½®æ’å…¥é¡¹ã€‚
+		 * @param {Number} index æ’å…¥çš„ä½ç½®ã€‚
+		 * @param {Object} value æ’å…¥çš„å†…å®¹ã€‚
 		 * @example
 		 * <code>
 		 * ["", "aaa", "zzz", "qqq"].insert(3, 4); //   ["", "aaa", "zzz", 4, "qqq"]
@@ -1463,10 +1463,10 @@
 		},
 		
 		/**
-		 * ¶ÔÊı×é³ÉÔ±µ÷ÓÃÖ¸¶¨µÄ³ÉÔ±£¬·µ»Ø½á¹ûÊı×é¡£
-		 * @param {String} func µ÷ÓÃµÄ³ÉÔ±Ãû¡£
-		 * @param {Array} args µ÷ÓÃµÄ²ÎÊıÊı×é¡£
-		 * @return {Array} ½á¹û¡£
+		 * å¯¹æ•°ç»„æˆå‘˜è°ƒç”¨æŒ‡å®šçš„æˆå‘˜ï¼Œè¿”å›ç»“æœæ•°ç»„ã€‚
+		 * @param {String} func è°ƒç”¨çš„æˆå‘˜åã€‚
+		 * @param {Array} args è°ƒç”¨çš„å‚æ•°æ•°ç»„ã€‚
+		 * @return {Array} ç»“æœã€‚
 		 * @example
 		 * <code>
 		 * ["vhd"].invoke('charAt', [0]); //    ['v']
@@ -1482,8 +1482,8 @@
 		},
 		
 		/**
-		 * É¾³ıÊı×éÖĞÖØ¸´ÔªËØ¡£
-		 * @return {Array} ½á¹û¡£
+		 * åˆ é™¤æ•°ç»„ä¸­é‡å¤å…ƒç´ ã€‚
+		 * @return {Array} ç»“æœã€‚
 		 * @example
 		 * <code>
 		 * [1,7,8,8].unique(); //    [1, 7, 8]
@@ -1495,9 +1495,9 @@
 		},
 		
 		/**
-		 * É¾³ıÔªËØ, ²ÎÊıÎªÔªËØµÄÄÚÈİ¡£
-		 * @param {Object} value Öµ¡£
-		 * @return {Number} É¾³ıµÄÖµµÄÎ»ÖÃ¡£
+		 * åˆ é™¤å…ƒç´ , å‚æ•°ä¸ºå…ƒç´ çš„å†…å®¹ã€‚
+		 * @param {Object} value å€¼ã€‚
+		 * @return {Number} åˆ é™¤çš„å€¼çš„ä½ç½®ã€‚
 		 * @example
 		 * <code>
 		 * [1,7,8,8].remove(7); //   1
@@ -1505,16 +1505,16 @@
 		 */
 		remove: function (value, startIndex) {
 			
-			// ÕÒµ½Î»ÖÃ£¬ È»ºóÉ¾¡£
+			// æ‰¾åˆ°ä½ç½®ï¼Œ ç„¶ååˆ ã€‚
 			var i = [].indexOf.call(this, value, startIndex);
 			if(i !== -1) [].splice.call(this, i, 1);
 			return i;
 		},
 			
 		/**
-		 * »ñÈ¡Ö¸¶¨Ë÷ÒıµÄÔªËØ¡£Èç¹û index < 0£¬ Ôò»ñÈ¡µ¹Êı index ÔªËØ¡£
-		 * @param {Number} index ÔªËØ¡£
-		 * @return {Object} Ö¸¶¨Î»ÖÃËùÔÚµÄÔªËØ¡£
+		 * è·å–æŒ‡å®šç´¢å¼•çš„å…ƒç´ ã€‚å¦‚æœ index < 0ï¼Œ åˆ™è·å–å€’æ•° index å…ƒç´ ã€‚
+		 * @param {Number} index å…ƒç´ ã€‚
+		 * @return {Object} æŒ‡å®šä½ç½®æ‰€åœ¨çš„å…ƒç´ ã€‚
 		 * @example
 		 * <code>
 		 * [1,7,8,8].item(0); //   1
@@ -1527,7 +1527,7 @@
 		},
 		
 		/**
-		 * xType¡£
+		 * xTypeã€‚
 		 */
 		xType: "array"
 
@@ -1539,15 +1539,15 @@
 	
 	/// #endregion
 
-	/// #region Ò³Ãæ
+	/// #region é¡µé¢
 	
 		
 	if(!window.execScript)
 	
 		/**
-		 * È«¾ÖÔËĞĞÒ»¸öº¯Êı¡£
-		 * @param {String} statement Óï¾ä¡£
-		 * @return {Object} Ö´ĞĞ·µ»ØÖµ¡£
+		 * å…¨å±€è¿è¡Œä¸€ä¸ªå‡½æ•°ã€‚
+		 * @param {String} statement è¯­å¥ã€‚
+		 * @return {Object} æ‰§è¡Œè¿”å›å€¼ã€‚
 		 * @example
 		 * <code>
 		 * execScript('alert("hello")');
@@ -1555,37 +1555,37 @@
 		 */
 		window.execScript = function(statements) {
 			
-			// Èç¹ûÕı³£ä¯ÀÀÆ÷£¬Ê¹ÓÃ window.eval  ¡£
+			// å¦‚æœæ­£å¸¸æµè§ˆå™¨ï¼Œä½¿ç”¨ window.eval  ã€‚
 			window.eval(statements);
 
 		};
 		
-	// ½«ÒÔÏÂ³ÉÔ±¸³Óè window £¬ÕâĞ©³ÉÔ±ÊÇÈ«¾Ö³ÉÔ±¡£
+	// å°†ä»¥ä¸‹æˆå‘˜èµ‹äºˆ window ï¼Œè¿™äº›æˆå‘˜æ˜¯å…¨å±€æˆå‘˜ã€‚
 	String.map('undefined Class IEvent using namespace', p, window);
 	
 	IEvent.bind = IEvent.on;
 	IEvent.unbind = IEvent.un;
 	
 	/**
-	 * idÖÖ×Ó ¡£
+	 * idç§å­ ã€‚
 	 * @type Number
 	 */
 	p.id = Date.now() % 100;
 
 	/// #endregion
 	
-	/// #region º¯Êı
+	/// #region å‡½æ•°
 	
 	/**
-	 * Èç¹û²»´æÔÚ¾Í¸´ÖÆËùÓĞÊôĞÔµ½ÈÎºÎ¶ÔÏó¡£ 
-	 * @param {Object} dest ¸´ÖÆÄ¿±ê¡£
-	 * @param {Object} src Òª¸´ÖÆµÄÄÚÈİ¡£
-	 * @return {Object} ¸´ÖÆºóµÄ¶ÔÏó¡£
+	 * å¦‚æœä¸å­˜åœ¨å°±å¤åˆ¶æ‰€æœ‰å±æ€§åˆ°ä»»ä½•å¯¹è±¡ã€‚ 
+	 * @param {Object} dest å¤åˆ¶ç›®æ ‡ã€‚
+	 * @param {Object} src è¦å¤åˆ¶çš„å†…å®¹ã€‚
+	 * @return {Object} å¤åˆ¶åçš„å¯¹è±¡ã€‚
 	 */
 	function applyIf(dest, src) {
 		
 		
-		// ºÍ apply ÀàËÆ£¬Ö»ÊÇÅĞ¶ÏÄ¿±êµÄÖµÊÇ·ñÎª undefiend ¡£
+		// å’Œ apply ç±»ä¼¼ï¼Œåªæ˜¯åˆ¤æ–­ç›®æ ‡çš„å€¼æ˜¯å¦ä¸º undefiend ã€‚
 		for (var b in src)
 			if (dest[b] === undefined)
 				dest[b] = src[b];
@@ -1593,10 +1593,10 @@
 	}
 
 	/**
-	 * ¶ÔÊı×éÔËĞĞÒ»¸öº¯Êı¡£
-	 * @param {Function} fn ±éÀúµÄº¯Êı¡£²ÎÊıÒÀ´Î value, index, array ¡£
-	 * @param {Object} bind ¶ÔÏó¡£
-	 * @return {Boolean} ·µ»ØÒ»¸ö²¼¶ûÖµ£¬¸ÃÖµÖ¸Ê¾±¾´ÎÑ­»·Ê±£¬ÓĞÎŞ³öÏÖÒ»¸öº¯Êı·µ»Ø false ¶øÖĞÖ¹Ñ­»·¡£
+	 * å¯¹æ•°ç»„è¿è¡Œä¸€ä¸ªå‡½æ•°ã€‚
+	 * @param {Function} fn éå†çš„å‡½æ•°ã€‚å‚æ•°ä¾æ¬¡ value, index, array ã€‚
+	 * @param {Object} bind å¯¹è±¡ã€‚
+	 * @return {Boolean} è¿”å›ä¸€ä¸ªå¸ƒå°”å€¼ï¼Œè¯¥å€¼æŒ‡ç¤ºæœ¬æ¬¡å¾ªç¯æ—¶ï¼Œæœ‰æ— å‡ºç°ä¸€ä¸ªå‡½æ•°è¿”å› false è€Œä¸­æ­¢å¾ªç¯ã€‚
 	 */
 	function each(fn, bind) {
 		
@@ -1611,43 +1611,43 @@
 	}
 	
 	/**
-	 * ËùÓĞ×Ô¶¨ÒåÀàµÄ»ùÀà¡£
+	 * æ‰€æœ‰è‡ªå®šä¹‰ç±»çš„åŸºç±»ã€‚
 	 */
 	function Object() {
 	
 	}
 	
 	/**
-	 * ·µ»Ø·µ»ØÖ¸¶¨½á¹ûµÄº¯Êı¡£
-	 * @param {Object} ret ½á¹û¡£
-	 * @return {Function} º¯Êı¡£
+	 * è¿”å›è¿”å›æŒ‡å®šç»“æœçš„å‡½æ•°ã€‚
+	 * @param {Object} ret ç»“æœã€‚
+	 * @return {Function} å‡½æ•°ã€‚
 	 */
 	function from(ret) {
 		
-		// ·µ»ØÒ»¸öÖµ£¬Õâ¸öÖµÊÇµ±Ç°µÄ²ÎÊı¡£
+		// è¿”å›ä¸€ä¸ªå€¼ï¼Œè¿™ä¸ªå€¼æ˜¯å½“å‰çš„å‚æ•°ã€‚
 		return function () {
 			return ret;
 		}
 	}
 	
 	/**
-	 * ½«Ò»¸ö×Ö·û×ªÎª´óĞ´¡£
-	 * @param {String} match ×Ö·û¡£
+	 * å°†ä¸€ä¸ªå­—ç¬¦è½¬ä¸ºå¤§å†™ã€‚
+	 * @param {String} match å­—ç¬¦ã€‚
 	 */
 	function toUpperCase(ch, match) {
 		return match.toUpperCase();
 	}
 	
 	/**
-	 * »ñÈ¡Ö¸¶¨µÄ¶ÔÏóËùÓĞµÄÊÂ¼ş¹ÜÀíÆ÷¡£
-	 * @param {Object} obj ÒªÊ¹ÓÃµÄ¶ÔÏó¡£
-	 * @param {String} type ÊÂ¼şÃû¡£
-	 * @return {Object} ·ûºÏÒªÇóµÄÊÂ¼ş¹ÜÀíÆ÷£¬Èç¹ûÕÒ²»µ½ºÏÊÊµÄ£¬·µ»ØÄ¬ÈÏµÄÊÂ¼ş¹ÜÀíÆ÷¡£
+	 * è·å–æŒ‡å®šçš„å¯¹è±¡æ‰€æœ‰çš„äº‹ä»¶ç®¡ç†å™¨ã€‚
+	 * @param {Object} obj è¦ä½¿ç”¨çš„å¯¹è±¡ã€‚
+	 * @param {String} type äº‹ä»¶åã€‚
+	 * @return {Object} ç¬¦åˆè¦æ±‚çš„äº‹ä»¶ç®¡ç†å™¨ï¼Œå¦‚æœæ‰¾ä¸åˆ°åˆé€‚çš„ï¼Œè¿”å›é»˜è®¤çš„äº‹ä»¶ç®¡ç†å™¨ã€‚
 	 */
 	function getMgr(eMgr, type) {
 		var evt = eMgr.constructor;
 		
-		// ±éÀú¸¸Àà£¬ ÕÒµ½ÊÊºÏµÄ eMgr ¡£
+		// éå†çˆ¶ç±»ï¼Œ æ‰¾åˆ°é€‚åˆçš„ eMgr ã€‚
 		while(!(eMgr = eventMgr[eMgr.xType]) || !(eMgr = eMgr[type])) {
 			
 			if(evt && (evt = evt.base)) {
@@ -1662,34 +1662,34 @@
 	}
 
 	/**
-	 * ¶¨ÒåÃû×Ö¿Õ¼ä¡£
-	 * @param {String} ns Ãû×Ö¿Õ¼ä¡£
-	 * @param {Object} obj Öµ¡£
+	 * å®šä¹‰åå­—ç©ºé—´ã€‚
+	 * @param {String} ns åå­—ç©ºé—´ã€‚
+	 * @param {Object} obj å€¼ã€‚
 	 */
 	function namespace(ns, obj) {
 		
 		
 		
-		// ¼òµ¥ÉùÃ÷¡£
+		// ç®€å•å£°æ˜ã€‚
 		if (arguments.length == 1) {
 			
 			return;
 		}
 		
-		// È¡Öµ£¬´´½¨¡£
+		// å–å€¼ï¼Œåˆ›å»ºã€‚
 		ns = ns.split('.');
 		
-		// Èç¹ûµÚ1¸ö×Ö·ûÊÇ ., Ôò±íÊ¾ÄÚÖÃÊ¹ÓÃµÄÃû×Ö¿Õ¼ä¡£
+		// å¦‚æœç¬¬1ä¸ªå­—ç¬¦æ˜¯ ., åˆ™è¡¨ç¤ºå†…ç½®ä½¿ç”¨çš„åå­—ç©ºé—´ã€‚
 		var current = window, i = -1, len = ns.length - 1, dft = !ns[0];
 		
-		// Èç¹ûµÚÒ»¸ö×Ö·ûÊÇ . Ôò²¹ÉÏÄ¬ÈÏµÄÃû×Ö¿Õ¼ä¡£
+		// å¦‚æœç¬¬ä¸€ä¸ªå­—ç¬¦æ˜¯ . åˆ™è¡¥ä¸Šé»˜è®¤çš„åå­—ç©ºé—´ã€‚
 		ns[0] = ns[0] || p.defaultNamespace;
 		
-		// ÒÀ´Î´´½¨¶ÔÏó¡£
+		// ä¾æ¬¡åˆ›å»ºå¯¹è±¡ã€‚
 		while(++i < len)
 			current = current[ns[i]] || (current[ns[i]] = {});
 
-  		// Èç¹û×îºóÒ»¸ö¶ÔÏóÊÇ . Ôò¸²¸Çµ½×îºóÒ»¸ö¶ÔÏó£¬ ·ñÔò¸üĞÂµ½Ä©Î²¡£
+  		// å¦‚æœæœ€åä¸€ä¸ªå¯¹è±¡æ˜¯ . åˆ™è¦†ç›–åˆ°æœ€åä¸€ä¸ªå¯¹è±¡ï¼Œ å¦åˆ™æ›´æ–°åˆ°æœ«å°¾ã€‚
 		if(i = ns[len])
 			current[i] = applyIf(obj, current[i] || {});
 		else {
@@ -1697,7 +1697,7 @@
 			i = ns[len - 1];
 		}
 		
-		// Èç¹ûÊÇÄÚÖÃÊ¹ÓÃµÄÃû×Ö¿Õ¼ä£¬½«×îºóÒ»¸ö³ÉÔ±¸üĞÂÎªÈ«¾Ö¶ÔÏó¡£
+		// å¦‚æœæ˜¯å†…ç½®ä½¿ç”¨çš„åå­—ç©ºé—´ï¼Œå°†æœ€åä¸€ä¸ªæˆå‘˜æ›´æ–°ä¸ºå…¨å±€å¯¹è±¡ã€‚
 		if(dft)
 			window[i] = obj;
 		
@@ -1718,14 +1718,14 @@ function assert(bValue, msg){
 	if (!bValue){
 		var val = arguments;
 
-		// Èç¹ûÆôÓÃ [²ÎÊı] ¹¦ÄÜ
+		// å¦‚æœå¯ç”¨ [å‚æ•°] åŠŸèƒ½
 		if (val.length > 2) {
 			var i = 2;
 			msg = msg.replace(/\{([\w\.\(\)]*?)\}/g, function (s, x) {
 				return val.length <= i ? s : x + " = " + String.ellipsis(trace.inspect(val[i++]), 200);
 			});
 		}else {
-			msg = msg || "¶ÏÑÔÊ§°Ü";
+			msg = msg || "æ–­è¨€å¤±è´¥";
 		}
 		
 		throw new Error(msg);
@@ -1742,7 +1742,7 @@ function assert(bValue, msg){
 (function ($) {
 	
 	/**
-	 * Object  ¼òĞ´¡£
+	 * Object  ç®€å†™ã€‚
 	 * @type Object
 	 */
 	var o = Object,
@@ -1754,19 +1754,19 @@ function assert(bValue, msg){
 		apply = o.extend,
 	
 		/**
-		 * Êı×éÔ­ĞÍ¡£
+		 * æ•°ç»„åŸå‹ã€‚
 		 * @type Object
 		 */
 		ap = Array.prototype,
 		
 		/**
-		 * String.map ËõĞ´¡£
+		 * String.map ç¼©å†™ã€‚
 		 * @type Object
 		 */
 		map = String.map,
 		
 		/**
-		 * JPlus ¼òĞ´¡£
+		 * JPlus ç®€å†™ã€‚
 		 * @namespace JPlus
 		 */
 		p = JPlus,
@@ -1774,9 +1774,9 @@ function assert(bValue, msg){
 		/// #ifdef SupportIE6
 		
 		/**
-		 * ÔªËØ¡£
+		 * å…ƒç´ ã€‚
 		 * @type Function
-		 * Èç¹ûÒ³ÃæÒÑ¾­´æÔÚ Element£¬ ²»¹ÜÊÇ²»ÊÇÓÃ»§×Ô¶¨ÒåµÄ£¬¶¼Ö±½ÓÊ¹ÓÃ¡£Ö»Ğè±£Ö¤ Element ÊÇÒ»¸öº¯Êı¼´¿É¡£
+		 * å¦‚æœé¡µé¢å·²ç»å­˜åœ¨ Elementï¼Œ ä¸ç®¡æ˜¯ä¸æ˜¯ç”¨æˆ·è‡ªå®šä¹‰çš„ï¼Œéƒ½ç›´æ¥ä½¿ç”¨ã€‚åªéœ€ä¿è¯ Element æ˜¯ä¸€ä¸ªå‡½æ•°å³å¯ã€‚
 		 */
 		e = window.Element || function() {},
 		
@@ -1787,20 +1787,20 @@ function assert(bValue, msg){
 		/// #endif
 		
 		/**
-		 * ÔªËØÔ­ĞÍ¡£
+		 * å…ƒç´ åŸå‹ã€‚
 		 * @type Object
 		 */
 		ep = e.prototype,
 	
 		/**
-		 * ÓÃÓÚ²âÊÔµÄÔªËØ¡£
+		 * ç”¨äºæµ‹è¯•çš„å…ƒç´ ã€‚
 		 * @type Element
 		 */
 		div = document.createElement('DIV'),
 		
 		/**
-		 * ¸ù¾İÒ»¸ö id »ñÈ¡ÔªËØ¡£Èç¹û´«ÈëµÄid²»ÊÇ×Ö·û´®£¬ÔòÖ±½Ó·µ»Ø²ÎÊı¡£
-		 * @param {String/Element/Control} id Òª»ñÈ¡ÔªËØµÄ id »òÔªËØ¡£
+		 * æ ¹æ®ä¸€ä¸ª id è·å–å…ƒç´ ã€‚å¦‚æœä¼ å…¥çš„idä¸æ˜¯å­—ç¬¦ä¸²ï¼Œåˆ™ç›´æ¥è¿”å›å‚æ•°ã€‚
+		 * @param {String/Element/Control} id è¦è·å–å…ƒç´ çš„ id æˆ–å…ƒç´ ã€‚
 		 */
 		$$ = getElementById,
 	
@@ -1809,7 +1809,7 @@ function assert(bValue, msg){
 		/// #ifdef ElementAttribute
 	
 		/**
-		 * ±íÊ¾ÊÂ¼şµÄ±í´ïÊ½¡£
+		 * è¡¨ç¤ºäº‹ä»¶çš„è¡¨è¾¾å¼ã€‚
 		 * @type RegExp
 		 */
 		rEventName = /^on(\w+)/,
@@ -1819,17 +1819,17 @@ function assert(bValue, msg){
 		/// #ifdef SupportIE8
 	
 		/**
-		 * »ñÈ¡ÔªËØµÄÊµ¼ÊµÄÑùÊ½ÊôĞÔ¡£
-		 * @param {Element} elem ĞèÒª»ñÈ¡ÊôĞÔµÄ½Úµã¡£
-		 * @param {String} name ĞèÒª»ñÈ¡µÄCSSÊôĞÔÃû×Ö¡£
-		 * @return {String} ·µ»ØÑùÊ½×Ö·û´®£¬¿ÏÄÜÊÇ undefined¡¢ auto »ò¿Õ×Ö·û´®¡£
+		 * è·å–å…ƒç´ çš„å®é™…çš„æ ·å¼å±æ€§ã€‚
+		 * @param {Element} elem éœ€è¦è·å–å±æ€§çš„èŠ‚ç‚¹ã€‚
+		 * @param {String} name éœ€è¦è·å–çš„CSSå±æ€§åå­—ã€‚
+		 * @return {String} è¿”å›æ ·å¼å­—ç¬¦ä¸²ï¼Œè‚¯èƒ½æ˜¯ undefinedã€ auto æˆ–ç©ºå­—ç¬¦ä¸²ã€‚
 		 */
 		getStyle = $.css,
 
 		/// #if defined(ElementAttribute) || defined(ElementStyle)
 	
 		/**
-		 * ÊÇ·ñÊôĞÔµÄÕıÔò±í´ïÊ½¡£
+		 * æ˜¯å¦å±æ€§çš„æ­£åˆ™è¡¨è¾¾å¼ã€‚
 		 * @type RegExp
 		 */
 		rStyle = /-(\w)|float/,
@@ -1840,15 +1840,15 @@ function assert(bValue, msg){
 		
 		/**
 		 * @class Event
-		 * ÓÃÀ´Ö§³Ö×Ô¶¨ÒåÊÂ¼şµÄÊÂ¼ş¶ÔÏó¡£
+		 * ç”¨æ¥æ”¯æŒè‡ªå®šä¹‰äº‹ä»¶çš„äº‹ä»¶å¯¹è±¡ã€‚
 		 */
 		pep = {
 	
 			/**
-			 * ¹¹Ôìº¯Êı¡£
-			 * @param {Object} target ÊÂ¼ş¶ÔÏóµÄÄ¿±ê¡£
-			 * @param {String} type ÊÂ¼ş¶ÔÏóµÄÀàĞÍ¡£
-			 * @param {Object} [e] ÊÂ¼ş¶ÔÏóµÄÊôĞÔ¡£
+			 * æ„é€ å‡½æ•°ã€‚
+			 * @param {Object} target äº‹ä»¶å¯¹è±¡çš„ç›®æ ‡ã€‚
+			 * @param {String} type äº‹ä»¶å¯¹è±¡çš„ç±»å‹ã€‚
+			 * @param {Object} [e] äº‹ä»¶å¯¹è±¡çš„å±æ€§ã€‚
 			 * @constructor
 			 */
 			constructor: function (target, type, e) {
@@ -1861,29 +1861,29 @@ function assert(bValue, msg){
 			},
 
 			/**
-			 * ×èÖ¹ÊÂ¼şµÄÃ°Åİ¡£
+			 * é˜»æ­¢äº‹ä»¶çš„å†’æ³¡ã€‚
 			 * @remark
-			 * Ä¬ÈÏÇé¿öÏÂ£¬ÊÂ¼ş»áÏò¸¸ÔªËØÃ°Åİ¡£Ê¹ÓÃ´Ëº¯Êı×èÖ¹ÊÂ¼şÃ°Åİ¡£
+			 * é»˜è®¤æƒ…å†µä¸‹ï¼Œäº‹ä»¶ä¼šå‘çˆ¶å…ƒç´ å†’æ³¡ã€‚ä½¿ç”¨æ­¤å‡½æ•°é˜»æ­¢äº‹ä»¶å†’æ³¡ã€‚
 			 */
 			stopPropagation : function () {
 				this.cancelBubble = true;
 			},
 					
 			/**
-			 * È¡ÏûÄ¬ÈÏÊÂ¼ş·¢Éú¡£
+			 * å–æ¶ˆé»˜è®¤äº‹ä»¶å‘ç”Ÿã€‚
 			 * @remark
-			 * ÓĞĞ©ÊÂ¼ş»áÓĞÄ¬ÈÏĞĞÎª£¬Èçµã»÷Á´½ÓÖ®ºóÖ´ĞĞÌø×ª£¬Ê¹ÓÃ´Ëº¯Êı×èÖ¹ÕâĞ©Ä¬ÈÏĞĞÎª¡£
+			 * æœ‰äº›äº‹ä»¶ä¼šæœ‰é»˜è®¤è¡Œä¸ºï¼Œå¦‚ç‚¹å‡»é“¾æ¥ä¹‹åæ‰§è¡Œè·³è½¬ï¼Œä½¿ç”¨æ­¤å‡½æ•°é˜»æ­¢è¿™äº›é»˜è®¤è¡Œä¸ºã€‚
 			 */
 			preventDefault : function () {
 				this.returnValue = false;
 			},
 			
 			/**
-			 * Í£Ö¹Ä¬ÈÏÊÂ¼şºÍÃ°Åİ¡£
+			 * åœæ­¢é»˜è®¤äº‹ä»¶å’Œå†’æ³¡ã€‚
 			 * @remark
-			 * ´Ëº¯Êı¿ÉÒÔÍêÈ«³·ÏúÊÂ¼ş¡£
-			 * ÊÂ¼ş´¦Àíº¯ÊıÖĞ return false ºÍµ÷ÓÃ stop() ÊÇ²»Í¬µÄ£¬ return false Ö»»á×èÖ¹µ±Ç°ÊÂ¼şÆäËüº¯ÊıÖ´ĞĞ£¬
-			 * ¶ø stop() Ö»×èÖ¹ÊÂ¼şÃ°ÅİºÍÄ¬ÈÏÊÂ¼ş£¬²»×èÖ¹µ±Ç°ÊÂ¼şÆäËüº¯Êı¡£
+			 * æ­¤å‡½æ•°å¯ä»¥å®Œå…¨æ’¤é”€äº‹ä»¶ã€‚
+			 * äº‹ä»¶å¤„ç†å‡½æ•°ä¸­ return false å’Œè°ƒç”¨ stop() æ˜¯ä¸åŒçš„ï¼Œ return false åªä¼šé˜»æ­¢å½“å‰äº‹ä»¶å…¶å®ƒå‡½æ•°æ‰§è¡Œï¼Œ
+			 * è€Œ stop() åªé˜»æ­¢äº‹ä»¶å†’æ³¡å’Œé»˜è®¤äº‹ä»¶ï¼Œä¸é˜»æ­¢å½“å‰äº‹ä»¶å…¶å®ƒå‡½æ•°ã€‚
 			 */
 			stop: function () {
 				this.stopPropagation();
@@ -1912,15 +1912,15 @@ function assert(bValue, msg){
 		/// #if !defind(SupportIE8) && (ElementEvent || ElementDomReady)
 		
 		/**
-		 * À©Õ¹µÄÊÂ¼ş¶ÔÏó¡£
+		 * æ‰©å±•çš„äº‹ä»¶å¯¹è±¡ã€‚
 		 */
 		eventObj = {
 			
 			/**
-			 * °ó¶¨Ò»¸ö¼àÌıÆ÷¡£
+			 * ç»‘å®šä¸€ä¸ªç›‘å¬å™¨ã€‚
 			 * @method
-			 * @param {String} type ÀàĞÍ¡£
-			 * @param {Function} listener º¯Êı¡£
+			 * @param {String} type ç±»å‹ã€‚
+			 * @param {Function} listener å‡½æ•°ã€‚
 			 * @seeAlso removeEventListener
 			 * @example
 			 * <code>
@@ -1931,22 +1931,22 @@ function assert(bValue, msg){
 			 */
 			addEventListener: document.addEventListener ? function (type, listener) {
 				
-				//  ÒòÎª IE ²»Ö§³Ö£¬ËùÒÔºöÂÔ µÚÈı¸ö²ÎÊı¡£
+				//  å› ä¸º IE ä¸æ”¯æŒï¼Œæ‰€ä»¥å¿½ç•¥ ç¬¬ä¸‰ä¸ªå‚æ•°ã€‚
 				this.addEventListener(type, listener, false);
 				
 			} : function (type, listener) {
 			
-				// IE8- Ê¹ÓÃ attachEvent ¡£
+				// IE8- ä½¿ç”¨ attachEvent ã€‚
 				this.attachEvent('on' + type, listener);
 				
 			},
 	
 			/**
-			 * ÒÆ³ıÒ»¸ö¼àÌıÆ÷¡£
+			 * ç§»é™¤ä¸€ä¸ªç›‘å¬å™¨ã€‚
 			 * @method
-			 * @param {String} type ÀàĞÍ¡£
-			 * @param {Function} listener º¯Êı¡£
-			 *  @param {Boolean} state ÀàĞÍ¡£
+			 * @param {String} type ç±»å‹ã€‚
+			 * @param {Function} listener å‡½æ•°ã€‚
+			 *  @param {Boolean} state ç±»å‹ã€‚
 			 * @seeAlso addEventListener
 			 * @example
 			 * <code>
@@ -1957,12 +1957,12 @@ function assert(bValue, msg){
 			 */
 			removeEventListener: document.removeEventListener ? function (type, listener) {
 			
-				//  ÒòÎª IE ²»Ö§³Ö£¬ËùÒÔºöÂÔ µÚÈı¸ö²ÎÊı¡£
+				//  å› ä¸º IE ä¸æ”¯æŒï¼Œæ‰€ä»¥å¿½ç•¥ ç¬¬ä¸‰ä¸ªå‚æ•°ã€‚
 				this.removeEventListener(type, listener, false);
 				
 			}:function (type, listener) {
 			
-				// IE8- Ê¹ÓÃ detachEvent ¡£
+				// IE8- ä½¿ç”¨ detachEvent ã€‚
 				this.detachEvent('on' + type, listener);
 				
 			}
@@ -1976,19 +1976,19 @@ function assert(bValue, msg){
 		/// #ifdef ElementDimension
 		
 		/**
-		 * ÅĞ¶Ï body ½ÚµãµÄÕıÔò±í´ïÊ½¡£
+		 * åˆ¤æ–­ body èŠ‚ç‚¹çš„æ­£åˆ™è¡¨è¾¾å¼ã€‚
 		 * @type RegExp
 		 */
 		rBody = /^(?:BODY|HTML|#document)$/i,
 		
 		/**
-		 * ²âÊÔÊÇ·ñÊÇ¾ø¶ÔÎ»ÖÃµÄÕıÔò±í´ïÊ½¡£
+		 * æµ‹è¯•æ˜¯å¦æ˜¯ç»å¯¹ä½ç½®çš„æ­£åˆ™è¡¨è¾¾å¼ã€‚
 		 * @type RegExp
 		 */
 		rMovable = /^(?:abs|fix)/,
 		
 		/**
-		 * »ñÈ¡´°¿Ú¹ö¶¯´óĞ¡µÄ·½·¨¡£
+		 * è·å–çª—å£æ»šåŠ¨å¤§å°çš„æ–¹æ³•ã€‚
 		 * @type Function
 		 */
 		getWindowScroll,
@@ -1996,15 +1996,15 @@ function assert(bValue, msg){
 		/// #endif
 	
 		/**
-		 * Ò»¸öµã¡£
+		 * ä¸€ä¸ªç‚¹ã€‚
 		 * @class Point
 		 */
 		Point = namespace(".Point", Class({
 	
 			/**
-			 * ³õÊ¼»¯ Point µÄÊµÀı¡£
-			 * @param {Number} x X ×ø±ê¡£
-			 * @param {Number} y Y ×ø±ê¡£
+			 * åˆå§‹åŒ– Point çš„å®ä¾‹ã€‚
+			 * @param {Number} x X åæ ‡ã€‚
+			 * @param {Number} y Y åæ ‡ã€‚
 			 * @constructor Point
 			 */
 			constructor: function (x, y) {
@@ -2013,8 +2013,8 @@ function assert(bValue, msg){
 			},
 	
 			/**
-			 * ½« (x, y) ÔöÖµ¡£
-			 * @param {Point} p Öµ¡£
+			 * å°† (x, y) å¢å€¼ã€‚
+			 * @param {Point} p å€¼ã€‚
 			 * @return {Point} this
 			 */
 			add: function (p) {
@@ -2022,8 +2022,8 @@ function assert(bValue, msg){
 			},
 	
 			/**
-			 * ½«Ò»¸öµã×ø±ê¼õµ½µ±Ç°Öµ¡£
-			 * @param {Point} p Öµ¡£
+			 * å°†ä¸€ä¸ªç‚¹åæ ‡å‡åˆ°å½“å‰å€¼ã€‚
+			 * @param {Point} p å€¼ã€‚
 			 * @return {Point} this
 			 */
 			sub: function (p) {
@@ -2033,130 +2033,130 @@ function assert(bValue, msg){
 		})),
 		
 		/**
-		 * ÎÄµµ¶ÔÏó¡£
+		 * æ–‡æ¡£å¯¹è±¡ã€‚
 		 * @class Document
-		 * ÎÄµµ¶ÔÏóÊÇ¶ÔÔ­Éú HTMLDocument ¶ÔÏóµÄ²¹³ä£¬ ÒòÎª IE6/7 ²»´æÔÚÕâĞ©¶ÔÏó¡£
-		 * À©Õ¹ Document Ò²»áÀ©Õ¹ HTMLDocument¡£
+		 * æ–‡æ¡£å¯¹è±¡æ˜¯å¯¹åŸç”Ÿ HTMLDocument å¯¹è±¡çš„è¡¥å……ï¼Œ å› ä¸º IE6/7 ä¸å­˜åœ¨è¿™äº›å¯¹è±¡ã€‚
+		 * æ‰©å±• Document ä¹Ÿä¼šæ‰©å±• HTMLDocumentã€‚
 		 */
 		Document = p.Native(document.constructor || {prototype: document}),
 		
 		/**
-		 * ËùÓĞ¿Ø¼ş»ùÀà¡£
+		 * æ‰€æœ‰æ§ä»¶åŸºç±»ã€‚
 		 * @class Control
 		 * @abstract
 		 * @extends Element
-		 * ¿Ø¼şµÄÖÜÆÚ£º
-		 * constructor  -  ´´½¨¿Ø¼ş¶ÔÓÚµÄ Javascript Àà¡£ ²»½¨ÒéÖØĞ´£¬³ı·ÇÄãÖªµÀÄãÔÚ×öÊ²Ã´¡£
-		 * create - ´´½¨±¾ÉíµÄ dom ½Úµã¡£ ¿ÉÖØĞ´ - Ä¬ÈÏÊ¹ÓÃ  this.tpl ´´½¨¡£
-		 * init - ³õÊ¼»¯¿Ø¼ş±¾Éí¡£ ¿ÉÖØĞ´ - Ä¬ÈÏÎªÎŞ²Ù×÷¡£
-		 * render - äÖÈ¾¿Ø¼şµ½ÎÄµµ¡£ ²»½¨ÒéÖØĞ´£¬Èç¹ûÄãÏ£Íû¶îÍâ²Ù×÷äÖÈ¾ÊÂ¼ş£¬ÔòÖØĞ´¡£
-		 * detach - É¾³ı¿Ø¼ş¡£²»½¨ÒéÖØĞ´£¬Èç¹ûÒ»¸ö¿Ø¼şÓÃµ½¶à¸ö dom ÄÚÈİĞèÖØĞ´¡£
+		 * æ§ä»¶çš„å‘¨æœŸï¼š
+		 * constructor  -  åˆ›å»ºæ§ä»¶å¯¹äºçš„ Javascript ç±»ã€‚ ä¸å»ºè®®é‡å†™ï¼Œé™¤éä½ çŸ¥é“ä½ åœ¨åšä»€ä¹ˆã€‚
+		 * create - åˆ›å»ºæœ¬èº«çš„ dom èŠ‚ç‚¹ã€‚ å¯é‡å†™ - é»˜è®¤ä½¿ç”¨  this.tpl åˆ›å»ºã€‚
+		 * init - åˆå§‹åŒ–æ§ä»¶æœ¬èº«ã€‚ å¯é‡å†™ - é»˜è®¤ä¸ºæ— æ“ä½œã€‚
+		 * render - æ¸²æŸ“æ§ä»¶åˆ°æ–‡æ¡£ã€‚ ä¸å»ºè®®é‡å†™ï¼Œå¦‚æœä½ å¸Œæœ›é¢å¤–æ“ä½œæ¸²æŸ“äº‹ä»¶ï¼Œåˆ™é‡å†™ã€‚
+		 * detach - åˆ é™¤æ§ä»¶ã€‚ä¸å»ºè®®é‡å†™ï¼Œå¦‚æœä¸€ä¸ªæ§ä»¶ç”¨åˆ°å¤šä¸ª dom å†…å®¹éœ€é‡å†™ã€‚
 		 */
 		Control = namespace(".Control", Class({
 			
 			/**
-			 * ·â×°µÄ½Úµã¡£
+			 * å°è£…çš„èŠ‚ç‚¹ã€‚
 			 * @type Element
 			 */
 			dom: null,
 			
 			/**
-			 * xType ¡£
+			 * xType ã€‚
 			 */
 			xType: "control",
 		
 			/**
-			 * ¸ù¾İÒ»¸ö½Úµã·µ»Ø¡£
-			 * @param {String/Element/Object} [options] ¶ÔÏóµÄ id »ò¶ÔÏó»ò¸÷¸öÅäÖÃ¡£
+			 * æ ¹æ®ä¸€ä¸ªèŠ‚ç‚¹è¿”å›ã€‚
+			 * @param {String/Element/Object} [options] å¯¹è±¡çš„ id æˆ–å¯¹è±¡æˆ–å„ä¸ªé…ç½®ã€‚
 			 */
 			constructor: function (options) {
 				
-				// ÕâÊÇËùÓĞ¿Ø¼ş¹²ÓÃµÄ¹¹Ôìº¯Êı¡£
+				// è¿™æ˜¯æ‰€æœ‰æ§ä»¶å…±ç”¨çš„æ„é€ å‡½æ•°ã€‚
 				
 				var me = this,
 				
-					// ÁÙÊ±µÄÅäÖÃ¶ÔÏó¡£
+					// ä¸´æ—¶çš„é…ç½®å¯¹è±¡ã€‚
 					opt = apply({}, me.options),
 					
-					// µ±Ç°Êµ¼ÊµÄ½Úµã¡£
+					// å½“å‰å®é™…çš„èŠ‚ç‚¹ã€‚
 					dom;
 					
 				
-				// Èç¹û´æÔÚÅäÖÃ¡£
+				// å¦‚æœå­˜åœ¨é…ç½®ã€‚
 				if (options) {
 					
-					// Èç¹û²ÎÊıÊÇÒ»¸ö DOM ½Úµã»ò ID ¡£
+					// å¦‚æœå‚æ•°æ˜¯ä¸€ä¸ª DOM èŠ‚ç‚¹æˆ– ID ã€‚
 					if (typeof options == 'string' || options.nodeType) {
 						
-						// Ö±½Ó¸³Öµ£¬ ÔÚÏÂÃæÓÃ $ »ñÈ¡½Úµã ¡£
+						// ç›´æ¥èµ‹å€¼ï¼Œ åœ¨ä¸‹é¢ç”¨ $ è·å–èŠ‚ç‚¹ ã€‚
 						dom = options;
 					} else {
 						
-						// ·ñÔò options ÊÇÒ»¸ö¶ÔÏó¡£
+						// å¦åˆ™ options æ˜¯ä¸€ä¸ªå¯¹è±¡ã€‚
 						
-						// ¸´ÖÆ³ÉÔ±µ½ÁÙÊ±ÅäÖÃ¡£
+						// å¤åˆ¶æˆå‘˜åˆ°ä¸´æ—¶é…ç½®ã€‚
 						apply(opt, options);
 						
-						// ±£´æ dom ¡£
+						// ä¿å­˜ dom ã€‚
 						dom = opt.dom;
 						delete opt.dom;
 					}
 				}
 				
-				// Èç¹û dom µÄÈ·´æÔÚ£¬Ê¹ÓÃÒÑ´æÔÚµÄ£¬ ·ñÔòÊ¹ÓÃ create(opt)Éú³É½Úµã¡£
+				// å¦‚æœ dom çš„ç¡®å­˜åœ¨ï¼Œä½¿ç”¨å·²å­˜åœ¨çš„ï¼Œ å¦åˆ™ä½¿ç”¨ create(opt)ç”ŸæˆèŠ‚ç‚¹ã€‚
 				me.dom = dom ? $$(dom) : me.create(opt);
 				
 				
-				// µ÷ÓÃ init ³õÊ¼»¯¿Ø¼ş¡£
+				// è°ƒç”¨ init åˆå§‹åŒ–æ§ä»¶ã€‚
 				me.init(opt);
 				
-				// ´¦ÀíÑùÊ½¡£
+				// å¤„ç†æ ·å¼ã€‚
 				if('style' in opt) {
 					me.dom.style.cssText += ';' + opt.style;
 					delete opt.style;
 				}
 				
-				// ¸´ÖÆ¸÷¸öÑ¡Ïî¡£
+				// å¤åˆ¶å„ä¸ªé€‰é¡¹ã€‚
 				Object.set(me, opt);
 			},
 			
 			/**
-			 * µ±±»×ÓÀàÖØĞ´Ê±£¬Éú³Éµ±Ç°¿Ø¼ş¡£
-			 * @param {Object} options Ñ¡Ïî¡£
+			 * å½“è¢«å­ç±»é‡å†™æ—¶ï¼Œç”Ÿæˆå½“å‰æ§ä»¶ã€‚
+			 * @param {Object} options é€‰é¡¹ã€‚
 			 * @protected
 			 */
 			create: function() {
 				
 				
-				// ×ªÎª¶Ô tpl½âÎö¡£
+				// è½¬ä¸ºå¯¹ tplè§£æã€‚
 				return Element.parse(this.tpl);
 			},
 			
 			/**
-			 * µ±±»×ÓÀàÖØĞ´Ê±£¬äÖÈ¾¿Ø¼ş¡£
+			 * å½“è¢«å­ç±»é‡å†™æ—¶ï¼Œæ¸²æŸ“æ§ä»¶ã€‚
 			 * @method
-			 * @param {Object} options ÅäÖÃ¡£
+			 * @param {Object} options é…ç½®ã€‚
 			 * @protected
 			 */
 			init: Function.empty,
 			
 			/**
-			 * ´´½¨µ±Ç°½ÚµãµÄ¸±±¾£¬²¢·µ»Ø½ÚµãµÄ°ü×°¡£
-			 * @param {cloneContent} ÊÇ·ñ¸´ÖÆÄÚÈİ ¡£
-		     * @return {Control} ĞÂµÄ¿Ø¼ş¡£
+			 * åˆ›å»ºå½“å‰èŠ‚ç‚¹çš„å‰¯æœ¬ï¼Œå¹¶è¿”å›èŠ‚ç‚¹çš„åŒ…è£…ã€‚
+			 * @param {cloneContent} æ˜¯å¦å¤åˆ¶å†…å®¹ ã€‚
+		     * @return {Control} æ–°çš„æ§ä»¶ã€‚
 			 */
 			cloneNode: function (cloneContent) {
 				return new this.constructor(this.dom.cloneNode(cloneContent));
 			},
 			
 			/**
-		     * ´´½¨²¢·µ»Ø¿Ø¼şµÄ¸±±¾¡£
-		     * @param {Boolean} keepId=fasle ÊÇ·ñ¸´ÖÆ id ¡£
-		     * @return {Control} ĞÂµÄ¿Ø¼ş¡£
+		     * åˆ›å»ºå¹¶è¿”å›æ§ä»¶çš„å‰¯æœ¬ã€‚
+		     * @param {Boolean} keepId=fasle æ˜¯å¦å¤åˆ¶ id ã€‚
+		     * @return {Control} æ–°çš„æ§ä»¶ã€‚
 		     */
 			clone: function(keepId) {
 				
-				// ´´½¨Ò»¸ö¿Ø¼ş¡£
+				// åˆ›å»ºä¸€ä¸ªæ§ä»¶ã€‚
 				return  new this.constructor(this.dom.nodeType === 1 ? this.dom.clone(false, true, keepId) : this.dom.cloneNode(!keepId));
 				
 			}
@@ -2164,12 +2164,12 @@ function assert(bValue, msg){
 		})),
 		
 		/**
-		 * ½Úµã¼¯ºÏ¡£
+		 * èŠ‚ç‚¹é›†åˆã€‚
 		 * @class ElementList
 		 * @extends Array
-		 * ElementList ÊÇ¶ÔÔªËØÊı×éµÄÖ»¶Á°ü×°¡£
-		 * ElementList ÔÊĞí¿ìËÙ²Ù×÷¶à¸ö½Úµã¡£
-		 * ElementList µÄÊµÀıÒ»µ©´´½¨£¬Ôò²»ÔÊĞíĞŞ¸ÄÆä³ÉÔ±¡£
+		 * ElementList æ˜¯å¯¹å…ƒç´ æ•°ç»„çš„åªè¯»åŒ…è£…ã€‚
+		 * ElementList å…è®¸å¿«é€Ÿæ“ä½œå¤šä¸ªèŠ‚ç‚¹ã€‚
+		 * ElementList çš„å®ä¾‹ä¸€æ—¦åˆ›å»ºï¼Œåˆ™ä¸å…è®¸ä¿®æ”¹å…¶æˆå‘˜ã€‚
 		 */
 		ElementList = namespace(".ElementList", 
 		
@@ -2186,15 +2186,15 @@ function assert(bValue, msg){
 		.extend({
 			
 			/**
-			 * »ñÈ¡µ±Ç°¼¯ºÏµÄÔªËØ¸öÊı¡£
+			 * è·å–å½“å‰é›†åˆçš„å…ƒç´ ä¸ªæ•°ã€‚
 			 * @type {Number}
 			 * @property
 			 */
 			length: 0,
 	
 			/**
-			 * ³õÊ¼»¯   ElementList  ÊµÀı¡£
-			 * @param {Array/ElementList} doms ½Úµã¼¯ºÏ¡£
+			 * åˆå§‹åŒ–   ElementList  å®ä¾‹ã€‚
+			 * @param {Array/ElementList} doms èŠ‚ç‚¹é›†åˆã€‚
 			 * @constructor
 			 */
 			constructor: function (doms) {
@@ -2208,7 +2208,7 @@ function assert(bValue, msg){
 		
 					/// #ifdef SupportIE8
 					
-					// ¼ì²éÊÇ·ñĞèÒªÎªÃ¿¸ö³ÉÔ±µ÷ÓÃ  $ º¯Êı¡£
+					// æ£€æŸ¥æ˜¯å¦éœ€è¦ä¸ºæ¯ä¸ªæˆå‘˜è°ƒç”¨  $ å‡½æ•°ã€‚
 					if(!navigator.isStandard)
 						o.update(this, $$);
 						
@@ -2219,8 +2219,8 @@ function assert(bValue, msg){
 			},
 			
 			/**
-			 * ½«²ÎÊıÊı×éÌí¼Óµ½µ±Ç°¼¯ºÏ¡£
-			 * @param {Element/ElementList} value ÔªËØ¡£
+			 * å°†å‚æ•°æ•°ç»„æ·»åŠ åˆ°å½“å‰é›†åˆã€‚
+			 * @param {Element/ElementList} value å…ƒç´ ã€‚
 			 * @return this
 			 */
 			concat: function (value) {
@@ -2234,9 +2234,9 @@ function assert(bValue, msg){
 			},
 			
 			/**
-			 * ¶ÔÃ¿¸öÔªËØÖ´ĞĞ cloneNode, ²¢·µ»ØĞÂµÄÔªËØµÄ¼¯ºÏ¡£
-			 * @param {Boolean} cloneContent ÊÇ·ñ¸´ÖÆ×ÓÔªËØ¡£
-			 * @return {ElementList} ¸´ÖÆºóµÄĞÂÔªËØ×é³ÉµÄĞÂ¼¯ºÏ¡£
+			 * å¯¹æ¯ä¸ªå…ƒç´ æ‰§è¡Œ cloneNode, å¹¶è¿”å›æ–°çš„å…ƒç´ çš„é›†åˆã€‚
+			 * @param {Boolean} cloneContent æ˜¯å¦å¤åˆ¶å­å…ƒç´ ã€‚
+			 * @return {ElementList} å¤åˆ¶åçš„æ–°å…ƒç´ ç»„æˆçš„æ–°é›†åˆã€‚
 			 */
 			cloneNode: function (cloneContent) {
 				var i = this.length,
@@ -2278,7 +2278,7 @@ function assert(bValue, msg){
 	}, ElementList.prototype);
 	
 	/**
-	 * ¸ù¾İ x, y »ñÈ¡ {x: x y: y} ¶ÔÏó
+	 * æ ¹æ® x, y è·å– {x: x y: y} å¯¹è±¡
 	 * @param {Number/Point} x
 	 * @param {Number} y
 	 * @static
@@ -2294,17 +2294,17 @@ function assert(bValue, msg){
 		/// #ifdef ElementCore
 		
 		/**
-		 * ×ª»»Ò»¸öHTML×Ö·û´®µ½½Úµã¡£
-		 * @param {String/Element} html ×Ö·û¡£
-		 * @param {Element} context Éú³É½ÚµãÊ¹ÓÃµÄÎÄµµÖĞµÄÈÎºÎ½Úµã¡£
-		 * @param {Boolean} cachable=true ÊÇ·ñ»º´æ¡£
-		 * @return {Element/TextNode/DocumentFragment} ÔªËØ¡£
+		 * è½¬æ¢ä¸€ä¸ªHTMLå­—ç¬¦ä¸²åˆ°èŠ‚ç‚¹ã€‚
+		 * @param {String/Element} html å­—ç¬¦ã€‚
+		 * @param {Element} context ç”ŸæˆèŠ‚ç‚¹ä½¿ç”¨çš„æ–‡æ¡£ä¸­çš„ä»»ä½•èŠ‚ç‚¹ã€‚
+		 * @param {Boolean} cachable=true æ˜¯å¦ç¼“å­˜ã€‚
+		 * @return {Element/TextNode/DocumentFragment} å…ƒç´ ã€‚
 		 * @static
 		 */
 		parse: function (html, context, cachable) {
 
 			
-			// ÒÑ¾­ÊÇ Element »ò  ElementList¡£
+			// å·²ç»æ˜¯ Element æˆ–  ElementListã€‚
 			if(html.xType)
 				return html;
 			
@@ -2331,10 +2331,10 @@ function assert(bValue, msg){
 		/// #ifdef ElementManipulation
 			
 		/**
-		 * ÅĞ¶ÏÖ¸¶¨½ÚµãÖ®ºóÓĞÎŞ´æÔÚ×Ó½Úµã¡£
-		 * @param {Element} elem ½Úµã¡£
-		 * @param {Element} child ×Ó½Úµã¡£
-		 * @return {Boolean} Èç¹ûÈ·Êµ´æÔÚ×Ó½Úµã£¬Ôò·µ»Ø true £¬ ·ñÔò·µ»Ø false ¡£
+		 * åˆ¤æ–­æŒ‡å®šèŠ‚ç‚¹ä¹‹åæœ‰æ— å­˜åœ¨å­èŠ‚ç‚¹ã€‚
+		 * @param {Element} elem èŠ‚ç‚¹ã€‚
+		 * @param {Element} child å­èŠ‚ç‚¹ã€‚
+		 * @return {Boolean} å¦‚æœç¡®å®å­˜åœ¨å­èŠ‚ç‚¹ï¼Œåˆ™è¿”å› true ï¼Œ å¦åˆ™è¿”å› false ã€‚
 		 */
 		hasChild: div.compareDocumentPosition ? function (elem, child) {
 			return !!(elem.compareDocumentPosition(child) & 16);
@@ -2351,13 +2351,13 @@ function assert(bValue, msg){
 		/// #ifdef ElementTraversing
 		
 		/**
-		 * ÓÃÓÚ get µÄÃû´Ê¶ÔÏó¡£
+		 * ç”¨äº get çš„åè¯å¯¹è±¡ã€‚
 		 * @type String
 		 */
 		treeWalkers: {
 	
-			// È«²¿×Ó½Úµã¡£
-			all: 'all' in div ? function (elem, fn) { // ·µ»ØÊı×é
+			// å…¨éƒ¨å­èŠ‚ç‚¹ã€‚
+			all: 'all' in div ? function (elem, fn) { // è¿”å›æ•°ç»„
 				var r = new ElementList;
 				ap.forEach.call(elem.all, function(elem) {
 					if(fn(elem))
@@ -2378,56 +2378,56 @@ function assert(bValue, msg){
 				return r;
 			},
 	
-			// ÉÏ¼¶½Úµã¡£
+			// ä¸Šçº§èŠ‚ç‚¹ã€‚
 			parent: createTreeWalker(true, 'parentNode'),
 	
-			// µÚÒ»¸ö½Úµã¡£
+			// ç¬¬ä¸€ä¸ªèŠ‚ç‚¹ã€‚
 			first: createTreeWalker(true, 'nextSibling', 'firstChild'),
 	
-			// ºóÃæµÄ½Úµã¡£
+			// åé¢çš„èŠ‚ç‚¹ã€‚
 			next: createTreeWalker(true, 'nextSibling'),
 	
-			// Ç°ÃæµÄ½Úµã¡£
+			// å‰é¢çš„èŠ‚ç‚¹ã€‚
 			previous: createTreeWalker(true, 'previousSibling'),
 	
-			// ×îºóµÄ½Úµã¡£
+			// æœ€åçš„èŠ‚ç‚¹ã€‚
 			last: createTreeWalker(true, 'previousSibling', 'lastChild'),
 			
-			// È«²¿×Ó½Úµã¡£
+			// å…¨éƒ¨å­èŠ‚ç‚¹ã€‚
 			children: createTreeWalker(false, 'nextSibling', 'firstChild'),
 			
-			// ×îÏàÁÚµÄ½Úµã¡£
+			// æœ€ç›¸é‚»çš„èŠ‚ç‚¹ã€‚
 			closest: function(elem, args) {
 				return args(elem) ? elem : this.parent(elem, args);
 			},
 	
-			// È«²¿ÉÏ¼¶½Úµã¡£
+			// å…¨éƒ¨ä¸Šçº§èŠ‚ç‚¹ã€‚
 			parents: createTreeWalker(false, 'parentNode'),
 	
-			// ºóÃæµÄ½Úµã¡£
+			// åé¢çš„èŠ‚ç‚¹ã€‚
 			nexts: createTreeWalker(false, 'nextSibling'),
 	
-			// Ç°ÃæµÄ½Úµã¡£
+			// å‰é¢çš„èŠ‚ç‚¹ã€‚
 			previouses: createTreeWalker(false, 'previousSibling'),
 	
-			// ÆæÊı¸ö¡£
+			// å¥‡æ•°ä¸ªã€‚
 			odd: function(elem, args) {
 				return this.even(elem, !args);
 			},
 			
-			// Å¼Êı¸ö¡£
+			// å¶æ•°ä¸ªã€‚
 			even: function (elem, args) {
 				return this.children(elem, function (elem) {
 					return args = !args;
 				});
 			},
 	
-			// ĞÖµÜ½Úµã¡£
+			// å…„å¼ŸèŠ‚ç‚¹ã€‚
 			siblings: function(elem, args) {
 				return this.previouses(elem, args).concat(this.nexts(elem, args));
 			},
 			
-			// ºÅ´Î¡£
+			// å·æ¬¡ã€‚
 			index: function (elem) {
 				var i = 0;
 				while(elem = elem.previousSibling)
@@ -2436,7 +2436,7 @@ function assert(bValue, msg){
 				return i;
 			},
 			
-			// Æ«ÒÆ¸¸Î»ÖÃ¡£
+			// åç§»çˆ¶ä½ç½®ã€‚
 			offsetParent: function (elem) {
 				var me = elem;
 				while ( (me = me.offsetParent) && !rBody.test(me.nodeName) && getStyle(me, "position") === "static" );
@@ -2446,72 +2446,72 @@ function assert(bValue, msg){
 		},
 
 		/**
-		 * »ñÈ¡Ò»¸ö½ÚµãÊôĞÔ¡£
+		 * è·å–ä¸€ä¸ªèŠ‚ç‚¹å±æ€§ã€‚
 		 * @static
-		 * @param {Element} elem ÔªËØ¡£
-		 * @param {String} name Ãû×Ö¡£
-		 * @return {String} ÊôĞÔ¡£
+		 * @param {Element} elem å…ƒç´ ã€‚
+		 * @param {String} name åå­—ã€‚
+		 * @return {String} å±æ€§ã€‚
 		 */
 		getAttr: $.attr,
 
 		/**
-		 * ¼ì²éÊÇ·ñº¬Ö¸¶¨ÀàÃû¡£
-		 * @param {Element} elem ÔªËØ¡£
-		 * @param {String} className ÀàÃû¡£
-		 * @return {Boolean} Èç¹û´æÔÚ·µ»Ø true¡£
+		 * æ£€æŸ¥æ˜¯å¦å«æŒ‡å®šç±»åã€‚
+		 * @param {Element} elem å…ƒç´ ã€‚
+		 * @param {String} className ç±»åã€‚
+		 * @return {Boolean} å¦‚æœå­˜åœ¨è¿”å› trueã€‚
 		 */
 		hasClass: function (elem, className) {
 			return $(elem).hasClass(className);
 		},
 		
 		/**
-		 * »ñÈ¡ÔªËØµÄ¼ÆËãÑùÊ½¡£
-		 * @param {Element} dom ½Úµã¡£
-		 * @param {String} name Ãû×Ö¡£
-		 * @return {String} ÑùÊ½¡£
+		 * è·å–å…ƒç´ çš„è®¡ç®—æ ·å¼ã€‚
+		 * @param {Element} dom èŠ‚ç‚¹ã€‚
+		 * @param {String} name åå­—ã€‚
+		 * @return {String} æ ·å¼ã€‚
 		 */
 		getStyle: getStyle,
 
 		/**
-		 * ¶ÁÈ¡ÑùÊ½×Ö·û´®¡£
-		 * @param {Element} elem ÔªËØ¡£
-		 * @param {String} name ÊôĞÔÃû¡£±ØĞëÊ¹ÓÃÂæÍÕ¹æÔòµÄÃû×Ö¡£
-		 * @return {String} ×Ö·û´®¡£
+		 * è¯»å–æ ·å¼å­—ç¬¦ä¸²ã€‚
+		 * @param {Element} elem å…ƒç´ ã€‚
+		 * @param {String} name å±æ€§åã€‚å¿…é¡»ä½¿ç”¨éª†é©¼è§„åˆ™çš„åå­—ã€‚
+		 * @return {String} å­—ç¬¦ä¸²ã€‚
 		 */
 		styleString:  getStyle,
 
 		/**
-		 * ¶ÁÈ¡ÑùÊ½Êı×Ö¡£
-		 * @param {Element} elem ÔªËØ¡£
-		 * @param {String} name ÊôĞÔÃû¡£±ØĞëÊ¹ÓÃÂæÍÕ¹æÔòµÄÃû×Ö¡£
-		 * @return {String} ×Ö·û´®¡£
+		 * è¯»å–æ ·å¼æ•°å­—ã€‚
+		 * @param {Element} elem å…ƒç´ ã€‚
+		 * @param {String} name å±æ€§åã€‚å¿…é¡»ä½¿ç”¨éª†é©¼è§„åˆ™çš„åå­—ã€‚
+		 * @return {String} å­—ç¬¦ä¸²ã€‚
 		 * @static
 		 */
 		styleNumber: styleNumber,
 
 		/**
-		 * ÑùÊ½±í¡£
+		 * æ ·å¼è¡¨ã€‚
 		 * @static
 		 * @type Object
 		 */
 		sizeMap: {},
 		
 		/**
-		 * ÏÔÊ¾ÔªËØµÄÑùÊ½¡£
+		 * æ˜¾ç¤ºå…ƒç´ çš„æ ·å¼ã€‚
 		 * @static
 		 * @type Object
 		 */
 		display: { position: "absolute", visibility: "visible", display: "block" },
 
 		/**
-		 * ²»ĞèÒªµ¥Î»µÄ css ÊôĞÔ¡£
+		 * ä¸éœ€è¦å•ä½çš„ css å±æ€§ã€‚
 		 * @static
 		 * @type Object
 		 */
 		styleNumbers: map('fillOpacity fontWeight lineHeight opacity orphans widows zIndex zoom', {}, {}),
 	
 		/**
-		 * Ä¬ÈÏ×î´óµÄ z-index ¡£
+		 * é»˜è®¤æœ€å¤§çš„ z-index ã€‚
 		 * @property
 		 * @type Number
 		 * @private
@@ -2520,26 +2520,26 @@ function assert(bValue, msg){
 		zIndex: 10000,
 		
 		/**
-		 * Çå¿ÕÔªËØµÄ display ÊôĞÔ¡£
-		 * @param {Element} elem ÔªËØ¡£
+		 * æ¸…ç©ºå…ƒç´ çš„ display å±æ€§ã€‚
+		 * @param {Element} elem å…ƒç´ ã€‚
 		 */
 		show: function (elem) {
 			$(elem).show();
 		},
 		
 		/**
-		 * ¸³ÓèÔªËØµÄ display ÊôĞÔ none¡£
-		 * @param {Element} elem ÔªËØ¡£
+		 * èµ‹äºˆå…ƒç´ çš„ display å±æ€§ noneã€‚
+		 * @param {Element} elem å…ƒç´ ã€‚
 		 */
 		hide: function (elem) {
 			$(elem).hide();
 		},
 		
 		/**
-		 * »ñÈ¡Ö¸¶¨cssÊôĞÔµÄµ±Ç°Öµ¡£
-		 * @param {Element} elem ÔªËØ¡£
-		 * @param {Object} styles ĞèÒªÊÕ¼¯µÄÊôĞÔ¡£
-		 * @return {Object} ÊÕ¼¯µÄÊôĞÔ¡£
+		 * è·å–æŒ‡å®šcsså±æ€§çš„å½“å‰å€¼ã€‚
+		 * @param {Element} elem å…ƒç´ ã€‚
+		 * @param {Object} styles éœ€è¦æ”¶é›†çš„å±æ€§ã€‚
+		 * @return {Object} æ”¶é›†çš„å±æ€§ã€‚
 		 */
 		getStyles: function (elem, styles) {
 
@@ -2551,9 +2551,9 @@ function assert(bValue, msg){
 		},
 		
 		/**
-		 * ÉèÖÃÖ¸¶¨cssÊôĞÔµÄµ±Ç°Öµ¡£
-		 * @param {Element} elem ÔªËØ¡£
-		 * @param {Object} styles ĞèÒªÊÕ¼¯µÄÊôĞÔ¡£
+		 * è®¾ç½®æŒ‡å®šcsså±æ€§çš„å½“å‰å€¼ã€‚
+		 * @param {Element} elem å…ƒç´ ã€‚
+		 * @param {Object} styles éœ€è¦æ”¶é›†çš„å±æ€§ã€‚
 		 */
 		setStyles: function (elem, styles) {
 
@@ -2565,12 +2565,12 @@ function assert(bValue, msg){
 		/// #if defined(ElementDimension) ||  defined(ElementStyle)
 
 		/**
-		 * ¸ù¾İ²»Í¬µÄÄÚÈİ½øĞĞ¼ÆËã¡£
-		 * @param {Element} elem ÔªËØ¡£
-		 * @param {String} type ÊäÈë¡£ Ò»¸ö type ÓÉ¶à¸ö¾ä×ÓÓÃ,Á¬½Ó£¬Ò»¸ö¾ä×ÓÓÉ¶à¸ö´ÊÓïÓÃ+Á¬½Ó£¬Ò»¸ö´ÊÓïÓÉÁ½¸ö×Ö×é³É£¬ µÚÒ»¸ö×Ö¿ÉÒÔÊÇÏÂÁĞ×Ö·ûÖ®Ò»: m b p t l r b h w  µÚ¶ş¸ö×Ö¿ÉÒÔÊÇÏÂÁĞ×Ö·ûÖ®Ò»: x y l t r b¡£´ÊÓïÒ²¿ÉÒÔÊÇ: outer inner  ¡£ 
-		 * @return {Number} ¼ÆËãÖµ¡£
-		 * mx+sx ->  Íâ´óĞ¡¡£
-		 * mx-sx ->  ÄÚ´óĞ¡¡£
+		 * æ ¹æ®ä¸åŒçš„å†…å®¹è¿›è¡Œè®¡ç®—ã€‚
+		 * @param {Element} elem å…ƒç´ ã€‚
+		 * @param {String} type è¾“å…¥ã€‚ ä¸€ä¸ª type ç”±å¤šä¸ªå¥å­ç”¨,è¿æ¥ï¼Œä¸€ä¸ªå¥å­ç”±å¤šä¸ªè¯è¯­ç”¨+è¿æ¥ï¼Œä¸€ä¸ªè¯è¯­ç”±ä¸¤ä¸ªå­—ç»„æˆï¼Œ ç¬¬ä¸€ä¸ªå­—å¯ä»¥æ˜¯ä¸‹åˆ—å­—ç¬¦ä¹‹ä¸€: m b p t l r b h w  ç¬¬äºŒä¸ªå­—å¯ä»¥æ˜¯ä¸‹åˆ—å­—ç¬¦ä¹‹ä¸€: x y l t r bã€‚è¯è¯­ä¹Ÿå¯ä»¥æ˜¯: outer inner  ã€‚ 
+		 * @return {Number} è®¡ç®—å€¼ã€‚
+		 * mx+sx ->  å¤–å¤§å°ã€‚
+		 * mx-sx ->  å†…å¤§å°ã€‚
 		 */
 		getSize: (function() {
 			
@@ -2598,9 +2598,9 @@ function assert(bValue, msg){
 			}
 			
 			/**
-			 * ·­Òë type¡£
-			 * @param {String} type ÊäÈë×Ö·û´®¡£
-			 * @return {String} ´¦ÀíºóµÄ×Ö·û´®¡£
+			 * ç¿»è¯‘ typeã€‚
+			 * @param {String} type è¾“å…¥å­—ç¬¦ä¸²ã€‚
+			 * @return {String} å¤„ç†åçš„å­—ç¬¦ä¸²ã€‚
 			 */
 			function format(type) {
 				var t, f = type.charAt(0);
@@ -2652,8 +2652,8 @@ function assert(bValue, msg){
 		/// #ifdef ElementDimension
 		
 		/**
-		 * ÉèÖÃÒ»¸öÔªËØ¿ÉÍÏ¶¯¡£
-		 * @param {Element} elem ÒªÉèÖÃµÄ½Úµã¡£
+		 * è®¾ç½®ä¸€ä¸ªå…ƒç´ å¯æ‹–åŠ¨ã€‚
+		 * @param {Element} elem è¦è®¾ç½®çš„èŠ‚ç‚¹ã€‚
 		 * @static
 		 */
 		setMovable: function (elem) {
@@ -2664,25 +2664,25 @@ function assert(bValue, msg){
 		/// #endif
 		
 		/**
-		 * ½«Ò»¸ö³ÉÔ±¸½¼Óµ½ Element ¶ÔÏóºÍÏà¹ØÀà¡£
-		 * @param {Object} obj Òª¸½¼ÓµÄ¶ÔÏó¡£
-		 * @param {Number} listType = 1 ËµÃ÷ÈçºÎ¸´ÖÆµ½ ElementList ÊµÀı¡£
+		 * å°†ä¸€ä¸ªæˆå‘˜é™„åŠ åˆ° Element å¯¹è±¡å’Œç›¸å…³ç±»ã€‚
+		 * @param {Object} obj è¦é™„åŠ çš„å¯¹è±¡ã€‚
+		 * @param {Number} listType = 1 è¯´æ˜å¦‚ä½•å¤åˆ¶åˆ° ElementList å®ä¾‹ã€‚
 		 * @return {Element} this
 		 * @static
-		 * ¶Ô Element À©Õ¹£¬ÄÚ²¿¶Ô Element ElementList document ½ÔÀ©Õ¹¡£
-		 * ÕâÊÇÓÉÓÚ²»Í¬µÄº¯ÊıĞèÓÃ²»Í¬µÄ·½·¨À©Õ¹£¬±ØĞëÖ¸Ã÷À©Õ¹ÀàĞÍ¡£
-		 * ËùÎ½µÄÀ©Õ¹£¬¼´Ò»¸öÀàËùĞèÒªµÄº¯Êı¡£
+		 * å¯¹ Element æ‰©å±•ï¼Œå†…éƒ¨å¯¹ Element ElementList document çš†æ‰©å±•ã€‚
+		 * è¿™æ˜¯ç”±äºä¸åŒçš„å‡½æ•°éœ€ç”¨ä¸åŒçš„æ–¹æ³•æ‰©å±•ï¼Œå¿…é¡»æŒ‡æ˜æ‰©å±•ç±»å‹ã€‚
+		 * æ‰€è°“çš„æ‰©å±•ï¼Œå³ä¸€ä¸ªç±»æ‰€éœ€è¦çš„å‡½æ•°ã€‚
 		 *
 		 *
-		 * DOM ·½·¨ ÓĞ ÒÔÏÂÖÖ
+		 * DOM æ–¹æ³• æœ‰ ä»¥ä¸‹ç§
 		 *
-		 *  1,   ÆäËü    setText - Ö´ĞĞ½á¹û·µ»Ø this£¬ ·µ»Ø this ¡£(Ä¬ÈÏ)
-		 *  2  getText - Ö´ĞĞ½á¹ûÊÇÊı¾İ£¬·µ»Ø½á¹ûÊı×é¡£ 
-		 *  3  getElementById - Ö´ĞĞ½á¹ûÊÇDOM »ò ElementList£¬·µ»Ø  ElementList °ü×°¡£
-		 *  4   hasClass - Ö»ÒªÓĞÒ»¸ö·µ»ØµÈÓÚ true µÄÖµ£¬ ¾Í·µ»ØÕâ¸öÖµ¡£
+		 *  1,   å…¶å®ƒ    setText - æ‰§è¡Œç»“æœè¿”å› thisï¼Œ è¿”å› this ã€‚(é»˜è®¤)
+		 *  2  getText - æ‰§è¡Œç»“æœæ˜¯æ•°æ®ï¼Œè¿”å›ç»“æœæ•°ç»„ã€‚ 
+		 *  3  getElementById - æ‰§è¡Œç»“æœæ˜¯DOM æˆ– ElementListï¼Œè¿”å›  ElementList åŒ…è£…ã€‚
+		 *  4   hasClass - åªè¦æœ‰ä¸€ä¸ªè¿”å›ç­‰äº true çš„å€¼ï¼Œ å°±è¿”å›è¿™ä¸ªå€¼ã€‚
 		 * 
 		 *
-		 *  ²ÎÊı copyIf ½öÄÚ²¿Ê¹ÓÃ¡£
+		 *  å‚æ•° copyIf ä»…å†…éƒ¨ä½¿ç”¨ã€‚
 		 */
 		implement: function (members, listType, copyIf) {
 
@@ -2752,11 +2752,11 @@ function assert(bValue, msg){
 		},
 
 		/**
-		 * Èô²»´æÔÚ£¬Ôò½«Ò»¸ö¶ÔÏó¸½¼Óµ½ Element ¶ÔÏó¡£
+		 * è‹¥ä¸å­˜åœ¨ï¼Œåˆ™å°†ä¸€ä¸ªå¯¹è±¡é™„åŠ åˆ° Element å¯¹è±¡ã€‚
 		 * @static
-		 * @param {Object} obj Òª¸½¼ÓµÄ¶ÔÏó¡£
-		 * @param {Number} listType = 1 ËµÃ÷ÈçºÎ¸´ÖÆµ½ ElementList ÊµÀı¡£
-		 * @param {Number} docType ËµÃ÷ÈçºÎ¸´ÖÆµ½ Document ÊµÀı¡£
+		 * @param {Object} obj è¦é™„åŠ çš„å¯¹è±¡ã€‚
+		 * @param {Number} listType = 1 è¯´æ˜å¦‚ä½•å¤åˆ¶åˆ° ElementList å®ä¾‹ã€‚
+		 * @param {Number} docType è¯´æ˜å¦‚ä½•å¤åˆ¶åˆ° Document å®ä¾‹ã€‚
 		 * @return {Element} this
 		 */
 		implementIf: function (obj, listType) {
@@ -2764,44 +2764,44 @@ function assert(bValue, msg){
 		},
 		
 		/**
-		 * ¶¨ÒåÊÂ¼ş¡£
-		 * @param {String} ÊÂ¼şÃû¡£
-		 * @param {Function} trigger ´¥·¢Æ÷¡£
-		 * @return {Function} º¯Êı±¾Éí
+		 * å®šä¹‰äº‹ä»¶ã€‚
+		 * @param {String} äº‹ä»¶åã€‚
+		 * @param {Function} trigger è§¦å‘å™¨ã€‚
+		 * @return {Function} å‡½æ•°æœ¬èº«
 		 * @static
 		 * @memberOf Element
-		 * Ô­Ôò Element.addEvents ¿ÉÒÔ½â¾öÎÊÌâ¡£ µ«ÓÉÓÚ DOM µÄÌØÊâĞÔ£¬¶îÍâÌá¹© defineEvents ·½±ã¶¨ÒåÊÊºÏ DOM µÄÊÂ¼ş¡£
-		 * defineEvents Ö÷Òª½â¾ö 3 ¸öÎÊÌâ:
+		 * åŸåˆ™ Element.addEvents å¯ä»¥è§£å†³é—®é¢˜ã€‚ ä½†ç”±äº DOM çš„ç‰¹æ®Šæ€§ï¼Œé¢å¤–æä¾› defineEvents æ–¹ä¾¿å®šä¹‰é€‚åˆ DOM çš„äº‹ä»¶ã€‚
+		 * defineEvents ä¸»è¦è§£å†³ 3 ä¸ªé—®é¢˜:
 		 * <ol>
-		 * <li> ¶à¸öÊÂ¼şÊ¹ÓÃÒ»¸öÊÂ¼şĞÅÏ¢¡£
+		 * <li> å¤šä¸ªäº‹ä»¶ä½¿ç”¨ä¸€ä¸ªäº‹ä»¶ä¿¡æ¯ã€‚
 		 *      <p>
-		 * 	 	 	ËùÓĞµÄ DOM ÊÂ¼şµÄ  add µÈ ÊÇÒ»ÑùµÄ£¬Òò´ËÕâ¸öº¯ÊıÌá¹©Ò»¼ü¶¨Òå: JPlus.defineEvents('e1 e2 e3')
+		 * 	 	 	æ‰€æœ‰çš„ DOM äº‹ä»¶çš„  add ç­‰ æ˜¯ä¸€æ ·çš„ï¼Œå› æ­¤è¿™ä¸ªå‡½æ•°æä¾›ä¸€é”®å®šä¹‰: JPlus.defineEvents('e1 e2 e3')
 		 * 		</p>
 		 * </li>
 		 *
-		 * <li> ÊÂ¼ş±ğÃû¡£
+		 * <li> äº‹ä»¶åˆ«åã€‚
 		 *      <p>
-		 * 	 	 	Ò»¸ö×Ô¶¨Òå DOM ÊÂ¼şÊÇÁíÍâÒ»¸öÊÂ¼şµÄ±ğÃû¡£
-		 * 			Õâ¸öº¯ÊıÌá¹©Ò»¼ü¶¨ÒåÒÀÀµ: JPlus.defineEvents('mousewheel', 'DOMMouseScroll')
+		 * 	 	 	ä¸€ä¸ªè‡ªå®šä¹‰ DOM äº‹ä»¶æ˜¯å¦å¤–ä¸€ä¸ªäº‹ä»¶çš„åˆ«åã€‚
+		 * 			è¿™ä¸ªå‡½æ•°æä¾›ä¸€é”®å®šä¹‰ä¾èµ–: JPlus.defineEvents('mousewheel', 'DOMMouseScroll')
 		 * 		</p>
 		 * </li>
 		 *
-		 * <li> ÊÂ¼şÎ¯ÍĞ¡£
+		 * <li> äº‹ä»¶å§”æ‰˜ã€‚
 		 *      <p>
-		 * 	 	 	Ò»¸ö×Ô¶¨Òå DOM ÊÂ¼ş¾­³£ÒÀÀµÒÑÓĞµÄÊÂ¼ş¡£Ò»¸öÊÂ¼şÓÉÁíÍâÒ»¸öÊÂ¼ş´¥·¢£¬ ±ÈÈç ctrlenter ÊÇÔÚ keyup »ù´¡ÉÏ¼Ó¹¤µÄ¡£
-		 * 			Õâ¸öº¯ÊıÌá¹©Ò»¼ü¶¨ÒåÒÀÀµ: JPlus.defineEvents('ctrlenter', 'keyup', function (e) { (ÅĞ¶ÏÊÂ¼ş) })
+		 * 	 	 	ä¸€ä¸ªè‡ªå®šä¹‰ DOM äº‹ä»¶ç»å¸¸ä¾èµ–å·²æœ‰çš„äº‹ä»¶ã€‚ä¸€ä¸ªäº‹ä»¶ç”±å¦å¤–ä¸€ä¸ªäº‹ä»¶è§¦å‘ï¼Œ æ¯”å¦‚ ctrlenter æ˜¯åœ¨ keyup åŸºç¡€ä¸ŠåŠ å·¥çš„ã€‚
+		 * 			è¿™ä¸ªå‡½æ•°æä¾›ä¸€é”®å®šä¹‰ä¾èµ–: JPlus.defineEvents('ctrlenter', 'keyup', function (e) { (åˆ¤æ–­äº‹ä»¶) })
 		 * 		</p>
 		 * </li>
 		 *
 		 * @example
 		 * <code>
 		 *
-		 * Element.defineEvents('mousewheel', 'DOMMouseScroll')  //  ÔÚ FF ÏÂÓÃ   mousewheel
-		 * Ìæ»»   DOMMouseScroll ¡£
+		 * Element.defineEvents('mousewheel', 'DOMMouseScroll')  //  åœ¨ FF ä¸‹ç”¨   mousewheel
+		 * æ›¿æ¢   DOMMouseScroll ã€‚
 		 *
 		 * Element.defineEvents('mouseenter', 'mouseover', function (e) {
-		 * 	  if( !isMouseEnter(e) )   // mouseenter  ÊÇ»ùÓÚ mouseover ÊµÏÖµÄÊÂ¼ş£¬  Òò´ËÔÚ ²»ÊÇ
-		 * mouseenter Ê±ºò È¡ÏûÊÂ¼ş¡£
+		 * 	  if( !isMouseEnter(e) )   // mouseenter  æ˜¯åŸºäº mouseover å®ç°çš„äº‹ä»¶ï¼Œ  å› æ­¤åœ¨ ä¸æ˜¯
+		 * mouseenter æ—¶å€™ å–æ¶ˆäº‹ä»¶ã€‚
 		 *        e.returnValue = false;
 		 * });
 		 *
@@ -2817,11 +2817,11 @@ function assert(bValue, msg){
 			}
 			
 			
-			// É¾³ıÒÑ¾­´´½¨µÄÊÂ¼ş¡£
+			// åˆ é™¤å·²ç»åˆ›å»ºçš„äº‹ä»¶ã€‚
 			delete ee[events];
 			
 	
-			// ¶ÔÃ¿¸öÊÂ¼şÖ´ĞĞ¶¨Òå¡£
+			// å¯¹æ¯ä¸ªäº‹ä»¶æ‰§è¡Œå®šä¹‰ã€‚
 			map(events, Function.from(o.extendIf(Function.isFunction(baseEvent) ? {
 	
 				initEvent: baseEvent
@@ -2832,7 +2832,7 @@ function assert(bValue, msg){
 					return ee[baseEvent].initEvent.call(this, e) !== false && initEvent.call(this, e);
 				} : ee[baseEvent].initEvent,
 	
-				//  Èç¹û´æÔÚ baseEvent£¬¶¨Òå±ğÃû£¬ ·ñÔòÊ¹ÓÃÄ¬ÈÏº¯Êı¡£
+				//  å¦‚æœå­˜åœ¨ baseEventï¼Œå®šä¹‰åˆ«åï¼Œ å¦åˆ™ä½¿ç”¨é»˜è®¤å‡½æ•°ã€‚
 				add: function (elem, type, fn) {
 					elem.addEventListener(baseEvent, fn, false);
 				},
@@ -2847,9 +2847,9 @@ function assert(bValue, msg){
 		},
 		
 		/**
-		 * »ñÈ¡ÔªËØµÄÎÄµµ¡£
-		 * @param {Element} elem ÔªËØ¡£
-		 * @return {Document} ÎÄµµ¡£
+		 * è·å–å…ƒç´ çš„æ–‡æ¡£ã€‚
+		 * @param {Element} elem å…ƒç´ ã€‚
+		 * @return {Document} æ–‡æ¡£ã€‚
 		 */
 		getDocument: getDocument
 		
@@ -2874,26 +2874,26 @@ function assert(bValue, msg){
 		/// #ifdef ElementManipulation
 
 		/**
-		 * ½«µ±Ç°½ÚµãÌí¼Óµ½ÆäËü½Úµã¡£
-		 * @param {Element/String} elem=document.body ½Úµã¡¢¿Ø¼ş»ò½ÚµãµÄ id ×Ö·û´®¡£
+		 * å°†å½“å‰èŠ‚ç‚¹æ·»åŠ åˆ°å…¶å®ƒèŠ‚ç‚¹ã€‚
+		 * @param {Element/String} elem=document.body èŠ‚ç‚¹ã€æ§ä»¶æˆ–èŠ‚ç‚¹çš„ id å­—ç¬¦ä¸²ã€‚
 		 * @return {Element} this
-		 * this.appendTo(parent)  Ïàµ±ÓÚ elem.appendChild(this) ¡£
-		 * appendTo Í¬Ê±Ö´ĞĞ  render(parent, null) Í¨Öªµ±Ç°¿Ø¼şÕıÔÚÖ´ĞĞäÖÈ¾¡£
+		 * this.appendTo(parent)  ç›¸å½“äº elem.appendChild(this) ã€‚
+		 * appendTo åŒæ—¶æ‰§è¡Œ  render(parent, null) é€šçŸ¥å½“å‰æ§ä»¶æ­£åœ¨æ‰§è¡Œæ¸²æŸ“ã€‚
 		 */
 		appendTo: function (parent) {
 			
-			// ÇĞ»»µ½½Úµã¡£
+			// åˆ‡æ¢åˆ°èŠ‚ç‚¹ã€‚
 			parent = parent && parent !== true ? $(parent) : document.body;
 
-			// ²åÈë½Úµã
+			// æ’å…¥èŠ‚ç‚¹
 			return this.render(parent, null);
 
 		},
 		
 		/**
-		 * ½«µ±Ç°ÁĞ±íÌí¼Óµ½Ö¸¶¨¸¸½Úµã¡£
-		 * @param {Element/Control} parent äÖÈ¾µÄÄ¿±ê¡£
-		 * @param {Element/Control} refNode äÖÈ¾µÄÎ»ÖÃ¡£
+		 * å°†å½“å‰åˆ—è¡¨æ·»åŠ åˆ°æŒ‡å®šçˆ¶èŠ‚ç‚¹ã€‚
+		 * @param {Element/Control} parent æ¸²æŸ“çš„ç›®æ ‡ã€‚
+		 * @param {Element/Control} refNode æ¸²æŸ“çš„ä½ç½®ã€‚
 		 * @protected
 		 */
 		render: function (parent, refNode) {
@@ -2901,13 +2901,13 @@ function assert(bValue, msg){
 		},
 
 		/**
-		 * É¾³ıÔªËØ×Ó½Úµã»ò±¾Éí¡£
-		 * @param {Object/Undefined} child ×Ó½Úµã¡£
+		 * åˆ é™¤å…ƒç´ å­èŠ‚ç‚¹æˆ–æœ¬èº«ã€‚
+		 * @param {Object/Undefined} child å­èŠ‚ç‚¹ã€‚
 		 * @return {Element} this
 		 */
 		remove: function (child) {
 			
-			// Ã»ÓĞ²ÎÊı£¬ É¾³ı±¾Éí¡£
+			// æ²¡æœ‰å‚æ•°ï¼Œ åˆ é™¤æœ¬èº«ã€‚
 			if(!arguments.length)
 				return this.detach();
 				
@@ -2916,7 +2916,7 @@ function assert(bValue, msg){
 		},
 		
 		/**
-		 * ÒÆ³ı½Úµã±¾Éí¡£
+		 * ç§»é™¤èŠ‚ç‚¹æœ¬èº«ã€‚
 		 */
 		detach: function() {
 			var elem = this.dom || this;
@@ -2925,7 +2925,7 @@ function assert(bValue, msg){
 		},
 
 		/**
-		 * ÊÍ·Å½ÚµãËùÓĞ×ÊÔ´¡£
+		 * é‡Šæ”¾èŠ‚ç‚¹æ‰€æœ‰èµ„æºã€‚
 		 */
 		dispose: function () {
 			this.detach();
@@ -2936,8 +2936,8 @@ function assert(bValue, msg){
 		/// #ifdef ElementStyle
 
 		/**
-		 * ÉèÖÃÁ¬½ÓµÄÍ¸Ã÷¶È¡£
-		 * @param {Number} value Í¸Ã÷¶È£¬ 0 - 1 ¡£
+		 * è®¾ç½®è¿æ¥çš„é€æ˜åº¦ã€‚
+		 * @param {Number} value é€æ˜åº¦ï¼Œ 0 - 1 ã€‚
 		 * @return {Element} this
 		 */
 		setOpacity: function (value) {
@@ -2947,8 +2947,8 @@ function assert(bValue, msg){
 		},
 
 		/**
-		 * ÉèÖÃÔªËØ²»¿ÉÑ¡¡£
-		 * @param {Boolean} value ÊÇ·ñ¿ÉÑ¡¡£
+		 * è®¾ç½®å…ƒç´ ä¸å¯é€‰ã€‚
+		 * @param {Boolean} value æ˜¯å¦å¯é€‰ã€‚
 		 * @return this
 		 */
 		setUnselectable: 'unselectable' in div ? function (value) {
@@ -2966,8 +2966,8 @@ function assert(bValue, msg){
 		},
 
 		/**
-		 * ½«ÔªËØÒıµ½×îÇ°¡£
-		 * @param {Element} [elem] ²Î¿¼ÔªËØ¡£
+		 * å°†å…ƒç´ å¼•åˆ°æœ€å‰ã€‚
+		 * @param {Element} [elem] å‚è€ƒå…ƒç´ ã€‚
 		 * @return this
 		 */
 		bringToFront: function (elem) {
@@ -2976,7 +2976,7 @@ function assert(bValue, msg){
 			var thisElem = this.dom || this,
 				targetZIndex = elem && (parseInt(getStyle(elem.dom || elem, 'zIndex')) + 1) || e.zIndex++;
 			
-			// Èç¹ûµ±Ç°ÔªËØµÄ z-index Î´³¬¹ıÄ¿±êÖµ£¬ÔòÉèÖÃ
+			// å¦‚æœå½“å‰å…ƒç´ çš„ z-index æœªè¶…è¿‡ç›®æ ‡å€¼ï¼Œåˆ™è®¾ç½®
 			if(!(getStyle(thisElem, 'zIndex') > targetZIndex))
 				thisElem.style.zIndex = targetZIndex;
 			
@@ -2988,9 +2988,9 @@ function assert(bValue, msg){
 		/// #ifdef ElementAttribute
 
 		/**
-		 * ¿ìËÙÉèÖÃ½ÚµãÈ«²¿ÊôĞÔºÍÑùÊ½¡£
-		 * @param {String/Object} name Ãû×Ö¡£
-		 * @param {Object} [value] Öµ¡£
+		 * å¿«é€Ÿè®¾ç½®èŠ‚ç‚¹å…¨éƒ¨å±æ€§å’Œæ ·å¼ã€‚
+		 * @param {String/Object} name åå­—ã€‚
+		 * @param {Object} [value] å€¼ã€‚
 		 * @return {Element} this
 		 */
 		set: function (name, value) {
@@ -3001,15 +3001,15 @@ function assert(bValue, msg){
 				
 				var elem = me.dom || me;
 
-				// event ¡£
+				// event ã€‚
 				if(name.match(rEventName))
 					me.on(RegExp.$1, value);
 
-				// css ¡£
+				// css ã€‚
 				else if(elem.style && (name in elem.style || rStyle.test(name)))
 					me.setStyle(name, value);
 
-				// attr ¡£
+				// attr ã€‚
 				else
 					me.setAttr(name, value);
 
@@ -3026,8 +3026,8 @@ function assert(bValue, msg){
 		},
 		
 		/**
-		 * ÉèÖÃÖµ¡£
-		 * @param {String/Boolean} Öµ¡£
+		 * è®¾ç½®å€¼ã€‚
+		 * @param {String/Boolean} å€¼ã€‚
 		 * @return {Element} this
 		 */
 		setText: function (value) {
@@ -3050,9 +3050,9 @@ function assert(bValue, msg){
 		/// #ifdef ElementDimension
 
 		/**
-		 * ¸Ä±ä´óĞ¡¡£
-		 * @param {Number} x ×ø±ê¡£
-		 * @param {Number} y ×ø±ê¡£
+		 * æ”¹å˜å¤§å°ã€‚
+		 * @param {Number} x åæ ‡ã€‚
+		 * @param {Number} y åæ ‡ã€‚
 		 * @return {Element} this
 		 */
 		setSize: function (x, y) {
@@ -3069,8 +3069,8 @@ function assert(bValue, msg){
 		},
 
 		/**
-		 * »ñÈ¡ÔªËØ×ÔÉí´óĞ¡£¨²»´ø¹ö¶¯Ìõ£©¡£
-		 * @param {Number} value Öµ¡£
+		 * è·å–å…ƒç´ è‡ªèº«å¤§å°ï¼ˆä¸å¸¦æ»šåŠ¨æ¡ï¼‰ã€‚
+		 * @param {Number} value å€¼ã€‚
 		 * @return {Element} this
 		 */
 		setWidth: function (value) {
@@ -3080,8 +3080,8 @@ function assert(bValue, msg){
 		},
 
 		/**
-		 * »ñÈ¡ÔªËØ×ÔÉí´óĞ¡£¨²»´ø¹ö¶¯Ìõ£©¡£
-		 * @param {Number} value Öµ¡£
+		 * è·å–å…ƒç´ è‡ªèº«å¤§å°ï¼ˆä¸å¸¦æ»šåŠ¨æ¡ï¼‰ã€‚
+		 * @param {Number} value å€¼ã€‚
 		 * @return {Element} this
 		 */
 		setHeight: function (value) {
@@ -3095,7 +3095,7 @@ function assert(bValue, msg){
 		/// #ifdef ElementOffset
 
 		/**
-		 * ÉèÖÃÔªËØµÄÏà¶ÔÎ»ÖÃ¡£
+		 * è®¾ç½®å…ƒç´ çš„ç›¸å¯¹ä½ç½®ã€‚
 		 * @param {Point} p
 		 * @return {Element} this
 		 */
@@ -3108,9 +3108,9 @@ function assert(bValue, msg){
 		},
 
 		/**
-		 * ÉèÖÃÔªËØµÄ¹Ì¶¨Î»ÖÃ¡£
-		 * @param {Number} x ×ø±ê¡£
-		 * @param {Number} y ×ø±ê¡£
+		 * è®¾ç½®å…ƒç´ çš„å›ºå®šä½ç½®ã€‚
+		 * @param {Number} x åæ ‡ã€‚
+		 * @param {Number} y åæ ‡ã€‚
 		 * @return {Element} this
 		 */
 		setPosition: function (x, y) {
@@ -3120,10 +3120,10 @@ function assert(bValue, msg){
 		},
 
 		/**
-		 * ¹öµ½¡£
+		 * æ»šåˆ°ã€‚
 		 * @param {Element} dom
-		 * @param {Number} x ×ø±ê¡£
-		 * @param {Number} y ×ø±ê¡£
+		 * @param {Number} x åæ ‡ã€‚
+		 * @param {Number} y åæ ‡ã€‚
 		 * @return {Element} this
 		 */
 		setScroll: function (x, y) {
@@ -3150,17 +3150,17 @@ function assert(bValue, msg){
 	.implement({
 
 		/**
-		 * »ñÈ¡Í¸Ã÷¶È¡£
+		 * è·å–é€æ˜åº¦ã€‚
 		 * @method
-		 * @return {Number} Í¸Ã÷¶È¡£ 0 - 1 ·¶Î§¡£
+		 * @return {Number} é€æ˜åº¦ã€‚ 0 - 1 èŒƒå›´ã€‚
 		 */
 		getOpacity: function () {
 			return $.css(this.dom || this, 'opacity');
 		},
 
 		/**
-		 * »ñÈ¡Öµ¡£
-		 * @return {Object/String} Öµ¡£¶ÔÆÕÍ¨½Úµã·µ»Ø text ÊôĞÔ¡£
+		 * è·å–å€¼ã€‚
+		 * @return {Object/String} å€¼ã€‚å¯¹æ™®é€šèŠ‚ç‚¹è¿”å› text å±æ€§ã€‚
 		 */
 		getText: function () {
 			var elem = this.dom || this;
@@ -3178,8 +3178,8 @@ function assert(bValue, msg){
 		/// #ifdef ElementDimension
 
 		/**
-		 * »ñÈ¡ÔªËØ¿ÉÊÓÇøÓò´óĞ¡¡£°üÀ¨ border ´óĞ¡¡£
-		 * @return {Point} Î»ÖÃ¡£
+		 * è·å–å…ƒç´ å¯è§†åŒºåŸŸå¤§å°ã€‚åŒ…æ‹¬ border å¤§å°ã€‚
+		 * @return {Point} ä½ç½®ã€‚
 		 */
 		getSize: function () {
 			var elem = this.dom || this;
@@ -3188,8 +3188,8 @@ function assert(bValue, msg){
 		},
 
 		/**
-		 * »ñÈ¡¹ö¶¯ÇøÓò´óĞ¡¡£
-		 * @return {Point} Î»ÖÃ¡£
+		 * è·å–æ»šåŠ¨åŒºåŸŸå¤§å°ã€‚
+		 * @return {Point} ä½ç½®ã€‚
 		 */
 		getScrollSize: function () {
 			var elem = this.dom || this;
@@ -3202,16 +3202,16 @@ function assert(bValue, msg){
 		/// #ifdef ElementOffset
 
 		/**
-		 * »ñÈ¡ÔªËØµÄÏà¶ÔÎ»ÖÃ¡£
-		 * @return {Point} Î»ÖÃ¡£
+		 * è·å–å…ƒç´ çš„ç›¸å¯¹ä½ç½®ã€‚
+		 * @return {Point} ä½ç½®ã€‚
 		 */
 		getOffset: function () {
 
-			// Èç¹ûÉèÖÃ¹ı left top £¬ÕâÊÇ·Ç³£ÇáËÉµÄÊÂ¡£
+			// å¦‚æœè®¾ç½®è¿‡ left top ï¼Œè¿™æ˜¯éå¸¸è½»æ¾çš„äº‹ã€‚
 			var elem = $(this.dom || this),
 				offset = elem.position();
 				
-			// Åöµ½ auto £¬ ¿Õ ±äÎª 0 ¡£
+			// ç¢°åˆ° auto ï¼Œ ç©º å˜ä¸º 0 ã€‚
 			return new Point(
 				offset.left,
 				offset.top
@@ -3219,8 +3219,8 @@ function assert(bValue, msg){
 		},
 
 		/**
-		 * »ñÈ¡¾à¸¸ÔªËØµÄÆ«²î¡£
-		 * @return {Point} Î»ÖÃ¡£
+		 * è·å–è·çˆ¶å…ƒç´ çš„åå·®ã€‚
+		 * @return {Point} ä½ç½®ã€‚
 		 */
 		getPosition: function () {
 
@@ -3234,8 +3234,8 @@ function assert(bValue, msg){
 		},
 
 		/**
-		 * »ñÈ¡¹ö¶¯ÌõÒÑ¹ö¶¯µÄ´óĞ¡¡£
-		 * @return {Point} Î»ÖÃ¡£
+		 * è·å–æ»šåŠ¨æ¡å·²æ»šåŠ¨çš„å¤§å°ã€‚
+		 * @return {Point} ä½ç½®ã€‚
 		 */
 		getScroll:  function () {
 			var elem = this.dom || this;
@@ -3251,20 +3251,20 @@ function assert(bValue, msg){
 		/// #ifdef ElementTraversing
 		
 		/**
-		 * Ö´ĞĞÒ»¸ö¼òµ¥µÄÑ¡ÔñÆ÷¡£
+		 * æ‰§è¡Œä¸€ä¸ªç®€å•çš„é€‰æ‹©å™¨ã€‚
 		 * @method
-		 * @param {String} selecter Ñ¡ÔñÆ÷¡£ Èç h2 .cls attr=value ¡£
-		 * @return {Element/undefined} ½Úµã¡£
+		 * @param {String} selecter é€‰æ‹©å™¨ã€‚ å¦‚ h2 .cls attr=value ã€‚
+		 * @return {Element/undefined} èŠ‚ç‚¹ã€‚
 		 */
 		findAll: function(selecter){
 			return new ElementList($(this.dom || this).find(selecter));
 		},
 
 		/**
-		 * »ñµÃÏàÆ¥ÅäµÄ½Úµã¡£
-		 * @param {String/Function/Number} treeWalker ±éÀúº¯Êı£¬¸Ãº¯ÊıÔÚ {#link Element.treeWalkers} Ö¸¶¨¡£
-		 * @param {Object} [args] ´«µİ¸ø±éÀúº¯ÊıµÄ²ÎÊı¡£
-		 * @return {Element} ÔªËØ¡£
+		 * è·å¾—ç›¸åŒ¹é…çš„èŠ‚ç‚¹ã€‚
+		 * @param {String/Function/Number} treeWalker éå†å‡½æ•°ï¼Œè¯¥å‡½æ•°åœ¨ {#link Element.treeWalkers} æŒ‡å®šã€‚
+		 * @param {Object} [args] ä¼ é€’ç»™éå†å‡½æ•°çš„å‚æ•°ã€‚
+		 * @return {Element} å…ƒç´ ã€‚
 		 */
 		get: function (treeWalker, args) {
 
@@ -3294,11 +3294,11 @@ function assert(bValue, msg){
 		/// #ifdef ElementManipulation
 
 		/**
-		 * ÔÚÄ³¸öÎ»ÖÃ²åÈëÒ»¸öHTML ¡£
-		 * @param {String/Element} html ÄÚÈİ¡£
-		 * @param {String} [where] ²åÈëµØµã¡£ beforeBegin   ½ÚµãÍâ    beforeEnd   ½ÚµãÀï
-		 * afterBegin    ½ÚµãÍâ  afterEnd     ½ÚµãÀï
-		 * @return {Element} ²åÈëµÄ½Úµã¡£
+		 * åœ¨æŸä¸ªä½ç½®æ’å…¥ä¸€ä¸ªHTML ã€‚
+		 * @param {String/Element} html å†…å®¹ã€‚
+		 * @param {String} [where] æ’å…¥åœ°ç‚¹ã€‚ beforeBegin   èŠ‚ç‚¹å¤–    beforeEnd   èŠ‚ç‚¹é‡Œ
+		 * afterBegin    èŠ‚ç‚¹å¤–  afterEnd     èŠ‚ç‚¹é‡Œ
+		 * @return {Element} æ’å…¥çš„èŠ‚ç‚¹ã€‚
 		 */
 		insert: function (html, where) {
 
@@ -3321,26 +3321,26 @@ function assert(bValue, msg){
 					refNode = null;
 			}
 			
-			// µ÷ÓÃ HTML µÄäÖÈ¾¡£
+			// è°ƒç”¨ HTML çš„æ¸²æŸ“ã€‚
 			return html.render(p, refNode);
 		},
 
 		/**
-		 * ²åÈëÒ»¸öHTML ¡£
-		 * @param {String/Element} html ÄÚÈİ¡£
-		 * @return {Element} ÔªËØ¡£
+		 * æ’å…¥ä¸€ä¸ªHTML ã€‚
+		 * @param {String/Element} html å†…å®¹ã€‚
+		 * @return {Element} å…ƒç´ ã€‚
 		 */
 		append: function (html) {
 			
 			
-			// Èç¹ûĞÂÔªËØÓĞÊÊºÏ×Ô¼ºµÄäÖÈ¾º¯Êı¡£
+			// å¦‚æœæ–°å…ƒç´ æœ‰é€‚åˆè‡ªå·±çš„æ¸²æŸ“å‡½æ•°ã€‚
 			return e.parse(html, this.dom || this).render(this, null);
 		},
 
 		/**
-		 * ½«Ò»¸ö½ÚµãÓÃÁíÒ»¸ö½ÚµãÌæ»»¡£
-		 * @param {Element/String} html ÄÚÈİ¡£
-		 * @return {Element} Ìæ»»Ö®ºóµÄĞÂÔªËØ¡£
+		 * å°†ä¸€ä¸ªèŠ‚ç‚¹ç”¨å¦ä¸€ä¸ªèŠ‚ç‚¹æ›¿æ¢ã€‚
+		 * @param {Element/String} html å†…å®¹ã€‚
+		 * @return {Element} æ›¿æ¢ä¹‹åçš„æ–°å…ƒç´ ã€‚
 		 */
 		replaceWith: function (html) {
 			var elem = this.dom || this;
@@ -3351,11 +3351,11 @@ function assert(bValue, msg){
 		},
 		
 		/**
-		 * ¸´ÖÆ½Úµã¡£
-		 * @param {Boolean} cloneEvent=false ÊÇ·ñ¸´ÖÆÊÂ¼ş¡£
-		 * @param {Boolean} contents=true ÊÇ·ñ¸´ÖÆ×ÓÔªËØ¡£
-		 * @param {Boolean} keepId=false ÊÇ·ñ¸´ÖÆ id ¡£
-		 * @return {Element} ÔªËØ¡£
+		 * å¤åˆ¶èŠ‚ç‚¹ã€‚
+		 * @param {Boolean} cloneEvent=false æ˜¯å¦å¤åˆ¶äº‹ä»¶ã€‚
+		 * @param {Boolean} contents=true æ˜¯å¦å¤åˆ¶å­å…ƒç´ ã€‚
+		 * @param {Boolean} keepId=false æ˜¯å¦å¤åˆ¶ id ã€‚
+		 * @return {Element} å…ƒç´ ã€‚
 		 */
 		clone: function (cloneEvent, contents, keepId) {
 
@@ -3371,9 +3371,9 @@ function assert(bValue, msg){
 		/// #ifdef ElementTraversing
 		
 		/**
-		 * Ö´ĞĞÒ»¸ö¼òµ¥µÄÑ¡ÔñÆ÷¡£
-		 * @param {String} selecter Ñ¡ÔñÆ÷¡£ Èç h2 .cls attr=value ¡£
-		 * @return {Element/undefined} ½Úµã¡£
+		 * æ‰§è¡Œä¸€ä¸ªç®€å•çš„é€‰æ‹©å™¨ã€‚
+		 * @param {String} selecter é€‰æ‹©å™¨ã€‚ å¦‚ h2 .cls attr=value ã€‚
+		 * @return {Element/undefined} èŠ‚ç‚¹ã€‚
 		 */
 		find: function (selector) {
 			return $$($(this.dom || this).find(selector)[0]);
@@ -3384,9 +3384,9 @@ function assert(bValue, msg){
 		/// #ifdef ElementManipulation
 
 		/**
-		 * ÅĞ¶ÏÒ»¸ö½ÚµãÊÇ·ñ°üº¬Ò»¸ö½Úµã¡£ Ò»¸ö½Úµã°üº¬×ÔÉí¡£
-		 * @param {Element} child ×Ó½Úµã¡£
-		 * @return {Boolean} ÓĞ·µ»Øtrue ¡£
+		 * åˆ¤æ–­ä¸€ä¸ªèŠ‚ç‚¹æ˜¯å¦åŒ…å«ä¸€ä¸ªèŠ‚ç‚¹ã€‚ ä¸€ä¸ªèŠ‚ç‚¹åŒ…å«è‡ªèº«ã€‚
+		 * @param {Element} child å­èŠ‚ç‚¹ã€‚
+		 * @return {Boolean} æœ‰è¿”å›true ã€‚
 		 */
 		contains: function (child) {
 			var elem = this.dom || this;
@@ -3395,9 +3395,9 @@ function assert(bValue, msg){
 		},
 
 		/**
-		 * ÅĞ¶ÏÒ»¸ö½ÚµãÊÇ·ñÓĞ×Ó½Úµã¡£
-		 * @param {Element} child ×Ó½Úµã¡£
-		 * @return {Boolean} ÓĞ·µ»Øtrue ¡£
+		 * åˆ¤æ–­ä¸€ä¸ªèŠ‚ç‚¹æ˜¯å¦æœ‰å­èŠ‚ç‚¹ã€‚
+		 * @param {Element} child å­èŠ‚ç‚¹ã€‚
+		 * @return {Boolean} æœ‰è¿”å›true ã€‚
 		 */
 		hasChild: function (child) {
 			var elem = this.dom || this;
@@ -3409,9 +3409,9 @@ function assert(bValue, msg){
 		/// #ifdef ElementStyle
 
 		/**
-		 * ÅĞ¶ÏÒ»¸ö½ÚµãÊÇ·ñÒş²Ø¡£
-		 * @param {Element} elem ÔªËØ¡£
-		 * @return {Boolean} Òş²Ø·µ»Ø true ¡£
+		 * åˆ¤æ–­ä¸€ä¸ªèŠ‚ç‚¹æ˜¯å¦éšè—ã€‚
+		 * @param {Element} elem å…ƒç´ ã€‚
+		 * @return {Boolean} éšè—è¿”å› true ã€‚
 		 */
 		isHidden: function () {
 			var elem = this.dom || this;
@@ -3436,9 +3436,9 @@ function assert(bValue, msg){
 		/// #ifdef ElementManipulation
 
 		/**
-		 * ²åÈëÒ»¸öHTML ¡£
-		 * @param {String/Element} html ÄÚÈİ¡£
-		 * @return {Element} ÔªËØ¡£
+		 * æ’å…¥ä¸€ä¸ªHTML ã€‚
+		 * @param {String/Element} html å†…å®¹ã€‚
+		 * @return {Element} å…ƒç´ ã€‚
 		 */
 		append: function (html) {
 			return $$(this.body).append(html);
@@ -3449,7 +3449,7 @@ function assert(bValue, msg){
 		/// #ifdef ElementCore
 
 		/**
-		 * ´´½¨Ò»¸ö½Úµã¡£
+		 * åˆ›å»ºä¸€ä¸ªèŠ‚ç‚¹ã€‚
 		 * @param {Object} tagName
 		 * @param {Object} className
 		 */
@@ -3476,9 +3476,9 @@ function assert(bValue, msg){
 		/// #ifdef ElementDimension
 		
 		/**
-		 * »ñÈ¡ÔªËØ¿ÉÊÓÇøÓò´óĞ¡¡£°üÀ¨ margin ºÍ border ´óĞ¡¡£
+		 * è·å–å…ƒç´ å¯è§†åŒºåŸŸå¤§å°ã€‚åŒ…æ‹¬ margin å’Œ border å¤§å°ã€‚
 		 * @method getSize
-		 * @return {Point} Î»ÖÃ¡£
+		 * @return {Point} ä½ç½®ã€‚
 		 */
 		getSize: function () {
 			var doc = this.dom;
@@ -3487,8 +3487,8 @@ function assert(bValue, msg){
 		},
 
 		/**
-		 * »ñÈ¡¹ö¶¯ÇøÓò´óĞ¡¡£
-		 * @return {Point} Î»ÖÃ¡£
+		 * è·å–æ»šåŠ¨åŒºåŸŸå¤§å°ã€‚
+		 * @return {Point} ä½ç½®ã€‚
 		 */
 		getScrollSize: function () {
 			var html = this.dom,
@@ -3504,23 +3504,23 @@ function assert(bValue, msg){
 		/// #endif
 
 		/**
-		 * »ñÈ¡¾à¸¸ÔªËØµÄÆ«²î¡£
-		 * @return {Point} Î»ÖÃ¡£
+		 * è·å–è·çˆ¶å…ƒç´ çš„åå·®ã€‚
+		 * @return {Point} ä½ç½®ã€‚
 		 */
 		getPosition: getWindowScroll,
 		
 		/**
-		 * »ñÈ¡¹ö¶¯ÌõÒÑ¹ö¶¯µÄ´óĞ¡¡£
-		 * @return {Point} Î»ÖÃ¡£
+		 * è·å–æ»šåŠ¨æ¡å·²æ»šåŠ¨çš„å¤§å°ã€‚
+		 * @return {Point} ä½ç½®ã€‚
 		 */
 		getScroll: getWindowScroll,
 
 		/**
-		 * ¹öµ½¡£
+		 * æ»šåˆ°ã€‚
 		 * @method setScroll
-		 * @param {Number} x ×ø±ê¡£
-		 * @param {Number} y ×ø±ê¡£
-		 * @return {Document} this ¡£
+		 * @param {Number} x åæ ‡ã€‚
+		 * @param {Number} y åæ ‡ã€‚
+		 * @return {Document} this ã€‚
 		 */
 		setScroll: function (x, y) {
 			var doc = this, p = formatPoint(x, y);
@@ -3536,9 +3536,9 @@ function assert(bValue, msg){
 		/// #endif
 		
 		/**
-		 * ¸ù¾İÔªËØ·µ»Ø½Úµã¡£
-		 * @param {String} ... ¶ÔÏóµÄ id »ò¶ÔÏó¡£
-		 * @return {ElementList} Èç¹ûÖ»ÓĞ1¸ö²ÎÊı£¬·µ»ØÔªËØ£¬·ñÔò·µ»ØÔªËØ¼¯ºÏ¡£
+		 * æ ¹æ®å…ƒç´ è¿”å›èŠ‚ç‚¹ã€‚
+		 * @param {String} ... å¯¹è±¡çš„ id æˆ–å¯¹è±¡ã€‚
+		 * @return {ElementList} å¦‚æœåªæœ‰1ä¸ªå‚æ•°ï¼Œè¿”å›å…ƒç´ ï¼Œå¦åˆ™è¿”å›å…ƒç´ é›†åˆã€‚
 		 */
 		getDom: function () {
 			return arguments.length === 1 ? $$(this.getElementById(arguments[0])) :  new ElementList(o.update(arguments, this.getElementById, null, this));
@@ -3552,19 +3552,19 @@ function assert(bValue, msg){
 	apply(Control, {
 		
 		/**
-		 * »ùÀà¡£
+		 * åŸºç±»ã€‚
 		 */
 		base: e,
 		
 		/**
-		 * ½«Ö¸¶¨Ãû×ÖµÄ·½·¨Î¯ÍĞµ½µ±Ç°¶ÔÏóÖ¸¶¨µÄ³ÉÔ±¡£
-		 * @param {Object} control Àà¡£
-		 * @param {String} delegate Î¯ÍĞ±äÁ¿¡£
-		 * @param {String} methods ËùÓĞ³ÉÔ±Ãû¡£
-		 * @param {Number} type ÀàĞÍ¡£ 1 - ·µ»Ø±¾Éí 2 - ·µ»ØÎ¯ÍĞ·µ»Ø 3 - ·µ»Ø×Ô¼º£¬²ÎÊı×÷Îª¿Ø¼ş¡£ 
-		 * @param {String} [methods2] ³ÉÔ±¡£
-		 * @param {String} [type2] ÀàĞÍ¡£
-		 * ÓÉÓÚÒ»¸ö¿Ø¼ş±¾ÖÊÉÏÊÇ¶Ô DOM µÄ·â×°£¬ Òò´Ë¾­³£ĞèÒª½«Ò»¸öº¯Êı×ª»»Îª¶Ô½ÚµãµÄµ÷ÓÃ¡£
+		 * å°†æŒ‡å®šåå­—çš„æ–¹æ³•å§”æ‰˜åˆ°å½“å‰å¯¹è±¡æŒ‡å®šçš„æˆå‘˜ã€‚
+		 * @param {Object} control ç±»ã€‚
+		 * @param {String} delegate å§”æ‰˜å˜é‡ã€‚
+		 * @param {String} methods æ‰€æœ‰æˆå‘˜åã€‚
+		 * @param {Number} type ç±»å‹ã€‚ 1 - è¿”å›æœ¬èº« 2 - è¿”å›å§”æ‰˜è¿”å› 3 - è¿”å›è‡ªå·±ï¼Œå‚æ•°ä½œä¸ºæ§ä»¶ã€‚ 
+		 * @param {String} [methods2] æˆå‘˜ã€‚
+		 * @param {String} [type2] ç±»å‹ã€‚
+		 * ç”±äºä¸€ä¸ªæ§ä»¶æœ¬è´¨ä¸Šæ˜¯å¯¹ DOM çš„å°è£…ï¼Œ å› æ­¤ç»å¸¸éœ€è¦å°†ä¸€ä¸ªå‡½æ•°è½¬æ¢ä¸ºå¯¹èŠ‚ç‚¹çš„è°ƒç”¨ã€‚
 		 */
 		delegate: function(control, target, methods, type, methods2, type2) {
 			
@@ -3598,9 +3598,9 @@ function assert(bValue, msg){
 	Control.delegate(Control, 'dom', 'addEventListener removeEventListener scrollIntoView focus blur', 2, 'appendChild removeChild insertBefore replaceChild', 3);
 	
 	/**
-	 * ½«µ±Ç°ÁĞ±íÌí¼Óµ½Ö¸¶¨¸¸½Úµã¡£
-	 * @param {Element/Control} parent äÖÈ¾µÄÄ¿±ê¡£
-	 * @param {Element/Control} refNode äÖÈ¾µÄÎ»ÖÃ¡£
+	 * å°†å½“å‰åˆ—è¡¨æ·»åŠ åˆ°æŒ‡å®šçˆ¶èŠ‚ç‚¹ã€‚
+	 * @param {Element/Control} parent æ¸²æŸ“çš„ç›®æ ‡ã€‚
+	 * @param {Element/Control} refNode æ¸²æŸ“çš„ä½ç½®ã€‚
 	 * @protected
 	 */
 	ElementList.prototype.render = function (parent, refNode) {
@@ -3669,7 +3669,7 @@ function assert(bValue, msg){
 	/// #endif
 	
 	/**
-	 * »ñÈ¡½Úµã±¾Éí¡£
+	 * è·å–èŠ‚ç‚¹æœ¬èº«ã€‚
 	 */
 	document.dom = document.documentElement;
 	
@@ -3700,11 +3700,11 @@ function assert(bValue, msg){
 		
 		$$ = function (id) {
 			
-			// »ñÈ¡½Úµã±¾Éí¡£
+			// è·å–èŠ‚ç‚¹æœ¬èº«ã€‚
 			var dom = getElementById(id);
 	
-			// °Ñ Element ³ÉÔ±¸´ÖÆµ½½Úµã¡£
-			// ¸ù¾İ $version ¾ö¶¨ÊÇ·ñĞèÒª¿½±´£¬ÕâÑù±£Ö¤Ã¿¸ö½ÚµãÖ»¿½±´Ò»´Î¡£
+			// æŠŠ Element æˆå‘˜å¤åˆ¶åˆ°èŠ‚ç‚¹ã€‚
+			// æ ¹æ® $version å†³å®šæ˜¯å¦éœ€è¦æ‹·è´ï¼Œè¿™æ ·ä¿è¯æ¯ä¸ªèŠ‚ç‚¹åªæ‹·è´ä¸€æ¬¡ã€‚
 			if(dom && dom.nodeType === 1 && dom.$version !== ep.$version)
 				o.extendIf(dom, ep);
 	
@@ -3713,7 +3713,7 @@ function assert(bValue, msg){
 		};
 		
 		/**
-		 * ·µ»Øµ±Ç°ÎÄµµÄ¬ÈÏµÄÊÓÍ¼¡£
+		 * è¿”å›å½“å‰æ–‡æ¡£é»˜è®¤çš„è§†å›¾ã€‚
 		 * @type {Window}
 		 */
 		document.defaultView = document.parentWindow;
@@ -3739,7 +3739,7 @@ function assert(bValue, msg){
 				e.pageY = e.clientY + dom.scrollTop;
 				e.layerX = e.x;
 				e.layerY = e.y;
-				//  1 £º µ¥»÷  2 £º  ÖĞ¼üµã»÷ 3 £º ÓÒ»÷
+				//  1 ï¼š å•å‡»  2 ï¼š  ä¸­é”®ç‚¹å‡» 3 ï¼š å³å‡»
 				e.which = (e.button & 1 ? 1 : (e.button & 2 ? 3 : (e.button & 4 ? 2 : 0)));
 			
 			}
@@ -3755,7 +3755,7 @@ function assert(bValue, msg){
 	
 		try {
 	
-			//  ĞŞ¸´IE6 Òò css ¸Ä±ä±³¾°Í¼³öÏÖµÄÉÁË¸¡£
+			//  ä¿®å¤IE6 å›  css æ”¹å˜èƒŒæ™¯å›¾å‡ºç°çš„é—ªçƒã€‚
 			document.execCommand("BackgroundImageCache", false, true);
 		} catch(e) {
 	
@@ -3772,14 +3772,14 @@ function assert(bValue, msg){
 		$: $$,
 		
 		/**
-		 * ÔªËØ¡£
+		 * å…ƒç´ ã€‚
 		 */	
 		Element: e,
 		
 		/// #ifdef ElementEvent
 		
 		/**
-		 * ±íÊ¾ÊÂ¼şµÄ²ÎÊı¡£
+		 * è¡¨ç¤ºäº‹ä»¶çš„å‚æ•°ã€‚
 		 * @class JPlus.Event
 		 */
 		Event: Class(pep),
@@ -3787,7 +3787,7 @@ function assert(bValue, msg){
 		/// #endif
 		
 		/**
-		 * ÎÄµµ¡£
+		 * æ–‡æ¡£ã€‚
 		 */
 		Document: Document
 			
@@ -3800,44 +3800,44 @@ function assert(bValue, msg){
 	/// #ifdef ElementEvent
 	
 	/**
-	 * Ä¬ÈÏÊÂ¼ş¡£
+	 * é»˜è®¤äº‹ä»¶ã€‚
 	 * @type Object
 	 * @hide
 	 */
 	namespace("JPlus.Events.element.$default", {
 
 		/**
-		 * ´´½¨µ±Ç°ÊÂ¼ş¿ÉÓÃµÄ²ÎÊı¡£
-		 * @param {Object} elem ¶ÔÏó¡£
-		 * @param {Event} e ÊÂ¼ş²ÎÊı¡£
-		 * @param {Object} target ÊÂ¼şÄ¿±ê¡£
-		 * @return {Event} e ÊÂ¼ş²ÎÊı¡£
+		 * åˆ›å»ºå½“å‰äº‹ä»¶å¯ç”¨çš„å‚æ•°ã€‚
+		 * @param {Object} elem å¯¹è±¡ã€‚
+		 * @param {Event} e äº‹ä»¶å‚æ•°ã€‚
+		 * @param {Object} target äº‹ä»¶ç›®æ ‡ã€‚
+		 * @return {Event} e äº‹ä»¶å‚æ•°ã€‚
 		 */
 		trigger: function (elem, type, fn, e) {
 			return fn(e = new p.Event(elem, type, e)) && (!elem[type = 'on' + type] || elem[type](e) !== false);
 		},
 
 		/**
-		 * ÊÂ¼ş´¥·¢ºó¶Ô²ÎÊı½øĞĞ´¦Àí¡£
-		 * @param {Event} e ÊÂ¼ş²ÎÊı¡£
+		 * äº‹ä»¶è§¦å‘åå¯¹å‚æ•°è¿›è¡Œå¤„ç†ã€‚
+		 * @param {Event} e äº‹ä»¶å‚æ•°ã€‚
 		 */
 		initEvent: Function.empty,
 
 		/**
-		 * Ìí¼Ó°ó¶¨ÊÂ¼ş¡£
-		 * @param {Object} elem ¶ÔÏó¡£
-		 * @param {String} type ÀàĞÍ¡£
-		 * @param {Function} fn º¯Êı¡£
+		 * æ·»åŠ ç»‘å®šäº‹ä»¶ã€‚
+		 * @param {Object} elem å¯¹è±¡ã€‚
+		 * @param {String} type ç±»å‹ã€‚
+		 * @param {Function} fn å‡½æ•°ã€‚
 		 */
 		add: function (elem, type, fn) {
 			elem.addEventListener(type, fn, false);
 		},
 
 		/**
-		 * É¾³ıÊÂ¼ş¡£
-		 * @param {Object} elem ¶ÔÏó¡£
-		 * @param {String} type ÀàĞÍ¡£
-		 * @param {Function} fn º¯Êı¡£
+		 * åˆ é™¤äº‹ä»¶ã€‚
+		 * @param {Object} elem å¯¹è±¡ã€‚
+		 * @param {String} type ç±»å‹ã€‚
+		 * @param {Function} fn å‡½æ•°ã€‚
 		 */
 		remove: function (elem, type, fn) {
 			elem.removeEventListener(type, fn, false);
@@ -3859,9 +3859,9 @@ function assert(bValue, msg){
 			('mouseleave', 'mouseout', checkMouseEnter);
 	
 	/**
-	 * ÅĞ¶Ï·¢ÉúÊÂ¼şµÄÔªËØÊÇ·ñÔÚµ±Ç°Êó±êËùÔÚµÄ½ÚµãÄÚ¡£
-	 * @param {Event} e ÊÂ¼ş¶ÔÏó¡£
-	 * @return {Boolean} ·µ»ØÊÇ·ñÓ¦¸Ã´¥·¢  mouseenter¡£
+	 * åˆ¤æ–­å‘ç”Ÿäº‹ä»¶çš„å…ƒç´ æ˜¯å¦åœ¨å½“å‰é¼ æ ‡æ‰€åœ¨çš„èŠ‚ç‚¹å†…ã€‚
+	 * @param {Event} e äº‹ä»¶å¯¹è±¡ã€‚
+	 * @return {Boolean} è¿”å›æ˜¯å¦åº”è¯¥è§¦å‘  mouseenterã€‚
 	 */
 	function checkMouseEnter(event) {
 		
@@ -3884,18 +3884,18 @@ function assert(bValue, msg){
 	 */
 
 	/**
-	 * ¸ù¾İÒ»¸ö id »ò ¶ÔÏó»ñÈ¡½Úµã¡£
-	 * @param {String/Element} id ¶ÔÏóµÄ id »ò¶ÔÏó¡£
-	 * @return {Element} ÔªËØ¡£
+	 * æ ¹æ®ä¸€ä¸ª id æˆ– å¯¹è±¡è·å–èŠ‚ç‚¹ã€‚
+	 * @param {String/Element} id å¯¹è±¡çš„ id æˆ–å¯¹è±¡ã€‚
+	 * @return {Element} å…ƒç´ ã€‚
 	 */
 	function getElementById(id) {
 		return typeof id == "string" ? document.getElementById(id) : id;
 	}
 	
 	/**
-	 * »ñÈ¡ÔªËØµÄÎÄµµ¡£
-	 * @param {Element} elem ÔªËØ¡£
-	 * @return {Document} ÎÄµµ¡£
+	 * è·å–å…ƒç´ çš„æ–‡æ¡£ã€‚
+	 * @param {Element} elem å…ƒç´ ã€‚
+	 * @return {Document} æ–‡æ¡£ã€‚
 	 */
 	function getDocument(elem) {
 		return elem.ownerDocument || elem.document || elem;
@@ -3904,11 +3904,11 @@ function assert(bValue, msg){
 	/// #ifdef ElementTraversing
 	
 	/**
-	 * ·µ»Ø¼òµ¥µÄ±éÀúº¯Êı¡£
-	 * @param {Boolean} getFirst ·µ»ØµÚÒ»¸ö»¹ÊÇ·µ»ØËùÓĞÔªËØ¡£
-	 * @param {String} next »ñÈ¡ÏÂÒ»¸ö³ÉÔ±Ê¹ÓÃµÄÃû×Ö¡£
-	 * @param {String} first=next »ñÈ¡µÚÒ»¸ö³ÉÔ±Ê¹ÓÃµÄÃû×Ö¡£
-	 * @return {Function} ±éÀúº¯Êı¡£
+	 * è¿”å›ç®€å•çš„éå†å‡½æ•°ã€‚
+	 * @param {Boolean} getFirst è¿”å›ç¬¬ä¸€ä¸ªè¿˜æ˜¯è¿”å›æ‰€æœ‰å…ƒç´ ã€‚
+	 * @param {String} next è·å–ä¸‹ä¸€ä¸ªæˆå‘˜ä½¿ç”¨çš„åå­—ã€‚
+	 * @param {String} first=next è·å–ç¬¬ä¸€ä¸ªæˆå‘˜ä½¿ç”¨çš„åå­—ã€‚
+	 * @return {Function} éå†å‡½æ•°ã€‚
 	 */
 	function createTreeWalker(getFirst, next, first) {
 		first = first || next;
@@ -3935,9 +3935,9 @@ function assert(bValue, msg){
 	}
 
 	/**
-	 * »ñÈ¡Ò»¸öÑ¡ÔñÆ÷¡£
-	 * @param {Number/Function/String} args ²ÎÊı¡£
-	 * @return {Funtion} º¯Êı¡£
+	 * è·å–ä¸€ä¸ªé€‰æ‹©å™¨ã€‚
+	 * @param {Number/Function/String} args å‚æ•°ã€‚
+	 * @return {Funtion} å‡½æ•°ã€‚
 	 */
 	function getFilter(args) {
 		switch(typeof args) {
@@ -3958,17 +3958,17 @@ function assert(bValue, msg){
 	/// #endif
 
 	/**
-	 * ¶ÁÈ¡ÑùÊ½Êı×Ö¡£
-	 * @param {Object} elem ÔªËØ¡£
-	 * @param {Object} name ÊôĞÔÃû¡£
-	 * @return {Number} Êı×Ö¡£
+	 * è¯»å–æ ·å¼æ•°å­—ã€‚
+	 * @param {Object} elem å…ƒç´ ã€‚
+	 * @param {Object} name å±æ€§åã€‚
+	 * @return {Number} æ•°å­—ã€‚
 	 */
 	function styleNumber(elem, name) {
 		return parseFloat($(elem).css(name));
 	}
 	
 	/**
-	 * ×ª»»²ÎÊıÎª±ê×¼µã¡£
+	 * è½¬æ¢å‚æ•°ä¸ºæ ‡å‡†ç‚¹ã€‚
 	 * @param {Number} x X
 	 * @param {Number} y Y
 	 */
