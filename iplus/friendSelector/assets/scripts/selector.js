@@ -1,1 +1,1 @@
-/** * @author  */
+/** * @author AKI */var friendSelector = function(){	};friendSelector.prototype = {		// 初始化	init:function(tmpl){					},		};

@@ -1,0 +1,22 @@
+/**
+ * @author 
+ */
+.dialog{width:464px; margin:0 auto; position:fixed;zoom:1; overflow:hidden;}
+.dialogBg{position:absolute;width:100%;height:100%;zoom:1;background:#000;filter:alpha(opacity=30);opacity:0.30;-moz-border-radius:4px;-webkit-border-radius:4px;border-radius:4px; }
+.pop_box{position:relative;margin-bottom:16px;_margin-bottom:16px;zoom:1; overflow:hidden;left:8px;top:8px;width:446px;border:1px solid #999;background:#fff;}
+.dialog{position:absolute;z-index:999;left:50%;top:35%;margin-left:-220px; display:none;}
+.btn-s-gray,.btn-s-gray:visited{ background:url(../images/btn-a.png) right -96px; height:24px; display:inline-block; padding-right:8px;}
+.btn-s-gray span,.btn-s-gray span:visited{background:url(../images/btn-a.png)  left -96px; height:24px;display:inline-block; padding-left:8px; line-height:22px;*line-height:24px;line-height:24px\0;_line-height:22px;color:#fff;text-decoration:none;color:#666;}
+.pop_box .pop_gray_b{padding:6px 8px 0 0;height:31px;background:#f2f2f2; position:relative;}
+.pop_box .pop_gray_b{padding:6px 8px 0 0;height:31px;background:#f2f2f2; position:relative;}
+.btn-s-gray,.btn-s-gray:visited{ background:url(../images/btn-a.png) right -96px; height:24px; display:inline-block; padding-right:8px;}
+.btn-s-gray span,.btn-s-gray span:visited{background:url(../images/btn-a.png)  left -96px; height:24px;display:inline-block; padding-left:8px; line-height:22px;*line-height:24px;line-height:24px\0;_line-height:22px;color:#fff;text-decoration:none;color:#666;}
+.btn-s-red,.btn-s-red:visited{ background:url(../images/btn-a.png) right -48px; height:24px; display:inline-block; padding-right:8px; }
+.btn-s-red span,.btn-s-red span:visited{background:url(../images/btn-a.png)  left -48px; height:24px;display:inline-block; padding-left:8px; line-height:22px;*line-height:24px;line-height:24px\0;_line-height:22px;color:#fff; }
+.btn-s-red:hover{background:url(../images/btn-a.png) right -72px ; height:24px;  cursor:pointer; color:#fff;text-decoration:none;}
+.btn-s-red:hover span{background:url(../images/btn-a.png) left -72px; height:24px;  cursor:pointer;color:#fff;}
+.btn-s-red em,.cancel_atten em{ margin:0 4px -3px 0;font-size:14px; font-weight:bold; font-family:"宋体";}
+.pop_box .pop_mid,.pop_box .select_mid{border-top:1px solid #ccc;border-bottom:1px solid #ccc;overflow:hidden;}
+.pop_box .pop_mid{padding:16px 12px 16px 16px;}
+.pop_close{ position:absolute; right:8px; top:8px;display:inline-block;width:18px;height:18px;background:url(http://static.mtimg.net/jingwei/static/images/icon_big.png) 0 -1811px no-repeat;}
+.pop_close:hover{background:url(http://static.mtimg.net/jingwei/static/images/icon_big.png) 0 -1781px no-repeat;}
