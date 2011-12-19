@@ -1,5 +1,5 @@
 /**
- * @fileOverview J+ 测试系统核心引擎。
+ * @fileOverview J+ 测试系统核心引擎
  */
 
 (function(){
@@ -475,7 +475,7 @@
 		}
 		
 		if(this.doCall === false) {
-			this.method = 'createFunction(' + this.method + ')';
+			this.method = 'System.createFunction(' + this.method + ')';
 		}
 		
 		if(!this.methodName){

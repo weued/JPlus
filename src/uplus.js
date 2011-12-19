@@ -1,10 +1,10 @@
 
 
-(function(resolveNamespace){
+JPlus.resolveNamespace = (function(resolveNamespace){
 	
-	JPlus.resolveNamespace = function(ns, isStyle){
-		if(/^uplus\./i.test(ns)) {
-			ns = ns.replace(/(\.[^.]+)$/, isStyle ? '.Styles$1' : '.Scripts$1');
+	return function(ns, isStyle){
+		if(/^uplus\./.test(ns)) {
+			return '../' + ns.replace(/(\.[^.]+)$/, isStyle ? '.Styles$1' : '.Scripts$1').replace(/\./g, '/');
 		}
 		
 		return resolveNamespace(ns, isStyle);

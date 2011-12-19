@@ -1,3 +1,7 @@
+/**
+ * @fileOverview 资源导航
+ */
+
 var menus = {
 	
 	'工具': {
