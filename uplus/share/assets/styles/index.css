@@ -1,35 +1,172 @@
-/**
- * 公用 CSS 样式
- */
+/*************************************************************************
+ * CommonCss
+ *************************************************************************/
  
  
  
-/**  reset.css */
 
 
-/* 删除标签自带 mragin， padding */
-html, body, object, iframe, ul, li, img {
-	padding: 0;
+/********************************* Reset *********************************/
+
+/* reset margin, padding */
+html, body, object, iframe, ul, li, img, pre {
 	margin: 0;
+	padding: 0;
 }
 
-/* 删除标签自带 border   */
-html, body, img {
+/* reset border */
+html, body, a img {
 	border: 0;
+	height: 100%; 
 }
 
-/* 删除表格单元格之间的空白 */
+/* remove space between table cells */
 table {
 	border-collapse: collapse;
-	border-spacing: 0;  /* tables still need 'cellspacing="0"' in the markup */
+	border-spacing: 0;
+	empty-cells: show;
 }
 
-ul, li {
-	list-style: none;
+/* remove hr shadows */
+hr {
+	clear: both;
+	float: none;
+	height: 1px;
+	border: none;
+	display: block;
+	font-size: 10px;
+	line-height: 10px;
+	margin: 5px 0;
 }
 
-img {
-	-ms-interpolation-mode: bicubic;
+/* Fix margin of legend for IE6 */
+legend {
+	_margin: 0px -8px 16px 0;
+	_padding: 0;
+}
+
+/* Fix line-height of sup/sub for IE */
+sup {
+	vertical-align: text-top;
+}
+
+sub {
+	vertical-align: text-bottom;
+}
+
+/* Fix margin of hr for IE6 & IE7 */
+hr {
+	*margin: 8px auto -15px;
+	*float: left;
+}
+
+/* vertical-align */
+textarea {
+	/* let textareas looks alike to others in IE6 */
+	overflow: auto;
+}
+
+/********************************* Tools *********************************/
+
+/* clear */
+
+.b-clear:after, #doc .clr:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+/* ensure .clear works fine in IE6 & IE7 */
+.b-clear, #doc .clr {
+	display: block;
+	zoom: 1;
+}
+
+/* float */
+
+.b-left,#doc .b-fl {
+	float: left;
+}
+
+.b-right,#doc .b-fr {
+	float: right;
+}
+
+.b-center {
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+}
+
+/*fix double margin bug fix for IE6 */
+.b-left, .b-right {
+	_display: inline;
+}
+
+/* position */
+.b-relative, #doc .b-locate {
+	position: relative;	
+}
+
+.b-absolute {
+	position: absolute;	
+}
+
+/* display */
+
+.b-inline {
+	display: inline;	
+}
+
+.b-block, #doc .b-show {
+	display: block;	
+}
+
+.b-inline-block, #doc .b-lump {
+	display: inline-block;
+	
+	/* fix for IE6 & IE7 */
+	*display: inline;
+	*zoom: 1;	
+}
+
+.b-hide {
+	display: none;	
+}
+
+/* text */
+
+.b-break-word, #doc .b-brk {
+	word-wrap: break-word;
+	word-break: break-all;
+}
+
+/* other tools */
+
+/* provides a 10px blank line */
+.b-blank {
+	height: 10px;
+	display: block;
+	visibility: hidden;
+	background: #fff;
+	color: #fff;
+	clear: both;
+}
+
+.b-debug {
+	border: 1px solid #C03;
+	display: block;
+	zoom: 1;
+}
+
+/********************************* Style ********************************/
+
+body {
+	color: #666666;
+	background-color: #F7F7F7;
+	font: 12px/1.5 Tahoma, Arial, "\5b8b\4f53", sans-serif;
 }
 
 a {
@@ -39,124 +176,84 @@ a {
 
 a:hover {
 	color: #32A2FF;
-	text-decoration: none;
 }
 
-body, button, input, select, textarea {
-	font: 12px/1.5 Tahoma, Arial, "\5b8b\4f53", sans-serif;
+.b-hignlight {
+	color: #FF6600!important;
 }
 
+.b-hint {
+	color: #999999;
+}
+
+.b-alt {
+	color: #70A3CD;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	color: #333333;	
+}
+
+h2 {
+	font-size: 14px;
+	font-weight: bold;
+}
+
+h3 {
+	font-size: 16px;
+	font-weight: bold;
+}
+
+hr {
+	background: #ddd;
+	color: #ddd;
+}
+
+del {
+	color: #666;
+}
+
+/* other tools */
+
+.b-content {
+	text-align: left;
+	line-height: 18px;
+}
+
+p.b-content {
+	text-indent: 2em;
+}
+
+/* ----- common class ------ */
 :focus {
 	outline-color: -moz-use-text-color;
 	outline-style: none;
 	outline-width: 0;
 }
 
+/***************************** Compact Mode ***************************/
 
-/**  common.css */
+#doc div,#doc dl,#doc dt,#doc dd,#doc ul,#doc ol,#doc li,#doc h1,#doc h2,#doc h3,#doc h4,#doc h5,#doc h6,#doc form,#doc fieldset,#doc input,#doc textarea,#doc p,#doc blockquote,#doc th,#doc td{margin:0;padding:0}
+#doc fieldset,#doc img{border:0}
+#doc address,#doc caption,#doc cite,#doc code,#doc dfn,#doc em,#doc th,#doc var{font-style:normal; font-weight:normal}
+#doc ol,#doc ul{list-style:none}
+#doc caption,#doc th{text-align:left}
+#doc abbr,#doc acronym{border:0}
 
-.b-clr:after, .b-clear:after {
-	content: ".";
-	display: block;
-	height: 0;
-	clear: both;
-	visibility: hidden;
+
+
+#doc .b-visible {
+	visibility:visible;
 }
 
-.b-clr, .b-clear {
-	zoom:1;
-}
-
-.b-fl, .b-left {
-	float:left;
-	_display:inline;/*double margin bug fix for ie*/
-}
-
-.b-fr, .b-right {
-	float:right;
-	_display:inline;/*double margin bug fix for ie*/
-}
-
-.b-hidden {
+#doc .b-hidden {
 	visibility:hidden;
 }
 
-.b-locate,  .b-relative {
-	position:relative;
-}
-
-.b-brk, .b-break {
-	word-wrap:break-word;
-	word-break:break-all;
-}
-
-/* ----- standard style ------ */
-.b-yahei {
-	font-family:"Microsoft YaHei"
-}
-
-.b-ab a, .b-ab:link, .b-ab a:visited, .b-ab a:focus, .b-ab a:active, a.b-ab, a.b-ab:link, a.b-ab:visited, a.b-ab:focus, a.b-ab:active {
-	color: #70A3CD;
-	text-decoration: none;
-}
-.b-ab a:hover, a.b-ab:hover {
-	color: #245C99;
-	text-decoration: none;
-}
-.b-ag a, .b-ag a:link, .b-ag a:visited, .b-ag a:focus, .b-ag a:active, a.b-ag, a.b-ag:link, a.b-ag:visited, a.b-ag:focus, a.b-ag:active {
-	color: #999999;
-	text-decoration: none;
-}
-.b-ag a:hover, a.b-ag:hover {
-	color: #245C99;
-	text-decoration: none;
-}
-
-.b-inline {
-	display: inline;	
-}
-
-.b-block {
-	display: block;	
-}
-
-.b-lump, .b-inline-block {
-	display:inline-block;
-	zoom:1;
-	*display:inline;
-}
-
-.b-hide {
-	display:none;
-}
-
-.b-absolute {
-	position: absolute;	
-}
+#doc .b-yahei {font-family:"Microsoft YaHei"}
 
 
-.b-blank {
-	height: 10px;	
-}
-
-
-.b-bold {
-	font-weight: bold;	
-}
-
-a.b-alt {
-	color: #70A3CD;
-}
-
-.b-hint, a.b-hint {
-	color: #999999;	
-}
-
-.b-hignlight {
-	color: #FF6600;	
-}
-
-a.b-hignlight {
-	color: #FF6600;
-}
-
+#doc .b-ab a, #doc a.b-ab {color: #70A3CD;text-decoration: none;}
+#doc .b-ab a:hover, #doc a.b-ab:hover{color: #245C99;}
+#doc .b-ag a, #doc a.b-ag {color: #999999;text-decoration: none;}
+#doc .b-ag a:hover, #doc a.b-ag:hover{color: #245C99;}

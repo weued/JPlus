@@ -263,6 +263,18 @@
 			}
 		},
 		
+		viewSource: function(name){
+			var info = current.testCases[name];
+			
+			if(info) {
+				name = eval(info.method).toString();
+				if(String.decodeUTF8)
+					name = String.decodeUTF8(name);
+				return console.info(name);
+			
+			}
+		},
+		
 		doRunAll: function(){
 			for(var name in current.testCases) {
 				this.doRun(name, true);
@@ -334,8 +346,8 @@
 		},
 		
 		checkAnswers: function (){
-			var errorCount  = 0, total = current.answers.length;
-			for(var i = 1; i < total; i++){
+			var errorCount  = 0, total = current.answers.length - 1;
+			for(var i = 1; i <= total; i++){
 				if(current.answers[i] === undefined) 
 					continue;
 				if(!document.getElementById('q' + i + current.answers[i]).checked){
@@ -511,7 +523,7 @@
 			    '" class="testcase" onmouseover="this.className += \' active\'" onmouseout="this.className = this.className.replace(\' active\', \'\');">',
 			     '<span><a href="javascript://',
 			    encodeHTML(this.method),
-			    '" onclick="doRun(\'',
+			    '" onclick="System.doRun(\'',
 			    this.id,
 			    '\');">测试</a> | <a href="javascript://测试速度" onclick="System.doTime(\'',
 			    this.id,
@@ -519,7 +531,9 @@
 			    this.times || defaultTimes,
 			    ' 次</a> | <a href="javascript://使用多个不同类型的参数进行测试" onclick="System.doTest(\'',
 			    this.id,
-			    '\');">恶意测试</a></span>',
+			    '\');">自测</a> | <a href="javascript://查看函数源码" onclick="System.viewSource(\'',
+			    this.id,
+			    '\');">查看源码</a></span>',
 			    '<a href="javascript://',
 			    encodeHTML(this.method), '(', encodeHTML(p || ''), ')',
 			    encodeHTML(this.overrides[p] ? ' => ' + this.overrides[p] : ''),

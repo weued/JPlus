@@ -205,8 +205,13 @@ textarea {
 	margin-right: 20px;
 }
 
+.testcase.active {
+	background: #eee;	
+}
+
 .testcase.active span {
 	display: block;
+	font-size:12px;
 }
 
 .testcase, .error, .warn, .success {

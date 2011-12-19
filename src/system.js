@@ -2114,7 +2114,7 @@ Object.extend(String, {
 	 * @param {String} s 字符串。
 	 * @return {String} 返回的字符串。
 	 */
-    toUTF8: function(s) {
+    encodeUTF8: function(s) {
 	    return s.replace(/[^\x00-\xff]/g, function(a, b) {
 		    return '\\u' + ((b = a.charCodeAt()) < 16 ? '000' : b < 256 ? '00' : b < 4096 ? '0' : '') + b.toString(16);
 	    });
@@ -2125,7 +2125,7 @@ Object.extend(String, {
 	 * @param {String} s 字符串。
 	 * @return {String} 返回的字符串。
 	 */
-    fromUTF8: function(s) {
+    decodeUTF8: function(s) {
 	    return s.replace(/\\u([0-9a-f]{3})([0-9a-f])/gi, function(a, b, c) {
 		    return String.fromCharCode((parseInt(b, 16) * 16 + parseInt(c, 16)))
 	    })
@@ -2577,7 +2577,7 @@ Object.extendIf(trace, {
                 }
 
                 // 函数
-                return deep == 0 ? String.fromUTF8(obj.toString()) : "function ()";
+                return deep == 0 ? String.decodeUTF8(obj.toString()) : "function ()";
 
             case "object":
                 if (obj == null)
@@ -2782,7 +2782,7 @@ function assert(bValue, msg) {
 				val = val.caller;
 
 			if (val)
-				msg += "\r\n--------------------------------------------------------------------\r\n" + String.ellipsis(String.fromUTF8(val.toString()), 600);
+				msg += "\r\n--------------------------------------------------------------------\r\n" + String.ellipsis(String.decodeUTF8(val.toString()), 600);
 
 		}
 

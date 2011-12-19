@@ -10,5 +10,5 @@ System.copyright = '';
 
 
 var menus = {
-		
+	Share: '+Index Topbar Layout Box'
 };

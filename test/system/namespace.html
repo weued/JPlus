@@ -14,7 +14,7 @@
 				'namespace': '"MyName.MyClass", {a:1} => assert.isTrue(typeof MyName != "undefined" && MyName.MyClass)',
 				'using': '"System.Ajax.Ajax" => assert.isTrue(window.Ajax)',
 				'Load': '-',
-				'JPlus.eval': '"assert.log(false)" => assert.logged("false")',
+				'execScript': '"assert.log(false)" => assert.logged("false")',
 				'JPlus.loadStyle': '"../../assets/styles/default.css"',
 				'JPlus.loadScript': '"../../src/system/ajax/ajax.js"',
 				'JPlus.loadText': '"namespace.html", function(v){alert(v)}',

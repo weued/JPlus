@@ -3,38 +3,41 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>share - U+ DPL</title>
-		<link rel="stylesheet" type="text/css" href="assets/styles/index.css">
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+		
+		<link rel="stylesheet" type="text/css" href="../share/assets/styles/index.css">
+		
 		<script type="text/javascript" src="../../assets/libs/jquery/jquery.js"></script>
 		<script type="text/javascript" src="../../src/jquery-adapter.js"></script>
 		<script type="text/javascript" src="../../src/uplus.js"></script>
-		<script type="text/javascript" src="assets/scripts/index.js"></script>
+		
+		<script type="text/javascript" src="../share/assets/scripts/index.js"></script>
 	</head>
 	<body>
-		<h2>Share</h2>
+		<h2>Index</h2>
 		<p>
-			Share 模块是全部DPL共用的 JS 和 CSS
+			share/index 模块是全部DPL共用的 JS 和 CSS
 		</p>
-		<p>
-			Share 包括：
-		</p>
+		<h2>文本链接颜色</h2>
 		<ul>
-			<li>
-				样式重置（reset）
-			</li>
-			<li>
-				最基本的公共样式（Common）
-			</li>
-			<li>
-				最基本的JS对象和函数
-			</li>
+			<li>默认: <a href="#">标准链接</a></li>
+			<li>b-hint: <a href="#" class="b-hint">辅助链接</a></li>
+			<li>b-hignlight: <a href="#" class="b-hignlight">重要链接</a></li>
+			<li>b-alt: <a href="#" class="b-alt">次要链接</a></li>
+		</ul>
+		<h2>文本颜色</h2>
+		<ul>
+			<li>默认: 正文</li>
+			<li>b-hint: <span class="b-hint">辅助</span></li>
+			<li>b-hignlight: <span class="b-hignlight">强调</span></li>
 		</ul>
 		<h2>公共样式</h2>
 		<ul>
 			<li>
-				<h4>布局 </h4>
+				b-left: 左浮动
 			</li>
 			<li>
-				b-left: 左浮动
+				b-center: 居中
 			</li>
 			<li>
 				b-right: 右浮动
@@ -43,19 +46,16 @@
 				b-clear: 清除浮动
 			</li>
 			<li>
-				b-hide: 影藏元素（display:none)
+				b-inline: 内联
 			</li>
 			<li>
-				b-hidden: 影藏元素(visibily: hidden)
+				b-block: 块
 			</li>
 			<li>
 				b-inline-block: 内联块
 			</li>
 			<li>
-				b-inline: 内联
-			</li>
-			<li>
-				b-block: 块
+				b-hide: 影藏元素（display:none)
 			</li>
 			<li>
 				b-relative: 相对定位
@@ -67,24 +67,14 @@
 				b-blank: 空行（10像素高）
 			</li>
 			<li>
-				<h4>文字和颜色</h4>
+				b-break-word: 强制文本换行，避免长单词不换行
 			</li>
 			<li>
-				b-break: 强制文本换行，避免长单词不换行
+				b-content: 正文
 			</li>
 			<li>
-			<li>
-				b-hint: 不明显的标记，显示灰色
+				b-debug: 高亮
 			</li>
-			<li>
-				b-hignlight: 高亮的标记，显示橙色
-			</li>
-		</ul>
-		<p>
-			&nbsp;
-		</p>
-		<ul>
-			<li></li>
 		</ul>
 	</body>
 </html>
