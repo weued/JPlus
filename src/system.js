@@ -132,7 +132,7 @@
 		 * 表示空白字符。
 		 * @type RegExp
 		 */
-		rWhite = /%20/g,
+		rBlank = /%20/g,
 	
 		/**
 		 * 转为骆驼格式的正则表达式。
@@ -448,7 +448,7 @@
 			 * @param {Object} [obj] 值。
 			 *            <p>
 			 *            名字空间是项目中表示资源的符合。
-*            </p>
+			 *            </p>
 			 *            <p>
 			 *            比如 system/dom/keys.js 文件， 名字空间是 System.Dom.Keys
 			 *            名字空间用来快速表示资源。 {@link using} 可以根据制定的名字空间载入相应的内容。
@@ -914,10 +914,10 @@
 		    };
 
 		    // 代理类 。
-		    emptyFn.prototype = (subClass.base = this).prototype;
+		    Object.prototype = (subClass.base = this).prototype;
 
 		    // 指定成员 。
-		    subClass.prototype = o.extend(new emptyFn, members);
+		    subClass.prototype = o.extend(new Object, members);
 
 		    // 覆盖构造函数。
 		    subClass.prototype.constructor = subClass;
@@ -1381,7 +1381,7 @@
 		    });
 
 		    // %20 -> + 。
-		    return s.join('&').replace(rWhite, '+');
+		    return s.join('&').replace(rBlank, '+');
 	    },
 
 	    /**
@@ -1884,7 +1884,7 @@
 		window.execScript = function(statements) {
 
 			// 如果正常浏览器，使用 window.eval 。
-			window.eval(statements);
+			window[ "eval" ].call( window, statements );
 
 		};
 
@@ -1896,6 +1896,8 @@
 	 * @type Number
 	 */
 	p.id = Date.now() % 100;
+	
+	/// #if SupportUsing
 
 	/**
 	 * JPlus 安装的根目录, 可以为相对目录。
@@ -1921,6 +1923,8 @@
 		}
 
 	}
+	
+	/// #endif
 
 	/// #endregion
 

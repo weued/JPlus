@@ -23,7 +23,7 @@
 		document.write('<script type="text/javascript" src="' + root + 'assets/project/' + moduleName + '.js"></script>');
 	document.write('<script type="text/javascript" src="' + root + 'assets/project/project.js"></script>');
 	
-	window._ = window._ || console.log;
+	window._ = window._ || window.trace || (window.console && console.log || alert);
 	window.System = window.System || {};
 	
 	apply(System, {

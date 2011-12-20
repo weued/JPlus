@@ -1,7 +1,7 @@
 ﻿
 
 var options = {
-	defaultHtml: 'demo.html',
+	html: 'demo.html',
 	time: 1000
 };
 

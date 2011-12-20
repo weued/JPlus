@@ -129,14 +129,14 @@
 		 *       会忽视第一个标签，所以额外添加一个 div 标签，以保证此类浏览器正常运行。
 		 */
 		wrapMap = {
-		    $default: navigator.isStandard ? [0, '', ''] : [1, '$<div>', '</div>'],
-		    option: [1, '<select multiple="multiple">', '</select>'],
-		    legend: [1, '<fieldset>', '</fieldset>'],
-		    thead: [1, '<table>', '</table>'],
-		    tr: [2, '<table><tbody>', '</tbody></table>'],
-		    td: [3, '<table><tbody><tr>', '</tr></tbody></table>'],
-		    col: [2, '<table><tbody></tbody><colgroup>', '</colgroup></table>'],
-		    area: [1, '<map>', '</map>']
+		    $default: navigator.isStandard ? [1, '', ''] : [2, '$<div>', '</div>'],
+		    option: [2, '<select multiple="multiple">', '</select>'],
+		    legend: [2, '<fieldset>', '</fieldset>'],
+		    thead: [2, '<table>', '</table>'],
+		    tr: [3, '<table><tbody>', '</tbody></table>'],
+		    td: [4, '<table><tbody><tr>', '</tr></tbody></table>'],
+		    col: [3, '<table><tbody></tbody><colgroup>', '</colgroup></table>'],
+		    area: [2, '<map>', '</map>']
 		},
 	
 		/// #endif
@@ -516,7 +516,7 @@
 	
 		/**
 		 * 文档对象。
-		 * @class Document 文档对象是对原生 HTMLDocument 对象的补充， 因为 IE6/7 不存在这些对象。 扩展
+		 * @class Document 因为 IE6/7 不存在这些对象, 文档对象是对原生 HTMLDocument 对象的补充。 扩展
 		 *        Document 也会扩展 HTMLDocument。
 		 */
 		Document = p.Native(document.constructor || {
@@ -527,132 +527,131 @@
 		 * 所有控件基类。
 		 * @class Control
 		 * @abstract
-		 * @extends Element 控件的周期： constructor - 创建控件对于的 Javascript 类。
+		 * @extends Element
+		 * 控件的周期： constructor - 创建控件对于的 Javascript 类。
 		 *          不建议重写，除非你知道你在做什么。 create - 创建本身的 dom 节点。 可重写 - 默认使用 this.tpl 创建。
 		 *          init - 初始化控件本身。 可重写 - 默认为无操作。 render - 渲染控件到文档。
 		 *          不建议重写，如果你希望额外操作渲染事件，则重写。 detach - 删除控件。不建议重写，如果一个控件用到多个 dom
 		 *          内容需重写。
 		 */
-		Control = namespace(
-		        ".Control",
-		        Class({
+		Control = namespace(".Control", Class({
+
+            /**
+			 * 封装的节点。
+			 * @type Element
+			 */
+            dom: null,
+
+            /**
+			 * xType 。
+			 */
+            xType: "control",
+
+            /**
+			 * 根据一个节点返回。
+			 * @param {String/Element/Object} [options] 对象的 id 或对象或各个配置。
+			 */
+            constructor: function(options) {
+
+	            // 这是所有控件共用的构造函数。
+
+	            var me = this,
 	
-		            /**
-					 * 封装的节点。
-					 * @type Element
-					 */
-		            dom: null,
+		            // 临时的配置对象。
+		            opt = apply({}, me.options),
 	
-		            /**
-					 * xType 。
-					 */
-		            xType: "control",
-	
-		            /**
-					 * 根据一个节点返回。
-					 * @param {String/Element/Object} [options] 对象的 id 或对象或各个配置。
-					 */
-		            constructor: function(options) {
-	
-			            // 这是所有控件共用的构造函数。
-	
-			            var me = this,
-	
-			            // 临时的配置对象。
-			            opt = apply({}, me.options),
-	
-			            // 当前实际的节点。
-			            dom;
-	
-			            assert(!arguments.length || options, "Control.prototype.constructor(options): 参数 {options} 不能为空。", options);
-	
-			            // 如果存在配置。
-			            if (options) {
-	
-				            // 如果参数是一个 DOM 节点或 ID 。
-				            if (typeof options == 'string' || options.nodeType) {
-	
-					            // 直接赋值， 在下面用 $ 获取节点 。
-					            dom = options;
-				            } else {
-	
-					            // 否则 options 是一个对象。
-	
-					            // 复制成员到临时配置。
-					            apply(opt, options);
-	
-					            // 保存 dom 。
-					            dom = opt.dom;
-					            delete opt.dom;
-				            }
-			            }
-	
-			            // 如果 dom 的确存在，使用已存在的， 否则使用 create(opt)生成节点。
-			            me.dom = dom ? $(dom) : me.create(opt);
-	
-			            assert(
-			                    me.dom && me.dom.nodeType,
-			                    "Control.prototype.constructor(options): 当前实例的 dom 属性为空，或此属性不是 DOM 对象。(检查 options.dom 是否是合法的节点或ID(options 或 options.dom 指定的ID的节点不存在?) 或当前实例的 create 方法是否正确返回一个节点)\r\n当前控件: {dom} {xType}",
-			                    me.dom, me.xType);
-	
-			            // 调用 init 初始化控件。
-			            me.init(opt);
-	
-			            // 处理样式。
-			            if ('style' in opt) {
-				            assert(me.dom.style, "Control.prototype.constructor(options): 当前控件不支持样式。");
-				            me.dom.style.cssText += ';' + opt.style;
-				            delete opt.style;
-			            }
-	
-			            // 复制各个选项。
-			            Object.set(me, opt);
-		            },
-	
-		            /**
-					 * 当被子类重写时，生成当前控件。
-					 * @param {Object} options 选项。
-					 * @protected
-					 */
-		            create: function() {
-	
-			            assert(this.tpl,
-			                    "Control.prototype.create(): 当前类不存在 tpl 属性。Control.prototype.create 会调用 tpl 属性，根据这个属性中的 HTML 代码动态地生成节点并返回。子类必须定义 tpl 属性或重写 Control.prototype.create 方法返回节点。");
-	
-			            // 转为对 tpl解析。
-			            return Element.parse(this.tpl);
-		            },
-	
-		            /**
-					 * 当被子类重写时，渲染控件。
-					 * @method
-					 * @param {Object} options 配置。
-					 * @protected
-					 */
-		            init: Function.empty,
-	
-		            /**
-					 * 创建当前节点的副本，并返回节点的包装。
-					 * @param {cloneContent} 是否复制内容 。
-					 * @return {Control} 新的控件。
-					 */
-		            cloneNode: function(cloneContent) {
-			            return new this.constructor(this.dom.cloneNode(cloneContent));
-		            },
-	
-		            /**
-					 * 创建并返回控件的副本。
-					 * @param {Boolean} keepId=fasle 是否复制 id 。
-					 * @return {Control} 新的控件。
-					 */
-		            clone: function(keepId) {
-	
-			            // 创建一个控件。
-			            return new this.constructor(this.dom.nodeType === 1 ? this.dom.clone(false, true, keepId) : this.dom.cloneNode(!keepId));
-	
+		            // 当前实际的节点。
+		            dom;
+
+	            assert(!arguments.length || options, "Control.prototype.constructor(options): 参数 {options} 不能为空。", options);
+
+	            // 如果存在配置。
+	            if (options) {
+
+		            // 如果参数是一个 DOM 节点或 ID 。
+		            if (typeof options == 'string' || options.nodeType) {
+
+			            // 直接赋值， 在下面用 $ 获取节点 。
+			            dom = options;
+		            } else {
+
+			            // 否则 options 是一个对象。
+
+			            // 复制成员到临时配置。
+			            apply(opt, options);
+
+			            // 保存 dom 。
+			            dom = opt.dom;
+			            delete opt.dom;
 		            }
-	
-		        })),
+	            }
+
+	            // 如果 dom 的确存在，使用已存在的， 否则使用 create(opt)生成节点。
+	            me.dom = dom ? $(dom) : me.create(opt);
+
+	            assert(
+	                    me.dom && me.dom.nodeType,
+	                    "Control.prototype.constructor(options): 当前实例的 dom 属性为空，或此属性不是 DOM 对象。(检查 options.dom 是否是合法的节点或ID(options 或 options.dom 指定的ID的节点不存在?) 或当前实例的 create 方法是否正确返回一个节点)\r\n当前控件: {dom} {xType}",
+	                    me.dom, me.xType);
+
+	            // 调用 init 初始化控件。
+	            me.init(opt);
+
+	            // 处理样式。
+	            if ('style' in opt) {
+		            assert(me.dom.style, "Control.prototype.constructor(options): 当前控件不支持样式。");
+		            me.dom.style.cssText += ';' + opt.style;
+		            delete opt.style;
+	            }
+
+	            // 复制各个选项。
+	            Object.set(me, opt);
+            },
+
+            /**
+			 * 当被子类重写时，生成当前控件。
+			 * @param {Object} options 选项。
+			 * @protected
+			 */
+            create: function() {
+
+	            assert(this.tpl,
+	                    "Control.prototype.create(): 当前类不存在 tpl 属性。Control.prototype.create 会调用 tpl 属性，根据这个属性中的 HTML 代码动态地生成节点并返回。子类必须定义 tpl 属性或重写 Control.prototype.create 方法返回节点。");
+
+	            // 转为对 tpl解析。
+	            return Element.parse(this.tpl);
+            },
+
+            /**
+			 * 当被子类重写时，渲染控件。
+			 * @method
+			 * @param {Object} options 配置。
+			 * @protected
+			 */
+            init: Function.empty,
+
+            /**
+			 * 创建当前节点的副本，并返回节点的包装。
+			 * @param {cloneContent} 是否复制内容 。
+			 * @return {Control} 新的控件。
+			 */
+            cloneNode: function(cloneContent) {
+	            return new this.constructor(this.dom.cloneNode(cloneContent));
+            },
+
+            /**
+			 * 创建并返回控件的副本。
+			 * @param {Boolean} keepId=fasle 是否复制 id 。
+			 * @return {Control} 新的控件。
+			 */
+            clone: function(keepId) {
+
+	            // 创建一个控件。
+	            return new this.constructor(this.dom.nodeType === 1 ? this.dom.clone(false, true, keepId) : this.dom.cloneNode(!keepId));
+
+            }
+
+        })),
 	
 		/**
 		 * 节点集合。
@@ -745,7 +744,7 @@
 	/// #if SupportIE6
 
 	if (navigator.isQuirks) {
-		map("pop shift", ap, apply(apply(ElementList.prototype, ap), {
+		map("pop shift", ap, apply(o.extendIf(ElementList.prototype, ap), {
 
 		    push: function() {
 			    return ap.push.apply(this, o.update(arguments, $));
@@ -794,12 +793,9 @@
 
             assert.notNull(html, 'Element.parse(html, context, cachable): 参数 {html} ~。');
 
-            // 已经是 Element 或 ElementList。
-            if (html.xType)
-	            return html;
-
+            // 已经是 Element。
             if (html.nodeType)
-	            return new Control(html);
+	            return html;
 
             var div = cache[html];
 
@@ -816,6 +812,8 @@
 
 	            // 过滤空格 // 修正 XHTML
 	            var tag = rTagName.exec(html);
+	            
+	            cachable = cachable !== false;
 
 	            if (tag) {
 
@@ -830,22 +828,26 @@
 		            // 转到正确的深度
 		            for (tag = wrap[0]; tag--;)
 			            div = div.lastChild;
+		            
+		            if(div.previousSibling){
+		            	wrap = div.parentNode; 
+		            	
+		            	assert(context.createDocumentFragment, 'Element.parse(html, context, cachable): 参数 {context} 必须是 DOM 节点。', context);
+
+		            	div = context.createDocumentFragment();
+		            	while(wrap.firstChild) {
+		            		div.appendChild(wrap.firstChild);
+		            	}
+		            }
+
+		            $(div);
+		            
+		            assert(div, "Element.parse(html, context, cachable): 无法根据 {html} 创建节点。", html);
 
 		            // 一般使用最后的节点， 如果存在最后的节点，使用父节点。
 		            // 如果有多节点，则复制到片段对象。
-		            if (div.lastChild !== div.firstChild) {
-			            div = new ElementList(div.childNodes);
-		            } else {
-
-			            /// #if SupportIE8
-
-			            div = $(div.lastChild);
-
-			            /// #endif
-
-			            assert(div, "Element.parse(html, context, cachable): 无法根据 {html} 创建节点。", html);
-
-		            }
+		            
+		            cachable = cachable && !rNoClone.test(html);
 
 	            } else {
 
@@ -853,19 +855,18 @@
 		            div = context.createTextNode(html);
 	            }
 
-	            div = div.xType ? div : new Control(div);
-
-	            if (cachable !== undefined ? cachable : !rNoClone.test(html)) {
+	            if (cachable) {
 		            cache[html] = div.cloneNode(true);
-
-		            // 特殊属性复制。
-		            // if (html = e.properties[div.tagName])
-		            // cache[html][html] = div[html];
 	            }
 
             }
+            
+            // 为了方便添加节点，附加几个函数。
+            if(!div.render){
+            	map('render appendTo', ep, div);
+            }
 
-            return div;
+            return $(div);
 
         },
 
@@ -1942,7 +1943,7 @@
 
             o.each(elem.getElementsByTagName("*"), clean);
             elem.innerHTML = value;
-            if (map[0]) {
+            if (map[0] > 1) {
 	            value = elem.lastChild;
 	            elem.removeChild(elem.firstChild);
 	            elem.removeChild(value);
@@ -2695,6 +2696,7 @@
 		parent = parent.dom || parent;
 		for ( var i = 0, len = this.length; i < len; i++)
 			parent.insertBefore(this[i], refNode);
+		return this;
 	};
 
 	/// #if ElementCore
@@ -2822,6 +2824,10 @@
 	apply(p, {
 
 	    $: $,
+	    
+	    $$: function(selector){
+	    	return document.findAll(selector);
+	    },
 
 	    /**
 		 * 元素。
@@ -2845,7 +2851,7 @@
 
 	});
 
-	map("$ Element Event Document", p, window, true);
+	map("$ $$ Element Event Document", p, window, true);
 
 	/// #if ElementAttribute
 

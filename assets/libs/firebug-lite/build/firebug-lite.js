@@ -3101,7 +3101,8 @@ function withIEStorage(storeFunction){return function(){var args=Array.prototype
 args.unshift(storage);
 doc.documentElement.appendChild(storage);
 storage.addBehavior("#default#userData");
-storage.load(localStorageName);
+if(storage.load)
+	storage.load(localStorageName);
 var result=storeFunction.apply(api,args);
 doc.documentElement.removeChild(storage);
 return result

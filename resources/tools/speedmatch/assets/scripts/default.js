@@ -21,9 +21,9 @@ var current = null,
 	defaultOptions = {
 		time: 1000,     // times of each test case to run for.
 		rootPath: '',   // the directoy of test case file.
-		defaultHtml: 'testcase.html',    //  the default html.
+		html: 'testcase.html',    //  the default html.
 		eclipseLength: 100,  //  If the length of code is greater than eclipseLength, it will be trimed.
-		timeout: 1000    // If .js file is not loaded, system will wait for timeout * 10 ms.
+		timeout: 1000    // If .js file is not loaded, system will wait for timeout * 10(times) ms.
 	};
 
 if(location.search){
@@ -72,6 +72,7 @@ Array.prototype.forEach = Array.prototype.forEach || function(value, bind){
 };
 
 function openTestCase(url){
+	stopSpeedMatch();
 	defaultOptions.rootPath = (url.match(/[\S\s]*\//) || [""])[0];
 	appendScript(document, url);
 }
@@ -172,34 +173,36 @@ function initIFrame(current){
 		
 		value = value.cfg;
 			
-		var js = typeof value.js === 'string' ? [value.js] : value.js;
+		var js = typeof value.js === 'string' ? [value.js] : value.js ? value.js.slice(0) : [];
 	
 		current.loadingCount += 1 + (js ? js.length : 0);
 	
 		iframe.onload = function(){
-			if(js) {
-				var jsLength = js.length;
-				js.forEach(function(js){
-					var script = appendScript(iframe.contentWindow.document, js);
-					script[-[1,] ? 'onload' : 'onreadystatechange']  = function (){
-						if(script.readyState === 'loading')
-							 return;
-						current.loadingCount--;
-						
-						if(--jsLength === 0 && value.init) {
-							value.init(iframe.contentWindow);
-						}
-					};
-					
-					
-				});
-			}
-			
-			
+			if(js.length)
+				loadScript();
 			current.loadingCount--;
 		};
+		
+		function loadScript(){
+			var script = js.shift();
+			script = appendScript(iframe.contentWindow.document, script);
+			script[-[1,] ? 'onload' : 'onreadystatechange']  = function (){
+				if(script.readyState === 'loading')
+					 return;
+				current.loadingCount--;
+				
+				if(js.length){
+					loadScript();
+					return;
+				}
+				
+				if(value.init) {
+					value.init(iframe.contentWindow);
+				}
+			};
+		}
 	
-		iframe.src = current.options.rootPath + (value.html || current.options.defaultHtml);
+		iframe.src = current.options.rootPath + (value.html || current.options.html);
 		frames.appendChild(iframe);	
 		
 	

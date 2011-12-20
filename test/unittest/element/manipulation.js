@@ -300,7 +300,7 @@ test("Element.prototype.append", function() {
 	QUnit.reset();
 	$("select1").append( "<OPTION>Test</OPTION>" );
 	equals( $("select1").get('last', 'option').getText(), "Test", "Appending &lt;OPTION&gt; (all caps)" );
-
+	
 	var colgroup = $("table").append( "<colgroup></colgroup>" );
 	colgroup = colgroup[0] || colgroup;
 	// equals( $("table").get("last").tagName.toLowerCase(), "colgroup", "Append colgroup" );
@@ -435,7 +435,7 @@ test("Element.prototype.appendTo", function() {
 	var l = $("first").get('children').length + 2;
 	new ElementList([ Element.parse("<strong>test</strong>"), Element.parse("<strong>test</strong>") ])
 		.appendTo("first");
-	equals( $("first").get('children').length, l, "Make sure the elements were inserted." );
+	equals( $("first").get('children').length, 2, "Make sure the elements were inserted." );
 	equals( $("first").get('children')[$("first").get('children').length - 1].nodeName.toLowerCase(), "strong", "Verify the last element." );
 
 	QUnit.reset();
@@ -479,9 +479,9 @@ test("Element.prototype.appendTo", function() {
 	QUnit.reset();
 
 	div = Element.parse("<div/>");
-	Element.parse("<span>a</span><b>b</b>")[0].appendTo( div );
+	Element.parse("<span>a</span><b>b</b>").appendTo( div );
 
-	equals( div.get('children').length, 1, "Make sure the right number of children were inserted." );
+	equals( div.get('children').length, 2, "Make sure the right number of children were inserted." );
 
 	div = $("moretests").findAll('div');
 
@@ -737,7 +737,7 @@ test("Element.prototype.clone", function() {
 
 	cloneEvt.remove();
 	divEvt.remove();
-
+	
 	// this is technically an invalid object, but because of the special
 	// classid instantiation it is the only kind that IE has trouble with,
 	// so let's test with it too.
