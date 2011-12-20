@@ -9,7 +9,7 @@
 /********************************* Reset *********************************/
 
 /* reset margin, padding */
-html, body, object, iframe, ul, li, img, pre {
+html, body, object, iframe, img, pre {
 	margin: 0;
 	padding: 0;
 }
@@ -145,6 +145,12 @@ textarea {
 
 /* other tools */
 
+.b-menu, .b-menu li, .b-menu ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
 /* provides a 10px blank line */
 .b-blank {
 	height: 10px;
@@ -166,6 +172,8 @@ textarea {
 body {
 	color: #666666;
 	background-color: #F7F7F7;
+	background-position: center top;
+	background-repeat: repeat-x;
 	font: 12px/1.5 Tahoma, Arial, "\5b8b\4f53", sans-serif;
 }
 
