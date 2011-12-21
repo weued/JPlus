@@ -2784,6 +2784,10 @@ function assert(bValue, msg) {
 
 			while (val.debugStepThrough)
 				val = val.caller;
+				
+			if(val && val.caller){
+				val = val.caller;
+			}
 
 			if (val)
 				msg += "\r\n--------------------------------------------------------------------\r\n" + String.ellipsis(String.decodeUTF8(val.toString()), 600);

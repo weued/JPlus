@@ -70,8 +70,7 @@
 		 * 元素。
 		 * @type Function 如果页面已经存在 Element， 不管是不是用户自定义的，都直接使用。只需保证 Element 是一个函数即可。
 		 */
-		e = window.Element || function() {
-		},
+		e = window.Element || function() {},
 	
 		/// #else
 	
@@ -122,6 +121,11 @@
 		 * @type RegExp
 		 */
 		rTagName = /<([\w:]+)/,
+		
+		/**
+		 * 表示空格的正则表达式。
+		 */
+		rSpace = /\s+/,
 	
 		/**
 		 * 在 Element.parse 和 setHtml 中对 HTML 字符串进行包装用的字符串。
@@ -631,15 +635,6 @@
             init: Function.empty,
 
             /**
-			 * 创建当前节点的副本，并返回节点的包装。
-			 * @param {cloneContent} 是否复制内容 。
-			 * @return {Control} 新的控件。
-			 */
-            cloneNode: function(cloneContent) {
-	            return new this.constructor(this.dom.cloneNode(cloneContent));
-            },
-
-            /**
 			 * 创建并返回控件的副本。
 			 * @param {Boolean} keepId=fasle 是否复制 id 。
 			 * @return {Control} 新的控件。
@@ -721,19 +716,7 @@
 	
 			    return this;
 		    },
-	
-		    /**
-			 * 对每个元素执行 cloneNode, 并返回新的元素的集合。
-			 * @param {Boolean} cloneContent 是否复制子元素。
-			 * @return {ElementList} 复制后的新元素组成的新集合。
-			 */
-		    cloneNode: function(cloneContent) {
-			    var i = this.length, r = new ElementList();
-			    while (i--)
-				    r[i] = this[i].cloneNode(cloneContent);
-			    return r;
-		    },
-	
+		    
 		    /**
 			 * xType
 			 */
@@ -784,7 +767,7 @@
         /**
 		 * 转换一个HTML字符串到节点。
 		 * @param {String/Element} html 字符。
-		 * @param {Element} context 生成节点使用的文档中的任何节点。
+		 * @param {Element} context=document 生成节点使用的文档中的任何节点。
 		 * @param {Boolean} cachable=true 是否缓存。
 		 * @return {Element/TextNode/DocumentFragment} 元素。
 		 * @static
@@ -793,77 +776,75 @@
 
             assert.notNull(html, 'Element.parse(html, context, cachable): 参数 {html} ~。');
 
+			var div;
+
             // 已经是 Element。
-            if (html.nodeType)
-	            return html;
-
-            var div = cache[html];
-
-            context = context && context.ownerDocument || document;
-
-            assert(context.createElement, 'Element.parse(html, context, cachable): 参数 {context} 必须是 DOM 节点。', context);
-
-            if (div && div.ownerDocument === context) {
-
-	            // 复制并返回节点的副本。
-	            div = div.cloneNode(true);
-
+            if (html.nodeType) {
+            	div = html;	
             } else {
-
-	            // 过滤空格 // 修正 XHTML
-	            var tag = rTagName.exec(html);
-	            
-	            cachable = cachable !== false;
-
-	            if (tag) {
-
-		            assert.isString(html, 'Element.parse(html, context, cachable): 参数 {html} ~。');
-
-		            div = context.createElement("div");
-
-		            var wrap = wrapMap[tag[1].toLowerCase()] || wrapMap.$default;
-
-		            div.innerHTML = wrap[1] + html.trim().replace(rXhtmlTag, "<$1></$2>") + wrap[2];
-
-		            // 转到正确的深度
-		            for (tag = wrap[0]; tag--;)
-			            div = div.lastChild;
-		            
-		            if(div.previousSibling){
-		            	wrap = div.parentNode; 
-		            	
-		            	assert(context.createDocumentFragment, 'Element.parse(html, context, cachable): 参数 {context} 必须是 DOM 节点。', context);
-
-		            	div = context.createDocumentFragment();
-		            	while(wrap.firstChild) {
-		            		div.appendChild(wrap.firstChild);
-		            	}
-		            }
-
-		            $(div);
-		            
-		            assert(div, "Element.parse(html, context, cachable): 无法根据 {html} 创建节点。", html);
-
-		            // 一般使用最后的节点， 如果存在最后的节点，使用父节点。
-		            // 如果有多节点，则复制到片段对象。
-		            
-		            cachable = cachable && !rNoClone.test(html);
-
+	
+	           	div = cache[html];
+	
+	            context = context && context.ownerDocument || document;
+	
+	            assert(context.createElement, 'Element.parse(html, context, cachable): 参数 {context} 必须是 DOM 节点。', context);
+	
+	            if (div && div.ownerDocument === context) {
+	
+		            // 复制并返回节点的副本。
+		            div = div.cloneNode(true);
+	
 	            } else {
-
-		            // 创建文本节点。
-		            div = context.createTextNode(html);
+	
+		            // 过滤空格 // 修正 XHTML
+		            var tag = rTagName.exec(html);
+		            
+		            cachable = cachable !== false;
+	
+		            if (tag) {
+	
+			            assert.isString(html, 'Element.parse(html, context, cachable): 参数 {html} ~。');
+	
+			            div = context.createElement("div");
+	
+			            var wrap = wrapMap[tag[1].toLowerCase()] || wrapMap.$default;
+	
+			            div.innerHTML = wrap[1] + html.trim().replace(rXhtmlTag, "<$1></$2>") + wrap[2];
+	
+			            // 转到正确的深度
+			            for (tag = wrap[0]; tag--;)
+				            div = div.lastChild;
+			            
+			            if(div.previousSibling){
+			            	wrap = div.parentNode; 
+			            	
+			            	assert(context.createDocumentFragment, 'Element.parse(html, context, cachable): 参数 {context} 必须是 DOM 节点。', context);
+	
+			            	div = context.createDocumentFragment();
+			            	while(wrap.firstChild) {
+			            		div.appendChild(wrap.firstChild);
+			            	}
+			            }
+			            
+			            assert(div, "Element.parse(html, context, cachable): 无法根据 {html} 创建节点。", html);
+	
+			            // 一般使用最后的节点， 如果存在最后的节点，使用父节点。
+			            // 如果有多节点，则复制到片段对象。
+			            
+			            cachable = cachable && !rNoClone.test(html);
+	
+		            } else {
+	
+			            // 创建文本节点。
+			            div = context.createTextNode(html);
+		            }
+	
+		            if (cachable) {
+			            cache[html] = div.cloneNode(true);
+		            }
+	
 	            }
-
-	            if (cachable) {
-		            cache[html] = div.cloneNode(true);
-	            }
-
-            }
             
-            // 为了方便添加节点，附加几个函数。
-            if(!div.render){
-            	map('render appendTo', ep, div);
             }
 
             return $(div);
@@ -1860,26 +1841,48 @@
 		 */
         addClass: function(className) {
 
-          	assert(className && !/[\s\r\n]/.test(className), "Element.prototype.addClass(className): 参数 {className} 不能空，且不允许有空格和换行。如果需要添加多个类名，可以调用多次 addClass 。");
+          	assert.isString(className, "Element.prototype.addClass(className): 参数 {className} ~。");
             
-            if(!this.hasClass(className)){
-                var elem = this.dom || this;
-            	elem.className = elem.className ? elem.className + ' ' + className : className;
-            }
+            var elem = this.dom || this, classList = className.split(rSpace), newClass, i;
+            
+            if ( !elem.className && classList.length <= 1 ) {
+				elem.className = className;
+
+			} else {
+				newClass = " " + elem.className + " ";
+
+				for ( i = 0; i < classList.length; i++ ) {
+					if ( newClass.indexOf( " " + classList[i] + " " ) < 0 ) {
+						newClass += classList[i] + " ";
+					}
+				}
+				elem.className = newClass.trim();
+			}
 
             return this;
         },
 
         /**
 		 * 移除CSS类名。
-		 * @param {String} className 类名。
+		 * @param {String} [className] 类名。
 		 */
         removeClass: function(className) {
-            var elem = this.dom || this;
 
-         	assert(!className || !/[\s\r\n]/.test(className), "Element.prototype.addClass(className): 参数 {className} 不能空，且不允许有空格和换行。如果需要删除多个类名，可以调用多次 removeClass 。");
+         	assert(!className || className.split, "Element.prototype.removeClass(className): 参数 {className} ~。");
             
-            elem.className = className ? (" " + elem.className + " ").replace(" " + className + " ", " ").trim() : '';
+            var elem = this.dom || this, classList, newClass = "", i;
+            
+			if (className) {
+				classList = className.split(rSpace);
+				newClass = " " + elem.className + " ";
+				for ( i = classList.length; i--; ) {
+					newClass = newClass.replace(" " + classList[i] + " ", " ");
+				}
+				newClass = newClass.trim();
+
+			}
+			
+			elem.className = newClass;
 
             return this;
         },
@@ -2396,7 +2399,7 @@
             }
 
             // 调用 HTML 的渲染。
-            return html.render(p, refNode);
+            return render(html, p, refNode);
         },
 
         /**
@@ -2407,7 +2410,7 @@
         append: function(html) {
 
             // 如果新元素有适合自己的渲染函数。
-            return e.parse(html, this.dom || this).render(this, null);
+            return render(e.parse(html, this.dom || this), this, null);
         },
 
         /**
@@ -2422,7 +2425,7 @@
             // assert.isNode(html, "Element.prototype.replaceWith(html):
 			// 参数 {html} ~或 html片段。");
             if (elem.parentNode) {
-	            html.render(elem.parentNode, elem);
+	            render(html, elem.parentNode, elem);
 	            this.dispose();
             }
             return html;
@@ -2437,9 +2440,9 @@
 		 */
         clone: function(cloneEvent, contents, keepId) {
 
-            assert.isElement(this, "Element.prototype.clone(cloneEvent, contents, keepid): this 必须是 nodeType = 1 的 DOM 节点。");
+            assert.isElement(this.dom || this, "Element.prototype.clone(cloneEvent, contents, keepid): this 必须是 nodeType = 1 的 DOM 节点。");
 
-            var elem = this, clone = elem.cloneNode(contents = contents !== false);
+            var elem = this.dom || this, clone = elem.cloneNode(contents = contents !== false);
 
             if (contents)
 	            for ( var elemChild = elem.getElementsByTagName('*'), cloneChild = clone.getElementsByTagName('*'), i = 0; cloneChild[i]; i++)
@@ -2641,6 +2644,17 @@
 		 * 基类。
 		 */
 	    base: e,
+	    
+	    /**
+	     * 解析一个 html 字符串返回相应的控件。
+	     * @param {String/Element} html 字符。
+		 * @param {Element} context=document 生成节点使用的文档中的任何节点。
+		 * @param {Boolean} cachable=true 是否缓存。
+		 * @return {Control} 控件。
+	     */
+	    parse: function(html, context, cachable){
+	    	return new Control(Element.parse(html, context, cachable));
+	    },
 
 	    /**
 		 * 将指定名字的方法委托到当前对象指定的成员。
@@ -3434,6 +3448,21 @@
 	/// #endif
 
 	/// #if ElementManipulation
+	
+	/**
+	 * 将一个节点插入到另一个节点的指定位置。
+	 * @param {Element} node 要插入的节点。
+	 * @param {Element} target 插入到此节点。
+	 * @param {Element} refNode 目标节点的位置。
+	 */
+	function render(node, target, refNode){
+		if(node.render){
+			node.render(target, refNode);
+		} else {
+			target.insertBefore(node, refNode);
+		}
+		return node;
+	}
 
 	/**
 	 * 删除由于拷贝导致的杂项。
@@ -3445,7 +3474,7 @@
 	 */
 	function cleanClone(srcElem, destElem, cloneEvent, keepId) {
 
-		if (!keepId)
+		if (!keepId && destElem.removeAttribute)
 			destElem.removeAttribute('id');
 
 		/// #if SupportIE8

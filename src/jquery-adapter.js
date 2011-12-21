@@ -3147,7 +3147,7 @@ function assert(bValue, msg) {
 			 * @constructor Point
 			 */
 		    constructor: function(x, y) {
-		    	if(x && (x.left || x.top)) {
+		    	if(Object.isObject(x)) {
 		    		this.x = x.left;
 		    		this.y = x.top;
 		    	} else {
@@ -3457,26 +3457,30 @@ function assert(bValue, msg) {
 
             assert.notNull(html, 'Element.parse(html, context, cachable): 参数 {html} ~。');
 
-            // 已经是 Element 或 ElementList。
-            if (html.xType)
-	            return html;
+            if (!html.nodeType) {
+            	context = context && context.ownerDocument || document;
 
-            if (html.nodeType)
-	            return new Control(html);
+                assert(context.createElement, 'Element.parse(html, context, cachable): 参数 {context} 必须是 DOM 节点。', context);
 
-            context = context && context.ownerDocument || document;
+                if(/<\w+/.test(html) ) {
 
-            assert(context.createElement, 'Element.parse(html, context, cachable): 参数 {context} 必须是 DOM 节点。', context);
-
-            if(/<\w+/.test(html) ) {
-
-				var div =  jQuery(html, context);
-				
-				return div.length === 1 ? $(div[0]) : new ElementList(div);
+    				var div =  jQuery(html, context);
+    				
+    				if(div.length === 1){
+    					html = div[0];
+    				} else {
+    					html = context.createDocumentFragment();
+    					for(var i = 0; i < div.length; i++){
+    						html.appendChild(div[i]);
+    					}
+    				}
+    			
+    			} else {
+    				html = context.createTextNode(html);
+    			}
+            }
 			
-			}
-			
-			return new Control( context.createTextNode(html));
+			return $(html);
 
         },
 
@@ -4059,6 +4063,18 @@ function assert(bValue, msg) {
         },
 
         /**
+		 * 删除一个节点的所有子节点。
+		 * @return {Element} this
+		 */
+        empty: function() {
+            var elem = this.dom || this;
+            o.each(elem.getElementsByTagName("*"), clean);
+            while (elem.lastChild)
+	            elem.removeChild(elem.lastChild);
+            return this;
+        },
+
+        /**
 		 * 移除节点本身。
 		 */
         detach: function() {
@@ -4237,7 +4253,21 @@ function assert(bValue, msg) {
 	            elem.nodeValue = value;
             else
 	            switch (elem.tagName) {
-		            case "SELECT":
+	            	case "SELECT":
+			            if (elem.type === 'select-multiple' && value != null) {
+
+				            assert.isString(value, "Element.prototype.setText(value): 参数  {value} ~。");
+
+				            value = value.split(',');
+				            o.each(elem.options, function(e) {
+					            e.selected = value.indexOf(e.value) > -1;
+				            });
+
+				            break;
+
+			            }
+
+			            // 继续执行
 		            case "INPUT":
 		            case "TEXTAREA":
 		            	jQuery(elem).val(value);
@@ -4384,7 +4414,17 @@ function assert(bValue, msg) {
 			    return elem.nodeValue;
 
 		    switch (elem.tagName) {
-			    case "SELECT":
+		    	 case "SELECT":
+					    if (elem.type != 'select-one') {
+						    var r = [];
+						    o.each(elem.options, function(s) {
+							    if (s.selected && s.value)
+								    r.push(s.value)
+						    });
+						    return r.join(',');
+					    }
+
+					    // 继续执行
 			    case "INPUT":
 			    case "TEXTAREA":
 				    return jQuery(elem).val();
@@ -4463,7 +4503,7 @@ function assert(bValue, msg) {
 		 * @return {Element/undefined} 节点。
 		 */
         findAll: function(selecter){
-        	return new ElementList(jQuery(this.dom || this).find(selecter));
+        	return new ElementList(jQuery(selecter, this.dom || this));
         },
 
         /**
@@ -4536,7 +4576,7 @@ function assert(bValue, msg) {
             }
 
             // 调用 HTML 的渲染。
-            return html.render(p, refNode);
+            return render(html, p, refNode);
         },
 
         /**
@@ -4547,7 +4587,7 @@ function assert(bValue, msg) {
         append: function(html) {
 
             // 如果新元素有适合自己的渲染函数。
-            return e.parse(html, this.dom || this).render(this, null);
+            return render(e.parse(html, this.dom || this), this, null);
         },
 
         /**
@@ -4562,7 +4602,7 @@ function assert(bValue, msg) {
             // assert.isNode(html, "Element.prototype.replaceWith(html):
 			// 参数 {html} ~或 html片段。");
             if (elem.parentNode) {
-	            html.render(elem.parentNode, elem);
+	            render(html, elem.parentNode, elem);
 	            this.dispose();
             }
             return html;
@@ -4577,9 +4617,9 @@ function assert(bValue, msg) {
 		 */
         clone: function(cloneEvent, contents, keepId) {
 
-            assert.isElement(this, "Element.prototype.clone(cloneEvent, contents, keepid): this 必须是 nodeType = 1 的 DOM 节点。");
+            assert.isElement(this.dom || this, "Element.prototype.clone(cloneEvent, contents, keepid): this 必须是 nodeType = 1 的 DOM 节点。");
 
-            var elem = this, clone = elem.cloneNode(contents = contents !== false);
+            var elem = this.dom || this, clone = elem.cloneNode(contents = contents !== false);
 
             if (contents)
 	            for ( var elemChild = elem.getElementsByTagName('*'), cloneChild = clone.getElementsByTagName('*'), i = 0; cloneChild[i]; i++)
@@ -4604,7 +4644,7 @@ function assert(bValue, msg) {
 		 * @return {Element/undefined} 节点。
 		 */
 	    find: function(selecter){
-        	return $(jQuery(this.dom || this).find(selecter)[0]);
+        	return $(jQuery(selecter, this.dom || this)[0]);
         },
 
 	    /// #endif
@@ -4783,6 +4823,17 @@ function assert(bValue, msg) {
 		 * 基类。
 		 */
 	    base: e,
+	    
+	    /**
+	     * 解析一个 html 字符串返回相应的控件。
+	     * @param {String/Element} html 字符。
+		 * @param {Element} context=document 生成节点使用的文档中的任何节点。
+		 * @param {Boolean} cachable=true 是否缓存。
+		 * @return {Control} 控件。
+	     */
+	    parse: function(html, context, cachable){
+	    	return new Control(Element.parse(html, context, cachable));
+	    },
 
 	    /**
 		 * 将指定名字的方法委托到当前对象指定的成员。
@@ -5205,6 +5256,21 @@ function assert(bValue, msg) {
 	/// #endif
 
 	/// #if ElementManipulation
+	
+	/**
+	 * 将一个节点插入到另一个节点的指定位置。
+	 * @param {Element} node 要插入的节点。
+	 * @param {Element} target 插入到此节点。
+	 * @param {Element} refNode 目标节点的位置。
+	 */
+	function render(node, target, refNode){
+		if(node.render){
+			node.render(target, refNode);
+		} else {
+			target.insertBefore(node, refNode);
+		}
+		return node;
+	}
 
 	/**
 	 * 删除由于拷贝导致的杂项。
@@ -5216,7 +5282,7 @@ function assert(bValue, msg) {
 	 */
 	function cleanClone(srcElem, destElem, cloneEvent, keepId) {
 
-		if (!keepId)
+		if (!keepId && destElem.removeAttribute)
 			destElem.removeAttribute('id');
 
 		/// #if SupportIE8
