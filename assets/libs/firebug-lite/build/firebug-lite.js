@@ -3096,8 +3096,9 @@ api.remove=function(key){delete storage[key]
 };
 api.clear=function(){for(var key in storage){delete storage[key]
 }}
-}else{if(doc.documentElement.addBehavior){var storage=doc.createElement("div");
+}else{if(doc.documentElement.addBehavior && navigator.appVersion.indexOf("MSIE 6") == -1){var storage=doc.createElement("div");
 function withIEStorage(storeFunction){return function(){var args=Array.prototype.slice.call(arguments,0);
+
 args.unshift(storage);
 doc.documentElement.appendChild(storage);
 storage.addBehavior("#default#userData");
@@ -3105,6 +3106,7 @@ if(storage.load)
 	storage.load(localStorageName);
 var result=storeFunction.apply(api,args);
 doc.documentElement.removeChild(storage);
+
 return result
 }
 }api.set=withIEStorage(function(storage,key,val){storage.setAttribute(key,api.serialize(val));
