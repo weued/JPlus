@@ -175,6 +175,7 @@ body {
 	background-position: center top;
 	background-repeat: repeat-x;
 	font: 12px/1.5 Tahoma, Arial, "\5b8b\4f53", sans-serif;
+	*line-height: 30px;
 }
 
 a {

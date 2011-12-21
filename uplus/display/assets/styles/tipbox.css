@@ -9,6 +9,7 @@
 	line-height: 20px;
 	background-repeat: no-repeat;
 	background-position: 8px 8px;
+	*vertical-align: middle;
 }
 
 
