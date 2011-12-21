@@ -10,5 +10,11 @@ System.copyright = '';
 
 
 var menus = {
-	Share: '+Index +Topbar +Layout +Box'
+	Core: '+Index Icon',
+	Layout: '+Index +Box',
+	Form: '+TextBox ListBox ComboBox DatePicker ProcessBar',
+	Button: 'Index',
+	Dialog: 'Index',
+	Display: '+TipBox +Face Image Pager Navigator Ad',
+	Widget: 'Index +Topbar'
 };

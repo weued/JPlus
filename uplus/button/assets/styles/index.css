@@ -1,0 +1,139 @@
+/**
+ * @author     xuld
+ */
+
+
+
+
+.b-button {
+	cursor: default;
+	vertical-align: top;
+	overflow: hidden;
+	padding-left: 4px;
+	outline:none;
+}
+
+.b-button-container{
+	background-position: 100% -30px;
+	padding-right: 4px;
+}
+
+.b-button-container, .b-button {
+	height: 26px;
+	display: inline-block;
+	background-image: url(../images/button.gif);
+	background-repeat: no-repeat;
+}
+
+.b-button button {
+	margin: 0 -4px;
+	height: 26px;
+	font-size: 14px;
+	background: none;
+	padding: 0 6px;
+	_padding: 0;
+	color: #183152;
+	border: none;
+	vertical-align: baseline;
+	font-size: 12px;
+	
+}
+
+.b-button-label {
+	line-height: 23px;
+	color: #dbe9ff;
+}
+
+/* ״̬  */
+
+.b-button:hover  .b-button-label{
+	color: #fefefe;
+}
+
+.b-button:hover{
+	background-position: 0 -60px;
+}
+
+.b-button:hover .b-button-container{
+	background-position: 100% -90px;
+}
+
+.b-button:active {
+	background-position: 0 -120px;
+}
+
+.b-button:active .b-button-container{
+	background-position: 100% -150px;
+}
+
+.b-button:active button{
+	position:relative;
+	top:1px;
+	left:1px;
+}
+
+
+.b-button.b-disabled {
+	background-position: 0 -180px!important;
+}
+
+.b-button.b-disabled  .b-button-container{
+	background-position: 100% -210px!important;
+}
+
+.b-button.b-disabled:active button{
+	position: static!important;
+}
+
+.b-button.b-disabled  .b-button-label{
+	color: #898989!important;
+}
+
+.b-button.b-big .b-button-container, .b-button.b-big {
+	height: 30px;
+	background-image: url(../images/button3.gif);
+}
+
+.b-button.b-big button  {
+	height: 30px;
+}
+
+.b-big .b-button-label {
+	line-height: 30px;
+}
+
+
+.b-button.b-big.b-gray {
+	
+	
+}
+
+
+
+.b-button.b-gray .b-button-container, .b-button.b-gray {
+	background-image: url(../images/button2.gif);
+}
+
+.b-button.b-gray .b-button-label{
+	color: #585858;
+}
+
+.b-button.b-gray:hover  .b-button-label{
+	color: #245b99;
+}
+
+.b-button.b-82  button{
+	width: 82px;
+	font-size: 12px;
+	font-weight: bold;
+}
+
+.b-button.b-65 button{
+	width: 65px;
+	font-weight: bold;
+}
+
+.b-button.b-65.b-gray button{
+	font-weight: normal;
+}
+
