@@ -9,11 +9,23 @@
 	<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
 	
 	<!-- 库文件   -->
-	<script type="text/javascript" src="../../src/system.js"></script>
-	<script type="text/javascript" src="../../src/system/dom/element.js"></script>
+	<script type="text/javascript" src="../../assets/libs/jquery/jquery.js"></script>
+	<script type="text/javascript" src="../../src/jquery-adapter.js"></script>
+	<script>
+		_ = $;
+		$ = $$;
+		$$ = _;
+	</script>
 	
 	<!-- 测试文件   -->
+	<script type="text/javascript" src="core/system.js"></script>
+	<script type="text/javascript" src="element/core.js"></script>
+	<script type="text/javascript" src="element/style.js"></script>
+	<script type="text/javascript" src="element/attributes.js"></script>
+	<script type="text/javascript" src="element/manipulation.js"></script>
 	<script type="text/javascript" src="element/dimension.js"></script>
+	<script type="text/javascript" src="element/offset.js"></script>
+	<script type="text/javascript" src="element/traversing.js"></script>
 </head>
 <body>
 	<h1 id="qunit-header">核心部分单元测试 - QUnit 测试驱动</h1>
