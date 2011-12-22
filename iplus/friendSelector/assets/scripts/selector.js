@@ -1,1 +1,1 @@
-/** * @author AKI */var friendSelector = function(){	};friendSelector.prototype = {		// 初始化	init:function(tmpl){					},		};
+/** * @author AKI */var friendSelector = function(){		var dialog =  new Dialog(),		tmpl = '确定删除该评论';	dialog.setContent(tmpl);	function addRelation(){		console.log("sending");		dialog.dom.fadeOut(2000);	}	dialog.sure = addRelation;	dialog.init();	return dialog;};	

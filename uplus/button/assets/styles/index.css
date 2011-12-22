@@ -1,0 +1,159 @@
+
+
+/*  按钮            */
+.b-button{
+	cursor: default;
+	overflow: hidden;
+	padding-left: 4px;
+	outline:none;
+	vertical-align: top;
+}
+
+.b-button-container {
+	padding-right: 4px;
+}
+
+.b-button button {
+	margin: 0 -4px;
+	height: 30px;
+	background: none;
+	border: none;
+	font-size: 12px;
+	color: #dbe9ff;
+	font-weight: bold;
+	padding-bottom: 2px;
+	*padding-bottom: 0;
+}
+
+.b-button, .b-button-container, .b-button-content{
+	display: inline-block;
+	background-image: url(../images/button.png);
+	background-repeat: no-repeat;
+}
+
+.b-button-container{
+	background-position: 100% -70px;
+}
+
+.b-button-content {
+	background-position: 0 -35px;
+	background-repeat: repeat-x;
+}
+
+/* 状态  */
+
+.b-button:hover{
+	background-position: 0 -105px;
+}
+
+.b-button:hover .b-button-container{
+	background-position: 100% -175px;
+}
+
+.b-button:hover .b-button-content{
+	background-position: 0 -140px;
+}
+
+/* IE6-9 和  Opera   不会处理   .b-button:active  (因为存在  <button>)  但我们忽略它。        */
+
+.b-button:active {
+	background-position: 0 -210px;
+}
+
+.b-button:active .b-button-container{
+	background-position: 100% -280px;
+}
+
+.b-button:active .b-button-content{
+	background-position: 0 -245px;
+}
+
+.b-button:active button{
+	position:relative;
+	top:1px;
+	left:1px;
+}
+
+
+/* 次级 */
+
+.b-button-alt, .b-button-alt .b-button-container, .b-button-alt .b-button-content{
+	background-image: url(../images/button-alt.png);
+}
+
+
+.b-button-alt button {
+	color: #595959;	
+	font-weight: normal;
+}
+
+.b-button-alt:hover button {
+	color: #2957A2;
+}
+
+/*   高亮  */
+
+.b-button-hightlight, .b-button-hightlight .b-button-container, .b-button-hightlight .b-button-content{
+	background-image: url(../images/button-hightlight.png);
+}
+
+
+.b-button-hightlight button {
+	color: #F6FFFF;	
+}
+
+/* 小按钮 */
+
+.b-button-small, .b-button-alt-small, .b-button-hightlight-small{
+	vertical-align: middle;
+	*line-height: 26px;
+}
+
+.b-button-small button, .b-button-alt-small button, .b-button-hightlight-small button {
+	height: 26px;
+}
+
+.b-button-small, .b-button-small .b-button-container, .b-button-small .b-button-content {
+	background-image: url(../images/button-small.png);
+}
+
+.b-button-alt-small, .b-button-alt-small .b-button-container, .b-button-alt-small .b-button-content {
+	background-image: url(../images/button-alt-small.png);
+}
+
+.b-button-hightlight-small, .b-button-hightlight-small .b-button-container, .b-button-hightlight-small .b-button-content {
+	background-image: url(../images/button-hightlight-small.png);
+}
+
+/* 禁用  */
+
+.b-button-disabled {
+	background-position: 0 -315px!important;
+}
+
+.b-button-disabled .b-button-container{
+	background-position: 100% -385px!important;
+}
+
+.b-button-disabled .b-button-content{
+	background-position: 0 -350px!important;
+}
+
+.b-button-disabled button{
+	color: #878787!important;	
+}
+
+.b-button-disabled:active button{
+	position: static;
+}
+
+/* 平板    */
+
+.b-button-plain, .b-button-plain .b-button-container, .b-button-plain .b-button-content{
+	background: none!important;
+}
+
+.b-button-plain button {
+	color: #595959;	
+}
+

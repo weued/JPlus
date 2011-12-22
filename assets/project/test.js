@@ -1,3 +1,7 @@
+/**
+ * @fileOverview 测试导航
+ */
+
 var menus = {
 	'System': '+Object +Navigator +Class +Namespace +Trace',
 	'Element': '+Core +Traversing +Manipulation +Style +Attributes +Event +DomReady +Dimension +Offset',

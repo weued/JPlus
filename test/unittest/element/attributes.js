@@ -160,7 +160,7 @@ test("Element.prototype.setAttr", function() {
 	equal( $text.getAttr("required"), true, "Set boolean attributes to the same name" );
 	equal( $text.setAttr("required", false).getAttr("required"), false, "Setting required attribute to false removes it" );
 
-	var $details = Element.parse("<details open></details>");
+	var $details = Control.parse("<details open></details>");
 	
 	$details = $details[0] || $details;
 	$details.appendTo("qunit-fixture");
@@ -254,7 +254,7 @@ test("Element.prototype.setAttr", function() {
 	var $svg = Element.parse("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1' baseProfile='full' width='200' height='200'>"
 		+ "<circle cx='200' cy='200' r='150' />"
 	+ "</svg>");
-	$svg = $svg[0] || $svg;
+	$svg = $($svg.firstChild.tagName == "SVG" ? $svg.firstChild : $svg);
 	$svg.appendTo();
 	equals( $svg.setAttr("cx", 100).getAttr("cx"), "100", "Set attribute on svg element" );
 	$svg.remove();
@@ -422,29 +422,28 @@ test("Element.prototype.addClass", function() {
 
 	// div.setAttr("class", " foo");
 	// div.addClass( "test" );
-	//  equals( div.getAttr("class"), "foo test", "Make sure there's no extra whitespace." );
+	// equals( div.getAttr("class"), "foo test", "Make sure there's no extra whitespace." );
 
 	div.setAttr("class", "foo");
 	div.addClass( "bar baz" );
 	equals( div.getAttr("class"), "foo bar baz", "Make sure there isn't too much trimming." );
 
 	div.removeClass();
-	// div.addClass( "foo" ).addClass( "foo" )
-	// equal( div.getAttr("class"), "foo", "Do not add the same class twice in separate calls." );
+	div.addClass( "foo" ).addClass( "foo" )
+	equal( div.getAttr("class"), "foo", "Do not add the same class twice in separate calls." );
 
 	div.addClass( "fo" );
-	equal( div.getAttr("class"), "fo", "Adding a similar class does not get interrupted." );
+	equal( div.getAttr("class"), "foo fo", "Adding a similar class does not get interrupted." );
 	div.removeClass().addClass("wrap2");
 	ok( div.addClass("wrap").hasClass("wrap"), "Can add similarly named classes");
 
-	// div.removeClass();
-	// div.addClass( "bar bar" );
-	// equal( div.getAttr("class"), "bar", "Do not add the same class twice in the same call." );
+	div.removeClass();
+	div.addClass( "bar bar" );
+	equal( div.getAttr("class"), "bar", "Do not add the same class twice in the same call." );
 
 });
 
 test("Element.prototype.removeClass", function() {
-	expect(5);
 
 	var $divs =  document.findAll("div");
 
@@ -467,19 +466,19 @@ test("Element.prototype.removeClass", function() {
 	// $divs[0].addClass("test").removeClass( null );
 	// ok( $divs[0].hasClass("test"), "Null value passed to removeClass" );
 
-	$divs[0].addClass("test").removeClass( "" );
-	ok( $divs[0].hasClass("test"), "Empty string passed to removeClass" );
+	//$divs[0].addClass("test").removeClass( "" );
+	//ok( $divs[0].hasClass("test"), "Empty string passed to removeClass" );
 
 	var div = document.createElement("div");
 	div.className = " test foo ";
 
 	$(div).removeClass( "foo" );
-	equals( div.className, " test ", "Make sure remaining className is trimmed." );
+	equals( div.className, "test", "Make sure remaining className is trimmed." );
 
 	div.className = " test ";
 
 	$(div).removeClass( "test" );
-	equals( div.className, " ", "Make sure there is nothing left after everything is removed." );
+	equals( div.className, "", "Make sure there is nothing left after everything is removed." );
 });
 
 test("Element.prototype.toggleClass", function() {

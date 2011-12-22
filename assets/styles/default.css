@@ -1,6 +1,6 @@
-/*****************************************
- * JPlus.default.css
- *****************************************/
+/**
+ * @fileOverview J+ 测试系统核心引擎
+ */
 
 
 /*********************************** 全局 *******************************************/
@@ -47,10 +47,6 @@ code {
 table {
 	border-collapse: collapse;
 	empty-cells: show;
-}
-
-th, td {
-	border: 1px solid  #E27B00;
 }
 
 pre {
@@ -205,8 +201,13 @@ textarea {
 	margin-right: 20px;
 }
 
+.testcase.active {
+	background: #eee;	
+}
+
 .testcase.active span {
 	display: block;
+	font-size:12px;
 }
 
 .testcase, .error, .warn, .success {

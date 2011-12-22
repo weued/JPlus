@@ -15,7 +15,7 @@
 					<label for="url">
 					Enter the test case url:
 					</label>
-					<input type="text" id="url" title="Normally, the url ends with .js. View the help.html to learn more." value="testcases/all.js">
+					<input type="text" id="url" title="Normally, the url ends with .js. View the help.html to learn more." onkeypress="if(arguments[0].keyCode || arguments[0].which == 13)openTestCase(this.value)" value="testcases/all.js">
 					<input type="button" onclick='openTestCase(document.getElementById("url").value)' value="Open Test Case" class="button"> 
 				</span>
 				<input type="button" onclick='startSpeedMatch(1, 1)' value="Start Tests" class="button">
@@ -24,6 +24,13 @@
 			<table id="testcases">
 			
 			</table>
+			<div id="note">
+				<h4>Note</h4> 
+				<ol>
+					<li>Testcase.js is relative to current html file. <a href="testcases/demo.js" target="_blank">Here is a sample of testcase.js</a></li>
+					<li>Double click any cell to rerun.</li>
+				</ol>
+			</div>
 			
 			<div id="tools">
 				<div id="frames">
@@ -41,7 +48,7 @@
 			</div>
 			
 			<div id="copyright">
-				SpeedMatch 1.0.0 | Copyright &copy; 2011 xuld. | <a href="http://play.xuld.net/get?speedmatch.zip" target="download">Download</a>
+				SpeedMatch 1.3 | Copyright &copy; 2011 xuld. | <a href="http://work.xuld.net/download/speedmatch.zip.axd" target="download">Download</a>
 			</div>
 		</div>
 	</body>

@@ -20,3 +20,9 @@
 .pop_box .pop_mid{padding:16px 12px 16px 16px;}
 .pop_close{ position:absolute; right:8px; top:8px;display:inline-block;width:18px;height:18px;background:url(http://static.mtimg.net/jingwei/static/images/icon_big.png) 0 -1811px no-repeat;}
 .pop_close:hover{background:url(http://static.mtimg.net/jingwei/static/images/icon_big.png) 0 -1781px no-repeat;}
+.pop_box .pop_gray {
+    background: none repeat scroll 0 0 #F2F2F2;
+    height: 32px;
+    line-height: 32px;
+    position: relative;
+}

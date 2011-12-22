@@ -1,20 +1,20 @@
 ﻿
 
 var options = {
-	defaultHtml: 'demo.html',
+	html: 'demo.html',
 	time: 1000
 };
 
 var framewroks = {
 	'jQuery': {
-		js: '../../../assets/libs/jquery/jquery-1.6.2.js',
+		js: '../../../../assets/libs/jquery/jquery.js',
 		init:  function(window){
 			window.el = window.$("#header");
 			window.fn = fn;
 		}
 	},
 	'mootools': {
-		js: '../../../assets/libs/mootools/mootools-core-1.3.2-full-compat.js',
+		js: '../../../../assets/libs/mootools/mootools-core-1.3.2-full-compat.js',
 		init:  function(window){
 			window.el = window.$("header");
 			window.fn = fn;
@@ -22,7 +22,8 @@ var framewroks = {
 	},
 	'jplus': {
 		js: [
-			'../../../jplus/system.js'
+			'../../../../src/system.js',
+			'../../../../src/system/dom/element.js'
 		],
 		init:  function(window){
 			window.el = window.$("header");

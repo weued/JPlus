@@ -1,801 +1,701 @@
-// ===========================================
-// J+ Library 0.1
-// ===========================================
+/******************************************************************************
+ * J+ Library, 2.0
+ * Copyright (c) 2011-2012, J+ Team. All rights reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *****************************************************************************/
 
 // 可用的宏
-// SupportIE10 - 支持 IE10+ FF5+ Chrome12+ Opera12+ Safari6+ 。
-// SupportIE9 - 支持 IE9+ FF4+ Chrome10+ Opera10+ Safari4+ 。
-// SupportIE8 - 支持 IE8+ FF3+ Chrome10+ Opera10+ Safari4+ 。
-// SupportIE6 - 支持 IE6+ FF2.5+ Chrome1+ Opera9+ Safari4+ 。
-// SupportUsing - 支持 namespace 等。
-// Compact - 当前执行了打包操作。
-// Debug - 启用调试， 启用调试将执行 assert 函数。
-
-// / #ifndef Compact
-
-// 配置。可以删除以下代码。
+// 	SupportIE10 - 支持 IE10+ FF5+ Chrome12+ Opera12+ Safari6+ 。
+// 	SupportIE9 - 支持 IE9+ FF4+ Chrome10+ Opera10+ Safari4+ 。
+// 	SupportIE8 - 支持 IE8+ FF3+ Chrome10+ Opera10+ Safari4+ 。
+// 	SupportIE6(SupportIE7) - 支持 IE6+ FF2.5+ Chrome1+ Opera9+ Safari4+ 。
+// 	SupportUsing - 支持模块载入功能。
+// 	Release - 启用发布操作。
 
 /**
- * @type Object
- */
-var JPlus = {
-
-    /**
-	 * 是否打开调试。
-	 * 
-	 * @config {Boolean}
-	 */
-    debug: true,
-
-    /**
-	 * 启用控制台调试。
-	 * 
-	 * @config {Boolean} 如果不存在控制台，将自动调整为 false 。
-	 */
-    trace: true,
-
-    /**
-	 * 根目录。(需要末尾追加 /)
-	 * 
-	 * @config {String} 程序会自动搜索当前脚本的位置为跟目录。
-	 */
-    rootPath: undefined,
-
-    /**
-	 * 是否输出 assert 来源。
-	 * 
-	 * @config {Boolean}
-	 * @value false 如果此项是 true， 将会输出 assert 失败时的来源函数。
-	 */
-    stackTrace: false,
-
-    /**
-	 * 默认的全局名字空间。
-	 * 
-	 * @config {Object}
-	 * @value window
-	 */
-    defaultNamespace: 'JPlus'
-
-};
-
-// / #endif
-
-// ===========================================
-// 核心。定义必须的系统函数。
-// ===========================================
-
-/**
- * @projectDescription JPlus
- * @copyright 2011 JPlus Team
- * @fileOverview 系统核心的核心部分。
+ * @projectDescription J+：面向对象的组件实现
+ * @copyright 2011-2012 J+ Team
+ * @fileOverview 定义必须的系统函数。
  */
 
 (function(window) {
 
-	// / #define JPlus
+	/// #define JPlus
 
-	// / #ifndef Debug
-	// / #define assert
-	// / #define trace
-	// / #endif
+	/// #if SupportIE7
+	/// 	#define SupportIE6
+	/// #endif
 
-	// / #if defined(SupportIE7) && !defined(SupportIE6)
-	// / #define SupportIE6
-	// / #endif
+	/// #if !SupportIE10 && !SupportIE9 && !SupportIE8 && !SupportIE6
+	/// 	#define SupportIE6
+	/// #endif
 
-	// / #if !defined(SupportIE9) && !defined(SupportIE8) &&
-	// !defined(SupportIE6)
-	// / #define SupportIE6
-	// / #endif
+	/// #if SupportIE6
+	/// 	#define SupportIE8
+	/// #endif
 
-	// / #ifdef SupportIE6
-	// / #define SupportIE8
-	// / #endif
+	/// #if SupportIE8
+	/// 	#define SupportIE9
+	/// #endif
 
-	// / #ifdef SupportIE8
-	// / #define SupportIE9
-	// / #endif
+	/// #if Release
+	/// 	#trim assert
+	/// 	#trim trace
+	/// #else
+	///		#define SupportUsing
+	/// #endif
 
-	// / #ifndef Compact
-	// / #define SupportUsing
-	// / #endif
+	/// #if !SupportUsing
+	/// 	#trim using
+	/// #endif
 
-	// / #ifndef SupportUsing
-	// / #define using
-	// / #endif
-
-	// / #region 全局变量
+	/// #region 全局变量
 
 	/**
 	 * document 简写。
-	 * 
 	 * @type Document
 	 */
 	var document = window.document,
-
-	/**
-	 * navigator 简写。
-	 * 
-	 * @type Navigator
-	 */
-	navigator = window.navigator,
-
-	/**
-	 * Array.prototype 简写。
-	 * 
-	 * @type Object
-	 */
-	ap = Array.prototype,
-
-	/**
-	 * Object 简写。
-	 * 
-	 * @type Function
-	 */
-	o = window.Object,
-
-	/**
-	 * Object.prototype.toString 简写。
-	 * 
-	 * @type Function
-	 */
-	toString = o.prototype.toString,
-
-	/**
-	 * Object.prototype.hasOwnProperty 简写。
-	 * 
-	 * @type Function
-	 */
-	hasOwnProperty = o.prototype.hasOwnProperty,
-
-	/**
-	 * 检查空白的正则表达式。
-	 * 
-	 * @type RegExp
-	 */
-	rSpace = /^[\s\u00A0]+|[\s\u00A0]+$/g,
-
-	/**
-	 * 格式化字符串用的正则表达式。
-	 * 
-	 * @type RegExp
-	 */
-	rFormat = /\{+?(\S*?)\}+/g,
-
-	/**
-	 * 查找字符点的正则表达式。
-	 * 
-	 * @type RegExp
-	 */
-	rPoint = /\./g,
-
-	/**
-	 * 匹配第一个字符。
-	 * 
-	 * @type RegExp
-	 */
-	rFirstChar = /(\b[a-z])/g,
-
-	/**
-	 * 表示空白字符。
-	 * 
-	 * @type RegExp
-	 */
-	rWhite = /%20/g,
-
-	/**
-	 * 转为骆驼格式的正则表达式。
-	 * 
-	 * @type RegExp
-	 */
-	rToCamelCase = /-(\w)/g,
-
-	/**
-	 * 管理所有事件类型的工具。
-	 * 
-	 * @type Object
-	 */
-	eventMgr = {
-
+	
 		/**
-		 * 管理默认的类事件。
-		 * 
+		 * navigator 简写。
+		 * @type Navigator
+		 */
+		navigator = window.navigator,
+	
+		/**
+		 * Array.prototype 简写。
 		 * @type Object
 		 */
-		$default: {
-		    add: emptyFn,
-		    initEvent: emptyFn,
-		    remove: emptyFn
-		}
-
-	},
-
-	/**
-	 * Py静态对象。
-	 * 
-	 * @namespace JPlus
-	 */
-	p = namespace('JPlus.', {
-
-	    /**
-		 * 获取属于一个元素的数据。
-		 * 
-		 * @param {Object}
-		 *            obj 元素。
-		 * @param {String}
-		 *            dataType 类型。
-		 * @return {Object} 值。 这个函数会在对象内生成一个 data 字段， 并生成一个 data.dataType 对象返回。
-		 *         如果原先存在 data.dataType, 则直接返回。
-		 * @example <code>
-	     * var obj = {};
-	     * JPlus.data(obj, 'a').c = 2;
-	     * trace(  JPlus.data(obj, 'a').c  ) // 2
-	     * </code>
+		ap = Array.prototype,
+	
+		/**
+		 * Object 简写。
+		 * @type Function
 		 */
-	    data: function(obj, dataType) {
-
-		    assert.isObject(obj, "JPlus.data(obj, dataType): 参数 {obj} ~。");
-
-		    // 创建或获取 '$data'。
-		    var d = obj.$data || (obj.$data = {});
-
-		    // 创建或获取 dataType。
-		    return d[dataType] || (d[dataType] = {});
-	    },
-
-	    /**
-		 * 如果存在，获取属于一个元素的数据。
-		 * 
-		 * @param {Object}
-		 *            obj 元素。
-		 * @param {String}
-		 *            dataType 类型。
-		 * @return {Object} 值。 这个函数会在对象内生成一个 data 字段， 并生成一个 data.dataType 对象返回。
-		 *         如果原先存在 data.dataType, 则直接返回。
-		 * @example <code>
-	     * var obj = {};
-	     * if(JPlus.getData(obj, 'a')) // 如果存在 a 属性。 
-	     *     trace(  JPlus.data(obj, 'a')  )
-	     * </code>
+		o = window.Object,
+	
+		/**
+		 * Object.prototype.toString 简写。
+		 * @type Function
 		 */
-	    getData: function(obj, dataType) {
-
-		    assert.isObject(obj, "JPlus.getData(obj, dataType): 参数 {obj} ~。");
-
-		    // 获取属性'$data'。
-		    var d = obj.$data;
-		    return d && d[dataType];
-	    },
-
-	    /**
-		 * 设置属于一个元素的数据。
-		 * 
-		 * @param {Object}
-		 *            obj 元素。
-		 * @param {String}
-		 *            dataType 类型。
-		 * @param {Object}
-		 *            data 内容。
-		 * @return data
-		 * @example <code>
-	     * var obj = {};
-	     * JPlus.setData(obj, 'a', 5);    //     5
-	     * </code>
+		toString = o.prototype.toString,
+	
+		/**
+		 * Object.prototype.hasOwnProperty 简写。
+		 * @type Function
 		 */
-	    setData: function(obj, dataType, data) {
-
-		    assert.isObject(obj, "JPlus.setData(obj, dataType): 参数 {obj} ~。");
-
-		    // 简单设置变量。
-		    return (obj.$data || (obj.$data = {}))[dataType] = data;
-	    },
-
-	    /**
-		 * 复制一个对象的事件拷贝到另一个对象。
-		 * 
-		 * @param {Object}
-		 *            src 来源的对象。
-		 * @param {Object}
-		 *            dest 目标的对象。
-		 * @return this
+		hasOwnProperty = o.prototype.hasOwnProperty,
+	
+		/**
+		 * 检查空白的正则表达式。
+		 * @type RegExp
 		 */
-	    cloneEvent: function(src, dest) {
-
-		    assert.isObject(src, "JPlus.cloneEvent(src, dest): 参数 {src} ~。");
-		    assert.isObject(dest, "JPlus.cloneEvent(src, dest): 参数 {dest} ~。");
-
-		    // event 作为系统内部对象。事件的拷贝必须重新进行 on 绑定。
-		    var eventName = src.$data, event = eventName && eventName.event;
-
-		    if (event)
-			    for (eventName in event)
-
-				    // 对每种事件。
-				    event[eventName].handlers.forEach(function(handler) {
-
-					    // 如果源数据的 target 是 src， 则改 dest 。
-					    p.IEvent.on.call(dest, eventName, handler[0], handler[1] === src ? dest : handler[1]);
-				    });
-	    },
-
-	    /**
-		 * 创建一个类。
-		 * 
-		 * @param {Object/Function}
-		 *            [methods] 成员或构造函数。
-		 * @return {Class} 生成的类。 创建一个类，相当于继承于 JPlus.Object创建。
-		 * @see JPlus.Object.extend
-		 * @example <code>
-	     * var MyCls = Class({
-	     * 
-	     *    constructor: function (g, h) {
-	     * 	      alert('构造函数' + g + h)
-	     *    }	
-	     * 
-	     * });
-	     * 
-	     * 
-	     * var c = new MyCls(4, ' g');
-	     * </code>
+		rSpace = /^[\s\u00A0]+|[\s\u00A0]+$/g,
+	
+		/**
+		 * 格式化字符串用的正则表达式。
+		 * @type RegExp
 		 */
-	    Class: function(members) {
-
-		    // 创建类，其实就是 继承 Object ，创建一个类。
-		    return Object.extend(members);
-	    },
-
-	    /**
-		 * 所有类的基类。
-		 * 
-		 * @class JPlus.Object
+		rFormat = /\{+?(\S*?)\}+/g,
+	
+		/**
+		 * 查找字符点的正则表达式。
+		 * @type RegExp
 		 */
-	    Object: Object,
-
-	    /**
-		 * 由存在的类修改创建类。
-		 * 
-		 * @param {Function/Class}
-		 *            constructor 将创建的类。
-		 * @return {Class} 生成的类。
+		rPoint = /\./g,
+	
+		/**
+		 * 匹配第一个字符。
+		 * @type RegExp
 		 */
-	    Native: function(constructor) {
-
-		    // 简单拷贝 Object 的成员，即拥有类的特性。
-		    // 在 JavaScript， 一切函数都可作为类，故此函数存在。
-		    // Object 的成员一般对当前类构造函数原型辅助。
-		    return applyIf(constructor, Object);
-	    },
-
-	    // / #ifdef SupportUsing
-
-	    /**
-		 * 全部已载入的名字空间。
-		 * 
-		 * @type Array
-		 * @private
+		rFirstChar = /(\b[a-z])/g,
+	
+		/**
+		 * 表示空白字符。
+		 * @type RegExp
 		 */
-	    namespaces: [],
-
-	    /**
-		 * 同步载入代码。
-		 * 
-		 * @param {String}
-		 *            uri 地址。
-		 * @example <code>
-	     * JPlus.loadScript('./v.js');
-	     * </code>
+		rBlank = /%20/g,
+	
+		/**
+		 * 转为骆驼格式的正则表达式。
+		 * @type RegExp
 		 */
-	    loadScript: function(url) {
-		    return p.loadText(url, execScript);
-	    },
-
-	    /**
-		 * 异步载入样式。
-		 * 
-		 * @param {String}
-		 *            uri 地址。
-		 * @example <code>
-	     * JPlus.loadStyle('./v.css');
-	     * </code>
-		 */
-	    loadStyle: function(url) {
-
-		    // 在顶部插入一个css，但这样肯能导致css没加载就执行 js 。所以，要保证样式加载后才能继续执行计算。
-		    return document.getElementsByTagName("HEAD")[0].appendChild(apply(document.createElement('link'), {
-		        href: url,
-		        rel: 'stylesheet',
-		        type: 'text/css'
-		    }));
-	    },
-
-	    /**
-		 * 同步载入文本。
-		 * 
-		 * @param {String}
-		 *            uri 地址。
-		 * @param {Function}
-		 *            [callback] 对返回值的处理函数。
-		 * @return {String} 载入的值。 因为同步，所以无法跨站。
-		 * @example <code>
-	     * trace(  JPlus.loadText('./v.html')  );
-	     * </code>
-		 */
-	    loadText: function(url, callback) {
-
-		    assert.notNull(url, "JPlus.loadText(url, callback): 参数 {url} ~。");
-
-		    // assert(window.location.protocol != "file:",
-		    // "JPlus.loadText(uri, callback): 当前正使用 file 协议，请使用 http
-		    // 协议。 \r\n请求地址: {0}", uri);
-
-		    // 新建请求。
-		    // 下文对 XMLHttpRequest 对象进行兼容处理。
-		    var xmlHttp = new XMLHttpRequest();
-
-		    try {
-
-			    // 打开请求。
-			    xmlHttp.open("GET", url, false);
-
-			    // 发送请求。
-			    xmlHttp.send(null);
-
-			    // 检查当前的 XMLHttp 是否正常回复。
-			    if (!p.checkStatusCode(xmlHttp.status)) {
-				    // 载入失败的处理。
-				    throw String.format("请求失败:  \r\n   地址: {0} \r\n   状态: {1}   {2}  {3}", url, xmlHttp.status, xmlHttp.statusText,
-				            window.location.protocol == "file:" ? '\r\n原因: 当前正使用 file 协议打开文件，请使用 http 协议。' : '');
-			    }
-
-			    url = xmlHttp.responseText;
-
-			    // 运行处理函数。
-			    return callback ? callback(url) : url;
-
-		    } catch (e) {
-
-			    // 调试输出。
-			    trace.error(e);
-		    } finally {
-
-			    // 释放资源。
-			    xmlHttp = null;
-		    }
-
-	    },
-
-	    /**
-		 * 将指定的名字空间转为路径。
-		 * 
-		 * @param {String}
-		 *            ns 名字空间。
-		 * @param {Boolean}
-		 *            isStyle=false 是否为样式表。
-		 */
-	    resolveNamespace: function(ns, isStyle) {
-		    // 如果名字空间本来就是一个地址，则不需要转换，否则，将 . 替换为 / ,并在末尾加上 文件后缀。
-		    return ns.indexOf('/') === -1 ? ns.toLowerCase().replace(rPoint, '/') + (isStyle ? '.css' : '.js') : ns;
-
-	    },
-
-	    /**
-		 * 使用一个名空间。
-		 * 
-		 * @param {String}
-		 *            ns 名字空间。
-		 * @param {Boolean}
-		 *            isStyle=false 是否为样式表。 有关名字空间的说明， 见 {@link namespace} 。
-		 * @example <code>
-	     * using("System.Dom.Keys");
-	     * </code>
-		 */
-	    using: function(ns, isStyle) {
-
-		    assert.isString(ns, "using(ns): 参数 {ns} 不是合法的名字空间。");
-
-		    // 已经载入。
-		    if (p.namespaces.include(ns))
-			    return;
-
-		    ns = p.resolveNamespace(ns, isStyle);
-
-		    var doms, check, callback;
-
-		    if (isStyle) {
-			    callback = p.loadStyle;
-			    doms = document.styleSheets;
-			    src = 'href';
-		    } else {
-			    callback = p.loadScript;
-			    doms = document.getElementsByTagName("SCRIPT");
-			    src = 'src';
-		    }
-
-		    // 如果在节点找到符合的就返回，找不到，调用 callback 进行真正的 加载处理。
-		    each.call(doms, function(dom) {
-			    return !dom[src] || dom[src].toLowerCase().indexOf(ns) === -1;
-		    }) && callback(p.rootPath + ns);
-	    },
-
-	    // / #endif
-
-	    /**
-		 * 定义名字空间。
-		 * 
-		 * @param {String}
-		 *            name 名字空间。
-		 * @param {Object}
-		 *            [obj] 值。
-		 *            <p>
-		 *            名字空间是项目中表示资源的符合。
-		 *            </p>
-		 *            <p>
-		 *            比如 system/dom/keys.js 文件， 名字空间是 System.Dom.Keys
-		 *            名字空间用来快速表示资源。 {@link using} 可以根据制定的名字空间载入相应的内容。
-		 *            </p>
-		 *            <p>
-		 *            namespace 函数有多个重载， 如果只有1个参数: <code>
-	     * namespace("System.Dom.Keys"); 
-	     * </code>
-		 *            表示系统已经载入了这个名字空间的资源， using 将忽视这个资源的载入。
-		 *            </p>
-		 *            <p>
-		 *            namespace 如果有2个参数， 表示在指定的位置创建对象。 <code>
-	     * namespace("A.B.C", 5); // 最后 A = {B: {C: 5}}  
-	     * </code>
-		 *            这个写法最后覆盖了 C 的值，但不影响 A 和 B。
-		 *            <p>
-		 *            如果这个名字空间的首字符是 . 则系统会补上 'JPlus'
-		 *            </p>
-		 *            <p>
-		 *            如果这个名字空间的最后的字符是 . 则系统不会覆盖已有对象，而是复制成员到存在的成员。
-		 *            </p>
-		 *            </p>
-		 * @example <code>
-	     * namespace("System.Dom.Keys");  // 避免 重新去引入   System.Dom.Keys
-	     * 
-	     * var A = {   B:  {b: 5},  C: {b: 5}    };
-	     * namespace("A.B", {a: 6})  // A = { B: {a: 6}, C: {b: 5}  }
-	     * 
-	     * var A = {   B:  {b: 5},  C: {b: 5}    };
-	     * namespace("A.C.", {a: 6})  // A = { B: {b: 5},  C: {a: 6, b: 5} }
-	     * 
-	     * namespace(".G", 4);    // JPlus.G = G  = 4
-	     * </code>
-		 */
-	    namespace: namespace,
-
-	    /**
-		 * 判断一个状态码是否为正确的返回。
-		 * 
-		 * @param {Number}
-		 *            statusCode 请求。
-		 * @return {Boolean} 正常返回true 。
-		 */
-	    checkStatusCode: function(statusCode) {
-
-		    // 获取状态。
-		    if (!statusCode) {
-
-			    // 获取协议。
-			    var protocol = window.location.protocol;
-
-			    // 对谷歌浏览器, 在有些协议， statusCode 不存在。
-			    return (protocol == "file: " || protocol == "chrome: " || protocol == "app: ");
-		    }
-
-		    // 检查， 各浏览器支持不同。
-		    return (statusCode >= 200 && statusCode < 300) || statusCode == 304 || statusCode == 1223;
-	    },
-
-	    /**
-		 * 默认的全局名字空间。
-		 * 
-		 * @config {Object}
-		 * @value window
-		 */
-	    defaultNamespace: 'JPlus',
-
-	    /**
+		rToCamelCase = /-(\w)/g,
+	
+		/**
 		 * 管理所有事件类型的工具。
-		 * 
-		 * @property
 		 * @type Object
-		 * @private 所有类的事件信息存储在这个变量。使用 xType -> name的结构。
 		 */
-	    Events: eventMgr,
-
-	    /**
-		 * 表示一个事件接口。
-		 * 
-		 * @interface
-		 * @singleton JPlus.IEvent 提供了事件机制的基本接口，凡实现这个接口的类店都有事件的处理能力。 在调用
-		 *            {@link JPlus.Object.addEvents} 的时候，将自动实现这个接口。
+		eventMgr = {
+	
+			/**
+			 * 管理默认的类事件。
+			 * @type Object
+			 */
+			$default: {
+			    add: emptyFn,
+			    initEvent: emptyFn,
+			    remove: emptyFn
+			}
+	
+		},
+	
+		/**
+		 * JPlus 全局静态对象。
+		 * @namespace JPlus
 		 */
-	    IEvent: {
-
-	        /**
-			 * 增加一个监听者。
-			 * 
-			 * @param {String}
-			 *            type 监听名字。
-			 * @param {Function}
-			 *            listener 调用函数。
-			 * @param {Object}
-			 *            bind=this listener 执行时的作用域。
-			 * @return Object this
+		p = namespace('JPlus.', {
+	
+		    /**
+			 * 获取属于一个元素的数据。
+			 * @param {Object} obj 元素。
+			 * @param {String} dataType 类型。
+			 * @return {Object} 值。 这个函数会在对象内生成一个 data 字段， 并生成一个 data.dataType 对象返回。
+			 *         如果原先存在 data.dataType, 则直接返回。
 			 * @example <code>
-	         * elem.on('click', function (e) {
-	         * 		return true;
-	         * });
-	         * </code>
+		     * var obj = {};
+		     * JPlus.data(obj, 'a').c = 2;
+		     * trace(  JPlus.data(obj, 'a').c  ) // 2
+		     * </code>
 			 */
-	        on: function(type, listener, bind) {
-
-		        assert.isFunction(listener, 'IEvent.on(type, listener, bind): 参数 {listener} ~。');
-
-		        // 获取本对象 本对象的数据内容 本事件值
-		        var me = this, d = p.data(me, 'event'), evt = d[type];
-
-		        // 如果未绑定过这个事件。
-		        if (!evt) {
-
-			        // 支持自定义安装。
-			        d[type] = evt = function(e) {
-				        var listener = arguments.callee, handlers = listener.handlers.slice(0), i = -1, len = handlers.length;
-
-				        // 循环直到 return false。
-				        while (++i < len)
-					        if (handlers[i][0].call(handlers[i][1], e) === false)
-						        return false;
-
-				        return true;
-			        };
-
-			        // 获取事件管理对象。
-			        d = getMgr(me, type);
-
-			        // 当前事件的全部函数。
-			        evt.handlers = [[d.initEvent, me]];
-
-			        // 添加事件。
-			        d.add(me, type, evt);
-
-		        }
-
-		        // 添加到 handlers 。
-		        evt.handlers.push([listener, bind || me]);
-
-		        return me;
-	        },
-
-	        /**
-			 * 删除一个监听器。
-			 * 
-			 * @param {String}
-			 *            [type] 监听名字。
-			 * @param {Function}
-			 *            [listener] 回调器。
-			 * @return Object this 注意: function () {} !== function () {},
-			 *         这意味着这个代码有问题: <code>
-	         * elem.on('click', function () {});
-	         * elem.un('click', function () {});
-	         * </code>
-			 *         你应该把函数保存起来。 <code>
-	         * var c =  function () {};
-	         * elem.on('click', c);
-	         * elem.un('click', c);
-	         * </code>
+		    data: function(obj, dataType) {
+	
+			    assert.isObject(obj, "JPlus.data(obj, dataType): 参数 {obj} ~。");
+	
+			    // 创建或获取 '$data'。
+			    var d = obj.$data || (obj.$data = {});
+	
+			    // 创建或获取 dataType。
+			    return d[dataType] || (d[dataType] = {});
+		    },
+	
+		    /**
+			 * 如果存在，获取属于一个元素的数据。
+			 * @param {Object} obj 元素。
+			 * @param {String} dataType 类型。
+			 * @return {Object} 值。 这个函数会在对象内生成一个 data 字段， 并生成一个 data.dataType 对象返回。
+			 *         如果原先存在 data.dataType, 则直接返回。
 			 * @example <code>
-	         * elem.un('click', function (e) {
-	         * 		return true;
-	         * });
-	         * </code>
+		     * var obj = {};
+		     * if(JPlus.getData(obj, 'a')) // 如果存在 a 属性。 
+		     *     trace(  JPlus.data(obj, 'a')  )
+		     * </code>
 			 */
-	        un: function(type, listener) {
+		    getData: function(obj, dataType) {
+	
+			    assert.isObject(obj, "JPlus.getData(obj, dataType): 参数 {obj} ~。");
+	
+			    // 获取属性'$data'。
+			    var d = obj.$data;
+			    return d && d[dataType];
+		    },
+	
+		    /**
+			 * 设置属于一个元素的数据。
+			 * @param {Object} obj 元素。
+			 * @param {String} dataType 类型。
+			 * @param {Object} data 内容。
+			 * @return data
+			 * @example <code>
+		     * var obj = {};
+		     * JPlus.setData(obj, 'a', 5);    //     5
+		     * </code>
+			 */
+		    setData: function(obj, dataType, data) {
+	
+			    assert.isObject(obj, "JPlus.setData(obj, dataType): 参数 {obj} ~。");
+	
+			    // 简单设置变量。
+			    return (obj.$data || (obj.$data = {}))[dataType] = data;
+		    },
+	
+		    /**
+			 * 复制一个对象的事件拷贝到另一个对象。
+			 * @param {Object} src 来源的对象。
+			 * @param {Object} dest 目标的对象。
+			 * @return this
+			 */
+		    cloneEvent: function(src, dest) {
+	
+			    assert.isObject(src, "JPlus.cloneEvent(src, dest): 参数 {src} ~。");
+			    assert.isObject(dest, "JPlus.cloneEvent(src, dest): 参数 {dest} ~。");
+	
+			    // event 作为系统内部对象。事件的拷贝必须重新进行 on 绑定。
+			    var eventName = src.$data, event = eventName && eventName.event;
+	
+			    if (event)
+				    for (eventName in event)
+	
+					    // 对每种事件。
+					    event[eventName].handlers.forEach(function(handler) {
+	
+						    // 如果源数据的 target 是 src， 则改 dest 。
+						    p.IEvent.on.call(dest, eventName, handler[0], handler[1] === src ? dest : handler[1]);
+					    });
+		    },
+	
+		    /**
+			 * 创建一个类。
+			 * @param {Object/Function} [methods] 成员或构造函数。
+			 * @return {Class} 生成的类。 创建一个类，相当于继承于 JPlus.Object创建。
+			 * @see JPlus.Object.extend
+			 * @example <code>
+		     * var MyCls = Class({
+		     * 
+		     *    constructor: function (g, h) {
+		     * 	      alert('构造函数' + g + h)
+		     *    }	
+		     * 
+		     * });
+		     * 
+		     * 
+		     * var c = new MyCls(4, ' g');
+		     * </code>
+			 */
+		    Class: function(members) {
+	
+			    // 创建类，其实就是 继承 Object ，创建一个类。
+			    return Object.extend(members);
+		    },
+	
+		    /**
+			 * 所有类的基类。
+			 * @class JPlus.Object
+			 */
+		    Object: Object,
+	
+		    /**
+			 * 由存在的类修改创建类。
+			 * @param {Function/Class} constructor 将创建的类。
+			 * @return {Class} 生成的类。
+			 */
+		    Native: function(constructor) {
+	
+			    // 简单拷贝 Object 的成员，即拥有类的特性。
+			    // 在 JavaScript， 一切函数都可作为类，故此函数存在。
+			    // Object 的成员一般对当前类构造函数原型辅助。
+			    return applyIf(constructor, Object);
+		    },
+	
+		    /// #if SupportUsing
+	
+		    /**
+			 * 同步载入代码。
+			 * @param {String} uri 地址。
+			 * @example <code>
+		     * JPlus.loadScript('./v.js');
+		     * </code>
+			 */
+		    loadScript: function(url) {
+			    return p.loadText(url, execScript);
+		    },
+	
+		    /**
+			 * 异步载入样式。
+			 * @param {String} uri 地址。
+			 * @example <code>
+		     * JPlus.loadStyle('./v.css');
+		     * </code>
+			 */
+		    loadStyle: function(url) {
+	
+			    // 在顶部插入一个css，但这样肯能导致css没加载就执行 js 。所以，要保证样式加载后才能继续执行计算。
+			    return document.getElementsByTagName("HEAD")[0].appendChild(apply(document.createElement('link'), {
+			        href: url,
+			        rel: 'stylesheet',
+			        type: 'text/css'
+			    }));
+		    },
+	
+		    /**
+			 * 同步载入文本。
+			 * @param {String} uri 地址。
+			 * @param {Function} [callback] 对返回值的处理函数。
+			 * @return {String} 载入的值。 因为同步，所以无法跨站。
+			 * @example <code>
+		     * trace(  JPlus.loadText('./v.html')  );
+		     * </code>
+			 */
+		    loadText: function(url, callback) {
+	
+			    assert.notNull(url, "JPlus.loadText(url, callback): 参数 {url} ~。");
+	
+			    // assert(window.location.protocol != "file:",
+			    // "JPlus.loadText(uri, callback): 当前正使用 file 协议，请使用 http
+			    // 协议。 \r\n请求地址: {0}", uri);
+	
+			    // 新建请求。
+			    // 下文对 XMLHttpRequest 对象进行兼容处理。
+			    var xmlHttp = new XMLHttpRequest();
+	
+			    try {
+	
+				    // 打开请求。
+				    xmlHttp.open("GET", url, false);
+	
+				    // 发送请求。
+				    xmlHttp.send(null);
+	
+				    // 检查当前的 XMLHttp 是否正常回复。
+				    if (!p.checkStatusCode(xmlHttp.status)) {
+					    // 载入失败的处理。
+					    throw String.format("请求失败:  \r\n   地址: {0} \r\n   状态: {1}   {2}  {3}", url, xmlHttp.status, xmlHttp.statusText,
+					            window.location.protocol == "file:" ? '\r\n原因: 当前正使用 file 协议打开文件，请使用 http 协议。' : '');
+				    }
+	
+				    url = xmlHttp.responseText;
+	
+				    // 运行处理函数。
+				    return callback ? callback(url) : url;
+	
+			    } catch (e) {
+	
+				    // 调试输出。
+				    trace.error(e);
+			    } finally {
+	
+				    // 释放资源。
+				    xmlHttp = null;
+			    }
+	
+		    },
 
-		        assert(!listener || Function.isFunction(listener), 'IEvent.un(type, listener): 参数 {listener} 必须是函数或空参数。', listener);
+		    /**
+			 * 全部已载入的名字空间。
+			 * @type Array
+			 * @private
+			 */
+		    namespaces: [],
+		    
+		    /**
+			 * 将指定的名字空间转为路径。
+			 * @param {String} ns 名字空间。
+			 * @param {Boolean} isStyle=false 是否为样式表。
+			 */
+		    resolveNamespace: function(ns) {
+			    // 如果名字空间本来就是一个地址，则不需要转换，否则，将 . 替换为 / ,并在末尾加上 文件后缀。
+			    return ns.replace(rPoint, '/');
+	
+		    },
+		    
+		    /**
+			 * 使用一个名空间。
+			 * @param {String} ns 名字空间。
+			 * @example <code>
+		     * using("System.Dom.Keys");
+		     * </code>
+			 */
+		    using: function(ns, isStyle) {
+	
+			    assert.isString(ns, "using(ns): 参数 {ns} 不是合法的名字空间。");
+	
+			    // 已经载入。
+			    if (p.namespaces.include(ns))
+				    return;
+	
+			    if (ns.indexOf('/') === -1)
+				    ns = p.resolveNamespace(ns.toLowerCase(), isStyle) + (isStyle ? '.css' : '.js');
+	
+			    var doms, check, callback, path = ns.replace(/^[\.\/\\]+/, "");
+	
+			    if (isStyle) {
+				    callback = p.loadStyle;
+				    doms = document.styleSheets;
+				    src = 'href';
+			    } else {
+				    callback = p.loadScript;
+				    doms = document.getElementsByTagName("SCRIPT");
+				    src = 'src';
+			    }
+	
+			    // 如果在节点找到符合的就返回，找不到，调用 callback 进行真正的 加载处理。
+			    each.call(doms, function(dom) {
+				    return !dom[src] || dom[src].toLowerCase().indexOf(path) === -1;
+			    }) && callback(p.rootPath + ns);
+		    },
+		    
+		    /**
+		     * 导入指定名字空间表示的样式文件。
+		     * @param {String} ns 名字空间。
+		     */
+		    imports: function(ns){
+		    	return p.using(ns, true);
+		    },
+	
+		    /// #endif
+	
+		    /**
+			 * 定义名字空间。
+			 * @param {String} name 名字空间。
+			 * @param {Object} [obj] 值。
+			 *            <p>
+			 *            名字空间是项目中表示资源的符合。
+			 *            </p>
+			 *            <p>
+			 *            比如 system/dom/keys.js 文件， 名字空间是 System.Dom.Keys
+			 *            名字空间用来快速表示资源。 {@link using} 可以根据制定的名字空间载入相应的内容。
+			 *            </p>
+			 *            <p>
+			 *            namespace 函数有多个重载， 如果只有1个参数: <code>
+		     * namespace("System.Dom.Keys"); 
+		     * </code>
+			 *            表示系统已经载入了这个名字空间的资源， using 将忽视这个资源的载入。
+			 *            </p>
+			 *            <p>
+			 *            namespace 如果有2个参数， 表示在指定的位置创建对象。 <code>
+		     * namespace("A.B.C", 5); // 最后 A = {B: {C: 5}}  
+		     * </code>
+			 *            这个写法最后覆盖了 C 的值，但不影响 A 和 B。
+			 *            <p>
+			 *            如果这个名字空间的首字符是 . 则系统会补上 'JPlus'
+			 *            </p>
+			 *            <p>
+			 *            如果这个名字空间的最后的字符是 . 则系统不会覆盖已有对象，而是复制成员到存在的成员。
+			 *            </p>
+			 *            </p>
+			 * @example <code>
+		     * namespace("System.Dom.Keys");  // 避免 重新去引入   System.Dom.Keys
+		     * 
+		     * var A = {   B:  {b: 5},  C: {b: 5}    };
+		     * namespace("A.B", {a: 6})  // A = { B: {a: 6}, C: {b: 5}  }
+		     * 
+		     * var A = {   B:  {b: 5},  C: {b: 5}    };
+		     * namespace("A.C.", {a: 6})  // A = { B: {b: 5},  C: {a: 6, b: 5} }
+		     * 
+		     * namespace(".G", 4);    // JPlus.G = G  = 4
+		     * </code>
+			 */
+		    namespace: namespace,
+	
+		    /**
+			 * 判断一个状态码是否为正确的返回。
+			 * @param {Number} statusCode 请求。
+			 * @return {Boolean} 正常返回true 。
+			 */
+		    checkStatusCode: function(statusCode) {
+	
+			    // 获取状态。
+			    if (!statusCode) {
+	
+				    // 获取协议。
+				    var protocol = window.location.protocol;
+	
+				    // 对谷歌浏览器, 在有些协议， statusCode 不存在。
+				    return (protocol == "file: " || protocol == "chrome: " || protocol == "app: ");
+			    }
+	
+			    // 检查， 各浏览器支持不同。
+			    return (statusCode >= 200 && statusCode < 300) || statusCode == 304 || statusCode == 1223;
+		    },
 
-		        // 获取本对象 本对象的数据内容 本事件值
-		        var me = this, d = p.getData(me, 'event'), evt, handlers, i;
-		        if (d) {
-			        if (evt = d[type]) {
-
-				        handlers = evt.handlers;
-
-				        if (listener) {
-
-					        // 搜索符合的句柄。
-					        for (i = handlers.length - 1; i; i--) {
-						        if (handlers[i][0] === listener) {
-							        handlers.splice(i, 1);
-							        break;
-						        }
-					        }
-
-				        }
-
-				        // 检查是否存在其它函数或没设置删除的函数。
-				        if (!listener || handlers.length < 2) {
-
-					        // 删除对事件处理句柄的全部引用，以允许内容回收。
-					        delete d[type];
-
-					        // 内部事件管理的删除。
-					        getMgr(me, type).remove(me, type, evt);
-				        }
-			        } else if (!type) {
-				        for (evt in d)
-					        me.un(evt);
+		    /**
+			 * 默认的全局名字空间。
+			 * @config {Object}
+			 * @value window
+			 */
+		    defaultNamespace: 'JPlus',
+	
+		    /**
+			 * 管理所有事件类型的工具。
+			 * @property
+			 * @type Object
+			 * @private 所有类的事件信息存储在这个变量。使用 xType -> name的结构。
+			 */
+		    Events: eventMgr,
+	
+		    /**
+			 * 表示一个事件接口。
+			 * @interface
+			 * @singleton JPlus.IEvent 提供了事件机制的基本接口，凡实现这个接口的类店都有事件的处理能力。 在调用
+			 *            {@link JPlus.Object.addEvents} 的时候，将自动实现这个接口。
+			 */
+		    IEvent: {
+	
+		        /**
+				 * 增加一个监听者。
+				 * @param {String} type 监听名字。
+				 * @param {Function} listener 调用函数。
+				 * @param {Object} bind=this listener 执行时的作用域。
+				 * @return Object this
+				 * @example <code>
+		         * elem.on('click', function (e) {
+		         * 		return true;
+		         * });
+		         * </code>
+				 */
+		        on: function(type, listener, bind) {
+	
+			        assert.isFunction(listener, 'IEvent.on(type, listener, bind): 参数 {listener} ~。');
+	
+			        // 获取本对象 本对象的数据内容 本事件值
+			        var me = this, d = p.data(me, 'event'), evt = d[type];
+	
+			        // 如果未绑定过这个事件。
+			        if (!evt) {
+	
+				        // 支持自定义安装。
+				        d[type] = evt = function(e) {
+					        var listener = arguments.callee, handlers = listener.handlers.slice(0), i = -1, len = handlers.length;
+	
+					        // 循环直到 return false。
+					        while (++i < len)
+						        if (handlers[i][0].call(handlers[i][1], e) === false)
+							        return false;
+	
+					        return true;
+				        };
+	
+				        // 获取事件管理对象。
+				        d = getMgr(me, type);
+	
+				        // 当前事件的全部函数。
+				        evt.handlers = [[d.initEvent, me]];
+	
+				        // 添加事件。
+				        d.add(me, type, evt);
+	
 			        }
+	
+			        // 添加到 handlers 。
+			        evt.handlers.push([listener, bind || me]);
+	
+			        return me;
+		        },
+	
+		        /**
+				 * 删除一个监听器。
+				 * @param {String} [type] 监听名字。
+				 * @param {Function} [listener] 回调器。
+				 * @return Object this 注意: function () {} !== function () {},
+				 *         这意味着这个代码有问题: <code>
+		         * elem.on('click', function () {});
+		         * elem.un('click', function () {});
+		         * </code>
+				 *         你应该把函数保存起来。 <code>
+		         * var c =  function () {};
+		         * elem.on('click', c);
+		         * elem.un('click', c);
+		         * </code>
+				 * @example <code>
+		         * elem.un('click', function (e) {
+		         * 		return true;
+		         * });
+		         * </code>
+				 */
+		        un: function(type, listener) {
+	
+			        assert(!listener || Function.isFunction(listener), 'IEvent.un(type, listener): 参数 {listener} 必须是函数或空参数。', listener);
+	
+			        // 获取本对象 本对象的数据内容 本事件值
+			        var me = this, d = p.getData(me, 'event'), evt, handlers, i;
+			        if (d) {
+				        if (evt = d[type]) {
+	
+					        handlers = evt.handlers;
+	
+					        if (listener) {
+	
+						        // 搜索符合的句柄。
+						        for (i = handlers.length - 1; i; i--) {
+							        if (handlers[i][0] === listener) {
+								        handlers.splice(i, 1);
+								        break;
+							        }
+						        }
+	
+					        }
+	
+					        // 检查是否存在其它函数或没设置删除的函数。
+					        if (!listener || handlers.length < 2) {
+	
+						        // 删除对事件处理句柄的全部引用，以允许内容回收。
+						        delete d[type];
+	
+						        // 内部事件管理的删除。
+						        getMgr(me, type).remove(me, type, evt);
+					        }
+				        } else if (!type) {
+					        for (evt in d)
+						        me.un(evt);
+				        }
+			        }
+			        return me;
+		        },
+	
+		        /**
+				 * 触发一个监听器。
+				 * @param {String} type 监听名字。
+				 * @param {Object} [e] 事件参数。
+				 * @return Object this trigger 只是手动触发绑定的事件。
+				 * @example <code>
+		         * elem.trigger('click');
+		         * </code>
+				 */
+		        trigger: function(type, e) {
+	
+			        // 获取本对象 本对象的数据内容 本事件值 。
+			        var me = this, evt = p.getData(me, 'event'), eMgr;
+	
+			        // 执行事件。
+			        return !evt || !(evt = evt[type]) || ((eMgr = getMgr(me, type)).trigger ? eMgr.trigger(me, type, evt, e) : evt(e));
+	
+		        },
+	
+		        /**
+				 * 增加一个只执行一次的监听者。
+				 * @param {String} type 监听名字。
+				 * @param {Function} listener 调用函数。
+				 * @param {Object} bind=this listener 执行时的作用域。
+				 * @return Object this
+				 * @example <code>
+		         * elem.one('click', function (e) {
+		         * 		trace('a');  
+		         * });
+		         * 
+		         * elem.trigger('click');   //  输出  a
+		         * elem.trigger('click');   //  没有输出 
+		         * </code>
+				 */
+		        one: function(type, listener, bind) {
+	
+			        assert.isFunction(listener, 'IEvent.one(type, listener): 参数 {listener} ~。');
+	
+			        // one 本质上是 on , 只是自动为 listener 执行 un 。
+			        return this.on(type, function() {
+	
+				        // 删除，避免闭包。
+				        this.un(type, arguments.callee);
+	
+				        // 然后调用。
+				        return listener.apply(this, arguments);
+			        }, bind);
 		        }
-		        return me;
-	        },
+	
+		    }
+	
+		});
 
-	        /**
-			 * 触发一个监听器。
-			 * 
-			 * @param {String}
-			 *            type 监听名字。
-			 * @param {Object}
-			 *            [e] 事件参数。
-			 * @return Object this trigger 只是手动触发绑定的事件。
-			 * @example <code>
-	         * elem.trigger('click');
-	         * </code>
-			 */
-	        trigger: function(type, e) {
+	/// #endregion
 
-		        // 获取本对象 本对象的数据内容 本事件值 。
-		        var me = this, evt = p.getData(me, 'event'), eMgr;
-
-		        // 执行事件。
-		        return !evt || !(evt = evt[type]) || ((eMgr = getMgr(me, type)).trigger ? eMgr.trigger(me, type, evt, e) : evt(e));
-
-	        },
-
-	        /**
-			 * 增加一个只执行一次的监听者。
-			 * 
-			 * @param {String}
-			 *            type 监听名字。
-			 * @param {Function}
-			 *            listener 调用函数。
-			 * @param {Object}
-			 *            bind=this listener 执行时的作用域。
-			 * @return Object this
-			 * @example <code>
-	         * elem.one('click', function (e) {
-	         * 		trace('a');  
-	         * });
-	         * 
-	         * elem.trigger('click');   //  输出  a
-	         * elem.trigger('click');   //  没有输出 
-	         * </code>
-			 */
-	        one: function(type, listener, bind) {
-
-		        assert.isFunction(listener, 'IEvent.one(type, listener): 参数 {listener} ~。');
-
-		        // one 本质上是 on , 只是自动为 listener 执行 un 。
-		        return this.on(type, function() {
-
-			        // 删除，避免闭包。
-			        this.un(type, arguments.callee);
-
-			        // 然后调用。
-			        return listener.apply(this, arguments);
-		        }, bind);
-	        }
-
-	    }
-
-	});
-
-	// / #endregion
-
-	// / #region 全局函数
+	/// #region 全局函数
 
 	/**
 	 * @namespace JPlus.Object
@@ -804,9 +704,7 @@ var JPlus = {
 
 	    /**
 		 * 扩展当前类的动态方法。
-		 * 
-		 * @param {Object}
-		 *            members 成员。
+		 * @param {Object} members 成员。
 		 * @return this
 		 * @seeAlso JPlus.Object.implementIf
 		 * @example <code>
@@ -830,9 +728,7 @@ var JPlus = {
 
 	    /**
 		 * 如果不存在成员, 扩展当前类的动态方法。
-		 * 
-		 * @param {Object}
-		 *            members 成员。
+		 * @param {Object} members 成员。
 		 * @return this
 		 * @seeAlso JPlus.Object.implement
 		 */
@@ -847,9 +743,7 @@ var JPlus = {
 
 	    /**
 		 * 为当前类添加事件。
-		 * 
-		 * @param {Object}
-		 *            [evens] 所有事件。 具体见下。
+		 * @param {Object} [evens] 所有事件。 具体见下。
 		 * @return this
 		 *         <p>
 		 *         由于一个类的事件是按照 xType 属性存放的，拥有相同 xType 的类将有相同的事件，为了避免没有 xType
@@ -975,9 +869,7 @@ var JPlus = {
 
 	    /**
 		 * 继承当前类并返回子类。
-		 * 
-		 * @param {Object/Function}
-		 *            [methods] 成员或构造函数。
+		 * @param {Object/Function} [methods] 成员或构造函数。
 		 * @return {Class} 继承的子类。
 		 *         <p>
 		 *         这个函数是实现继承的核心。
@@ -1022,10 +914,10 @@ var JPlus = {
 		    };
 
 		    // 代理类 。
-		    emptyFn.prototype = (subClass.base = this).prototype;
+		    Object.prototype = (subClass.base = this).prototype;
 
 		    // 指定成员 。
-		    subClass.prototype = o.extend(new emptyFn, members);
+		    subClass.prototype = o.extend(new Object, members);
 
 		    // 覆盖构造函数。
 		    subClass.prototype.constructor = subClass;
@@ -1039,18 +931,14 @@ var JPlus = {
 
 	/**
 	 * Object 简写。
-	 * 
 	 * @namespace Object
 	 */
 	apply(o, {
 
 	    /**
 		 * 复制对象的所有属性到其它对象。
-		 * 
-		 * @param {Object}
-		 *            dest 复制目标。
-		 * @param {Object}
-		 *            obj 要复制的内容。
+		 * @param {Object} dest 复制目标。
+		 * @param {Object} obj 要复制的内容。
 		 * @return {Object} 复制后的对象 (dest)。
 		 * @seeAlso Object.extendIf
 		 * @example <code>
@@ -1083,11 +971,8 @@ var JPlus = {
 
 	    /**
 		 * 如果目标成员不存在就复制对象的所有属性到其它对象。
-		 * 
-		 * @param {Object}
-		 *            dest 复制目标。
-		 * @param {Object}
-		 *            obj 要复制的内容。
+		 * @param {Object} dest 复制目标。
+		 * @param {Object} obj 要复制的内容。
 		 * @return {Object} 复制后的对象 (dest)。
 		 * @seeAlso Object.extend <code>
 	     * var a = {v: 3, g: 5}, b = {g: 2};
@@ -1099,16 +984,12 @@ var JPlus = {
 
 	    /**
 		 * 在一个可迭代对象上遍历。
-		 * 
-		 * @param {Array/Object}
-		 *            iterable 对象，不支持函数。
-		 * @param {Function}
-		 *            fn 对每个变量调用的函数。 {@param {Object} value 当前变量的值}
+		 * @param {Array/Object} iterable 对象，不支持函数。
+		 * @param {Function} fn 对每个变量调用的函数。 {@param {Object} value 当前变量的值}
 		 *            {@param {Number} key 当前变量的索引} {@param {Number} index
 		 *            当前变量的索引} {@param {Array} array 数组本身} {@return {Boolean}
 		 *            如果中止循环， 返回 false。}
-		 * @param {Object}
-		 *            bind 函数执行时的作用域。
+		 * @param {Object} bind 函数执行时的作用域。
 		 * @return {Boolean} 如果已经遍历完所传的所有值， 返回 true， 如果遍历被中断过，返回 false。
 		 * @example <code> 
 	     * Object.each({a: '1', c: '3'}, function (value, key) {
@@ -1144,17 +1025,12 @@ var JPlus = {
 
 	    /**
 		 * 更新一个可迭代对象。
-		 * 
-		 * @param {Array/Object}
-		 *            iterable 对象，不支持函数。
-		 * @param {Function}
-		 *            fn 对每个变量调用的函数。 {@param {Object} value 当前变量的值}
+		 * @param {Array/Object} iterable 对象，不支持函数。
+		 * @param {Function} fn 对每个变量调用的函数。 {@param {Object} value 当前变量的值}
 		 *            {@param {Number} key 当前变量的索引} {@param {Array} array 数组本身}
 		 *            {@return {Boolean} 如果中止循环， 返回 false。}
-		 * @param {Object}
-		 *            bind=iterable 函数执行时的作用域。
-		 * @param {Object/Boolean}
-		 *            [args] 参数/是否间接传递。
+		 * @param {Object} bind=iterable 函数执行时的作用域。
+		 * @param {Object/Boolean} [args] 参数/是否间接传递。
 		 * @return {Object} 返回的对象。
 		 * @example 该函数支持多个功能。主要功能是将一个对象根据一个关系变成新的对象。 <code>
 	     * Object.update(["aa","aa23"], "length", []); // => [2, 4];
@@ -1203,9 +1079,7 @@ var JPlus = {
 
 	    /**
 		 * 判断一个变量是否是引用变量。
-		 * 
-		 * @param {Object}
-		 *            object 变量。
+		 * @param {Object} object 变量。
 		 * @return {Boolean} 所有对象变量返回 true, null 返回 false 。
 		 * @example <code>
 	     * Object.isObject({}); // true
@@ -1220,12 +1094,9 @@ var JPlus = {
 
 	    /**
 		 * 将一个对象解析成一个类的属性。
-		 * 
-		 * @param {Object}
-		 *            obj 类实例。
-		 * @param {Object}
-		 *            options 参数。 这个函数会分析对象，并试图找到一个 属性设置函数。 当设置对象 obj 的 属性 key 为
-		 *            value: 发生了这些事: 检查，如果存在就调用: obj.setKey(value) 否则，
+		 * @param {Object} obj 类实例。
+		 * @param {Object} options 参数。 这个函数会分析对象，并试图找到一个 属性设置函数。 当设置对象 obj 的 属性
+		 *            key 为 value: 发生了这些事: 检查，如果存在就调用: obj.setKey(value) 否则，
 		 *            检查，如果存在就调用: obj.key(value) 否则， 检查，如果存在就调用:
 		 *            obj.key.set(value) 否则，检查，如果存在就调用: obj.set(value) 否则，执行
 		 *            obj.key = value;
@@ -1272,9 +1143,7 @@ var JPlus = {
 
 	    /**
 		 * 返回一个变量的类型的字符串形式。
-		 * 
-		 * @param {Object}
-		 *            obj 变量。
+		 * @param {Object} obj 变量。
 		 * @return {String} 所有可以返回的字符串： string number boolean undefined null
 		 *         array function element class date regexp object。
 		 * @example <code> 
@@ -1300,16 +1169,13 @@ var JPlus = {
 
 	/**
 	 * 数组。
-	 * 
 	 * @namespace Array
 	 */
 	applyIf(Array, {
 
 	    /**
 		 * 判断一个变量是否是数组。
-		 * 
-		 * @param {Object}
-		 *            object 变量。
+		 * @param {Object} object 变量。
 		 * @return {Boolean} 如果是数组，返回 true， 否则返回 false。
 		 * @example <code> 
 	     * Array.isArray([]); // true
@@ -1325,11 +1191,8 @@ var JPlus = {
 
 	    /**
 		 * 在原有可迭代对象生成一个数组。
-		 * 
-		 * @param {Object}
-		 *            iterable 可迭代的实例。
-		 * @param {Number}
-		 *            startIndex=0 开始的位置。
+		 * @param {Object} iterable 可迭代的实例。
+		 * @param {Number} startIndex=0 开始的位置。
 		 * @return {Array} 复制得到的数组。
 		 * @example <code>
 	     * Array.create([4,6], 1); // [6]
@@ -1359,18 +1222,14 @@ var JPlus = {
 
 	/**
 	 * 函数。
-	 * 
 	 * @namespace Function
 	 */
 	apply(Function, {
 
 	    /**
 		 * 绑定函数作用域。
-		 * 
-		 * @param {Function}
-		 *            fn 函数。
-		 * @param {Object}
-		 *            bind 位置。 注意，未来 Function.prototype.bind 是系统函数，
+		 * @param {Function} fn 函数。
+		 * @param {Object} bind 位置。 注意，未来 Function.prototype.bind 是系统函数，
 		 *            因此这个函数将在那个时候被 替换掉。
 		 * @example <code>
 	     * Function.bind(function () {return this}, 0)()    ; // 0
@@ -1388,7 +1247,6 @@ var JPlus = {
 
 	    /**
 		 * 空函数。
-		 * 
 		 * @property
 		 * @type Function Function.empty返回空函数的引用。
 		 */
@@ -1396,7 +1254,6 @@ var JPlus = {
 
 	    /**
 		 * 一个返回 true 的函数。
-		 * 
 		 * @property
 		 * @type Function
 		 */
@@ -1404,7 +1261,6 @@ var JPlus = {
 
 	    /**
 		 * 一个返回 false 的函数。
-		 * 
 		 * @property
 		 * @type Function
 		 */
@@ -1412,9 +1268,7 @@ var JPlus = {
 
 	    /**
 		 * 判断一个变量是否是函数。
-		 * 
-		 * @param {Object}
-		 *            object 变量。
+		 * @param {Object} object 变量。
 		 * @return {Boolean} 如果是函数，返回 true， 否则返回 false。
 		 * @example <code>
 	     * Function.isFunction(function () {}); // true
@@ -1430,9 +1284,7 @@ var JPlus = {
 
 	    /**
 		 * 返回自身的函数。
-		 * 
-		 * @param {Object}
-		 *            v 需要返回的参数。
+		 * @param {Object} v 需要返回的参数。
 		 * @return {Function} 执行得到参数的一个函数。
 		 * @hide
 		 * @example <code>
@@ -1445,18 +1297,14 @@ var JPlus = {
 
 	/**
 	 * 字符串。
-	 * 
 	 * @namespace String
 	 */
 	apply(String, {
 
 	    /**
 		 * 格式化字符串。
-		 * 
-		 * @param {String}
-		 *            format 字符。
-		 * @param {Object}
-		 *            ... 参数。
+		 * @param {String} format 字符。
+		 * @param {Object} ... 参数。
 		 * @return {String} 格式化后的字符串。
 		 * @example <code>
 	     *  String.format("{0}转换", 1); //  "1转换"
@@ -1489,15 +1337,10 @@ var JPlus = {
 
 	    /**
 		 * 将一个数组源形式的字符串内容拷贝。
-		 * 
-		 * @param {Object}
-		 *            str 字符串。用空格隔开。
-		 * @param {Object/Function}
-		 *            source 更新的函数或源。
-		 * @param {Object}
-		 *            [dest] 如果指明了， 则拷贝结果到这个目标。
-		 * @param {Boolean}
-		 *            copyIf=false 是否跳过本来存在的数据。
+		 * @param {Object} str 字符串。用空格隔开。
+		 * @param {Object/Function} source 更新的函数或源。
+		 * @param {Object} [dest] 如果指明了， 则拷贝结果到这个目标。
+		 * @param {Boolean} copyIf=false 是否跳过本来存在的数据。
 		 * @example <code>
 	     * String.map("aaa bbb ccc", trace); //  aaa bbb ccc
 	     * String.map("aaa bbb ccc", function (v) { return v; }, {});    //    {aaa:aaa, bbb:bbb, ccc:ccc};
@@ -1523,9 +1366,7 @@ var JPlus = {
 
 	    /**
 		 * 返回变量的地址形式。
-		 * 
-		 * @param {Object}
-		 *            obj 变量。
+		 * @param {Object} obj 变量。
 		 * @return {String} 字符串。
 		 * @example <code>
 	     * String.param({a: 4, g: 7}); //  a=4&g=7
@@ -1540,16 +1381,13 @@ var JPlus = {
 		    });
 
 		    // %20 -> + 。
-		    return s.join('&').replace(rWhite, '+');
+		    return s.join('&').replace(rBlank, '+');
 	    },
 
 	    /**
 		 * 把字符串转为指定长度。
-		 * 
-		 * @param {String}
-		 *            value 字符串。
-		 * @param {Number}
-		 *            len 需要的最大长度。
+		 * @param {String} value 字符串。
+		 * @param {Number} len 需要的最大长度。
 		 * @example <code>
 	     * String.ellipsis("123", 2); //   '1...'
 	     * </code>
@@ -1562,18 +1400,16 @@ var JPlus = {
 
 	});
 
-	// / #ifdef SupportIE8
+	/// #if SupportIE8
 
 	/**
 	 * 日期。
-	 * 
 	 * @namespace Date
 	 */
 	applyIf(Date, {
 
 		/**
 		 * 获取当前时间。
-		 * 
 		 * @return {Number} 当前的时间点。
 		 * @example <code>
 		 * Date.now(); //   相当于 new Date().getTime()
@@ -1585,61 +1421,55 @@ var JPlus = {
 
 	});
 
-	// / #endif
+	/// #endif
 
-	// / #endregion
+	/// #endregion
 
-	// / #region 浏览器
+	/// #region 浏览器
 
 	/**
 	 * 浏览器。
-	 * 
 	 * @namespace navigator
 	 */
 	applyIf(navigator, (function(ua, isNonStandard) {
 
 		// 检查信息
 		var match = ua.match(/(IE|Firefox|Chrome|Safari|Opera|Navigator).((\d+)\.?[\d.]*)/i) || ["", "Other", 0, 0],
-
-		// 版本信息。
-		version = ua.match(/(Version).((\d+)\.?[\d.]*)/i) || match,
-
-		// 浏览器名字。
-		browser = match[1];
+	
+			// 版本信息。
+			version = ua.match(/(Version).((\d+)\.?[\d.]*)/i) || match,
+	
+			// 浏览器名字。
+			browser = match[1];
 
 		navigator["is" + browser] = navigator["is" + browser + version[3]] = true;
 
 		/**
 		 * 获取一个值，该值指示是否为 IE 浏览器。
-		 * 
 		 * @getter isIE
 		 * @type Boolean
 		 */
 
 		/**
 		 * 获取一个值，该值指示是否为 Firefox 浏览器。
-		 * 
 		 * @getter isFirefox
 		 * @type Boolean
 		 */
 
 		/**
 		 * 获取一个值，该值指示是否为 Chrome 浏览器。
-		 * 
 		 * @getter isChrome
 		 * @type Boolean
 		 */
 
 		/**
 		 * 获取一个值，该值指示是否为 Opera 浏览器。
-		 * 
 		 * @getter isOpera
 		 * @type Boolean
 		 */
 
 		/**
 		 * 获取一个值，该值指示是否为 Safari 浏览器。
-		 * 
 		 * @getter isSafari
 		 * @type Boolean
 		 */
@@ -1647,39 +1477,35 @@ var JPlus = {
 		// 结果
 		return {
 
-		    // / #ifdef SupportIE6
+		    /// #if SupportIE6
 
 		    /**
 			 * 获取一个值，该值指示当前浏览器是否支持标准事件。就目前浏览器状况， IE6，7 中 isQuirks = true 其它皆
 			 * false 。
-			 * 
 			 * @type Boolean 此处认为 IE6,7 是怪癖的。
 			 */
 		    isQuirks: isNonStandard && !o.isObject(document.constructor),
 
-		    // / #endif
+		    /// #endif
 
-		    // / #ifdef SupportIE8
+		    /// #if SupportIE8
 
 		    /**
 			 * 获取一个值，该值指示当前浏览器是否为标准浏览器。
-			 * 
 			 * @type Boolean 此处认为 IE6, 7, 8 不是标准的浏览器。
 			 */
 		    isStandard: !isNonStandard,
 
-		    // / #endif
+		    /// #endif
 
 		    /**
 			 * 获取当前浏览器的简写。
-			 * 
 			 * @type String
 			 */
 		    name: browser,
 
 		    /**
 			 * 获取当前浏览器版本。
-			 * 
 			 * @type String 输出的格式比如 6.0.0 。 这是一个字符串，如果需要比较版本，应该使用
 			 *       parseFloat(navigator.version) < 4 。
 			 */
@@ -1687,11 +1513,11 @@ var JPlus = {
 
 		};
 
-	})(navigator.userAgent, !-[1, ]));
+	})(navigator.userAgent, eval("!-[1,]")));
 
-	// / #endregion
+	/// #endregion
 
-	// / #region 内部函数
+	/// #region 内部函数
 
 	/**
 	 * xType。
@@ -1713,11 +1539,8 @@ var JPlus = {
 
 		/**
 		 * 调用父类的成员变量。
-		 * 
-		 * @param {String}
-		 *            methodName 属性名。
-		 * @param {Object}
-		 *            ... 调用的参数数组。
+		 * @param {String} methodName 属性名。
+		 * @param {Object} ... 调用的参数数组。
 		 * @return {Object} 父类返回。 注意只能从子类中调用父类的同名成员。
 		 * @protected
 		 * @example <code>
@@ -1779,11 +1602,10 @@ var JPlus = {
 	 */
 	String.implementIf({
 
-	    // / #ifdef SupportIE8
+	    /// #if SupportIE8
 
 	    /**
 		 * 去除首尾空格。
-		 * 
 		 * @return {String} 处理后的字符串。
 		 * @example <code>
 	     * "   g h   ".trim(); //     "g h"
@@ -1795,13 +1617,11 @@ var JPlus = {
 		    return this.replace(rSpace, "");
 	    },
 
-	    // / #endif
+	    /// #endif
 
 	    /**
 		 * 转为骆驼格式。
-		 * 
-		 * @param {String}
-		 *            value 内容。
+		 * @param {String} value 内容。
 		 * @return {String} 返回的内容。
 		 * @example <code>
 	     * "font-size".toCamelCase(); //     "fontSize"
@@ -1813,7 +1633,6 @@ var JPlus = {
 
 	    /**
 		 * 将字符首字母大写。
-		 * 
 		 * @return {String} 大写的字符串。
 		 * @example <code>
 	     * "bb".capitalize(); //     "Bb"
@@ -1834,11 +1653,8 @@ var JPlus = {
 
 	    /**
 		 * 对数组运行一个函数。
-		 * 
-		 * @param {Function}
-		 *            fn 函数.参数 value, index
-		 * @param {Object}
-		 *            bind 对象。
+		 * @param {Function} fn 函数.参数 value, index
+		 * @param {Object} bind 对象。
 		 * @return {Boolean} 有无执行完。
 		 * @method
 		 * @seeAlso Array.prototype.forEach
@@ -1852,15 +1668,12 @@ var JPlus = {
 		 */
 	    each: each,
 
-	    // / #ifdef SupportIE8
+	    /// #if SupportIE8
 
 	    /**
 		 * 返回数组某个值的第一个位置。值没有,则为-1 。
-		 * 
-		 * @param {Object}
-		 *            item 成员。
-		 * @param {Number}
-		 *            start=0 开始查找的位置。
+		 * @param {Object} item 成员。
+		 * @param {Number} start=0 开始查找的位置。
 		 * @return Number 位置，找不到返回 -1 。 现在大多数浏览器已含此函数.除了 IE8- 。
 		 */
 	    indexOf: function(item, startIndex) {
@@ -1873,11 +1686,8 @@ var JPlus = {
 
 	    /**
 		 * 对数组每个元素通过一个函数过滤。返回所有符合要求的元素的数组。
-		 * 
-		 * @param {Function}
-		 *            fn 函数。参数 value, index, this。
-		 * @param {Object}
-		 *            bind 绑定的对象。
+		 * @param {Function} fn 函数。参数 value, index, this。
+		 * @param {Object} bind 绑定的对象。
 		 * @return {Array} 新的数组。
 		 * @seeAlso Array.prototype.select
 		 * @example <code> 
@@ -1899,14 +1709,11 @@ var JPlus = {
 
 	    /**
 		 * 对数组内的所有变量执行函数，并可选设置作用域。
-		 * 
 		 * @method
-		 * @param {Function}
-		 *            fn 对每个变量调用的函数。 {@param {Object} value 当前变量的值}
+		 * @param {Function} fn 对每个变量调用的函数。 {@param {Object} value 当前变量的值}
 		 *            {@param {Number} key 当前变量的索引} {@param {Number} index
 		 *            当前变量的索引} {@param {Array} array 数组本身}
-		 * @param {Object}
-		 *            bind 函数执行时的作用域。
+		 * @param {Object} bind 函数执行时的作用域。
 		 * @seeAlso Array.prototype.each
 		 * @example <code> 
 	     * [2, 5].forEach(function (value, key) {
@@ -1917,13 +1724,11 @@ var JPlus = {
 		 */
 	    forEach: each,
 
-	    // / #endif
+	    /// #endif
 
 	    /**
 		 * 包含一个元素。元素存在直接返回。
-		 * 
-		 * @param {Object}
-		 *            value 值。
+		 * @param {Object} value 值。
 		 * @return {Boolean} 是否包含元素。
 		 * @example <code>
 	     * ["", "aaa", "zzz", "qqq"].include(""); //   true
@@ -1941,11 +1746,8 @@ var JPlus = {
 
 	    /**
 		 * 在指定位置插入项。
-		 * 
-		 * @param {Number}
-		 *            index 插入的位置。
-		 * @param {Object}
-		 *            value 插入的内容。
+		 * @param {Number} index 插入的位置。
+		 * @param {Object} value 插入的内容。
 		 * @example <code>
 	     * ["", "aaa", "zzz", "qqq"].insert(3, 4); //   ["", "aaa", "zzz", 4, "qqq"]
 	     * </code>
@@ -1962,11 +1764,8 @@ var JPlus = {
 
 	    /**
 		 * 对数组成员调用指定的成员，返回结果数组。
-		 * 
-		 * @param {String}
-		 *            func 调用的成员名。
-		 * @param {Array}
-		 *            args 调用的参数数组。
+		 * @param {String} func 调用的成员名。
+		 * @param {Array} args 调用的参数数组。
 		 * @return {Array} 结果。
 		 * @example <code>
 	     * ["vhd"].invoke('charAt', [0]); //    ['v']
@@ -1985,7 +1784,6 @@ var JPlus = {
 
 	    /**
 		 * 删除数组中重复元素。
-		 * 
 		 * @return {Array} 结果。
 		 * @example <code>
 	     * [1,7,8,8].unique(); //    [1, 7, 8]
@@ -2007,9 +1805,7 @@ var JPlus = {
 
 	    /**
 		 * 删除元素, 参数为元素的内容。
-		 * 
-		 * @param {Object}
-		 *            value 值。
+		 * @param {Object} value 值。
 		 * @return {Number} 删除的值的位置。
 		 * @example <code>
 	     * [1,7,8,8].remove(7); //   1
@@ -2026,9 +1822,7 @@ var JPlus = {
 
 	    /**
 		 * 获取指定索引的元素。如果 index < 0， 则获取倒数 index 元素。
-		 * 
-		 * @param {Number}
-		 *            index 元素。
+		 * @param {Number} index 元素。
 		 * @return {Object} 指定位置所在的元素。
 		 * @example <code>
 	     * [1,7,8,8].item(0); //   1
@@ -2047,15 +1841,14 @@ var JPlus = {
 
 	});
 
-	// / #endregion
+	/// #endregion
 
-	// / #region 远程请求
+	/// #region 远程请求
 
-	// / #ifdef SupportIE6
+	/// #if SupportIE6
 
 	/**
 	 * 生成一个请求。
-	 * 
 	 * @class window.XMLHttpRequest
 	 * @return {XMLHttpRequest} 请求的对象。
 	 */
@@ -2067,21 +1860,22 @@ var JPlus = {
 		};
 	}
 
-	// / #endif
+	/// #endif
+	
+	
+	/// #endregion
+	
+	/// #region 页面
 
 	/**
 	 * @class
 	 */
-
-	// / #endregion
-	// / #region 页面
+	
 	if (!window.execScript)
 
 		/**
 		 * 全局运行一个函数。
-		 * 
-		 * @param {String}
-		 *            statement 语句。
+		 * @param {String} statement 语句。
 		 * @return {Object} 执行返回值。
 		 * @example <code>
 		 * execScript('alert("hello")');
@@ -2090,7 +1884,7 @@ var JPlus = {
 		window.execScript = function(statements) {
 
 			// 如果正常浏览器，使用 window.eval 。
-			window.eval(statements);
+			window[ "eval" ].call( window, statements );
 
 		};
 
@@ -2099,14 +1893,14 @@ var JPlus = {
 
 	/**
 	 * id种子 。
-	 * 
 	 * @type Number
 	 */
 	p.id = Date.now() % 100;
+	
+	/// #if SupportUsing
 
 	/**
 	 * JPlus 安装的根目录, 可以为相对目录。
-	 * 
 	 * @config {String}
 	 */
 	if (!p.rootPath) {
@@ -2129,18 +1923,17 @@ var JPlus = {
 		}
 
 	}
+	
+	/// #endif
 
-	// / #endregion
+	/// #endregion
 
-	// / #region 函数
+	/// #region 函数
 
 	/**
 	 * 复制所有属性到任何对象。
-	 * 
-	 * @param {Object}
-	 *            dest 复制目标。
-	 * @param {Object}
-	 *            src 要复制的内容。
+	 * @param {Object} dest 复制目标。
+	 * @param {Object} src 要复制的内容。
 	 * @return {Object} 复制后的对象。
 	 */
 	function apply(dest, src) {
@@ -2155,11 +1948,8 @@ var JPlus = {
 
 	/**
 	 * 如果不存在就复制所有属性到任何对象。
-	 * 
-	 * @param {Object}
-	 *            dest 复制目标。
-	 * @param {Object}
-	 *            src 要复制的内容。
+	 * @param {Object} dest 复制目标。
+	 * @param {Object} src 要复制的内容。
 	 * @return {Object} 复制后的对象。
 	 */
 	function applyIf(dest, src) {
@@ -2175,11 +1965,8 @@ var JPlus = {
 
 	/**
 	 * 对数组运行一个函数。
-	 * 
-	 * @param {Function}
-	 *            fn 遍历的函数。参数依次 value, index, array 。
-	 * @param {Object}
-	 *            bind 对象。
+	 * @param {Function} fn 遍历的函数。参数依次 value, index, array 。
+	 * @param {Object} bind 对象。
 	 * @return {Boolean} 返回一个布尔值，该值指示本次循环时，有无出现一个函数返回 false 而中止循环。
 	 */
 	function each(fn, bind) {
@@ -2203,9 +1990,7 @@ var JPlus = {
 
 	/**
 	 * 返回返回指定结果的函数。
-	 * 
-	 * @param {Object}
-	 *            ret 结果。
+	 * @param {Object} ret 结果。
 	 * @return {Function} 函数。
 	 */
 	function from(ret) {
@@ -2218,9 +2003,7 @@ var JPlus = {
 
 	/**
 	 * 将一个字符转为大写。
-	 * 
-	 * @param {String}
-	 *            match 字符。
+	 * @param {String} match 字符。
 	 */
 	function toUpperCase(ch, match) {
 		return match.toUpperCase();
@@ -2235,11 +2018,8 @@ var JPlus = {
 
 	/**
 	 * 获取指定的对象所有的事件管理器。
-	 * 
-	 * @param {Object}
-	 *            obj 要使用的对象。
-	 * @param {String}
-	 *            type 事件名。
+	 * @param {Object} obj 要使用的对象。
+	 * @param {String} type 事件名。
 	 * @return {Object} 符合要求的事件管理器，如果找不到合适的，返回默认的事件管理器。
 	 */
 	function getMgr(eMgr, type) {
@@ -2261,11 +2041,8 @@ var JPlus = {
 
 	/**
 	 * 定义名字空间。
-	 * 
-	 * @param {String}
-	 *            ns 名字空间。
-	 * @param {Object}
-	 *            obj 值。
+	 * @param {String} ns 名字空间。
+	 * @param {Object} obj 值。
 	 */
 	function namespace(ns, obj) {
 
@@ -2274,16 +2051,16 @@ var JPlus = {
 		// 简单声明。
 		if (arguments.length == 1) {
 
-			// / #ifdef SupportUsing
+			/// #if SupportUsing
 
 			// 加入已使用的名字空间。
 			return p.namespaces.include(ns);
 
-			// / #else
+			/// #else
 
-			// / return ;
+			/// return ;
 
-			// / #endif
+			/// #endif
 		}
 
 		// 取值，创建。
@@ -2315,16 +2092,21 @@ var JPlus = {
 
 	}
 
-	// / #endregion
+	/// #endregion
 
 })(this);
 
-// ===========================================
-// 调试 C
-// ===========================================
 
-// / #ifdef Debug
-// / #region 调试
+
+/// #if !Release
+
+/// #region 调试
+
+/**
+ * 是否打开调试。启用调试后，将支持assert检查。
+ * @config {Boolean}
+ */
+JPlus.debug = true;
 
 /**
  * @namespace String
@@ -2333,12 +2115,10 @@ Object.extend(String, {
 
     /**
 	 * 将字符串转为 utf-8 字符串。
-	 * 
-	 * @param {String}
-	 *            s 字符串。
+	 * @param {String} s 字符串。
 	 * @return {String} 返回的字符串。
 	 */
-    toUTF8: function(s) {
+    encodeUTF8: function(s) {
 	    return s.replace(/[^\x00-\xff]/g, function(a, b) {
 		    return '\\u' + ((b = a.charCodeAt()) < 16 ? '000' : b < 256 ? '00' : b < 4096 ? '0' : '') + b.toString(16);
 	    });
@@ -2346,12 +2126,10 @@ Object.extend(String, {
 
     /**
 	 * 将字符串从 utf-8 字符串转义。
-	 * 
-	 * @param {String}
-	 *            s 字符串。
+	 * @param {String} s 字符串。
 	 * @return {String} 返回的字符串。
 	 */
-    fromUTF8: function(s) {
+    decodeUTF8: function(s) {
 	    return s.replace(/\\u([0-9a-f]{3})([0-9a-f])/gi, function(a, b, c) {
 		    return String.fromCharCode((parseInt(b, 16) * 16 + parseInt(c, 16)))
 	    })
@@ -2361,15 +2139,12 @@ Object.extend(String, {
 
 /**
  * 调试输出。
- * 
- * @param {Object}
- *            obj 值。
- * @param {String}
- *            args 格式化的字符串。
+ * @param {Object} obj 值。
+ * @param {String} args 格式化的字符串。
  */
 function trace(obj, args) {
 
-	if (arguments.length == 0 || !JPlus.trace)
+	if (arguments.length == 0 || !JPlus.debug)
 		return; // 关闭调试
 
 	var useConsole = window.console && console.log;
@@ -2393,636 +2168,602 @@ function trace(obj, args) {
 /**
  * @namespace trace
  */
-Object
-        .extendIf(
-                trace,
-                {
+Object.extendIf(trace, {
 
-                    /**
-					 * 输出方式。 {@param {String} message 信息。}
-					 * 
-					 * @type Function
-					 */
-                    write: function(message) {
-	                    alert(message);
-                    },
+    /**
+	 * 输出方式。 {@param {String} message 信息。}
+	 * @type Function
+	 */
+    write: function(message) {
+        alert(message);
+    },
 
-                    /**
-					 * 输出类的信息。
-					 * 
-					 * @param {Object}
-					 *            [obj] 要查看成员的对象。如果未提供这个对象，则显示全局的成员。
-					 * @param {Boolean}
-					 *            showPredefinedMembers=true 是否显示内置的成员。
-					 */
-                    api: (function() {
+    /**
+	 * 输出类的信息。
+	 * @param {Object} [obj] 要查看成员的对象。如果未提供这个对象，则显示全局的成员。
+	 * @param {Boolean} showPredefinedMembers=true 是否显示内置的成员。
+	 */
+    api: (function() {
 
-	                    var nodeTypes = 'Window Element Attr Text CDATASection Entity EntityReference ProcessingInstruction Comment HTMLDocument DocumentType DocumentFragment Document Node'
-	                            .split(' '),
+        var nodeTypes = 'Window Element Attr Text CDATASection Entity EntityReference ProcessingInstruction Comment HTMLDocument DocumentType DocumentFragment Document Node'
+                .split(' '),
 
-	                    definedClazz = 'String Date Array Number RegExp Function XMLHttpRequest Object'.split(' ').concat(nodeTypes),
+        definedClazz = 'String Date Array Number RegExp Function XMLHttpRequest Object'.split(' ').concat(nodeTypes),
 
-	                    predefinedNonStatic = {
-	                        'Object': 'valueOf hasOwnProperty toString',
-	                        'String': 'length charAt charCodeAt concat indexOf lastIndexOf match quote slice split substr substring toLowerCase toUpperCase trim sub sup anchor big blink bold small fixed fontcolor italics link',
-	                        'Array': 'length pop push reverse shift sort splice unshift concat join slice indexOf lastIndexOf filter forEach', /*
-																																				 * '
-																																				 * every
-																																				 * map
-																																				 * some
-																																				 * reduce
-																																				 * reduceRight'
-																																				 */
-	                        'Number': 'toExponential toFixed toLocaleString toPrecision',
-	                        'Function': 'length apply call',
-	                        'Date': 'getDate getDay getFullYear getHours getMilliseconds getMinutes getMonth getSeconds getTime getTimezoneOffset getUTCDate getUTCDay getUTCFullYear getUTCHours getUTCMinutes getUTCMonth getUTCSeconds getYear setDate setFullYear setHours setMinutes setMonth setSeconds setTime setUTCDate setUTCFullYear setUTCHours setUTCMilliseconds setUTCMinutes setUTCMonth setUTCSeconds setYear toGMTString toLocaleString toUTCString',
-	                        'RegExp': 'exec test'
-	                    },
+        predefinedNonStatic = {
+            'Object': 'valueOf hasOwnProperty toString',
+            'String': 'length charAt charCodeAt concat indexOf lastIndexOf match quote slice split substr substring toLowerCase toUpperCase trim sub sup anchor big blink bold small fixed fontcolor italics link',
+            'Array': 'length pop push reverse shift sort splice unshift concat join slice indexOf lastIndexOf filter forEach', /*
+																																 * '
+																																 * every
+																																 * map
+																																 * some
+																																 * reduce
+																																 * reduceRight'
+																																 */
+            'Number': 'toExponential toFixed toLocaleString toPrecision',
+            'Function': 'length apply call',
+            'Date': 'getDate getDay getFullYear getHours getMilliseconds getMinutes getMonth getSeconds getTime getTimezoneOffset getUTCDate getUTCDay getUTCFullYear getUTCHours getUTCMinutes getUTCMonth getUTCSeconds getYear setDate setFullYear setHours setMinutes setMonth setSeconds setTime setUTCDate setUTCFullYear setUTCHours setUTCMilliseconds setUTCMinutes setUTCMonth setUTCSeconds setYear toGMTString toLocaleString toUTCString',
+            'RegExp': 'exec test'
+        },
 
-	                    predefinedStatic = {
-	                        'Array': 'isArray',
-	                        'Number': 'MAX_VALUE MIN_VALUE NaN NEGATIVE_INFINITY POSITIVE_INFINITY',
-	                        'Date': 'now parse UTC'
-	                    },
+        predefinedStatic = {
+            'Array': 'isArray',
+            'Number': 'MAX_VALUE MIN_VALUE NaN NEGATIVE_INFINITY POSITIVE_INFINITY',
+            'Date': 'now parse UTC'
+        },
 
-	                    APIInfo = Class({
+        APIInfo = Class({
 
-	                        memberName: '',
+            memberName: '',
 
-	                        title: 'API 信息:',
+            title: 'API 信息:',
 
-	                        prefix: '',
+            prefix: '',
 
-	                        getPrefix: function(obj) {
-		                        if (!obj)
-			                        return "";
-		                        for ( var i = 0; i < definedClazz.length; i++) {
-			                        if (window[definedClazz[i]] === obj) {
-				                        return this.memberName = definedClazz[i];
-			                        }
-		                        }
+            getPrefix: function(obj) {
+                if (!obj)
+                    return "";
+                for ( var i = 0; i < definedClazz.length; i++) {
+                    if (window[definedClazz[i]] === obj) {
+                        return this.memberName = definedClazz[i];
+                    }
+                }
 
-		                        return this.getTypeName(obj, window, "", 3);
-	                        },
+                return this.getTypeName(obj, window, "", 3);
+            },
 
-	                        getTypeName: function(obj, base, baseName, deep) {
+            getTypeName: function(obj, base, baseName, deep) {
 
-		                        for ( var memberName in base) {
-			                        if (base[memberName] === obj) {
-				                        this.memberName = memberName;
-				                        return baseName + memberName;
-			                        }
-		                        }
+                for ( var memberName in base) {
+                    if (base[memberName] === obj) {
+                        this.memberName = memberName;
+                        return baseName + memberName;
+                    }
+                }
 
-		                        if (deep-- > 0) {
-			                        for ( var memberName in base) {
-				                        try {
-					                        if (base[memberName] && isUpper(memberName, 0)) {
-						                        memberName = this.getTypeName(obj, base[memberName], baseName + memberName + ".", deep);
-						                        if (memberName)
-							                        return memberName;
-					                        }
-				                        } catch (e) {
-				                        }
-			                        }
-		                        }
-
-		                        return '';
-	                        },
-
-	                        getBaseClassDescription: function(obj) {
-		                        if (obj && obj.base) {
-			                        var extObj = this.getTypeName(obj.base, window, "", 3);
-			                        return " 类" + (extObj && extObj != "JPlus.Object" ? "(继承于 " + extObj + " 类)" : "");
-		                        }
-
-		                        return " 类";
-	                        },
-
-	                        /**
-							 * 获取类的继承关系。
-							 */
-	                        getExtInfo: function(clazz) {
-		                        if (!this.baseClasses) {
-			                        this.baseClassNames = [];
-			                        this.baseClasses = [];
-			                        while (clazz && clazz.prototype) {
-				                        var name = this.getPrefix(clazz);
-				                        if (name) {
-					                        this.baseClasses.push(clazz);
-					                        this.baseClassNames.push(name);
-				                        }
-
-				                        clazz = clazz.base;
-			                        }
-		                        }
-
-	                        },
-
-	                        constructor: function(obj, showPredefinedMembers) {
-		                        this.members = {};
-		                        this.sortInfo = {};
-
-		                        this.showPredefinedMembers = showPredefinedMembers !== false;
-		                        this.isClass = obj === Function || (obj.prototype && obj.prototype.constructor !== Function);
-
-		                        // 如果是普通的变量。获取其所在的原型的成员。
-		                        if (!this.isClass && obj.constructor !== Object) {
-			                        this.prefix = this.getPrefix(obj.constructor);
-
-			                        if (!this.prefix) {
-				                        var nodeType = obj.replaceChild ? obj.nodeType : obj.setInterval && obj.clearTimeout ? 0 : null;
-				                        if (nodeType) {
-					                        this.prefix = this.memberName = nodeTypes[nodeType];
-					                        if (this.prefix) {
-						                        this.baseClassNames = ['Node', 'Element', 'HTMLElement', 'Document'];
-						                        this.baseClasses = [window.Node, window.Element, window.HTMLElement, window.HTMLDocument];
-					                        }
-				                        }
-			                        }
-
-			                        if (this.prefix) {
-				                        this.title = this.prefix + this.getBaseClassDescription(obj.constructor) + "的实例成员: ";
-				                        this.prefix += '.prototype.';
-			                        }
-
-			                        if ([Number, String, Boolean].indexOf(obj.constructor) === -1) {
-				                        var betterPrefix = this.getPrefix(obj);
-				                        if (betterPrefix) {
-					                        this.orignalPrefix = betterPrefix + ".";
-				                        }
-			                        }
-
-		                        }
-
-		                        if (!this.prefix) {
-
-			                        this.prefix = this.getPrefix(obj);
-
-			                        // 如果是类或对象， 在这里遍历。
-			                        if (this.prefix) {
-				                        this.title = this.prefix
-				                                + (this.isClass ? this.getBaseClassDescription(obj) : ' ' + getMemberType(obj, this.memberName)) + "的成员: ";
-				                        this.prefix += '.';
-			                        }
-
-		                        }
-
-		                        // 如果是类，获取全部成员。
-		                        if (this.isClass) {
-			                        this.getExtInfo(obj);
-			                        this.addStaticMembers(obj);
-			                        this.addStaticMembers(obj.prototype, 1, true);
-			                        delete this.members.prototype;
-			                        if (this.showPredefinedMembers) {
-				                        this.addPredefinedNonStaticMembers(obj, obj.prototype, true);
-				                        this.addPredefinedMembers(obj, obj, predefinedStatic);
-			                        }
-
-		                        } else {
-			                        this.getExtInfo(obj.constructor);
-			                        // 否则，获取当前实例下的成员。
-			                        this.addStaticMembers(obj);
-
-			                        if (this.showPredefinedMembers && obj.constructor) {
-				                        this.addPredefinedNonStaticMembers(obj.constructor, obj);
-			                        }
-
-		                        }
-	                        },
-
-	                        addStaticMembers: function(obj, nonStatic) {
-		                        for ( var memberName in obj) {
-			                        try {
-				                        this.addMember(obj, memberName, 1, nonStatic);
-			                        } catch (e) {
-			                        }
-		                        }
-
-	                        },
-
-	                        addPredefinedMembers: function(clazz, obj, staticOrNonStatic, nonStatic) {
-		                        for ( var type in staticOrNonStatic) {
-			                        if (clazz === window[type]) {
-				                        staticOrNonStatic[type].forEach(function(memberName) {
-					                        this.addMember(obj, memberName, 5, nonStatic);
-				                        }, this);
-			                        }
-		                        }
-	                        },
-
-	                        addPredefinedNonStaticMembers: function(clazz, obj, nonStatic) {
-
-		                        if (clazz !== Object) {
-
-			                        predefinedNonStatic.Object.forEach(function(memberName) {
-				                        if (clazz.prototype[memberName] !== Object.prototype[memberName]) {
-					                        this.addMember(obj, memberName, 5, nonStatic);
-				                        }
-			                        }, this);
-
-		                        }
-
-		                        if (clazz === Object && !this.isClass) {
-			                        return;
-		                        }
-
-		                        this.addPredefinedMembers(clazz, obj, predefinedNonStatic, nonStatic);
-
-	                        },
-
-	                        addMember: function(base, memberName, type, nonStatic) {
-
-		                        var hasOwnProperty = Object.prototype.hasOwnProperty, owner = hasOwnProperty.call(base, memberName), prefix, extInfo = '';
-
-		                        nonStatic = nonStatic ? 'prototype.' : '';
-
-		                        // 如果 base 不存在 memberName 的成员，则尝试在父类查找。
-		                        if (owner) {
-			                        prefix = this.orignalPrefix || (this.prefix + nonStatic);
-			                        type--; // 自己的成员置顶。
-		                        } else {
-
-			                        // 搜索包含当前成员的父类。
-			                        this.baseClasses.each(function(baseClass, i) {
-				                        if (baseClass.prototype[memberName] === base[memberName] && hasOwnProperty.call(baseClass.prototype, memberName)) {
-					                        prefix = this.baseClassNames[i] + ".prototype.";
-
-					                        if (nonStatic)
-						                        extInfo = '(继承的)';
-
-					                        return false;
-				                        }
-			                        }, this);
-
-			                        // 如果没找到正确的父类，使用当前类替代，并指明它是继承的成员。
-			                        if (!prefix) {
-				                        prefix = this.prefix + nonStatic;
-				                        extInfo = '(继承的)';
-			                        }
-
-		                        }
-
-		                        this.sortInfo[this.members[memberName] = (type >= 4 ? '[内置]' : '') + prefix + getDescription(base, memberName) + extInfo] = type
-		                                + memberName;
-
-	                        },
-
-	                        copyTo: function(value) {
-		                        for ( var member in this.members) {
-			                        value.push(this.members[member]);
-		                        }
-
-		                        if (value.length) {
-			                        var sortInfo = this.sortInfo;
-			                        value.sort(function(a, b) {
-				                        return sortInfo[a] < sortInfo[b] ? -1 : 1;
-			                        });
-			                        value.unshift(this.title);
-		                        } else {
-			                        value.push(this.title + '没有可用的 API 信息。');
-		                        }
-
+                if (deep-- > 0) {
+                    for ( var memberName in base) {
+                        try {
+	                        if (base[memberName] && isUpper(memberName, 0)) {
+		                        memberName = this.getTypeName(obj, base[memberName], baseName + memberName + ".", deep);
+		                        if (memberName)
+			                        return memberName;
 	                        }
+                        } catch (e) {
+                        }
+                    }
+                }
 
-	                    });
+                return '';
+            },
 
-	                    initPredefined(predefinedNonStatic);
-	                    initPredefined(predefinedStatic);
+            getBaseClassDescription: function(obj) {
+                if (obj && obj.base) {
+                    var extObj = this.getTypeName(obj.base, window, "", 3);
+                    return " 类" + (extObj && extObj != "JPlus.Object" ? "(继承于 " + extObj + " 类)" : "");
+                }
 
-	                    function initPredefined(predefined) {
-		                    for ( var obj in predefined)
-			                    predefined[obj] = predefined[obj].split(' ');
-	                    }
+                return " 类";
+            },
 
-	                    function isEmptyObject(obj) {
+            /**
+			 * 获取类的继承关系。
+			 */
+            getExtInfo: function(clazz) {
+                if (!this.baseClasses) {
+                    this.baseClassNames = [];
+                    this.baseClasses = [];
+                    while (clazz && clazz.prototype) {
+                        var name = this.getPrefix(clazz);
+                        if (name) {
+	                        this.baseClasses.push(clazz);
+	                        this.baseClassNames.push(name);
+                        }
 
-		                    // null 被认为是空对象。
-		                    // 有成员的对象将进入 for(in) 并返回 false 。
-		                    for (obj in (obj || {}))
-			                    return false;
-		                    return true;
-	                    }
+                        clazz = clazz.base;
+                    }
+                }
 
-	                    // 90 是 'Z' 65 是 'A'
-	                    function isUpper(str, index) {
-		                    str = str.charCodeAt(index);
-		                    return str <= 90 && str >= 65;
-	                    }
+            },
 
-	                    function getMemberType(obj, name) {
+            constructor: function(obj, showPredefinedMembers) {
+                this.members = {};
+                this.sortInfo = {};
 
-		                    // 构造函数最好识别。
-		                    if (typeof obj === 'function' && name === 'constructor')
-			                    return '构造函数';
+                this.showPredefinedMembers = showPredefinedMembers !== false;
+                this.isClass = obj === Function || (obj.prototype && obj.prototype.constructor !== Function);
 
-		                    // IE6 的 DOM 成员不被认为是函数，这里忽略这个错误。
-		                    // 有 prototype 的函数一定是类。
-		                    // 没有 prototype 的函数肯能是类。
-		                    // 这里根据命名如果名字首字母大写，则作为空类理解。
-		                    // 这不是一个完全正确的判断方式，但它大部分时候正确。
-		                    // 这个世界不要求很完美，能解决实际问题的就是好方法。
-		                    if (obj.prototype && obj.prototype.constructor)
-			                    return !isEmptyObject(obj.prototype) || isUpper(name, 0) ? '类' : '函数';
+                // 如果是普通的变量。获取其所在的原型的成员。
+                if (!this.isClass && obj.constructor !== Object) {
+                    this.prefix = this.getPrefix(obj.constructor);
 
-		                    // 最后判断对象。
-		                    if (Object.isObject(obj))
-			                    return name.charAt(0) === 'I' && isUpper(name, 1) ? '接口' : '对象';
-
-		                    // 空成员、值类型都作为属性。
-		                    return '属性';
-	                    }
-
-	                    function getDescription(base, name) {
-		                    return name + ' ' + getMemberType(base[name], name);
-	                    }
-
-	                    return function(obj, showPredefinedMembers) {
-		                    var r = [];
-
-		                    // 如果没有参数，显示全局对象。
-		                    if (arguments.length === 0) {
-			                    for ( var i = 0; i < 7; i++) {
-				                    r.push(getDescription(window, definedClazz[i]));
-			                    }
-
-			                    for ( var name in JPlus)
-				                    if (window[name] && (isUpper(name, 0) || window[name] === JPlus[name]))
-					                    r.push(getDescription(window, name));
-
-			                    r.sort();
-			                    r.unshift('全局对象: ');
-
-		                    } else if (obj != null) {
-			                    new APIInfo(obj, showPredefinedMembers).copyTo(r);
-		                    } else {
-			                    r.push('无法对 ' + (obj === null ? "null" : "undefined") + ' 分析');
-		                    }
-
-		                    trace(r.join('\r\n'));
-
-	                    };
-
-                    })(),
-
-                    /**
-					 * 得到输出指定内容的函数。
-					 * 
-					 * @return {Function}
-					 */
-                    from: function(msg) {
-	                    return function() {
-		                    trace(msg, arguments);
-		                    return msg;
-	                    };
-                    },
-
-                    /**
-					 * 遍历对象每个元素。
-					 * 
-					 * @param {Object}
-					 *            obj 对象。
-					 */
-                    dir: function(obj) {
-	                    if (JPlus.trace) {
-		                    if (window.console && console.dir)
-			                    console.dir(obj);
-		                    else if (obj) {
-			                    var r = "{\r\n", i;
-			                    for (i in obj)
-				                    r += "\t" + i + " = " + trace.inspect(obj[i], 1) + "\r\n";
-			                    r += "}";
-			                    trace(r);
-		                    }
-	                    }
-                    },
-
-                    /**
-					 * 获取对象的字符串形式。
-					 * 
-					 * @param {Object}
-					 *            obj 要输出的内容。
-					 * @param {Number/undefined}
-					 *            deep=0 递归的层数。
-					 * @return String 成员。
-					 */
-                    inspect: function(obj, deep) {
-
-	                    if (deep == null)
-		                    deep = 0;
-	                    switch (typeof obj) {
-		                    case "function":
-			                    if (deep == 0 && obj.prototype && obj.prototype.xType) {
-				                    // 类
-				                    return String.format("class {0} : {1} {2}", obj.prototype.xType,
-				                            (obj.prototype.base && obj.prototype.base.xType || "Object"), trace.inspect(obj.prototype, deep + 1));
-			                    }
-
-			                    // 函数
-			                    return deep == 0 ? String.fromUTF8(obj.toString()) : "function ()";
-
-		                    case "object":
-			                    if (obj == null)
-				                    return "null";
-			                    if (deep >= 3)
-				                    return obj.toString();
-
-			                    if (Array.isArray(obj)) {
-				                    return "[" + Object.update(obj, trace.inspect, []).join(", ") + "]";
-
-			                    } else {
-				                    if (obj.setInterval && obj.resizeTo)
-					                    return "window";
-				                    if (obj.nodeType) {
-					                    if (obj.nodeType == 9)
-						                    return 'document';
-					                    if (obj.tagName) {
-						                    var tagName = obj.tagName.toLowerCase(), r = tagName;
-						                    if (obj.id) {
-							                    r += "#" + obj.id;
-							                    if (obj.className)
-								                    r += "." + obj.className;
-						                    } else if (obj.outerHTML)
-							                    r = obj.outerHTML;
-						                    else {
-							                    if (obj.className)
-								                    r += " class=\"." + obj.className + "\"";
-							                    r = "<" + r + ">" + obj.innerHTML + "</" + tagName + ">  ";
-						                    }
-
-						                    return r;
-					                    }
-
-					                    return '[Node name=' + obj.nodeName + 'value=' + obj.nodeValue + ']';
-				                    }
-				                    var r = "{\r\n", i;
-				                    for (i in obj)
-					                    r += "\t" + i + " = " + trace.inspect(obj[i], deep + 1) + "\r\n";
-				                    r += "}";
-				                    return r;
-			                    }
-		                    case "string":
-			                    return deep == 0 ? obj : '"' + obj + '"';
-		                    case "undefined":
-			                    return "undefined";
-		                    default:
-			                    return obj.toString();
-	                    }
-                    },
-
-                    /**
-					 * 输出信息。
-					 * 
-					 * @param {Object}
-					 *            ... 内容。
-					 */
-                    log: function() {
-	                    if (JPlus.trace) {
-		                    if (window.console && console.log && console.log.apply) {
-			                    console.log.apply(console, arguments);
-		                    } else {
-			                    trace(Object.update(arguments, trace.inspect, []).join(" "));
-		                    }
-	                    }
-                    },
-
-                    /**
-					 * 输出一个错误信息。
-					 * 
-					 * @param {Object}
-					 *            msg 内容。
-					 */
-                    error: function(msg) {
-	                    if (JPlus.trace) {
-		                    if (window.console && console.error)
-			                    console.error(msg); // 如果错误在此行产生，说明这是预知错误。
-
-		                    else {
-			                    throw msg;
-		                    }
-	                    }
-                    },
-
-                    /**
-					 * 输出一个警告信息。
-					 * 
-					 * @param {Object}
-					 *            msg 内容。
-					 */
-                    warn: function(msg) {
-	                    if (JPlus.trace) {
-		                    if (window.console && console.warn)
-			                    console.warn(msg);
-		                    else
-			                    trace.write("[警告]" + msg);
-	                    }
-                    },
-
-                    /**
-					 * 输出一个信息。
-					 * 
-					 * @param {Object}
-					 *            msg 内容。
-					 */
-                    info: function(msg) {
-	                    if (JPlus.trace) {
-		                    if (window.console && console.info)
-			                    console.info(msg);
-		                    else
-			                    trace.write("[信息]" + msg);
-	                    }
-                    },
-
-                    /**
-					 * 如果是调试模式就运行。
-					 * 
-					 * @param {Function}
-					 *            f 函数。
-					 * @return String 返回运行的错误。如无错, 返回空字符。
-					 */
-                    ifDebug: function(f) {
-	                    if (!JPlus.debug)
-		                    return;
-	                    try {
-		                    f();
-		                    return "";
-	                    } catch (e) {
-		                    return e;
-	                    }
-                    },
-
-                    /**
-					 * 清除调试信息。 (没有控制台时，不起任何作用)
-					 */
-                    clear: function() {
-	                    if (window.console && console.clear)
-		                    console.clear();
-                    },
-
-                    /**
-					 * 空函数，用于证明函数已经执行过。
-					 */
-                    count: function() {
-	                    trace(JPlus.id++);
-                    },
-
-                    /**
-					 * 如果false则输出。
-					 * 
-					 * @param {Boolean}
-					 *            condition 字段。
-					 * @return {String} msg 输出的内容。
-					 */
-                    ifNot: function(condition, msg) {
-	                    if (!condition)
-		                    trace.warn(msg);
-                    },
-
-                    /**
-					 * 输出一个函数执行指定次使用的时间。
-					 * 
-					 * @param {Function}
-					 *            fn 函数。
-					 * @param {Number}
-					 *            times=1000 运行次数。
-					 */
-                    time: function(fn, times) {
-	                    trace("[时间] " + trace.runTime(fn, times));
-                    },
-
-                    /**
-					 * 测试某个函数运行一定次数的时间。
-					 * 
-					 * @param {Function}
-					 *            fn 函数。
-					 * @param {Number}
-					 *            times=1000 运行次数。
-					 * @return {Number} 运行的时间 。
-					 */
-                    runTime: function(fn, times) {
-	                    times = times || 1000;
-	                    var d = Date.now();
-	                    while (times-- > 0)
-		                    fn();
-	                    return Date.now() - d;
+                    if (!this.prefix) {
+                        var nodeType = obj.replaceChild ? obj.nodeType : obj.setInterval && obj.clearTimeout ? 0 : null;
+                        if (nodeType) {
+	                        this.prefix = this.memberName = nodeTypes[nodeType];
+	                        if (this.prefix) {
+		                        this.baseClassNames = ['Node', 'Element', 'HTMLElement', 'Document'];
+		                        this.baseClasses = [window.Node, window.Element, window.HTMLElement, window.HTMLDocument];
+	                        }
+                        }
                     }
 
-                });
+                    if (this.prefix) {
+                        this.title = this.prefix + this.getBaseClassDescription(obj.constructor) + "的实例成员: ";
+                        this.prefix += '.prototype.';
+                    }
+
+                    if ([Number, String, Boolean].indexOf(obj.constructor) === -1) {
+                        var betterPrefix = this.getPrefix(obj);
+                        if (betterPrefix) {
+	                        this.orignalPrefix = betterPrefix + ".";
+                        }
+                    }
+
+                }
+
+                if (!this.prefix) {
+
+                    this.prefix = this.getPrefix(obj);
+
+                    // 如果是类或对象， 在这里遍历。
+                    if (this.prefix) {
+                        this.title = this.prefix
+                                + (this.isClass ? this.getBaseClassDescription(obj) : ' ' + getMemberType(obj, this.memberName)) + "的成员: ";
+                        this.prefix += '.';
+                    }
+
+                }
+
+                // 如果是类，获取全部成员。
+                if (this.isClass) {
+                    this.getExtInfo(obj);
+                    this.addStaticMembers(obj);
+                    this.addStaticMembers(obj.prototype, 1, true);
+                    delete this.members.prototype;
+                    if (this.showPredefinedMembers) {
+                        this.addPredefinedNonStaticMembers(obj, obj.prototype, true);
+                        this.addPredefinedMembers(obj, obj, predefinedStatic);
+                    }
+
+                } else {
+                    this.getExtInfo(obj.constructor);
+                    // 否则，获取当前实例下的成员。
+                    this.addStaticMembers(obj);
+
+                    if (this.showPredefinedMembers && obj.constructor) {
+                        this.addPredefinedNonStaticMembers(obj.constructor, obj);
+                    }
+
+                }
+            },
+
+            addStaticMembers: function(obj, nonStatic) {
+                for ( var memberName in obj) {
+                    try {
+                        this.addMember(obj, memberName, 1, nonStatic);
+                    } catch (e) {
+                    }
+                }
+
+            },
+
+            addPredefinedMembers: function(clazz, obj, staticOrNonStatic, nonStatic) {
+                for ( var type in staticOrNonStatic) {
+                    if (clazz === window[type]) {
+                        staticOrNonStatic[type].forEach(function(memberName) {
+	                        this.addMember(obj, memberName, 5, nonStatic);
+                        }, this);
+                    }
+                }
+            },
+
+            addPredefinedNonStaticMembers: function(clazz, obj, nonStatic) {
+
+                if (clazz !== Object) {
+
+                    predefinedNonStatic.Object.forEach(function(memberName) {
+                        if (clazz.prototype[memberName] !== Object.prototype[memberName]) {
+	                        this.addMember(obj, memberName, 5, nonStatic);
+                        }
+                    }, this);
+
+                }
+
+                if (clazz === Object && !this.isClass) {
+                    return;
+                }
+
+                this.addPredefinedMembers(clazz, obj, predefinedNonStatic, nonStatic);
+
+            },
+
+            addMember: function(base, memberName, type, nonStatic) {
+
+                var hasOwnProperty = Object.prototype.hasOwnProperty, owner = hasOwnProperty.call(base, memberName), prefix, extInfo = '';
+
+                nonStatic = nonStatic ? 'prototype.' : '';
+
+                // 如果 base 不存在 memberName 的成员，则尝试在父类查找。
+                if (owner) {
+                    prefix = this.orignalPrefix || (this.prefix + nonStatic);
+                    type--; // 自己的成员置顶。
+                } else {
+
+                    // 搜索包含当前成员的父类。
+                    this.baseClasses.each(function(baseClass, i) {
+                        if (baseClass.prototype[memberName] === base[memberName] && hasOwnProperty.call(baseClass.prototype, memberName)) {
+	                        prefix = this.baseClassNames[i] + ".prototype.";
+
+	                        if (nonStatic)
+		                        extInfo = '(继承的)';
+
+	                        return false;
+                        }
+                    }, this);
+
+                    // 如果没找到正确的父类，使用当前类替代，并指明它是继承的成员。
+                    if (!prefix) {
+                        prefix = this.prefix + nonStatic;
+                        extInfo = '(继承的)';
+                    }
+
+                }
+
+                this.sortInfo[this.members[memberName] = (type >= 4 ? '[内置]' : '') + prefix + getDescription(base, memberName) + extInfo] = type
+                        + memberName;
+
+            },
+
+            copyTo: function(value) {
+                for ( var member in this.members) {
+                    value.push(this.members[member]);
+                }
+
+                if (value.length) {
+                    var sortInfo = this.sortInfo;
+                    value.sort(function(a, b) {
+                        return sortInfo[a] < sortInfo[b] ? -1 : 1;
+                    });
+                    value.unshift(this.title);
+                } else {
+                    value.push(this.title + '没有可用的 API 信息。');
+                }
+
+            }
+
+        });
+
+        initPredefined(predefinedNonStatic);
+        initPredefined(predefinedStatic);
+
+        function initPredefined(predefined) {
+            for ( var obj in predefined)
+                predefined[obj] = predefined[obj].split(' ');
+        }
+
+        function isEmptyObject(obj) {
+
+            // null 被认为是空对象。
+            // 有成员的对象将进入 for(in) 并返回 false 。
+            for (obj in (obj || {}))
+                return false;
+            return true;
+        }
+
+        // 90 是 'Z' 65 是 'A'
+        function isUpper(str, index) {
+            str = str.charCodeAt(index);
+            return str <= 90 && str >= 65;
+        }
+
+        function getMemberType(obj, name) {
+
+            // 构造函数最好识别。
+            if (typeof obj === 'function' && name === 'constructor')
+                return '构造函数';
+
+            // IE6 的 DOM 成员不被认为是函数，这里忽略这个错误。
+            // 有 prototype 的函数一定是类。
+            // 没有 prototype 的函数肯能是类。
+            // 这里根据命名如果名字首字母大写，则作为空类理解。
+            // 这不是一个完全正确的判断方式，但它大部分时候正确。
+            // 这个世界不要求很完美，能解决实际问题的就是好方法。
+            if (obj.prototype && obj.prototype.constructor)
+                return !isEmptyObject(obj.prototype) || isUpper(name, 0) ? '类' : '函数';
+
+            // 最后判断对象。
+            if (Object.isObject(obj))
+                return name.charAt(0) === 'I' && isUpper(name, 1) ? '接口' : '对象';
+
+            // 空成员、值类型都作为属性。
+            return '属性';
+        }
+
+        function getDescription(base, name) {
+            return name + ' ' + getMemberType(base[name], name);
+        }
+
+        return function(obj, showPredefinedMembers) {
+            var r = [];
+
+            // 如果没有参数，显示全局对象。
+            if (arguments.length === 0) {
+                for ( var i = 0; i < 7; i++) {
+                    r.push(getDescription(window, definedClazz[i]));
+                }
+
+                for ( var name in JPlus)
+                    if (window[name] && (isUpper(name, 0) || window[name] === JPlus[name]))
+	                    r.push(getDescription(window, name));
+
+                r.sort();
+                r.unshift('全局对象: ');
+
+            } else if (obj != null) {
+                new APIInfo(obj, showPredefinedMembers).copyTo(r);
+            } else {
+                r.push('无法对 ' + (obj === null ? "null" : "undefined") + ' 分析');
+            }
+
+            trace(r.join('\r\n'));
+
+        };
+
+    })(),
+
+    /**
+	 * 得到输出指定内容的函数。
+	 * @return {Function}
+	 */
+    from: function(msg) {
+        return function() {
+            trace(msg, arguments);
+            return msg;
+        };
+    },
+
+    /**
+	 * 遍历对象每个元素。
+	 * @param {Object} obj 对象。
+	 */
+    dir: function(obj) {
+        if (JPlus.debug) {
+            if (window.console && console.dir)
+                console.dir(obj);
+            else if (obj) {
+                var r = "{\r\n", i;
+                for (i in obj)
+                    r += "\t" + i + " = " + trace.inspect(obj[i], 1) + "\r\n";
+                r += "}";
+                trace(r);
+            }
+        }
+    },
+
+    /**
+	 * 获取对象的字符串形式。
+	 * @param {Object} obj 要输出的内容。
+	 * @param {Number/undefined} deep=0 递归的层数。
+	 * @return String 成员。
+	 */
+    inspect: function(obj, deep) {
+
+        if (deep == null)
+            deep = 0;
+        switch (typeof obj) {
+            case "function":
+                if (deep == 0 && obj.prototype && obj.prototype.xType) {
+                    // 类
+                    return String.format("class {0} : {1} {2}", obj.prototype.xType,
+                            (obj.prototype.base && obj.prototype.base.xType || "Object"), trace.inspect(obj.prototype, deep + 1));
+                }
+
+                // 函数
+                return deep == 0 ? String.decodeUTF8(obj.toString()) : "function ()";
+
+            case "object":
+                if (obj == null)
+                    return "null";
+                if (deep >= 3)
+                    return obj.toString();
+
+                if (Array.isArray(obj)) {
+                    return "[" + Object.update(obj, trace.inspect, []).join(", ") + "]";
+
+                } else {
+                    if (obj.setInterval && obj.resizeTo)
+	                    return "window";
+                    if (obj.nodeType) {
+	                    if (obj.nodeType == 9)
+		                    return 'document';
+	                    if (obj.tagName) {
+		                    var tagName = obj.tagName.toLowerCase(), r = tagName;
+		                    if (obj.id) {
+			                    r += "#" + obj.id;
+			                    if (obj.className)
+				                    r += "." + obj.className;
+		                    } else if (obj.outerHTML)
+			                    r = obj.outerHTML;
+		                    else {
+			                    if (obj.className)
+				                    r += " class=\"." + obj.className + "\"";
+			                    r = "<" + r + ">" + obj.innerHTML + "</" + tagName + ">  ";
+		                    }
+
+		                    return r;
+	                    }
+
+	                    return '[Node name=' + obj.nodeName + 'value=' + obj.nodeValue + ']';
+                    }
+                    var r = "{\r\n", i;
+                    for (i in obj)
+	                    r += "\t" + i + " = " + trace.inspect(obj[i], deep + 1) + "\r\n";
+                    r += "}";
+                    return r;
+                }
+            case "string":
+                return deep == 0 ? obj : '"' + obj + '"';
+            case "undefined":
+                return "undefined";
+            default:
+                return obj.toString();
+        }
+    },
+
+    /**
+	 * 输出信息。
+	 * @param {Object} ... 内容。
+	 */
+    log: function() {
+        if (JPlus.debug) {
+            if (window.console && console.log && console.log.apply) {
+                console.log.apply(console, arguments);
+            } else {
+                trace(Object.update(arguments, trace.inspect, []).join(" "));
+            }
+        }
+    },
+
+    /**
+	 * 输出一个错误信息。
+	 * @param {Object} msg 内容。
+	 */
+    error: function(msg) {
+        if (JPlus.debug) {
+            if (window.console && console.error)
+                console.error(msg); // 如果错误在此行产生，说明这是预知错误。
+
+            else {
+                throw msg;
+            }
+        }
+    },
+
+    /**
+	 * 输出一个警告信息。
+	 * @param {Object} msg 内容。
+	 */
+    warn: function(msg) {
+        if (JPlus.debug) {
+            if (window.console && console.warn)
+                console.warn(msg);
+            else
+                trace.write("[警告]" + msg);
+        }
+    },
+
+    /**
+	 * 输出一个信息。
+	 * @param {Object} msg 内容。
+	 */
+    info: function(msg) {
+        if (JPlus.debug) {
+            if (window.console && console.info)
+                console.info(msg);
+            else
+                trace.write("[信息]" + msg);
+        }
+    },
+
+    /**
+	 * 如果是调试模式就运行。
+	 * @param {Function} f 函数。
+	 * @return String 返回运行的错误。如无错, 返回空字符。
+	 */
+    ifDebug: function(f) {
+        if (!JPlus.debug)
+            return;
+        try {
+            f();
+            return "";
+        } catch (e) {
+            return e;
+        }
+    },
+
+    /**
+	 * 清除调试信息。 (没有控制台时，不起任何作用)
+	 */
+    clear: function() {
+        if (window.console && console.clear)
+            console.clear();
+    },
+
+    /**
+	 * 空函数，用于证明函数已经执行过。
+	 */
+    count: function() {
+        trace(JPlus.id++);
+    },
+
+    /**
+	 * 如果false则输出。
+	 * @param {Boolean} condition 字段。
+	 * @return {String} msg 输出的内容。
+	 */
+    ifNot: function(condition, msg) {
+        if (!condition)
+            trace.warn(msg);
+    },
+
+    /**
+	 * 输出一个函数执行指定次使用的时间。
+	 * @param {Function} fn 函数。
+	 * @param {Number} times=1000 运行次数。
+	 */
+    time: function(fn, times) {
+        trace("[时间] " + trace.runTime(fn, times));
+    },
+
+    /**
+	 * 测试某个函数运行一定次数的时间。
+	 * @param {Function} fn 函数。
+	 * @param {Number} times=1000 运行次数。
+	 * @return {Number} 运行的时间 。
+	 */
+    runTime: function(fn, times) {
+        times = times || 1000;
+        var d = Date.now();
+        while (times-- > 0)
+            fn();
+        return Date.now() - d;
+    }
+
+});
 
 /**
  * 确认一个值正确。
- * 
- * @param {Object}
- *            bValue 值。
- * @param {String}
- *            msg="断言失败" 错误后的提示。
+ * @param {Object} bValue 值。
+ * @param {String} msg="断言失败" 错误后的提示。
  * @return {Boolean} 返回 bValue 。
  * @example <code>
  * assert(true, "{value} 错误。", value);
  * </code>
  */
 function assert(bValue, msg) {
-	if (!bValue && JPlus.debug) {
+	if (!bValue) {
 
 		var val = arguments;
 
@@ -3043,13 +2784,17 @@ function assert(bValue, msg) {
 
 			while (val.debugStepThrough)
 				val = val.caller;
+				
+			if(val && val.caller){
+				val = val.caller;
+			}
 
 			if (val)
-				msg += "\r\n--------------------------------------------------------------------\r\n" + String.ellipsis(String.fromUTF8(val.toString()), 600);
+				msg += "\r\n--------------------------------------------------------------------\r\n" + String.ellipsis(String.decodeUTF8(val.toString()), 600);
 
 		}
 
-		if (JPlus.trace)
+		if (JPlus.debug)
 			trace.error(msg);
 		else
 			throw new Error(msg);
@@ -3076,11 +2821,8 @@ function assert(bValue, msg) {
 
 	    /**
 		 * 确认一个值为函数变量。
-		 * 
-		 * @param {Object}
-		 *            bValue 值。
-		 * @param {String}
-		 *            msg="断言失败" 错误后的提示。
+		 * @param {Object} bValue 值。
+		 * @param {String} msg="断言失败" 错误后的提示。
 		 * @return {Boolean} 返回 bValue 。
 		 * @example <code>
 	     * assert.isFunction(a, "a ~");
@@ -3092,11 +2834,8 @@ function assert(bValue, msg) {
 
 	    /**
 		 * 确认一个值为数组。
-		 * 
-		 * @param {Object}
-		 *            bValue 值。
-		 * @param {String}
-		 *            msg="断言失败" 错误后的提示。
+		 * @param {Object} bValue 值。
+		 * @param {String} msg="断言失败" 错误后的提示。
 		 * @return {Boolean} 返回 bValue 。
 		 */
 	    isArray: function() {
@@ -3105,11 +2844,8 @@ function assert(bValue, msg) {
 
 	    /**
 		 * 确认一个值为函数变量。
-		 * 
-		 * @param {Object}
-		 *            bValue 值。
-		 * @param {String}
-		 *            msg="断言失败" 错误后的提示。
+		 * @param {Object} bValue 值。
+		 * @param {String} msg="断言失败" 错误后的提示。
 		 * @return {Boolean} 返回 bValue 。
 		 */
 	    isObject: function(value, msg) {
@@ -3118,11 +2854,8 @@ function assert(bValue, msg) {
 
 	    /**
 		 * 确认一个值为数字。
-		 * 
-		 * @param {Object}
-		 *            bValue 值。
-		 * @param {String}
-		 *            msg="断言失败" 错误后的提示。
+		 * @param {Object} bValue 值。
+		 * @param {String} msg="断言失败" 错误后的提示。
 		 * @return {Boolean} 返回 bValue 。
 		 */
 	    isNumber: function(value, msg) {
@@ -3131,11 +2864,8 @@ function assert(bValue, msg) {
 
 	    /**
 		 * 确认一个值为节点。
-		 * 
-		 * @param {Object}
-		 *            bValue 值。
-		 * @param {String}
-		 *            msg="断言失败" 错误后的提示。
+		 * @param {Object} bValue 值。
+		 * @param {String} msg="断言失败" 错误后的提示。
 		 * @return {Boolean} 返回 bValue 。
 		 */
 	    isNode: function(value, msg) {
@@ -3144,11 +2874,8 @@ function assert(bValue, msg) {
 
 	    /**
 		 * 确认一个值为节点。
-		 * 
-		 * @param {Object}
-		 *            bValue 值。
-		 * @param {String}
-		 *            msg="断言失败" 错误后的提示。
+		 * @param {Object} bValue 值。
+		 * @param {String} msg="断言失败" 错误后的提示。
 		 * @return {Boolean} 返回 bValue 。
 		 */
 	    isElement: function(value, msg) {
@@ -3157,11 +2884,8 @@ function assert(bValue, msg) {
 
 	    /**
 		 * 确认一个值是字符串。
-		 * 
-		 * @param {Object}
-		 *            bValue 值。
-		 * @param {String}
-		 *            msg="断言失败" 错误后的提示。
+		 * @param {Object} bValue 值。
+		 * @param {String} msg="断言失败" 错误后的提示。
 		 * @return {Boolean} 返回 bValue 。
 		 */
 	    isString: function(value, msg) {
@@ -3170,11 +2894,8 @@ function assert(bValue, msg) {
 
 	    /**
 		 * 确认一个值是日期。
-		 * 
-		 * @param {Object}
-		 *            bValue 值。
-		 * @param {String}
-		 *            msg="断言失败" 错误后的提示。
+		 * @param {Object} bValue 值。
+		 * @param {String} msg="断言失败" 错误后的提示。
 		 * @return {Boolean} 返回 bValue 。
 		 */
 	    isDate: function(value, msg) {
@@ -3183,11 +2904,8 @@ function assert(bValue, msg) {
 
 	    /**
 		 * 确认一个值是正则表达式。
-		 * 
-		 * @param {Object}
-		 *            bValue 值。
-		 * @param {String}
-		 *            msg="断言失败" 错误后的提示。
+		 * @param {Object} bValue 值。
+		 * @param {String} msg="断言失败" 错误后的提示。
 		 * @return {Boolean} 返回 bValue 。
 		 */
 	    isRegExp: function(value, msg) {
@@ -3196,11 +2914,8 @@ function assert(bValue, msg) {
 
 	    /**
 		 * 确认一个值非空。
-		 * 
-		 * @param {Object}
-		 *            value 值。
-		 * @param {String}
-		 *            argsName 变量的名字字符串。
+		 * @param {Object} value 值。
+		 * @param {String} argsName 变量的名字字符串。
 		 * @return {Boolean} 返回 assert 是否成功 。
 		 */
 	    notNull: function(value, msg) {
@@ -3209,15 +2924,10 @@ function assert(bValue, msg) {
 
 	    /**
 		 * 确认一个值在 min ， max 间。
-		 * 
-		 * @param {Number}
-		 *            value 判断的值。
-		 * @param {Number}
-		 *            min 最小值。
-		 * @param {Number}
-		 *            max 最大值。
-		 * @param {String}
-		 *            argsName 变量的米各庄。
+		 * @param {Number} value 判断的值。
+		 * @param {Number} min 最小值。
+		 * @param {Number} max 最大值。
+		 * @param {String} argsName 变量的米各庄。
 		 * @return {Boolean} 返回 assert 是否成功 。
 		 */
 	    between: function(value, min, max, msg) {
@@ -3226,13 +2936,9 @@ function assert(bValue, msg) {
 
 	    /**
 		 * 确认一个值属于一个类型。
-		 * 
-		 * @param {Object}
-		 *            v 值。
-		 * @param {String/Array}
-		 *            types 类型/表示类型的参数数组。
-		 * @param {String}
-		 *            message 错误的提示信息。
+		 * @param {Object} v 值。
+		 * @param {String/Array} types 类型/表示类型的参数数组。
+		 * @param {String} message 错误的提示信息。
 		 * @return {Boolean} 返回 assert 是否成功 。
 		 */
 	    instanceOf: function(v, types, msg) {
@@ -3246,11 +2952,8 @@ function assert(bValue, msg) {
 
 	    /**
 		 * 确认一个值非空。
-		 * 
-		 * @param {Object}
-		 *            value 值。
-		 * @param {String}
-		 *            argsName 变量的参数名。
+		 * @param {Object} value 值。
+		 * @param {String} argsName 变量的参数名。
 		 * @return {Boolean} 返回 assert 是否成功 。
 		 */
 	    notEmpty: function(value, msg) {
@@ -3267,7 +2970,7 @@ function assert(bValue, msg) {
 
 })();
 
-// / #endregion
-// / #endif
+/// #endregion
 
-// ===========================================================
+/// #endif
+
