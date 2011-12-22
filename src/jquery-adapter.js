@@ -1771,7 +1771,7 @@
 		};
 
 	// 将以下成员赋予 window ，这些成员是全局成员。
-	String.map('undefined Class IEvent using namespace', p, window);
+	String.map('Class IEvent using imports namespace', p, window);
 
 	/**
 	 * id种子 。
