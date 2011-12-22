@@ -10,7 +10,7 @@ System.copyright = '';
 
 
 var menus = {
-	Core: '+Index Icon +IContainerControl +ListControl',
+	Core: '+Index Icon +ContentControl +IContainerControl +ListControl ScrollableControl',
 	Layout: '+Index# +Box#',
 	Form: '+TextBox ListBox ComboBox DatePicker ProcessBar',
 	Button: '+Index ImageButton VedioButton',

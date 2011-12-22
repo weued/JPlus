@@ -2839,6 +2839,9 @@ function assert(bValue, msg) {
 
 
 
+namespace("System.Dom.Element");
+
+
 /**
  * @fileOverview 元素。提供最底层的 DOM 辅助函数。
  */
@@ -4832,7 +4835,10 @@ function assert(bValue, msg) {
 		 * @return {Control} 控件。
 	     */
 	    parse: function(html, context, cachable){
-	    	return new Control(Element.parse(html, context, cachable));
+
+            assert.notNull(html, 'Element.parse(html, context, cachable): 参数 {html} ~。');
+            
+	    	return html.dom ? html : new Control(Element.parse(html, context, cachable));
 	    },
 
 	    /**
@@ -5377,7 +5383,7 @@ function assert(bValue, msg) {
 	 */
 	function styleNumber(elem, name) {
 		assert.isElement(elem, "Element.styleNumber(elem, name): 参数 {elem} ~。");
-		return parseFloat(getStyle(elem, name));
+		return parseFloat(getStyle(elem, name)) || 0;
 	}
 
 	/// #endif

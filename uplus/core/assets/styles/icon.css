@@ -4,3 +4,15 @@
 
 
 
+
+.b-icon {
+	width: 16px;
+	height: 16px;
+	vertical-align: middle;	
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+.b-icon-debug {
+	background-color: #999;	
+}

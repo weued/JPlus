@@ -3,7 +3,7 @@
 //===========================================
 
 
-using("System.Controls.ContentControl");
+using("UPlus.Core.ContentControl");
 
 /**
  * 内容显示面板。
@@ -37,7 +37,7 @@ using("System.Controls.ContentControl");
  * 因此这个类封装这个行为。 widthFix 表示 外容器的宽度 和 body  宽度差。
  * </p>
  */
-namespace(".ScrollableControl", Py.ContentControl.extend({
+namespace(".ScrollableControl", ContentControl.extend({
 	
 	/**
 	 * 外容器左右边框+边距。
@@ -63,7 +63,7 @@ namespace(".ScrollableControl", Py.ContentControl.extend({
 	 */
 	setTitle: function(value){
 		assert(this.header, 'ScrollableControl.prototype.setTitle(value): 目前控件不存在顶部');
-		this.header.innerHTML = value;
+		this.header.setHtml(value);
 		return this;
 	},
 	
@@ -73,7 +73,7 @@ namespace(".ScrollableControl", Py.ContentControl.extend({
 	 */
 	getTitle: function(){
 		assert(this.header, 'ScrollableControl.prototype.getTitle(): 目前控件不存在顶部');
-		return this.header.innerHTML;
+		return this.header.getHtml();
 	},
 	
 	/**
@@ -223,9 +223,9 @@ namespace(".ScrollableControl", Py.ContentControl.extend({
 	 */
 	setDraggable: function(enable) {
 		
-		if (Py.DragDrop) {
+		if (JPlus.DragDrop) {
 		
-			Py.DragDrop.Manager.set(this, enable === true ? this.header : enable, enable && this.constructor.dragOptions);
+			JPlus.DragDrop.Manager.set(this, enable === true ? this.header : enable, enable && this.constructor.dragOptions);
 			
 			this.toggleClass('x-movable', this.draggable = !!enable);
 			
@@ -246,7 +246,7 @@ namespace(".ScrollableControl", Py.ContentControl.extend({
 }) );
 
 
-/// #ifdef SupportIE6
+/// #if SupportIE6
 
 
 
@@ -258,9 +258,9 @@ if(navigator.isQuirks){
 			return Math.max(this.header.getSize().x, this.content.offsetWidth + this.widthFix);
 		},
 		
-		setWidth: Py.ContentControl.prototype.setWidth, 
+		setWidth: ContentControl.prototype.setWidth, 
 		
-		setWidthWithoutResizing: Py.ScrollableControl.prototype.setWidth
+		setWidthWithoutResizing: ScrollableControl.prototype.setWidth
 		
 	});
 	

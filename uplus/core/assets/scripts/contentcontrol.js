@@ -143,7 +143,7 @@ if(navigator.isQuirks){
 	};
 	
 	ContentControl.registerAutoResizerForIE(ContentControl, 'dom', function () {
-		return this.content.offsetWidth;
+		return this.content.getSize().x;
 	});
 }
 
