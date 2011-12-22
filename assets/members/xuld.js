@@ -6,7 +6,7 @@ var todo = {
 };
 
 
-var done = {,
+var done = {
 	'Select 处理': '',
 	'核心部分 - System': '',
 	'定义项目结构、文件夹的结构': '',
