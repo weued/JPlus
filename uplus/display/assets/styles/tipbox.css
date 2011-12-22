@@ -49,7 +49,7 @@ div.b-tipbox {
     display: block;
 }
 
-.b-tipbox-noborder {
+.b-tipbox-plain {
 	background-color: transparent;
 	border: 1px solid transparent;
 	_border: none;

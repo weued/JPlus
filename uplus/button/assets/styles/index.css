@@ -27,7 +27,7 @@
 
 .b-button, .b-button-container, .b-button-content{
 	display: inline-block;
-	background-image: url(../images/buttons.png);
+	background-image: url(../images/button.png);
 	background-repeat: no-repeat;
 }
 
@@ -75,69 +75,85 @@
 }
 
 
+/* 次级 */
 
-
-/* 选中 */
-
-.b-button.b-checked {
-    background-position: 0 -225px;
-} 
-
-.b-button.b-checked .b-button-container {
-    background-position: 100% -275px;
-}
-
-.b-button.b-checked .b-button-content {
-    background-position: 0 -250px;
+.b-button-alt, .b-button-alt .b-button-container, .b-button-alt .b-button-content{
+	background-image: url(../images/button-alt.png);
 }
 
 
-.b-button.b-checked:hover {
-    background-position: 0 -300px;
-} 
-
-.b-button.b-checked:hover .b-button-container {
-    background-position: 100% -350px;
+.b-button-alt button {
+	color: #595959;	
+	font-weight: normal;
 }
 
-.b-button.b-checked:hover .b-button-content {
-    background-position: 0 -325px;
-} 
+.b-button-alt:hover button {
+	color: #2957A2;
+}
+
+/*   高亮  */
+
+.b-button-hightlight, .b-button-hightlight .b-button-container, .b-button-hightlight .b-button-content{
+	background-image: url(../images/button-hightlight.png);
+}
+
+
+.b-button-hightlight button {
+	color: #F6FFFF;	
+}
+
+/* 小按钮 */
+
+.b-button-small, .b-button-alt-small, .b-button-hightlight-small{
+	vertical-align: middle;
+	*line-height: 26px;
+}
+
+.b-button-small button, .b-button-alt-small button, .b-button-hightlight-small button {
+	height: 26px;
+}
+
+.b-button-small, .b-button-small .b-button-container, .b-button-small .b-button-content {
+	background-image: url(../images/button-small.png);
+}
+
+.b-button-alt-small, .b-button-alt-small .b-button-container, .b-button-alt-small .b-button-content {
+	background-image: url(../images/button-alt-small.png);
+}
+
+.b-button-hightlight-small, .b-button-hightlight-small .b-button-container, .b-button-hightlight-small .b-button-content {
+	background-image: url(../images/button-hightlight-small.png);
+}
 
 /* 禁用  */
 
-.b-button.b-disabled {
-    background-position: 0 -375px!important;
-} 
-
-.b-button.b-disabled .b-button-container {
-    background-position: 100% -425px!important;
+.b-button-disabled {
+	background-position: 0 -315px!important;
 }
 
-.b-button.b-disabled .b-button-content {
-    background-position: 0 -400px!important;
-} 
-
-.b-button.b-disabled:active button{
-	position: static!important;
+.b-button-disabled .b-button-container{
+	background-position: 100% -385px!important;
 }
 
-
-
-
-/* 图标 */
-
-button .b-icon {
-	margin-top: 2px;
-	_width: 17px;
-	_margin-left: 3px;
+.b-button-disabled .b-button-content{
+	background-position: 0 -350px!important;
 }
 
+.b-button-disabled button{
+	color: #878787!important;	
+}
 
+.b-button-disabled:active button{
+	position: static;
+}
 
 /* 平板    */
 
-.b-button.b-plain, .b-button.b-plain .b-button-container, .b-button.b-plain .b-button-content{
+.b-button-plain, .b-button-plain .b-button-container, .b-button-plain .b-button-content{
 	background: none!important;
+}
+
+.b-button-plain button {
+	color: #595959;	
 }
 
