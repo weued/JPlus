@@ -133,6 +133,11 @@
 								total++;
 								finished++;
 								break;
+							case '*':
+								clazz = ' class="notcomplete"';
+								value = value.substring(1);
+								total++;
+								break;
 							case '|':
 								value = value.substring(1) || "|";
 								result.push('<li>' + value + '</li>');
@@ -143,7 +148,22 @@
 								break;
 						}
 						
-						result.push('<li><a href="' + root + moduleName  + '/' + group.toLowerCase() + '/' + value.toLowerCase() +'.html"' + clazz + '>' + encodeHTML(value) + '</a></li>');
+						var mp = value.indexOf('#');
+						
+						if(mp < 0){
+							result.push('<li><a href="' + root + moduleName  + '/' + group.toLowerCase() + '/' + value.toLowerCase() +'.html"' + clazz + '>' + encodeHTML(value) + '</a></li>');	
+							return;
+						}
+						
+						if(mp == value.length - 1){
+							value = value.substr(0, mp);
+							result.push('<li><a target="_blank" href="' + root + moduleName  + '/' + group.toLowerCase() + '/' + value.toLowerCase() +'.html"' + clazz + '>' + encodeHTML(value) + '</a></li>');	
+							return;
+						}
+						
+						result.push('<li><a target="_blank" href="' +  value.substring(mp + 1) +'"' + clazz + '>' + encodeHTML(value.substr(0, mp)) + '</a></li>');
+
+						
 					});
 					
 					

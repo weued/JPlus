@@ -11,10 +11,10 @@ System.copyright = '';
 
 var menus = {
 	Core: '+Index Icon',
-	Layout: '+Index +Box',
+	Layout: '+Index# +Box#',
 	Form: '+TextBox ListBox ComboBox DatePicker ProcessBar',
 	Button: '+Index ImageButton VedioButton',
 	Dialog: 'Index',
-	Display: '+TipBox +Face Image Pager Navigator Ad',
+	Display: '+TipBox +Face +Image Pager Navigator +Ad +Banner *ToolTip BalloonTip',
 	Widget: 'Index +Topbar'
 };
