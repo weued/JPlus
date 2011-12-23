@@ -157,3 +157,8 @@
 	color: #595959;	
 }
 
+.b-button-fixed button {
+	padding-left: 20px;	
+	padding-right: 20px;	
+}
+

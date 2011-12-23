@@ -2653,7 +2653,10 @@
 		 * @return {Control} 控件。
 	     */
 	    parse: function(html, context, cachable){
-	    	return new Control(Element.parse(html, context, cachable));
+
+            assert.notNull(html, 'Element.parse(html, context, cachable): 参数 {html} ~。');
+            
+	    	return html.dom ? html : new Control(Element.parse(html, context, cachable));
 	    },
 
 	    /**

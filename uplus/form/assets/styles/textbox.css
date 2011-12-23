@@ -5,15 +5,17 @@
  
 .b-textbox {
 	width: 208px;
-	height: 18px;
+	height: 20px;
 	border: 1px solid #cccccc;
 	color: #585858;
-	line-height: 12px;
-	line-height: 20px\9;
- 	*line-height: 20px;
-	padding: 5px;
+	line-height: 20px;
+	padding: 4px 5px;
 	background:#ffffff;
-	*vertical-align: middle;
+	vertical-align: middle;
+}
+
+textarea.b-textbox {
+	vertical-align: top;
 }
 
 .b-textbox:focus {

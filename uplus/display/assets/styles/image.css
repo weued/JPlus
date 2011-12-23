@@ -4,3 +4,23 @@
 
 
 
+
+.b-image-small {
+	width: 80px;
+	height: 60px;
+}
+
+.b-image-normal {
+	width: 120px;
+	height: 90px;
+}
+
+.b-image-large {
+	width: 180px;
+	height: 130px;
+}
+
+.b-image-largest {
+	width: 320px;
+	height: 220px;
+}

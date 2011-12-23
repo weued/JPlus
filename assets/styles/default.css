@@ -276,6 +276,10 @@ textarea {
 	font-weight: bold;
 }
 
+.notcomplete {
+	font-style: italic;
+}
+
 .clear {
 	clear: both;
 }
