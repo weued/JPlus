@@ -35,48 +35,38 @@ namespace(".Collection", Class({
 	
 	onAfterSet: Function.empty,
 	
-	reset: function(){
-		var me = this;
-		while (me.length) {
-			var item = me[--me.length];
-			delete me[me.length];
-			me.onRemove(item, me.length);
-		}
-	},
-	
 	add: function(item){
+		assert.notNull(item, "Collection.prototype.add(item): 参数 {item} ~。");
 		Array.prototype.push.call(this, item = this.initItem(item));
 		this.onAdd(item);
 		return item;
 	},
 	
-	addRange: function(args){
-		
-		
-		var v = Array.isArray(args) ? args : arguments;
-		this.onBeforeSet(args);
-		Array.prototype.forEach.call(v, this.add, this);
-		this.onAfterSet(v);
+	push: function(args){
+		Array.prototype.forEach.call(Array.isArray(args) ? args : arguments, this.add, this);
 	},
 	
-	insertAt: function(index, item){
-		
+	insert: function(index, item){
+		assert.notNull(item, "Collection.prototype.insert(item): 参数 {item} ~。");
 		Array.prototype.insert.call(this, index, item = this.initItem(item));
-		
 		this.onInsert(item, index + 1);
-		
 		return item;
 	},
 	
 	clear: function(){
-		this.onBeforeSet(index);
-		this.reset();
-		this.onAfterSet(index);
-			
-		return this;
+		var me = this;
+		me.onBeforeSet(index);
+		while (me.length) {
+			var item = me[--me.length];
+			delete me[me.length];
+			me.onRemove(item, me.length);
+		}
+		me.onAfterSet(index);
+		return me;
 	},
 	
 	remove: function(item){
+		assert.notNull(item, "Collection.prototype.remove(item): 参数 {item} ~。");
 		var index = this.indexOf(item);
 		this.removeAt(index);
 		return index;
@@ -94,18 +84,21 @@ namespace(".Collection", Class({
 	},
 		
 	set: function(index, item){
-		this.onBeforeSet(index);
+		var me = this;
 		if(typeof index == 'number'){
-			assert(index >= 0 && index < this.length, 'Collection.prototype.set(index, item): 设置的 {index} 超出范围。请确保  0 <= index < ' + this.length, index);
-			this.onInsert(item, index);
-			this.onRemove(this[index], index);
-			this[index] = item;
+			assert.notNull(item, "Collection.prototype.set(item): 参数 {item} ~。");
+			me.onBeforeSet(index);
+			assert(index >= 0 && index < me.length, 'Collection.prototype.set(index, item): 设置的 {index} 超出范围。请确保  0 <= index < ' + this.length, index);
+			me.onInsert(item, index);
+			me.onRemove(me[index], index);
+			me[index] = item;
+			me.onAfterSet(index);
 		} else{
-			this.reset();
-			index.forEach(this.add, this);
+			if(me.length)
+				me.clear();
+			index.forEach(me.add, me);
 		}
-		this.onAfterSet(index);
-		return this;
+		return me;
 	}
 		
 }));
