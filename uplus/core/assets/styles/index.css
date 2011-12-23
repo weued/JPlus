@@ -185,16 +185,16 @@ a:hover {
 	color: #32A2FF;
 }
 
-.b-hignlight {
-	color: #FF6600!important;
+.b-alt {
+	color: #70A3CD;
 }
 
 .b-hint {
 	color: #999999;
 }
 
-.b-alt {
-	color: #70A3CD;
+.b-hignlight {
+	color: #FF6600!important;
 }
 
 h1, h2, h3, h4, h5, h6 {

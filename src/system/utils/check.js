@@ -1,7 +1,6 @@
-//===========================================
-//  数据合法检验 
-//   A: aki
-//===========================================
+/**
+ * @author aki
+ */
 
 
 
@@ -90,7 +89,7 @@ namespace(".Check.", {
 		return /^1[358]\d{9}$/.test(value);
 	},
 	
-	isPhonenumber:function(value){
+	isPhone:function(value){
 		return /^(\d{3,4}-)?\d{7,8}$/.test(value);
 	}
 		
