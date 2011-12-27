@@ -1,0 +1,5 @@
+D:\Projects\JPlus\uplus\_tools\DplBuilder\src\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\Projects\JPlus\uplus\_tools\DplBuilder\src\obj\x86\Debug\DplBuilder.exe
+D:\Projects\JPlus\uplus\_tools\DplBuilder\src\obj\x86\Debug\DplBuilder.pdb
+D:\Projects\JPlus\uplus\_tools\DplBuilder\DplBuilder.exe
+D:\Projects\JPlus\uplus\_tools\DplBuilder\DplBuilder.pdb
