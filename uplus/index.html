@@ -3,10 +3,261 @@
 	<head>
 		<meta charset="utf-8">
 		<title>U+ DPL</title>
-		
 		<script type="text/javascript" src="../assets/scripts/default.js" ></script>
 	</head>
 	<body>
-		在右边选择组件
+		<h1>DPL 项目规范</h1>
+		<p>
+			在制作和使用DPL组件时，必须先读此文。
+		</p>
+		<h2>一、名词</h2>
+		<ul>
+			<li>
+				<strong>DPL</strong>(<em>Design Pattern Libaray</em>): 设计模式库。
+			</li>
+			<li>
+				<strong>组件</strong>(<em>Component</em>)：DPL的组成部分，DPL 内的每个元素都称为组件，一个组件是一套功能的集合。一个组件内可以包含子组件。两个组件之间也可以互相依赖。
+			</li>
+			<li>
+				<strong>控件</strong>(<em>Control</em>)：控件是专门负责界面功能的组件。控件本身是和业务无关的。
+			</li>
+			<li>
+				<strong>配件</strong>(<em>Widget</em>)：专门为业务准备的组件 。
+			</li>
+			<li>
+				<strong>框架</strong>(<em>Framework</em>)：专门为解决一类目标而写的代码统称为框架。
+			</li>
+			<li>
+				<strong>私有文件（夹）</strong>：开发DPL时所使用的、不发布的文件（夹）叫私有文件（夹），私有文件（夹）在命名上以下划线（_）开头。
+			</li>
+			<li>
+				<strong>临时文件（夹）</strong>：临时使用的或由程序生成的文件（夹），私有文件（夹）在命名上以波浪线（~）开头。
+			</li>
+		</ul>
+		<h2>二、统一单词译法</h2>
+		<table>
+			<tr>
+				<th>意义</th>
+				<th>使用的单词</th>
+				<th>不使用的单词</th>
+			</tr>
+			<tr>
+				<td>公共的、共享的、通用的、底层的</td>
+				<td>share</td>
+				<td><del>common</del> <del>base</del> <del>public</del> <del>core</del> <del>system</del> <del>include</del> <del>inc</del></td>
+			</tr>
+			<tr>
+				<td>选中的、激活的、当前的</td>
+				<td>actived</td>
+				<td><del>selected</del> <del>actived</del> <del>current</del> <del>checked</del></td>
+			</tr>
+			<tr>
+				<td>禁用的、只读的</td>
+				<td>disabled readonly</td>
+				<td><del>disable</del></td>
+			</tr>
+			<tr>
+				<td>数字</td>
+				<td>number</td>
+				<td><del>num</del> <del>n</del> <del>dight</del> <del>integer</del></td>
+			</tr>
+			<tr>
+				<td>高亮的、重要的、醒目的</td>
+				<td>hignlight</td>
+				<td><del>important</del> <del>high</del> <del>shine</del> <del>flash</del></td>
+			</tr>
+			<tr>
+				<td>次要的、淡色的、提示性的</td>
+				<td>hint alt</td>
+				<td><del>gray</del></td>
+			</tr>
+			<tr>
+				<td>空的、占位符、分割空白</td>
+				<td>blank</td>
+				<td><del>space</del> <del>block</del> <del>seperator</del> <del>split</del> <del>sep</del></td>
+			</tr>
+			<tr>
+				<td>容器、包含其它元素的</td>
+				<td>container</td>
+				<td><del>content</del> <del>block</del> <del>box</del> <del>panel</del></td>
+			</tr>
+			<tr>
+				<td>水平 左、中、右</td>
+				<td>left center right</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>垂直 上、中、下</td>
+				<td>top middle bottom</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>小、中、大、最大</td>
+				<td>small normal large largest</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>顶部、主体、底部</td>
+				<td>header body footer</td>
+				<td><del>top</del> <del>content</del> <del>doc</del> <del>main</del> <del>head</del> <del>foot</del> <del>container</del></td>
+			</tr>
+			<tr>
+				<td>错误的、异常的</td>
+				<td>error</td>
+				<td><del>warn</del> <del>warning</del> <del>err</del></td>
+			</tr>
+			<tr>
+				<td>成功的、正确的</td>
+				<td>success</td>
+				<td><del>ok</del> <del>sucess</del></td>
+			</tr>
+			<tr>
+				<td>警告的</td>
+				<td>warning</td>
+				<td><del>warn</del> <del>hint</del></td>
+			</tr>
+			<tr>
+				<td>完成</td>
+				<td>complete</td>
+				<td><del>end</del> <del>finish</del> <del>sucess</del> <del>stop</del></td>
+			</tr>
+			<tr>
+				<td>无边框的、平滑的、无背景的</td>
+				<td>plain</td>
+				<td><del>noborder</del> <del>nobg</del> <del>noframed</del></td>
+			</tr>
+		</table>
+		<p>
+			<strong>原则上不缩写单词。</strong>但以下单词例外：
+		</p>
+		<ul>
+			<li>
+				W3C 规范中使用过的缩略单词
+			</li>
+			<li>
+				info (information)
+			</li>
+			<li>
+				dir
+			</li>
+			<li>
+				col (column)
+			</li>
+			<li>
+				bg (background)
+			</li>
+		</ul>
+		<p>
+			<strong>如果需要，应该使用名词的复数形式。</strong>
+		</p>
+		<h2>三、文件夹格式</h2>
+		<p>
+			每个组件的结构以 _tpl 文件夹的结构为基准。
+		</p>
+		<ul>
+			<li>
+				_tpl: 一个组件所必须的文件夹。
+			</li>
+			<li>
+				<ul>
+					<li>
+						assets: 组件所需用的静态资源文件。
+					</li>
+					<li>
+						<ul>
+							<li>
+								scripts: 组件所需用的 Javascript 文件或其它脚本文件（如 .htc 文件）
+							</li>
+							<li>
+								images：组件所需用的图片、图标和多媒体文件。
+							</li>
+							<li>
+								styles: 组件所需用的 CSS 样式文件或其它样式文件（如 .theme 文件)
+							</li>
+						</ul>
+					</li>
+					<li>
+						index.html: 组件的示例页。
+					</li>
+				</ul>
+			</li>
+		</ul>
+		如果一个组件包含多个子组件，可以在组件跟目录新建一个子组件名的 html 文件。并在 assets 相应位置新建同名文件。 如：添加一个 button 子组件，应该新建以下 3 个文件：
+		button.html
+		assets/scripts/button.js
+		assets/styles/button.css
+
+		文件和文件夹名字必须为全小写。 <h2>四、CSS 命名规范</h2>
+		<p>
+			为防止组件之间的冲突，必须对组件类命名作限制：
+		</p>
+		<p>
+			CSS 命名原则：
+		</p>
+		<ol>
+			<li>
+				组件跟节点的 CSS 命名必须是 b-当前组件名。
+			</li>
+			<li>
+				组件内部节点的 CSS 命名必须以 b-当前组件名- 开头。
+			</li>
+			<li>
+				使用多个类名，而不是一个类多个功能。(即使用 .a-b 而不是使用 .a.b)
+			</li>
+		</ol>
+		<p>
+			C如 button 组件：
+		</p>
+		<p>
+			HTML 代码：
+		</p>
+		<code>
+			&lt;a href="#"&gt;&lt;span&gt;文字&lt;/span&gt;&lt;/a&gt;</code>
+		<p>
+			正确的 CSS 命名：
+		</p>
+		<code>
+			&lt;a href="#" class="b-button"&gt;&lt;span class="b-button-content"&gt;文字&lt;/span&gt;&lt;/a&gt;</code>
+		<p>
+			错误的 CSS 命名：
+		</p>
+		<code>
+			&lt;a href="#" class="b-button"&gt;&lt;span class="b-content"&gt;文字&lt;/span&gt;&lt;/a&gt;</code>
+		<code>
+			&lt;a href="#" class="b-button-outer"&gt;&lt;span class="b-button-content"&gt;文字&lt;/span&gt;&lt;/a&gt;</code>
+		<code>
+			&lt;a href="#" class="b-btn"&gt;&lt;span class="b-btn-cnt"&gt;文字&lt;/span&gt;&lt;/a&gt;</code>
+		<p>
+			如 grid 组件：
+		</p>
+		<p>
+			HTML 代码：
+		</p>
+		<code>
+			&lt;div&gt;文字&lt;/div&gt;</code>
+		<p>
+			正确的 CSS 命名：
+		</p>
+		<code>
+			&lt;div class="b-grid b-grid-2"&gt;&lt;/div&gt;
+		</code>
+		<p>
+			错误的 CSS 命名：
+		</p>
+		<code>
+			&lt;div class="b-grid-2"&gt;&lt;/div&gt;</code>
+		<code>
+			&lt;div class="b-grid b-2"&gt;&lt;/div&gt;</code>
+		<h2>五、 Javascript 组件规范</h2>
+		<ol>
+			<li>
+				对象名必须和组件名一样，且首字母大写。
+			</li>
+			<li>
+				内部传递原生 DOM 对象，而非通过 ID、CSS 选择器 或 其它方式。
+			</li>
+		</ol>
+		<h2>六、 完</h2>
+		</p>
 	</body>
 </html>

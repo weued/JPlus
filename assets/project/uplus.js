@@ -12,9 +12,9 @@ System.copyright = '';
 var menus = {
 	Core: '+Index Icon +ContentControl +IContainerControl +ListControl ScrollableControl',
 	Layout: '+Index# +Box#',
-	Form: '+TextBox ListBox ComboBox DatePicker ProcessBar',
-	Button: '+Index ImageButton VedioButton',
+	Form: '+TextBox *CombinedTextBox *ListBox *ComboBox *TagChooser DatePicker ProcessBar',
+	Button: '+Index ImageButton VedioButton LinkButton',
 	Dialog: 'Index',
-	Display: '+TipBox +Face +Image Pager Navigator +Ad +Banner *ToolTip BalloonTip',
+	Display: '+TipBox +Face +Image Pager Navigator +ImageBox +Ad +Banner *ToolTip BalloonTip',
 	Widget: 'Index +Topbar'
 };

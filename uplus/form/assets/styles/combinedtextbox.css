@@ -1,0 +1,20 @@
+/**
+ * @author 
+ */
+
+
+.b-combinedtextbox {
+	padding-right: 20px;	
+}
+
+.b-combinedtextbox-arrow {
+	height: 30px;
+	width: 20px;
+	padding: 0;
+	position: relative;
+	left: -20px;
+	top:0;
+	border: 0;
+	vertical-align: middle;
+	background: none;
+}
