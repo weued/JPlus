@@ -4,19 +4,6 @@
 
 
 Number.implementIf({
-	//#author cc
-	//之所以不用isNaN是因为isNaN(NaN)===true
-	isNumber: function(value) {
-        return typeof value ==="number" && isFinite(value);
-    },
-	
-	toString: (function(){
-		var toString = Number.prototype.toString;
-		return function(format){
-			
-		};
-		
-	})(),
 
 	limit: function(min, max){
 		return Math.min(max, Math.max(min, this));
@@ -47,6 +34,12 @@ Number.implementIf({
 var isToFixedBroken = (0.9).toFixed() !== '1';
 
 Object.extend(Number, {
+	
+	//#author cc
+	//之所以不用isNaN是因为isNaN(NaN)===true
+	isNumber: function(value) {
+        return typeof value ==="number" && isFinite(value);
+    },
 	
     /**
      * Checks whether or not the passed number is within a desired range.  If the number is already within the
@@ -123,9 +116,6 @@ Object.extend(Number, {
     /**
      * Validate that a value is numeric and convert it to a number if necessary. Returns the specified default value if
      * it is not.
-
-Ext.Number.from('1.23', 1); // returns 1.23
-Ext.Number.from('abc', 1); // returns 1
 
      * @param {Mixed} value
      * @param {Number} defaultValue The value to return if the original value is non-numeric

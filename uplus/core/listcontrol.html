@@ -30,19 +30,29 @@
 		
 		
 		<script>
+		
 			
-			var ct = new ListControl('ct');
+			var c = new ListControl('ct');
 			var a = $$('a');
 			var b = $$('b');
 			
-			ct.appendChild(a);
-			ct.appendChild(b);
 			
-			trace(ct.controls.length);
+			var testcases = {
+				'ListControl.prototype.items.add': "@c; 'a'",
+				'ListControl.prototype.items.insert': "@c; 2, 'r'",
+				'ListControl.prototype.items.removeAt': "@c; 0",
+				'ListControl.prototype.items.length': {
+					overrides: "@c;",
+					method: false
+				},
+				'ListControl.prototype.appendChild': "@c; a; b",
+				'ListControl.prototype.removeChild': "@c; b"
+			};
 			
-			ct.removeChild(b);
+			System.initTestCases(testcases);
 			
-			trace(ct.controls.length);
+			
+			
 		</script>
 		
 	</body>

@@ -287,7 +287,7 @@
 			var info = current.testCases[name];
 			
 			if(info) {
-				name = eval(info.method).toString();
+				name = eval(info.member).toString();
 				if(String.decodeUTF8)
 					name = String.decodeUTF8(name);
 				return console.info(name);
@@ -473,7 +473,7 @@
 	
 	function TestCase(info, name) {
 		this.prefix = ''; 
-		this.method = name;
+		this.member = name;
 		
 		apply(this, info);
 		
@@ -482,7 +482,7 @@
 		if(typeof this.overrides === 'function') {
 			window.TestCases = window.TestCases || {};
 			window.TestCases[name] = this.overrides;
-			this.method = 'TestCases["' + encodeJs(name) + '"]';
+			this.member = 'TestCases["' + encodeJs(name) + '"]';
 			this.overrides = null;
 		}
 		
@@ -491,27 +491,27 @@
 			var t = name.indexOf('.prototype.');
 			
 			if(t !== -1) {
-				this.method = name.substr(t + '.prototype.'.length);
+				this.member = name.substr(t + '.prototype.'.length);
 			}
 			
 			t = overrides[0].substr(1).split(/\s*=\s*/);
 			if(t[1]) {
 				this.prefix = 'var ' +  t[0] + ' = ' + t[1] + ';\r\n';
-				this.methodName = t[1] + this.method;
+				this.memberName = t[1] + this.member;
 			}
 			
-			this.method = t[0] + '.' + this.method;
+			this.member = t[0] + '.' + this.member;
 			
 			
 			overrides.splice(0, 1);
 		}
 		
-		if(this.doCall === false) {
-			this.method = 'System.createFunction(' + this.method + ')';
+		if(this.method === false) {
+			this.member = 'System.createFunction(' + this.member + ')';
 		}
 		
-		if(!this.methodName){
-			this.methodName =   this.method;
+		if(!this.memberName){
+			this.memberName =   this.member;
 		}
 		
 		this.overrides = {};
@@ -525,7 +525,7 @@
 				value[1] = 'assert.areEqual(value, ' + value[1] + ');';
 			}
 			
-			this.overrides[value[0]] = value[1];
+			this.overrides[value[0].replace(/^\s+|\s+$/g, "")] = value[1];
 			
 		}, this);
 	}
@@ -542,7 +542,7 @@
 			    this.id,
 			    '" class="testcase" onmouseover="this.className += \' active\'" onmouseout="this.className = this.className.replace(\' active\', \'\');">',
 			     '<span><a href="javascript://',
-			    encodeHTML(this.method),
+			    encodeHTML(this.member),
 			    '" onclick="System.doRun(\'',
 			    this.id,
 			    '\');">测试</a> | <a href="javascript://测试速度" onclick="System.doTime(\'',
@@ -555,7 +555,7 @@
 			    this.id,
 			    '\');">查看源码</a></span>',
 			    '<a href="javascript://',
-			    encodeHTML(this.method), '(', encodeHTML(p || ''), ')',
+			    encodeHTML(this.member), '(', encodeHTML(p || ''), ')',
 			    encodeHTML(this.overrides[p] ? ' => ' + this.overrides[p] : ''),
 			    '" onclick="System.doRun(\'', 
 			    this.id,
@@ -582,12 +582,12 @@
 				r.push(this.prefix);
 				r.push('assert.clearLog();\r\n');
 				r.push('console.log("');
-				r.push(this.methodName.replace(/\\/g, '\\\\').replace(/"/g, '\\\"'));
+				r.push(this.memberName.replace(/\\/g, '\\\\').replace(/"/g, '\\\"'));
 				r.push('(');
 				r.push(override.replace(/\\/g, '\\\\').replace(/"/g, "\\\""));
 				r.push(') => ", ');
 				r.push('value = ');
-				r.push(this.method);
+				r.push(this.member);
 				r.push('(');
 				r.push(override);
 				r.push(')');
@@ -632,7 +632,7 @@
 
 			for(var override in this.overrides) {
 				c++;
-				r.push(this.method);
+				r.push(this.member);
 				r.push('(');
 				r.push(override);
 				r.push(');\r\n');
@@ -666,11 +666,11 @@
 				r.push(this.prefix);
 				r.push('try {\r\n');
 				r.push('console.log("');
-				r.push(this.method);
+				r.push(this.member);
 				r.push('(');
 				r.push(param.replace(/\"/g, "\\\""));
 				r.push(') => ", ');
-				r.push(this.method);
+				r.push(this.member);
 				r.push('(');
 				r.push(param);
 				r.push(')');
@@ -678,7 +678,7 @@
 				r.push('} catch(e) {\r\n');
 				r.push('assert.hasError = true;\r\n');
 				r.push('console.error("');
-				r.push(this.method);
+				r.push(this.member);
 				r.push('(');
 				r.push(param.replace(/\"/g, "\\\""));
 				r.push(') 抛出了异常 ", e.message);\r\n');

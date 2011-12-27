@@ -6899,6 +6899,7 @@ namespace("System.Dom.Element");
 
 
 
+namespace("System.Fx.Base");
 using("System.Dom.Element");
 using("System.Fx.Base");
 

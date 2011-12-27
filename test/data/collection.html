@@ -19,7 +19,7 @@
 			list.insertAt(0, 8);   // [8, 2]
 			
 			var testcases = {
-				'Collection.prototype.length': {doCall: false, overrides:  '@list; => 2' },
+				'Collection.prototype.length': {method: false, overrides:  '@list; => 2' },
 				'Collection.prototype.item': '@list; 0=>8; 1=>2; -1=>2;2=>undefined'
 			};
 			

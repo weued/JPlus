@@ -63,11 +63,11 @@
 			var testcases = {
 				'Element': '-',
 				'$': '"o" => assert.isTrue(value.a)',
-				'Element.prototype.xType': {doCall: false, overrides: '@o; =>   "element"'},
+				'Element.prototype.xType': {method: false, overrides: '@o; =>   "element"'},
 				'Element.parse': '"<div/>" ; "<div><div />a<\/div>"; "   <div/> f <div/>"; "<object />"; "<input type=\'radio\' checked=\'checked\'>"', 
 				'Element.getDocument': 'a=>document; document=>document', 
 				'ElementList': '-',
-				'ElementList.prototype.length': {doCall: false, overrides:  '@abcd;4'},
+				'ElementList.prototype.length': {method: false, overrides:  '@abcd;4'},
 				'ElementList.prototype.each': '@abcd; function(value){ assert.log(value.id)} => assert.logged("abcd")',
 				'ElementList.prototype.filter': '@abcd; function(value) {return value === a || value === c} => assert.areEqual(value, [a, c])',
 				'ElementList.prototype.invoke': '@abcd; "setAttr", ["ff", 1] => assert.isTrue(a.getAttr("ff") == 1),  assert.isTrue(d.getAttr("ff") == 1) ',
