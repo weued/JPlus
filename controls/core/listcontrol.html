@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>U+ DPL</title>
+		
+		<link rel="stylesheet" type="text/css" href="../core/assets/styles/index.css">
+		<link rel="stylesheet" type="text/css" href="assets/styles/listcontrol.css">
+		
+		<script type="text/javascript" src="../../assets/libs/jquery/jquery.js"></script>
+		<script type="text/javascript" src="../../src/jquery-adapter.js"></script>
+		<script type="text/javascript" src="../../src/uplus.js"></script>
+		<script type="text/javascript" src="../../src/system/data/collection.js"></script>
+		
+		<script type="text/javascript" src="../core/assets/scripts/index.js"></script>
+		<script type="text/javascript" src="assets/scripts/icontainercontrol.js"></script>
+		<script type="text/javascript" src="assets/scripts/listcontrol.js"></script>
+		
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+	</head>
+	<body>
+		
+		<div id="ct">
+			<ul>
+				
+			</ul>
+		</div>
+		<div id="a">#a</div>
+		<div id="b">#b</div>
+		
+		
+		<script>
+		
+			
+			var c = new ListControl('ct');
+			var a = $$('a');
+			var b = $$('b');
+			
+			
+			var testcases = {
+				'ListControl.prototype.items.add': "@c; 'a'",
+				'ListControl.prototype.items.insert': "@c; 2, 'r'",
+				'ListControl.prototype.items.removeAt': "@c; 0",
+				'ListControl.prototype.items.length': {
+					overrides: "@c;",
+					method: false
+				},
+				'ListControl.prototype.appendChild': "@c; a; b",
+				'ListControl.prototype.removeChild': "@c; b"
+			};
+			
+			System.initTestCases(testcases);
+			
+			
+			
+		</script>
+		
+	</body>
+</html>

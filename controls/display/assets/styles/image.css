@@ -1,0 +1,30 @@
+/**
+ * @author 
+ */
+
+
+
+.b-image {
+    border: 1px solid #C5C5C5;
+    padding: 4px;
+}
+
+.b-image-small {
+	width: 80px;
+	height: 60px;
+}
+
+.b-image-normal {
+	width: 120px;
+	height: 90px;
+}
+
+.b-image-large {
+	width: 180px;
+	height: 130px;
+}
+
+.b-image-largest {
+	width: 320px;
+	height: 220px;
+}
