@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>share - U+ DPL</title>
+		
+		<link rel="stylesheet" type="text/css" href="../core/assets/styles/index.css">
+		<link rel="stylesheet" type="text/css" href="assets/styles/index.css">
+		
+		<script type="text/javascript" src="../../assets/libs/jquery/jquery.js"></script>
+		<script type="text/javascript" src="../../src/jquery-adapter.js"></script>
+		<script type="text/javascript" src="../../src/uplus.js"></script>
+		
+		<style>
+			#header,  #footer, .demo {
+				border: 1px solid #DDDDDD;
+				background: #EEEEEE;	
+				height: 99px;
+				text-align: center;
+				line-height: 99px;
+				color: #555555;
+				font-family: '微软雅黑';
+				font-weight: 700;
+			}
+		</style>
+	</head>
+	<body>
+		
+		<!-- 全部内容都包括在 #wrap 下 -->
+		<div id="wrap">
+			
+			<!-- 顶部条 -->
+	    	<div id="topbar">
+	        	<div class="b-container">
+	            	
+	            </div>
+	        </div>
+			<!-- /顶部条 -->
+			
+			<!-- 内容 -->
+	        <div id="main">
+	    		<div id="header">顶部 #header</div>
+	    		<div id="body">
+	            	
+	                <!--  自定义 -->
+	            	<div class="b-grid demo">
+	                    正文 #body 
+	                </div>
+	                <!-- /自定义 -->
+	            	
+	                <!--  单栏式 -->
+	            	<div class="b-grid b-grid-1">
+	                	<div class="b-col-main demo">
+	                    单栏式  .b-col-main
+	                    </div>
+	                </div>
+	                <!-- /单栏式 -->
+	                
+	                <!--  两栏式（个人中心）  -->
+	            	<div class="b-grid b-grid-2u">
+	                	<div class="b-col-side demo">左栏 .b-col-side</div>
+	                	<div class="b-col-main demo">两栏式（个人中心） .b-col-main</div>
+	                </div>
+	                <!--  /两栏式（个人中心）  -->
+	                
+	                <!--  两栏式 -->
+	            	<div class="b-grid b-grid-2">
+	                	<div class="b-col-extra demo">右栏 .b-col-extra</div>
+	                	<div class="b-col-main demo">两栏式 .b-col-main</div>
+	                </div>
+	                <!--  /两栏式 -->
+	                
+	                <!--  三栏式（个人中心） -->
+	            	<div class="b-grid b-grid-3">
+	                	<div class="b-col-extra demo">右栏 .b-col-extra</div>
+	                	<div class="b-col-side demo">左栏 .b-col-side</div>
+	                	<div class="b-col-main demo">三栏式（个人中心）  .b-col-main</div>
+	                </div>
+	                <!--  /三栏式（个人中心） -->
+	                
+	            </div>
+	    		<div id="footer">底部 #footer</div>
+	    		
+				<div>
+					解读：DIV 层次：
+					<ul>
+						<li>
+							#wrap - <span class="b-hint">全部内容都在这个DIV下</span>
+							<ul>
+								<li>#topbar - <span class="b-hint">顶部工具条</span></li>
+								<li>#main - <span class="b-hint">主体部分</span>
+									<ul>
+										<li>#header - <span class="b-hint">顶部</span></li>
+										<li>#body - 正文：所有内容都在这个div中</li>
+										<li>#footer - <span class="b-hint">底部</span></li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+					</ul>
+					#body 下是由多行组成的，每行都是一个.b-grid的 DIV 组成 ，每行可以是下列类之一：
+					<ul>
+						<li>.b-grid: 自定义的一行</li>
+						<li>.b-grid .b-grid-1: 只有1列的行</li>
+						<li>.b-grid .b-grid-2: 只有2列的行</li>
+						<li>.b-grid .b-grid-2u: 只有2列的行(个人中心)</li>
+						<li>.b-grid .b-grid-3: 只有3列的行</li>
+					</ul>
+					每一行都是由多列组成, 每行内的内容见上图， 比如两栏式就是  .b-col-main 和 .b-col-extra<br>
+					综上所述，一个两行两列的页面，其 #body 内的层次为：
+					
+					<ul>
+						<li>#body
+							<ul>
+								<li>.b-grid .b-grid-2
+									<ul>
+										<li>.b-col-main(正文内容)</li>
+										<li>.b-col-extra(边栏内容)</li>
+									</ul>
+								</li>
+								<li>.b-grid .b-grid-2
+									<ul>
+										<li>.b-col-main(正文内容)</li>
+										<li>.b-col-extra(边栏内容)</li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+					</ul>
+							
+				</div>
+	    	</div>
+			<!-- /内容 -->
+	    </div>
+	</body>
+</html>

@@ -189,7 +189,7 @@ a:hover {
 	color: #70A3CD;
 }
 
-.b-hint {
+.b-hint, a.b-hint, .b-hint a {
 	color: #999999;
 }
 
@@ -240,7 +240,7 @@ p.b-content {
 
 /***************************** Compact Mode ***************************/
 
-#doc div,#doc dl,#doc dt,#doc dd,#doc ul,#doc ol,#doc li,#doc h1,#doc h2,#doc h3,#doc h4,#doc h5,#doc h6,#doc form,#doc fieldset,#doc input,#doc textarea,#doc p,#doc blockquote,#doc th,#doc td{margin:0;padding:0}
+#doc dl,#doc dt,#doc dd,#doc ul,#doc ol,#doc li,#doc h1,#doc h2,#doc h3,#doc h4,#doc h5,#doc h6,#doc form,#doc fieldset,#doc input,#doc textarea,#doc p,#doc blockquote,#doc th,#doc td{margin:0;padding:0}
 #doc fieldset,#doc img{border:0}
 #doc address,#doc caption,#doc cite,#doc code,#doc dfn,#doc em,#doc th,#doc var{font-style:normal; font-weight:normal}
 #doc ol,#doc ul{list-style:none}

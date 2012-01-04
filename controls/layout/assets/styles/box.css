@@ -1,0 +1,53 @@
+
+.b-box{
+	border:1px solid #D5D5D5;
+	background-color:#FFFFFF;
+}
+
+.b-box-header, #doc  .b-box .box-hd{
+	height:35px;
+	line-height:35px;
+	border-top:1px solid #FFFFFF;
+	border-bottom:1px solid #C8C8C8;
+	background-color:#F2F2F2;
+	padding:0 10px 0 15px;
+}
+
+.b-box-header h1, .b-box-header h2, .b-box-header h3, .b-box-header h4, .b-box-header h5, .b-box-header h6{
+	margin: 0;
+}
+
+.b-box-body, #doc .b-box .box-bd{
+	border-top:1px solid #F4F4F4;
+	padding:0 10px 0 15px;
+}
+
+.b-box-body, #doc .box-bd{
+	zoom:1;
+}
+
+.b-box-body：after, #doc .box-bd:after {
+	content: ".";
+	display: block; 
+	height: 0; 
+	clear: both; 
+	visibility: hidden;
+}
+
+.b-box-body {
+	padding: 10px;	
+}
+
+
+
+/***************************** Compact Mode ***************************/
+
+
+
+
+#doc .b-box .box-hd h2 {
+    font-weight: bold;
+    color: #333333;
+    font-size: 14px;
+    margin: 0;
+}

@@ -12,9 +12,12 @@ System.copyright = '';
 var menus = {
 	Core: '+Index Icon +ContentControl +IContainerControl +ListControl ScrollableControl',
 	Layout: '+Index# +Box#',
-	Form: '+TextBox ListBox ComboBox DatePicker ProcessBar',
-	Button: '+Index ImageButton VedioButton',
-	Dialog: 'Index',
-	Display: '+TipBox +Face +Image Pager Navigator +Ad +Banner *ToolTip BalloonTip',
-	Widget: 'Index +Topbar'
+	Form: '+TextBox *CombinedTextBox *ListBox *ComboBox *TagChooser DatePicker *ProcessBar *Suggest CityChooser',
+	Button: '+Index ImageButton VedioButton LinkButton *SafeAnthor',
+	Container: '*Dialog',
+	Display: '+TipBox +Face +Image Pager -Navigator +ImageBox +Ad +Banner *ToolTip -BalloonTip',
+	Widget: 'Index +Topbar *BreadCrumb +ShareTo'
 };
+
+
+
