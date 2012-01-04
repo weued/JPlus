@@ -184,13 +184,7 @@
 		//设置触发菜单的源，即在源上右键后可显示菜单,所有子菜单的源于顶级菜单的源保持一致
 		setTarget : function(target){
 			this.target = target;
-			
-			for(var i = 0, l = this.menu_items.length; i < l; i++){
-				if(this.menu_items[i].type == 1){
-					this.menu_items[i].target = target;	
-				}
-			}
-	
+		
 			for(p in this.child_menus){
 				this.child_menus[p].setTarget(target);
 			}
@@ -213,8 +207,16 @@
 		},
 		
 		//设置菜单的顶级菜单
-		setTopMenu : function(top_menu){						
-			this.target.data('top_menu', this);
+		setTopMenu : function(){									
+			if (!this.parent_menu.top_menu) {
+				this.top_menu = this.parent_menu;
+			}else{
+				this.top_menu = this.parent_menu.top_menu;
+			}
+			
+			for(p in this.child_menus){
+				this.child_menus[p].setTopMenu();
+			}
 			
 			return this;
 		}
@@ -223,7 +225,7 @@
 	
 	//在jquery对象上绑定菜单，同时该对象成为菜单的源
 	$.fn.bindPopMenu = function(menu){
-		menu.setTarget($(this)).setTopMenu();
+		menu.setTarget($(this));
 	
 		this.bind('contextmenu', function(e){
 			menu.hideMenu();							  
@@ -319,9 +321,13 @@
 			
 			_this.$item.click(function (){		//菜单项包含的jquery对象
 				//执行方法，目前提供2个参数：菜单项元素, 下标, 可使用this获取源
-				if(_this.fn) _this.fn.call(_this.target, _this.$item, _this.getSerialNumber());	
+				if(_this.fn) _this.fn.call(_this.parent_menu.target, _this.$item, _this.getSerialNumber());	
 				
-				_this.target.data('top_menu').hideMenu();
+				if (parent_menu.top_menu) {
+					parent_menu.top_menu.hideMenu();
+				} else{
+					parent_menu.hideMenu();
+				};
 			});
 				
 		},
@@ -338,6 +344,7 @@
 			
 			_this.relatedMenu = cm;			//菜单项相关联的子菜单
 			cm.parent_menu = parent_menu;	//设置父菜单
+			cm.setTopMenu();				//设置顶级菜单
 			
 			var i = 0; 
 			for(p in parent_menu.child_menus){
@@ -345,7 +352,7 @@
 			}
 			parent_menu.child_menus[cm.menu_id] = cm; //父菜单上添加子菜单的引用
 			
-			_this.hasChildMenu = true;		//表示有关联的子菜单
+			_this.hasChildMenu = true;		//表示含有关联的子菜单
 			
 		},
 		

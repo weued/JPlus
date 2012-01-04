@@ -7,7 +7,8 @@
 
 	<title>demo</title>
 	<link type="text/css" rel="stylesheet" href="assets/styles/menu.css" />
-	<script type="text/javascript" src="../jquery.js"></script>
+	<!--<script type="text/javascript" src="../jquery.js"></script>-->
+	<script type="text/javascript" src="../../assets/libs/jquery/jquery.js"></script>
 	<script type="text/javascript" src="assets/scripts/menu.js"></script>
 </head>
 
@@ -52,7 +53,7 @@
 			var cm1 = new $.PopMenu({
 				menu_arr : [
 					{type:'NORMAL', txt:'朋友',     fn:function(){ alert(this.text());}},
-					{type:'NORMAL', txt:'同学', 	    fn:function(){ }},
+					{type:'NORMAL', txt:'同学', 	    fn:function(){ alert(this.text()) }},
 					{type:'MENU', txt:'不认识',     child_menu:cm2},
 					{type:'NORMAL', txt:'同学', 	    fn:function(){ }},
 					{type:'NORMAL', txt:'同学', 	    fn:function(){ }},
@@ -63,7 +64,7 @@
 
 			var m = new $.PopMenu({
 				menu_arr : [ 
-					{type:'NORMAL', txt:'发送即时消息',  fn:function(a, b){alert(b)}},
+					{type:'NORMAL', txt:'发送即时消息',  fn:function(a, b){ alert(this.text())}},
 					{type:'NORMAL', txt:'关注他', 	    fn:function(a, b){alert(b)}},
 					{type:'NORMAL', txt:'移至黑名单',    fn:function(a, b){alert(b)}},
 					{type:'MENU',   txt:'移动联系人至',  child_menu:cm1},
