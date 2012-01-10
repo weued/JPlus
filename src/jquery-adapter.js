@@ -4046,7 +4046,8 @@ namespace("System.Dom.Element");
         render: function(parent, refNode) {
             assert(parent && parent.insertBefore, 'Element.prototype.render(parent, refNode): 参数 {parent} 必须是 DOM 节点或控件。', parent);
             assert(refNode || refNode === null, 'Element.prototype.render(parent, refNode): 参数 {refNode} 必须是 null 或 DOM 节点或控件。', refNode);
-            return parent.insertBefore(this.dom || this, refNode);
+            parent.insertBefore(this.dom || this, refNode);
+            return this;
         },
 
         /**
@@ -4291,9 +4292,15 @@ namespace("System.Dom.Element");
 		 * @return {Element} this
 		 */
         setSize: function(x, y) {
-            var p = formatPoint(x, y);
-
-            jQuery(this.dom || this).width(p.x).height(p.y);
+            var p = formatPoint(x, y), elem = jQuery(this.dom || this);
+            
+            if(p.x != null){
+            	elem.width(p.x - elem.outerWidth() + elem.width());
+            }
+            
+            if(p.y != null){
+            	elem.height(p.y - elem.outerHeight() + elem.height());
+            }
 
             return this;
         },

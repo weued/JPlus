@@ -22,5 +22,19 @@
 		警告: <input class="b-textbox b-textbox-error" value=".b-textbox .b-textbox-error" /><br><br>
 		只读: <input class="b-textbox" readonly="readonly" value=".b-textbox[readonly]" /><br><br>
 		禁用: <input class="b-textbox" disabled="disabled" value=".b-textbox[disabled]" /><br><br>
+		
+		<script>
+			var a = new TextBox().appendTo();
+			
+			var testcases = {
+				'TextBox.prototype.getText': '@a',
+				'TextBox.prototype.setDisabled': '@a',
+				'TextBox.prototype.setReadOnly': '@a',
+				'TextBox.prototype.setState': '@a; "error"',
+				'TextBox.prototype.setText': '@a; "aaa"'
+			};
+            
+            System.initTestCases(testcases);
+		</script>
 	</body>
 </html>

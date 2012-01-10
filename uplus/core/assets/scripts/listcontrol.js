@@ -11,10 +11,10 @@ using("UPlus.Core.IContainerControl");
 /**
  * 表示所有管理多个有序列的子控件的控件基类。
  * @class ListControl
- * ListControl 封装了使用  <ul> 创建列表控件一系列方法。
+ * ListControl 封装了使用  &lt;ul&gt; 创建列表控件一系列方法。
  * 子类可以重写 onControlAdded、onControlRemoved、initItem  3　个函数，实现对
  */
-namespace(".ListControl", Control.extend(IContainerControl).implement({
+var ListControl = Control.extend(IContainerControl).implement({
 	
 	create: function(){
 		var dom = document.create('div', 'b-' + this.xType);
@@ -38,5 +38,5 @@ namespace(".ListControl", Control.extend(IContainerControl).implement({
 		this.content.removeChild((childControl.dom || childControl).parentNode);
 	}
 	
-}));
+});
 

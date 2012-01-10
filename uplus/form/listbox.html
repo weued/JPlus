@@ -29,8 +29,20 @@
 			</ul>
 		</div>
 		
+		<div id="container" style="left: 50%" class="b-absolute">
+			
+		</div>
 		
-		
+		<script>
+			var a = new ListBox().appendTo('container');
+			a.items.add('列表1');
+			a.items.add('列表2');
+			a.items.add('列表3');
+			a.items.add('列表4');
+			a.on('valuechanged', function(){
+				trace(this.getSelectedItem().nodeValue);
+			});
+		</script>
 		
 	</body>
 </html>

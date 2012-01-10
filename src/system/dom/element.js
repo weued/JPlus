@@ -1511,7 +1511,8 @@
         render: function(parent, refNode) {
             assert(parent && parent.insertBefore, 'Element.prototype.render(parent, refNode): 参数 {parent} 必须是 DOM 节点或控件。', parent);
             assert(refNode || refNode === null, 'Element.prototype.render(parent, refNode): 参数 {refNode} 必须是 null 或 DOM 节点或控件。', refNode);
-            return parent.insertBefore(this.dom || this, refNode);
+            parent.insertBefore(this.dom || this, refNode);
+            return this;
         },
 
         /**

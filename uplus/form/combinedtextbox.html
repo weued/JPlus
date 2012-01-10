@@ -23,6 +23,19 @@
 		<!-- 注意下面2个 <input> 之间不能有任何 空白。 -->
 		文字： <input class="b-textbox b-combinedtextbox" type="text" value="选项2" id="id"/><input type="button" value="▼" class="b-combinedtextbox-arrow" />
 		
+		<script>
+			var a = new CombinedTextBox().appendTo();
+			
+			var testcases = {
+				'CombinedTextBox.prototype.getText': '@a',
+				'CombinedTextBox.prototype.setDisabled': '@a',
+				'CombinedTextBox.prototype.setReadOnly': '@a',
+				'CombinedTextBox.prototype.setState': '@a; "error"',
+				'CombinedTextBox.prototype.setText': '@a; "aaa"'
+			};
+            
+            System.initTestCases(testcases);
+		</script>
 		
 	</body>
 </html>

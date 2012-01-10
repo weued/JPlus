@@ -24,7 +24,7 @@
 }
 
 
-.b-listbox-content:hover {
+.b-listbox-content:hover, .b-listbox-actived {
 	background-color: #255b9b;
 	color: #ffffff;
 }
