@@ -3270,6 +3270,11 @@ namespace("System.Dom.Element");
 		            me.dom.style.cssText += ';' + opt.style;
 		            delete opt.style;
 	            }
+	            
+	            // 如果指定的节点已经在 DOM 树上，且重写了 render 方法，则调用之。
+	            if(me.dom.parentNode && this.render !== Control.prototype.render){
+	            	this.render(me.dom.parentNode, me.dom.nextSibling);
+	            }
 
 	            // 复制各个选项。
 	            Object.set(me, opt);

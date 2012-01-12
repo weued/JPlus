@@ -18,3 +18,9 @@
 	vertical-align: middle;
 	background: none;
 }
+
+
+.b-combinedtextbox-arrow-down {
+	background: url(../images/combobox.gif) no-repeat center center transparent;
+	text-indent: -99999px;
+}

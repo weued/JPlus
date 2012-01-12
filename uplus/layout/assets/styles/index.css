@@ -1,6 +1,9 @@
 #main, .b-container {
 	width: 980px;
 	margin: 0 auto;
+}
+
+#body {
 	position: relative;
 }
 

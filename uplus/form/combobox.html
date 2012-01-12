@@ -32,7 +32,7 @@
 	<body>
 		
 		
-		<input class="b-textbox b-combinedtextbox" type="text" value="选项2" id="id"/><input type="button" value="▼" class="b-combinedtextbox-arrow" />
+		<input class="b-textbox b-combinedtextbox" type="text" value="选项2" id="id"/><input type="button" value="▼" class="b-combinedtextbox-arrow b-combinedtextbox-arrow-down" />
 		
 		
 		
@@ -45,7 +45,12 @@
 					<li class="b-listbox-content b-list-content">选项5</li>
 				</ul>
 			</div>
-			
+
+		选择框： <select id="b" name="a">
+			<option value="1">选项1</option>
+
+			<option value="2" selected="selected">选项2</option>
+		</select>
 			
 		<script>
 		
@@ -61,6 +66,19 @@
 		a.on('change', function(){
 			trace(this.getText());
 		});
+		
+		var b = new ComboBox('b');
+		
+		
+		var testcases = {
+			'ComboBox.prototype.getText': '@a',
+			'ComboBox.prototype.setDisabled': '@a',
+			'CombinedTextBox.prototype.setReadOnly': '@a',
+			'CombinedTextBox.prototype.setState': '@a; "error"',
+			'CombinedTextBox.prototype.setText': '@a; "aaa"'
+		};
+        
+        System.initTestCases(testcases);
 		</script>
 	</body>
 </html>
