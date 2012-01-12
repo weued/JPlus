@@ -20,11 +20,18 @@ namespace Xuld.Tools.DplBuilder {
         }
 
         static bool StartWith(string line, string s) {
-            if(!line.StartsWith(s)) {
+            if(!line.StartsWith(s) || line.Length < s.Length + 3) {
                 return false;
             }
 
-            if(line.Length > s.Length + 3 && !char.IsLetterOrDigit(line, s.Length)) {
+            int p = s.Length;
+            char c = line[p];
+
+            while(char.IsWhiteSpace(c) && p < line.Length) {
+                c = line[++p];
+            }
+
+            if(c == '(' || c == '.') {
                 return true;
             }
 
@@ -181,35 +188,52 @@ namespace Xuld.Tools.DplBuilder {
 
         void ScanJavascript(string path, string name) {
 
-            Console.WriteLine(name);
+            string[] lines = File.ReadAllLines(path, _encoding);
 
-            WriteHeader(_js, name);
+            int i = 0;
 
-            foreach(string line in File.ReadAllLines(path, _encoding)) {
-                string c = line.TrimStart();
+            for(; i < lines.Length; i++) {
+                string c = lines[i].TrimStart();
                 if(StartWith(c, "using")) {
-                    c = CleanUsings(c);
+                    c = CleanUsings(c, 5);
                     if(c != null)
                         ScanNamespace(c, true);
                 } else if(StartWith(c, "imports")) {
-                    c = CleanUsings(c);
+                    c = CleanUsings(c, 7);
                     if(c != null)
                         ScanNamespace(c, false);
                 } else if(DisableJsTrace && StartWith(c, "trace")) {
                     continue;
                 } else if(DisableJsAssert && StartWith(c, "assert")) {
                     continue;
-                }
+                } else if(c.Length == 0 || (c.Length > 1 && c[0] == '*') || (c.Length > 2 && c[0] == '/' && (c[1] == '/' || c[1] == '*'))) {
+                    
+                } else {
+                    break;
+                } 
 
-                _js.WriteLine(line);
             }
 
-            _js.WriteLine("namespace(\"" + name + "\");");
+            Console.WriteLine(name);
+            WriteHeader(_js, name);
 
+            for(; i < lines.Length; i++) {
+                string c = lines[i].TrimStart();
+                if(StartWith(c, "using") || StartWith(c, "imports")) {
+                    Warning((StartWith(c, "using") ? "using" : "imports") + "(行" + i + ") 只能在最开始使用。");
+                } else if(DisableJsTrace && StartWith(c, "trace")) {
+                    continue;
+                } else if(DisableJsAssert && StartWith(c, "assert")) {
+                    continue;
+                }
+                _js.WriteLine(lines[i]);
+            }
+
+          //  _js.WriteLine("namespace(\"" + name + "\");");
         }
 
-        static string CleanUsings(string value) {
-            int left = 0, right = value.Length - 1;
+        static string CleanUsings(string value, int left) {
+            int right = value.Length - 1;
             bool containsQuote = false;
             for(; left < value.Length; left++) {
                 char c = value[left];
@@ -228,7 +252,7 @@ namespace Xuld.Tools.DplBuilder {
             }
 
             if(containsQuote && left < right) {
-                return value.Substring(left, right - left);
+                return value.Substring(left, right - left + 1);
             }
 
             return null;

@@ -18,11 +18,18 @@
 	</head>
 	<body>
 		
+		<input type="text" id="a" />
 		
 		文字：<a class="b-tagchooser b-tagchooser-actived" href="javascript:;">选项1</a>
 		<a class="b-tagchooser" href="javascript:;">选项2</a>
 		<a class="b-tagchooser" href="javascript:;">选项2</a>
 		
 		
+		<script>
+			new CommonTags({
+				dom: 'a',
+				target: ''	
+			});
+		</script>
 	</body>
 </html>

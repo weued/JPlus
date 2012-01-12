@@ -17,7 +17,6 @@ html, body, object, iframe, img, pre {
 /* reset border */
 html, body, a img {
 	border: 0;
-	height: 100%; 
 }
 
 /* remove space between table cells */
