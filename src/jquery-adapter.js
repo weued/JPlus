@@ -4248,8 +4248,18 @@ namespace("System.Dom.Element");
         },
  
         /// #endif
-
-
+        
+        
+        /**
+		 * 切换类名。
+		 * @param {String} className 类名。
+		 * @param {Boolean} [toggle] 自定义切换的方式。如果为 true， 则加上类名，否则删除。
+		 * @return {Element} this
+		 */
+        toggleClass: function(className, toggle) {
+            return (toggle !== undefined ? !toggle : this.hasClass(className)) ? this.removeClass(className) : this.addClass(className);
+        },
+        
         /**
 		 * 设置值。
 		 * @param {String/Boolean} 值。
@@ -5159,7 +5169,6 @@ namespace("System.Dom.Element");
 		setAttr: 'attr',
 		addClass: 'addClass',
 		removeClass: 'removeClass',
-		toggleClass: 'toggleClass',
 		setHtml: 'html',
 		animate: 'animate',
 		show: 'show',
