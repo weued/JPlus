@@ -1,69 +1,20 @@
-/******************************************************************************
- * J+ Library, 2.0
- * Copyright (c) 2011-2012, J+ Team. All rights reserved.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- *****************************************************************************/
-
-// 可用的宏
-// 	SupportIE10 - 支持 IE10+ FF5+ Chrome12+ Opera12+ Safari6+ 。
-// 	SupportIE9 - 支持 IE9+ FF4+ Chrome10+ Opera10+ Safari4+ 。
-// 	SupportIE8 - 支持 IE8+ FF3+ Chrome10+ Opera10+ Safari4+ 。
-// 	SupportIE6(SupportIE7) - 支持 IE6+ FF2.5+ Chrome1+ Opera9+ Safari4+ 。
-// 	SupportUsing - 支持模块载入功能。
-// 	Release - 启用发布操作。
-
 /**
+ * J+ Library, 3.0
  * @projectDescription J+：面向对象的组件实现
  * @copyright 2011-2012 J+ Team
  * @fileOverview 定义必须的系统函数。
  */
 
+// 可用的宏
+// 	CompactMode - 兼容模式 - 支持 IE6+ FF2.5+ Chrome1+ Opera9+ Safari4+ 。
+// 	Release - 启用发布操作 - 删除 assert 和 trace 支持。
+
+
 (function(window) {
-
-	/// #define JPlus
-
-	/// #if SupportIE7
-	/// 	#define SupportIE6
-	/// #endif
-
-	/// #if !SupportIE10 && !SupportIE9 && !SupportIE8 && !SupportIE6
-	/// 	#define SupportIE6
-	/// #endif
-
-	/// #if SupportIE6
-	/// 	#define SupportIE8
-	/// #endif
-
-	/// #if SupportIE8
-	/// 	#define SupportIE9
-	/// #endif
 
 	/// #if Release
 	/// 	#trim assert
 	/// 	#trim trace
-	/// #else
-	///		#define SupportUsing
-	/// #endif
-
-	/// #if !SupportUsing
-	/// 	#trim using
 	/// #endif
 
 	/// #region 全局变量
@@ -105,42 +56,6 @@
 		hasOwnProperty = o.prototype.hasOwnProperty,
 	
 		/**
-		 * 检查空白的正则表达式。
-		 * @type RegExp
-		 */
-		rSpace = /^[\s\u00A0]+|[\s\u00A0]+$/g,
-	
-		/**
-		 * 格式化字符串用的正则表达式。
-		 * @type RegExp
-		 */
-		rFormat = /\{+?(\S*?)\}+/g,
-	
-		/**
-		 * 查找字符点的正则表达式。
-		 * @type RegExp
-		 */
-		rPoint = /\./g,
-	
-		/**
-		 * 匹配第一个字符。
-		 * @type RegExp
-		 */
-		rFirstChar = /(\b[a-z])/g,
-	
-		/**
-		 * 表示空白字符。
-		 * @type RegExp
-		 */
-		rBlank = /%20/g,
-	
-		/**
-		 * 转为骆驼格式的正则表达式。
-		 * @type RegExp
-		 */
-		rToCamelCase = /-(\w)/g,
-	
-		/**
 		 * 管理所有事件类型的工具。
 		 * @type Object
 		 */
@@ -162,7 +77,9 @@
 		 * JPlus 全局静态对象。
 		 * @namespace JPlus
 		 */
-		p = namespace('JPlus.', {
+		p = namespace("JPlus");
+		
+		apply(window.JPlus || {}, {
 	
 		    /**
 			 * 获取属于一个元素的数据。
@@ -392,7 +309,7 @@
 			 */
 		    resolveNamespace: function(ns) {
 			    // 如果名字空间本来就是一个地址，则不需要转换，否则，将 . 替换为 / ,并在末尾加上 文件后缀。
-			    return ns.replace(rPoint, '/');
+			    return ns.replace(/\./g, '/');
 	
 		    },
 		    
@@ -1325,7 +1242,7 @@
 		    args = arguments.length === 2 && o.isObject(args) ? args : ap.slice.call(arguments, 1);
 
 		    // 通过格式化返回
-		    return (format || "").replace(rFormat, function(match, name) {
+		    return (format || "").replace(/\{+?(\S*?)\}+/g, function(match, name) {
 			    var start = match.charAt(1) == '{', end = match.charAt(match.length - 2) == '}';
 			    if (start || end)
 				    return match.slice(start, match.length - end);
@@ -1381,7 +1298,7 @@
 		    });
 
 		    // %20 -> + 。
-		    return s.join('&').replace(rBlank, '+');
+		    return s.join('&').replace(/%20/g, '+');
 	    },
 
 	    /**
@@ -1477,7 +1394,7 @@
 		// 结果
 		return {
 
-		    /// #if SupportIE6
+		    /// #if CompactMode
 
 		    /**
 			 * 获取一个值，该值指示当前浏览器是否支持标准事件。就目前浏览器状况， IE6，7 中 isQuirks = true 其它皆
@@ -1486,15 +1403,11 @@
 			 */
 		    isQuirks: isNonStandard && !o.isObject(document.constructor),
 
-		    /// #endif
-
-		    /// #if SupportIE8
-
 		    /**
 			 * 获取一个值，该值指示当前浏览器是否为标准浏览器。
 			 * @type Boolean 此处认为 IE6, 7, 8 不是标准的浏览器。
 			 */
-		    isStandard: !isNonStandard,
+		    isNonStandard: isNonStandard,
 
 		    /// #endif
 
@@ -1614,7 +1527,7 @@
 	    trim: function() {
 
 		    // 使用正则实现。
-		    return this.replace(rSpace, "");
+		    return this.replace(/^[\s\u00A0]+|[\s\u00A0]+$/g, "");
 	    },
 
 	    /// #endif
@@ -1628,7 +1541,7 @@
 	     * </code>
 		 */
 	    toCamelCase: function() {
-		    return this.replace(rToCamelCase, toUpperCase);
+		    return this.replace(/-(\w)/g, toUpperCase);
 	    },
 
 	    /**
@@ -1641,7 +1554,7 @@
 	    capitalize: function() {
 
 		    // 使用正则实现。
-		    return this.replace(rFirstChar, toUpperCase);
+		    return this.replace(/(\b[a-z])/g, toUpperCase);
 	    }
 
 	});
@@ -1667,64 +1580,6 @@
 	     * </code>
 		 */
 	    each: each,
-
-	    /// #if SupportIE8
-
-	    /**
-		 * 返回数组某个值的第一个位置。值没有,则为-1 。
-		 * @param {Object} item 成员。
-		 * @param {Number} start=0 开始查找的位置。
-		 * @return Number 位置，找不到返回 -1 。 现在大多数浏览器已含此函数.除了 IE8- 。
-		 */
-	    indexOf: function(item, startIndex) {
-		    startIndex = startIndex || 0;
-		    for ( var len = this.length; startIndex < len; startIndex++)
-			    if (this[startIndex] === item)
-				    return startIndex;
-		    return -1;
-	    },
-
-	    /**
-		 * 对数组每个元素通过一个函数过滤。返回所有符合要求的元素的数组。
-		 * @param {Function} fn 函数。参数 value, index, this。
-		 * @param {Object} bind 绑定的对象。
-		 * @return {Array} 新的数组。
-		 * @seeAlso Array.prototype.select
-		 * @example <code> 
-	     * [1, 7, 2].filter(function (key) {return key &lt; 5 })   [1, 2]
-	     * </code>
-		 */
-	    filter: function(fn, bind) {
-		    var r = [];
-		    ap.forEach.call(this, function(value, i, array) {
-
-			    // 过滤布存在的成员。
-			    if (fn.call(this, value, i, array))
-				    r.push(value);
-		    }, bind);
-
-		    return r;
-
-	    },
-
-	    /**
-		 * 对数组内的所有变量执行函数，并可选设置作用域。
-		 * @method
-		 * @param {Function} fn 对每个变量调用的函数。 {@param {Object} value 当前变量的值}
-		 *            {@param {Number} key 当前变量的索引} {@param {Number} index
-		 *            当前变量的索引} {@param {Array} array 数组本身}
-		 * @param {Object} bind 函数执行时的作用域。
-		 * @seeAlso Array.prototype.each
-		 * @example <code> 
-	     * [2, 5].forEach(function (value, key) {
-	     * 		trace(value);
-	     * });
-	     * // 输出 '2' '5'
-	     * </code>
-		 */
-	    forEach: each,
-
-	    /// #endif
 
 	    /**
 		 * 包含一个元素。元素存在直接返回。
@@ -1833,6 +1688,64 @@
 	    item: function(index) {
 		    return this[index < 0 ? this.length + index : index];
 	    },
+
+	    /// #if CompactMode
+
+	    /**
+		 * 返回数组某个值的第一个位置。值没有,则为-1 。
+		 * @param {Object} item 成员。
+		 * @param {Number} start=0 开始查找的位置。
+		 * @return Number 位置，找不到返回 -1 。 现在大多数浏览器已含此函数.除了 IE8- 。
+		 */
+	    indexOf: function(item, startIndex) {
+		    startIndex = startIndex || 0;
+		    for ( var len = this.length; startIndex < len; startIndex++)
+			    if (this[startIndex] === item)
+				    return startIndex;
+		    return -1;
+	    },
+
+	    /**
+		 * 对数组每个元素通过一个函数过滤。返回所有符合要求的元素的数组。
+		 * @param {Function} fn 函数。参数 value, index, this。
+		 * @param {Object} bind 绑定的对象。
+		 * @return {Array} 新的数组。
+		 * @seeAlso Array.prototype.select
+		 * @example <code> 
+	     * [1, 7, 2].filter(function (key) {return key &lt; 5 })   [1, 2]
+	     * </code>
+		 */
+	    filter: function(fn, bind) {
+		    var r = [];
+		    ap.forEach.call(this, function(value, i, array) {
+
+			    // 过滤布存在的成员。
+			    if (fn.call(this, value, i, array))
+				    r.push(value);
+		    }, bind);
+
+		    return r;
+
+	    },
+
+	    /**
+		 * 对数组内的所有变量执行函数，并可选设置作用域。
+		 * @method
+		 * @param {Function} fn 对每个变量调用的函数。 {@param {Object} value 当前变量的值}
+		 *            {@param {Number} key 当前变量的索引} {@param {Number} index
+		 *            当前变量的索引} {@param {Array} array 数组本身}
+		 * @param {Object} bind 函数执行时的作用域。
+		 * @seeAlso Array.prototype.each
+		 * @example <code> 
+	     * [2, 5].forEach(function (value, key) {
+	     * 		trace(value);
+	     * });
+	     * // 输出 '2' '5'
+	     * </code>
+		 */
+	    forEach: each,
+
+	    /// #endif
 
 	    /**
 		 * xType。
@@ -2042,7 +1955,7 @@
 	/**
 	 * 定义名字空间。
 	 * @param {String} ns 名字空间。
-	 * @param {Object} obj 值。
+	 * @param {Object} [obj] 值。
 	 */
 	function namespace(ns, obj) {
 
@@ -2051,7 +1964,7 @@
 		// 简单声明。
 		if (arguments.length == 1) {
 
-			/// #if SupportUsing
+			/// #if !Release
 
 			// 加入已使用的名字空间。
 			return p.namespaces.include(ns);
@@ -2067,28 +1980,14 @@
 		ns = ns.split('.');
 
 		// 如果第1个字符是 ., 则表示内置使用的名字空间。
-		var current = window, i = -1, len = ns.length - 1, dft = !ns[0];
-
-		// 如果第一个字符是 . 则补上默认的名字空间。
-		ns[0] = ns[0] || p.defaultNamespace;
+		var current = window, i = -1;
 
 		// 依次创建对象。
-		while (++i < len)
+		while (++i < ns.length)
 			current = current[ns[i]] || (current[ns[i]] = {});
 
 		// 如果最后一个对象是 . 则覆盖到最后一个对象， 否则更新到末尾。
-		if (i = ns[len])
-			current[i] = applyIf(obj, current[i] || {});
-		else {
-			obj = applyIf(current, obj);
-			i = ns[len - 1];
-		}
-
-		// 如果是内置使用的名字空间，将最后一个成员更新为全局对象。
-		if (dft)
-			window[i] = obj;
-
-		return obj;
+		return apply(current, obj);
 
 	}
 

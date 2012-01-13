@@ -36,6 +36,10 @@ var ListControl = Control.extend(IContainerControl).implement({
 	
 	onControlRemoved: function(childControl, index){
 		this.content.removeChild((childControl.dom || childControl).parentNode);
+	},
+	
+	setActived: function(index, value){
+		this.controls[index].get('parent', 'li').toggleClass('b-' + this.xType + '-actived', value);
 	}
 	
 });

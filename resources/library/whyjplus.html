@@ -2,11 +2,110 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>为什么 J+ - 项目 - J+文档库</title>
+		<title>为什么开发J+ - 项目 - J+文档库</title>
 		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
 	</head>
 	<body>
-		<h2>为什么 J+</h2>
+		<h2>为什么开发J+</h2>
+		<p class="content">
+			也许你曾经面临过这个需求：做一个对话框代替 alert ，全站都可公用。
+		</p>
+		<p class="content">
+			懒的人会考虑网上现成的，但可惜大部分情况网上的不完全符合需求（特别是界面）。
+			还有很多人会以网上的组件太大、不好用为由自己写一个。
+		</p>
+		<p class="content">
+			大部分人最后都这么解决并且觉得很好：自己写一个 dialog.js, 然后这样调用就可以显示对话框了：(这里不讨论命名问题)
+			<pre><code>showDialog({
+	title: '标题',
+	content: '内容'
+});
+			</code></pre>
+		</p>
+		<p class="content">
+			这样看来一切很方便。但需求是容易变的，假如某一天需要一个类似对话框的界面，就必须修改原对话框的源码了。从而导致最终的代码肯能如下：
+			<pre><code>function showDialog(configs){
+	if(configs.title) { ... }
+	if(configs.content) { ... }	
+	if(configs.showCloseButton) { ... }      // 如果需要显示关闭按钮
+	if(configs.movable) { ... }	             // 如果需要窗口可拖动
+	if(configs.resizable) { ... }
+}
+			</code></pre>
+		</p>
+		<p class="content">
+			最后你会发现这个代码为了适应各种需求而变得复杂。
+		</p>
+		<p class="content">
+			如果一开始就把各个小功能做成碎片的话，需求变了，就重新组合碎片，那将轻松很多。
+			因为功能的实现细节分散到各个碎片里，所以总体看起来不会很复杂，而且再复杂的需求也能组装起来。
+		</p>
+		<p class="content">
+			将功能碎片分离出来就是传说中的面向对象。
+		</p>
+		<p class="content">
+			单独一个页面上，不大需要面向对象，因为功能不多，将它们分开反而会复杂。
+		</p>
+		<p class="content">
+			但如果希望开发出灵活的<b>可重用</b>的组件，就一定要使用面向对象思想。
+		</p>
+		<p class="content">
+			很多纯前端出身的也不屑于面向对象，他们也很难接受。如果你是，你可以自问：你的代码重用度大吗?
+		</p>
+		<p class="content">
+			<u>J+ 的目标只有一个：运用面向对象开发可重用组件。</u>顺便地，它将面向对象的机制引入JS，降低学习成本。
+		</p>
+		<p class="content">
+			不同的人做不同的对话框界面，但其实大同小异，这也是 J+ 所要做的事情：同一份JS，不同的项目（公司），不同的界面。
+		</p>
+		<p class="content">
+			注意组件不一定只有界面上的才算，一个特定功能也是组件（如 ctrl enter 提交)。
+		</p>
+		<p class="content">
+			J+ 最终提供的是一系列组件，每个组件用法一致、扩展修改方便。每个公司可以使用它来根据公司的VI轻松定制一套组件。
+		</p>
+		<p class="content">
+			当然，J+ 还附带提供了一个完全面向对象的坏境（比如类的支持、继承的支持、常用底层函数、DOM操作、Ajax），让项目开发更加得心应手。
+		</p>
+		<p class="content">
+			在代码上，J+ 允许使用 jQuery 代替自带的底层。
+		</p>
+		<p class="content">
+			附一段 J+ 的对话框用法：
+			<pre><code>var d = new Dialog();  // 创建对话框。
+d.setClosable(true);    // 在对话框右上角增加一个 叉 按钮。
+d.on('close', function(){}) // 关闭后执行。
+d.setPosition(2, 100);  // 定位对话框。
+d.show();		//  显示对话框。
+				</code></pre>
+			或者使用简便的写法：
+			<pre><code>var d = new Dialog({
+	closable: true, // 在对话框右上角增加一个 叉 按钮。
+	onclose: function(){}, // 关闭后执行。
+	position: new Point(2, 100) // 定位对话框。
+	show: true
+});
+				</code></pre>
+			可以根据已有的对话框组件扩展出新的对话框：
+			<pre><code>var MyDialog = Dialog.extend({
+				
+	// 显示对话框，并在2秒后关闭。
+	showDelay: function(){
+		var me = this; // this 表示当前的对话框。
+		me.show();  // show 是从 Dialog 继承的。
+		setTimeout(function(){ me.hide(); }, 2000);
+	}
+});
+
+
+var d = new MyDialog();
+d.showDelay();
+				</code></pre>
+		</p>
+		<p class="content">
+			J+是一套完整的组件开发解决方案。你也能理解成： 又一个 Javascript 框架。
+		</p>
+		<!-- <h2>为什么 J+</h2>
 		<h4>J+ 名字的意义是什么?</h4>
 		<p class="content">
 			Javscript 的扩展。 J+ 不是框架，因此不是为解决某个特定领域的问题而存在。
@@ -28,6 +127,6 @@
 				<li>文档、示例充足(特别是中文的文档)。</li>
 			</ul>
 			J+ 将承诺完全符合这些要求。
-		</p>
+		</p> -->
 	</body>
 </html>
