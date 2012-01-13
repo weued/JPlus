@@ -4,6 +4,26 @@
 //===========================================
 
 
+/**
+ * 返回变量的地址形式。
+ * @param { Base} obj 变量。
+ * @return {String} 字符串。
+ * @example <code>
+ * String.param({a: 4, g: 7}); //  a=4&g=7
+ * </code>
+ */
+param: function(obj) {
+    if (!obj)
+        return "";
+    var s = [], e = encodeURIComponent;
+    Object.each(obj, function(value, key) {
+        s.push(e(key) + '=' + e(value));
+    });
+
+    // %20 -> + 。
+    return s.join('&').replace(/%20/g, '+');
+},
+
 
 /**
  * 提供一个请求的基本功能。
