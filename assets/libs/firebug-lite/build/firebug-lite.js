@@ -40,7 +40,7 @@ namespaces.push(fn,ns);
 return ns
 };
 var FBTrace=null;
-this.initialize=function(){if(window.firebug&&firebug.firebuglite||window.console&&console.firebuglite||window.console&&console.firebug){return
+this.initialize=function(){if(window.firebug&&firebug.firebuglite||window.console){return
 }if(FBL.FBTrace){FBTrace=FBL.FBTrace
 }else{FBTrace=FBL.FBTrace={}
 }var isChromeContext=window.Firebug&&typeof window.Firebug.SharedEnv=="object";

@@ -6,16 +6,18 @@
  */
 
 // 可用的宏
-// 	CompactMode - 兼容模式 - 支持 IE6+ FF2.5+ Chrome1+ Opera9+ Safari4+ 。
-// 	Release - 启用发布操作 - 删除 assert 和 trace 支持。
+// 	CompactMode - 兼容模式 - 支持 IE6+ FF2.5+ Chrome1+ Opera9+ Safari4+ , 若无此宏，将只支持 HTML5。
+// 	Release - 启用发布操作 - 删除 assert 和 trace 和 using 支持。
 
 
 (function(window) {
 
-	/// #if Release
-	/// 	#trim assert
-	/// 	#trim trace
-	/// #endif
+    /// #if Release
+    /// 	#trim assert
+    /// 	#trim trace
+    /// 	#trim using
+    /// 	#trim imports
+    /// #endif
 
 	/// #region Core
 
@@ -83,19 +85,24 @@
 			 *         如果原先存在 data.dataType, 则直接返回。
 			 * @example <code>
 		     * var obj = {};
-		     * JPlus.data(obj, 'a').c = 2;
-		     * trace(  JPlus.data(obj, 'a').c  ) // 2
-		     * </code>
+             * JPlus.data(obj, 'a').c = 2;
+             * trace(  JPlus.data(obj, 'a').c  ) // 2
+             * </code>
 			 */
 		    data: function(obj, dataType) {
 	
-			    assert.isObject(obj, "JPlus.data(obj, dataType): {obj} ~。");
-	
-			    // 创建或获取 '$data'。
-			    var d = obj.$data || (obj.$data = {});
+			    assert.isObject(obj, "JPlus.data(obj, dataType): {obj} ~");
+
+                // 内部支持 dom 属性。
+                if(obj.dom)
+                    obj = obj.dom;
+
+                // 这里忽略 IE6/7 的内存泄露问题。
+
+                obj = obj.$data || (obj.$data = {});
 	
 			    // 创建或获取 dataType。
-			    return d[dataType] || (d[dataType] = {});
+			    return obj[dataType] || (obj[dataType] = {});
 		    },
 	
 		    /**
@@ -112,7 +119,11 @@
 			 */
 		    getData: function(obj, dataType) {
 	
-			    assert.isObject(obj, "JPlus.getData(obj, dataType): {obj} ~。");
+			    assert.isObject(obj, "JPlus.getData(obj, dataType): {obj} ~");
+
+                // 内部支持 dom 属性。
+                if(obj.dom)
+                    obj = obj.dom;
 	
 			    // 获取属性'$data'。
 			    var d = obj.$data;
@@ -132,7 +143,11 @@
 			 */
 		    setData: function(obj, dataType, data) {
 	
-			    assert.isObject(obj, "JPlus.setData(obj, dataType): {obj} ~。");
+			    assert.isObject(obj, "JPlus.setData(obj, dataType): {obj} ~");
+
+                // 内部支持 dom 属性。
+                if(obj.dom)
+                    obj = obj.dom;
 	
 			    // 简单设置变量。
 			    return (obj.$data || (obj.$data = {}))[dataType] = data;
@@ -146,8 +161,15 @@
 			 */
 		    cloneEvent: function(src, dest) {
 	
-			    assert.isObject(src, "JPlus.cloneEvent(src, dest): {src} ~。");
-			    assert.isObject(dest, "JPlus.cloneEvent(src, dest): {dest} ~。");
+			    assert.isObject(src, "JPlus.cloneEvent(src, dest): {src} ~");
+			    assert.isObject(dest, "JPlus.cloneEvent(src, dest): {dest} ~");
+
+                // 内部支持 dom 属性。
+                if(src.dom)
+                    src = src.dom;
+
+                if(dest.dom)
+                    dest = dest.dom;
 	
 			    // event 作为系统内部对象。事件的拷贝必须重新进行 on 绑定。
 			    var eventName = src.$data, event = eventName && eventName.event;
@@ -204,87 +226,6 @@
 			    // 在 JavaScript， 一切函数都可作为类，故此函数存在。
 			    // Object 的成员一般对当前类构造函数原型辅助。
 			    return applyIf(constructor,  Base);
-		    },
-	
-		    /**
-			 * 同步载入代码。
-			 * @param {String} uri 地址。
-			 * @example <code>
-		     * JPlus.loadScript('./v.js');
-		     * </code>
-			 */
-		    loadScript: function(url) {
-			    return p.loadText(url, execScript);
-		    },
-	
-		    /**
-			 * 异步载入样式。
-			 * @param {String} uri 地址。
-			 * @example <code>
-		     * JPlus.loadStyle('./v.css');
-		     * </code>
-			 */
-		    loadStyle: function(url) {
-	
-			    // 在顶部插入一个css，但这样肯能导致css没加载就执行 js 。所以，要保证样式加载后才能继续执行计算。
-			    return document.getElementsByTagName("HEAD")[0].appendChild(apply(document.createElement('link'), {
-			        href: url,
-			        rel: 'stylesheet',
-			        type: 'text/css'
-			    }));
-		    },
-	
-		    /**
-			 * 同步载入文本。
-			 * @param {String} uri 地址。
-			 * @param {Function} [callback] 对返回值的处理函数。
-			 * @return {String} 载入的值。 因为同步，所以无法跨站。
-			 * @example <code>
-		     * trace(  JPlus.loadText('./v.html')  );
-		     * </code>
-			 */
-		    loadText: function(url, callback) {
-	
-			    assert.notNull(url, "JPlus.loadText(url, callback): {url} ~。");
-	
-			    // assert(window.location.protocol != "file:",
-			    // "JPlus.loadText(uri, callback): 当前正使用 file 协议，请使用 http
-			    // 协议。 \r\n请求地址: {0}", uri);
-	
-			    // 新建请求。
-			    // 下文对 XMLHttpRequest 对象进行兼容处理。
-			    var xmlHttp = new XMLHttpRequest();
-	
-			    try {
-	
-				    // 打开请求。
-				    xmlHttp.open("GET", url, false);
-	
-				    // 发送请求。
-				    xmlHttp.send(null);
-	
-				    // 检查当前的 XMLHttp 是否正常回复。
-				    if (!p.checkStatusCode(xmlHttp.status)) {
-					    // 载入失败的处理。
-					    throw String.format("请求失败:  \r\n   地址: {0} \r\n   状态: {1}   {2}  {3}", url, xmlHttp.status, xmlHttp.statusText,
-					            window.location.protocol == "file:" ? '\r\n原因: 当前正使用 file 协议打开文件，请使用 http 协议。' : '');
-				    }
-	
-				    url = xmlHttp.responseText;
-	
-				    // 运行处理函数。
-				    return callback ? callback(url) : url;
-	
-			    } catch (e) {
-	
-				    // 调试输出。
-				    trace.error(e);
-			    } finally {
-	
-				    // 释放资源。
-				    xmlHttp = null;
-			    }
-	
 		    },
 
             /**
@@ -387,7 +328,7 @@
 				 */
 		        on: function(type, listener, bind) {
 	
-			        assert.isFunction(listener, 'IEvent.on(type, listener, bind): {listener} ~。');
+			        assert.isFunction(listener, 'IEvent.on(type, listener, bind): {listener} ~');
 	
 			        // 获取本对象 本对象的数据内容 本事件值
 			        var me = this, d = p.data(me, 'event'), evt = d[type];
@@ -1081,7 +1022,7 @@
 		 */
 	    bind: function(fn, bind) {
 
-		    assert.isFunction(fn, 'Function.bind(fn): {fn} ~。');
+		    assert.isFunction(fn, 'Function.bind(fn): {fn} ~');
 
 		    // 返回对 bind 绑定。
 		    return function() {
@@ -1219,8 +1160,8 @@
 	     * </code>
 		 */
 	    ellipsis: function(value, len) {
-		    assert.isString(value, "String.ellipsis(value, len): 参数  {value} ~。");
-		    assert.isNumber(len, "String.ellipsis(value, len): 参数  {len} ~。");
+		    assert.isString(value, "String.ellipsis(value, len): 参数  {value} ~");
+		    assert.isNumber(len, "String.ellipsis(value, len): 参数  {len} ~");
 		    return value.length > len ? value.substr(0, len - 3) + "..." : value;
 	    }
 
@@ -1503,7 +1444,7 @@
 	     * </code>
 		 */
 	    insert: function(index, value) {
-		    assert.isNumber(index, "Array.prototype.insert(index, value): 参数 index ~。");
+		    assert.isNumber(index, "Array.prototype.insert(index, value): 参数 index ~");
 		    var me = this, tmp = ap.slice.call(me, index);
 		    me.length = index + 1;
 		    this[index] = value;
@@ -1695,6 +1636,9 @@
 
         };
 
+    // 将以下成员赋予 window ，这些成员是全局成员。
+    String.map('undefined Class', p, window);
+
 	/// #region Private Functions
 
 	/**
@@ -1806,7 +1750,7 @@
 	 */
 	function namespace(ns, obj) {
 
-		assert(ns && ns.split, "namespace(namespace, obj, value): {namespace} 不是合法的名字空间。", ns);
+		assert(ns && ns.split, "JPlus.namespace(namespace, obj, value): {namespace} 不是合法的名字空间。", ns);
 
 		// 取值，创建。
 		ns = ns.split('.');
@@ -1825,36 +1769,244 @@
 
 	/// #endregion
 
-    /// #if !Release
+})(this);
 
-    /// #region Using
+/// #if !Release
 
-    /**
-     * JPlus 安装的根目录, 可以为相对目录。
-     * @config {String}
-     */
-    if (!p.rootPath) {
-        try {
-            var scripts = document.getElementsByTagName("script");
+/// #region Using
 
-            // 当前脚本在 <script> 引用。最后一个脚本即当前执行的文件。
-            scripts = scripts[scripts.length - 1];
+/**
+ * 使用一个名空间。
+ * @param {String} ns 名字空间。
+ * @example <code>
+ * using("System.Dom.Keys");
+ * </code>
+ */
+function using(ns, isStyle) {
 
-            // IE6/7 使用 getAttribute
-            scripts = navigator.isQuirks ? scripts.getAttribute('src', 5) : scripts.src;
+    assert.isString(ns, "using(ns): {ns} 不是合法的名字空间。");
 
-            // 设置路径。
-            p.rootPath = (scripts.match(/[\S\s]*\//) || [""])[0];
+    // 已经载入。
+    if (p.namespaces.include(ns))
+        return;
 
-        } catch (e) {
+    if (ns.indexOf('/') === -1)
+        ns = p.resolveNamespace(ns.toLowerCase(), isStyle) + (isStyle ? '.css' : '.js');
 
-            // 出错后，设置当前位置.
-            p.rootPath = "";
+    var dom, callback, path = ns.replace(/^[\.\/\\]+/, "");
+    if (isStyle) {
+        callback = p.loadStyle;
+        doms = document.styleSheets;
+        src = 'href';
+    } else {
+        callback = p.loadScript;
+        doms = document.getElementsByTagName("SCRIPT");
+        src = 'src';
+    }
+
+    // 如果在节点找到符合的就返回，找不到，调用 callback 进行真正的 加载处理。
+    each.call(dom, function(dom) {
+        return !dom[src] || dom[src].toLowerCase().indexOf(path) === -1;
+    }) && callback(p.rootPath + ns);
+};
+
+/**
+ * 导入指定名字空间表示的样式文件。
+ * @param {String} ns 名字空间。
+ */
+function imports(ns){
+    return using(ns, true);
+};
+
+/// #endregion
+
+/// #region Trace
+
+/**
+ * 调试输出指定的信息。
+ * @param { Base} ... 要输出的变量。
+ */
+function trace() {
+    if (JPlus.debug) {
+
+        // 如果存在控制台，则优先使用控制台。
+        if(window.console && console.log && console.log.apply){
+            console.log.apply(console, arguments);
+        } else {
+
+            // 否则生成调试时字符串。
+            trace.log(Object.update(arguments, trace.inspect, []).join(" "));
         }
+    }
+}
+
+/// #region Assert
+
+/// #endregion
+
+/**
+ * 确认一个值正确。
+ * @param { Base} bValue 值。
+ * @param {String} msg="断言失败" 错误后的提示。
+ * @return {Boolean} 返回 bValue 。
+ * @example <code>
+ * assert(true, "{value} 错误。", value);
+ * </code>
+ */
+function assert(bValue, msg) {
+    if (!bValue) {
+
+        var val = arguments;
+
+        // 如果启用 [参数] 功能
+        if (val.length > 2) {
+            var i = 2;
+            msg = msg.replace(/\{([\w\.\(\)]*?)\}/g, function(s, x) {
+                return "参数 " + (val.length <= i ? s :  x + " = " + String.ellipsis(trace.inspect(val[i++]), 200));
+            });
+        } else {
+            msg = msg || "断言失败";
+        }
+
+        // 错误源
+        val = arguments.callee.caller;
+
+        if (JPlus.stackTrace !== false) {
+
+            while (val.debugStepThrough)
+                val = val.caller;
+
+            if(val && val.caller){
+                val = val.caller;
+            }
+
+            if (val)
+                msg += "\r\n--------------------------------------------------------------------\r\n" + String.ellipsis(String.decodeUTF8(val.toString()), 600);
+
+        }
+
+        trace.error(msg);
 
     }
 
+    return !!bValue;
+}
+
+/// #endregion
+
+/// #endregion
+
+(function(p, apply){
+
+    /// #region Using
+
     apply(p, {
+
+        /**
+         * 同步载入代码。
+         * @param {String} uri 地址。
+         * @example <code>
+         * JPlus.loadScript('./v.js');
+         * </code>
+         */
+        loadScript: function(url) {
+            return p.loadText(url, execScript);
+        },
+
+        /**
+         * 异步载入样式。
+         * @param {String} uri 地址。
+         * @example <code>
+         * JPlus.loadStyle('./v.css');
+         * </code>
+         */
+        loadStyle: function(url) {
+
+            // 在顶部插入一个css，但这样肯能导致css没加载就执行 js 。所以，要保证样式加载后才能继续执行计算。
+            return document.getElementsByTagName("HEAD")[0].appendChild(apply(document.createElement('link'), {
+                href: url,
+                rel: 'stylesheet',
+                type: 'text/css'
+            }));
+        },
+
+        /**
+         * 同步载入文本。
+         * @param {String} uri 地址。
+         * @param {Function} [callback] 对返回值的处理函数。
+         * @return {String} 载入的值。 因为同步，所以无法跨站。
+         * @example <code>
+         * trace(  JPlus.loadText('./v.html')  );
+         * </code>
+         */
+        loadText: function(url, callback) {
+
+            assert.notNull(url, "JPlus.loadText(url, callback): {url} ~");
+
+            // assert(window.location.protocol != "file:",
+            // "JPlus.loadText(uri, callback): 当前正使用 file 协议，请使用 http
+            // 协议。 \r\n请求地址: {0}", uri);
+
+            // 新建请求。
+            // 下文对 XMLHttpRequest 对象进行兼容处理。
+            var xmlHttp = new XMLHttpRequest();
+
+            try {
+
+                // 打开请求。
+                xmlHttp.open("GET", url, false);
+
+                // 发送请求。
+                xmlHttp.send(null);
+
+                // 检查当前的 XMLHttp 是否正常回复。
+                if (!p.checkStatusCode(xmlHttp.status)) {
+                    // 载入失败的处理。
+                    throw String.format("请求失败:  \r\n   地址: {0} \r\n   状态: {1}   {2}  {3}", url, xmlHttp.status, xmlHttp.statusText,
+                        window.location.protocol == "file:" ? '\r\n原因: 当前正使用 file 协议打开文件，请使用 http 协议。' : '');
+                }
+
+                url = xmlHttp.responseText;
+
+                // 运行处理函数。
+                return callback ? callback(url) : url;
+
+            } catch (e) {
+
+                // 调试输出。
+                trace.error(e);
+            } finally {
+
+                // 释放资源。
+                xmlHttp = null;
+            }
+
+        },
+
+        /**
+         * JPlus 安装的根目录, 可以为相对目录。
+         * @config {String}
+         */
+        rootPath: p.rootPath || (function(){
+            try {
+                var scripts = document.getElementsByTagName("script");
+
+                // 当前脚本在 <script> 引用。最后一个脚本即当前执行的文件。
+                scripts = scripts[scripts.length - 1];
+
+                // IE6/7 使用 getAttribute
+                scripts = navigator.isQuirks ? scripts.getAttribute('src', 5) : scripts.src;
+
+                // 设置路径。
+                return (scripts.match(/[\S\s]*\//) || [""])[0];
+
+            } catch (e) {
+
+                // 出错后，设置当前位置.
+                return "";
+            }
+
+        })(),
 
         /**
          * 全部已载入的名字空间。
@@ -1871,49 +2023,6 @@
         resolveNamespace: function(ns) {
             // 如果名字空间本来就是一个地址，则不需要转换，否则，将 . 替换为 / ,并在末尾加上 文件后缀。
             return ns.replace(/\./g, '/');
-        },
-
-        /**
-         * 使用一个名空间。
-         * @param {String} ns 名字空间。
-         * @example <code>
-         * using("System.Dom.Keys");
-         * </code>
-         */
-        using: function(ns, isStyle) {
-
-            assert.isString(ns, "using(ns): {ns} 不是合法的名字空间。");
-
-            // 已经载入。
-            if (p.namespaces.include(ns))
-                return;
-
-            if (ns.indexOf('/') === -1)
-                ns = p.resolveNamespace(ns.toLowerCase(), isStyle) + (isStyle ? '.css' : '.js');
-
-            var dom, callback, path = ns.replace(/^[\.\/\\]+/, "");
-            if (isStyle) {
-                callback = p.loadStyle;
-                doms = document.styleSheets;
-                src = 'href';
-            } else {
-                callback = p.loadScript;
-                doms = document.getElementsByTagName("SCRIPT");
-                src = 'src';
-            }
-
-            // 如果在节点找到符合的就返回，找不到，调用 callback 进行真正的 加载处理。
-            each.call(dom, function(dom) {
-                return !dom[src] || dom[src].toLowerCase().indexOf(path) === -1;
-            }) && callback(p.rootPath + ns);
-        },
-
-        /**
-         * 导入指定名字空间表示的样式文件。
-         * @param {String} ns 名字空间。
-         */
-        imports: function(ns){
-            return p.using(ns, true);
         }
 
     });
@@ -1929,22 +2038,9 @@
     p.debug = true;
 
     /**
-     * 调试输出指定的信息。
-     * @param { Base} ... 要输出的变量。
+     * 是否在 assert 失败时显示函数调用堆栈。
+     * @config {Boolean} stackTrace
      */
-    function trace() {
-        if (p.debug) {
-
-            // 如果存在控制台，则优先使用控制台。
-            if(window.console && console.log && console.log.apply){
-                console.log.apply(console, arguments);
-            } else {
-
-                // 否则生成调试时字符串。
-                trace.log(Object.update(arguments, trace.inspect, []).join(" "));
-            }
-        }
-    }
 
     /**
      * @namespace String
@@ -2004,7 +2100,7 @@
                     'Object': 'valueOf hasOwnProperty toString',
                     'String': 'length charAt charCodeAt concat indexOf lastIndexOf match quote slice split substr substring toLowerCase toUpperCase trim sub sup anchor big blink bold small fixed fontcolor italics link',
                     'Array': 'length pop push reverse shift sort splice unshift concat join slice indexOf lastIndexOf filter forEach',
-                     /*
+                    /*
                      * every
                      * map
                      * some
@@ -2194,7 +2290,7 @@
                         if (clazz !==  Base) {
 
                             predefinedNonStatic.Object.forEach(function(memberName) {
-                                if (clazz.prototype[memberName] !==  Base.prototype[memberName]) {
+                                if (clazz.prototype[memberName] !==  Object.prototype[memberName]) {
                                     this.addMember(obj, memberName, 5, nonStatic);
                                 }
                             }, this);
@@ -2211,7 +2307,7 @@
 
                     addMember: function(base, memberName, type, nonStatic) {
 
-                        var hasOwnProperty =  Base.prototype.hasOwnProperty, owner = hasOwnProperty.call(base, memberName), prefix, extInfo = '';
+                        var hasOwnProperty =  Object.prototype.hasOwnProperty, owner = hasOwnProperty.call(base, memberName), prefix, extInfo = '';
 
                         nonStatic = nonStatic ? 'prototype.' : '';
 
@@ -2304,7 +2400,7 @@
                     return !isEmptyObject(obj.prototype) || isUpper(name, 0) ? '类' : '函数';
 
                 // 最后判断对象。
-                if ( Base.isObject(obj))
+                if ( Object.isObject(obj))
                     return name.charAt(0) === 'I' && isUpper(name, 1) ? '接口' : '对象';
 
                 // 空成员、值类型都作为属性。
@@ -2371,7 +2467,7 @@
                         return obj.toString();
 
                     if (Array.isArray(obj)) {
-                        return "[" +  Base.update(obj, trace.inspect, []).join(", ") + "]";
+                        return "[" +  Object.update(obj, trace.inspect, []).join(", ") + "]";
 
                     } else {
                         if (obj.setInterval && obj.resizeTo)
@@ -2516,57 +2612,7 @@
 
     });
 
-    /// #endregion
-
-    /// #region Debug
-
-    /**
-     * 确认一个值正确。
-     * @param { Base} bValue 值。
-     * @param {String} msg="断言失败" 错误后的提示。
-     * @return {Boolean} 返回 bValue 。
-     * @example <code>
-     * assert(true, "{value} 错误。", value);
-     * </code>
-     */
-    function assert(bValue, msg) {
-        if (!bValue) {
-
-            var val = arguments;
-
-            // 如果启用 [参数] 功能
-            if (val.length > 2) {
-                var i = 2;
-                msg = msg.replace(/\{([\w\.\(\)]*?)\}/g, function(s, x) {
-                    return "参数 " + (val.length <= i ? s :  x + " = " + String.ellipsis(trace.inspect(val[i++]), 200));
-                });
-            } else {
-                msg = msg || "断言失败";
-            }
-
-            // 错误源
-            val = arguments.callee.caller;
-
-            if (JPlus.stackTrace !== false) {
-
-                while (val.debugStepThrough)
-                    val = val.caller;
-
-                if(val && val.caller){
-                    val = val.caller;
-                }
-
-                if (val)
-                    msg += "\r\n--------------------------------------------------------------------\r\n" + String.ellipsis(String.decodeUTF8(val.toString()), 600);
-
-            }
-
-            trace.error(msg);
-
-        }
-
-        return !!bValue;
-    }
+    /// #region Assert
 
     function assertInternal(asserts, msg, value, dftMsg) {
         return assert(asserts, msg ? msg.replace('~', dftMsg) : dftMsg, value);
@@ -2661,7 +2707,7 @@
          * @return {Boolean} 返回 bValue 。
          */
         isDate: function(value, msg) {
-            return assertInternal( Base.type(value) == 'date' || value instanceof Date, msg, value, "必须是日期。");
+            return assertInternal( Object.type(value) == 'date' || value instanceof Date, msg, value, "必须是日期。");
         },
 
         /**
@@ -2671,7 +2717,7 @@
          * @return {Boolean} 返回 bValue 。
          */
         isRegExp: function(value, msg) {
-            return assertInternal( Base.type(value) == 'regexp' || value instanceof RegExp, msg, value, "必须是正则表达式。");
+            return assertInternal( Object.type(value) == 'regexp' || value instanceof RegExp, msg, value, "必须是正则表达式。");
         },
 
         /**
@@ -2706,7 +2752,7 @@
         instanceOf: function(v, types, msg) {
             if (!Array.isArray(types))
                 types = [types];
-            var ty = typeof v, iy =  Base.type(v);
+            var ty = typeof v, iy =  Object.type(v);
             return assertInternal(types.filter(function(type) {
                 return type == ty || type == iy;
             }).length, msg, v, "类型错误。");
@@ -2730,14 +2776,11 @@
         assert[fn].debugStepThrough = true;
     }
 
-    window.trace = trace;
-    window.assert = assert;
+    /// #endregion
 
     /// #endregion
 
-    /// #endif
 
-    // 将以下成员赋予 window ，这些成员是全局成员。
-    String.map('undefined Class using imports namespace', p, window);
+})(JPlus, Object.extend);
 
-})(this);
+/// #endif
