@@ -1,8 +1,143 @@
 ﻿/**
- * @fileOverview 元素。提供最底层的 DOM 辅助函数。
+ * @fileOverview Control。提供最底层的 DOM 辅助函数。
  */
 
+/**
+ * 所有控件基类。
+ * @class Control
+ * @abstract
+ * 控件的周期： constructor - 创建控件对于的 Javascript 类。
+ *          不建议重写，除非你知道你在做什么。 create - 创建本身的 dom 节点。 可重写 - 默认使用 this.tpl 创建。
+ *          init - 初始化控件本身。 可重写 - 默认为无操作。 render - 渲染控件到文档。
+ *          不建议重写，如果你希望额外操作渲染事件，则重写。 detach - 删除控件。不建议重写，如果一个控件用到多个 dom
+ *          内容需重写。
+ */
+var Control = Class({
+
+    /**
+     * 封装的节点。
+     * @type Element
+     */
+    dom: null,
+
+    /**
+     * xType 。
+     */
+    xType: "control",
+
+    /**
+     * 当被子类重写时，生成当前控件。
+     * @param {Object} options 选项。
+     * @protected
+     */
+    create: function() {
+
+        assert(this.tpl,
+            "Control.prototype.create(): 当前类不存在 tpl 属性。Control.prototype.create 会调用 tpl 属性，根据这个属性中的 HTML 代码动态地生成节点并返回。子类必须定义 tpl 属性或重写 Control.prototype.create 方法返回节点。");
+
+        // 转为对 tpl解析。
+        return Element.parse(this.tpl);
+    },
+
+    /**
+     * 当被子类重写时，渲染控件。
+     * @method
+     * @param {Object} options 配置。
+     * @protected
+     */
+    init: Function.empty,
+
+    /**
+     * 根据一个节点返回。
+     * @param {String/Element/Object} [options] 对象的 id 或对象或各个配置。
+     */
+    constructor: function(options) {
+
+        // 这是所有控件共用的构造函数。
+
+        var me = this,
+
+            // 临时的配置对象。
+            opt = apply({}, me.options),
+
+            // 当前实际的节点。
+            dom;
+
+        assert(!arguments.length || options, "Control.prototype.constructor(options): 参数 {options} 不能为空。", options);
+
+        // 如果存在配置。
+        if (options) {
+
+            // 如果参数是一个 DOM 节点或 ID 。
+            if (typeof options == 'string' || options.nodeType) {
+
+                // 直接赋值， 在下面用 $ 获取节点 。
+                dom = options;
+            } else {
+
+                // 否则 options 是一个对象。
+
+                // 复制成员到临时配置。
+                apply(opt, options);
+
+                // 保存 dom 。
+                dom = opt.dom;
+                delete opt.dom;
+            }
+        }
+
+        // 如果 dom 的确存在，使用已存在的， 否则使用 create(opt)生成节点。
+        me.dom = dom ? $(dom) : me.create(opt);
+
+        assert(
+            me.dom && me.dom.nodeType,
+            "Control.prototype.constructor(options): 当前实例的 dom 属性为空，或此属性不是 DOM 对象。(检查 options.dom 是否是合法的节点或ID(options 或 options.dom 指定的ID的节点不存在?) 或当前实例的 create 方法是否正确返回一个节点)\r\n当前控件: {dom} {xType}",
+            me.dom, me.xType);
+
+        // 调用 init 初始化控件。
+        me.init(opt);
+
+        // 处理样式。
+        if ('style' in opt) {
+            assert(me.dom.style, "Control.prototype.constructor(options): 当前控件不支持样式。");
+            me.dom.style.cssText += ';' + opt.style;
+            delete opt.style;
+        }
+
+        // 如果指定的节点已经在 DOM 树上，且重写了 render 方法，则调用之。
+        if(me.dom.parentNode && this.render !== Control.prototype.render){
+            this.render(me.dom.parentNode, me.dom.nextSibling);
+        }
+
+        // 复制各个选项。
+        Object.set(me, opt);
+    },
+
+    /**
+     * 创建并返回控件的副本。
+     * @param {Boolean} keepId=fasle 是否复制 id 。
+     * @return {Control} 新的控件。
+     */
+    clone: function(keepId) {
+
+        // 创建一个控件。
+        return new this.constructor(this.dom.nodeType === 1 ? this.dom.clone(false, true, keepId) : this.dom.cloneNode(!keepId));
+
+    }
+
+});
+
 (function(window) {
+
+    document.getControl = function(id){
+        return new Dom(id);
+    };
+
+    function Dom(id){
+        this.dom = typeof id == "string" ? document.getElementById(id) : id;
+    }
+
+    Dom.prototype = Control.prototype;
 
 	// 可用的宏
 	// ElementSplit - 是否将当前文件分开为子文件
@@ -28,11 +163,23 @@
 	/// 	#define ElementOffset
 	/// #endif
 
-	/**
-	 * Object 简写。
-	 * @type Object
-	 */
-	var o = Object,
+    /**
+     * document 简写。
+     * @type Document
+     */
+    var  document = window.document,
+
+        /**
+         * Object 简写。
+         * @type Object
+         */
+         o = Object,
+
+        /**
+         * JPlus 简写。
+         * @namespace JPlus
+         */
+         p = JPlus,
 	
 		/**
 		 * Object.extend
@@ -51,38 +198,6 @@
 		 * @type Object
 		 */
 		map = String.map,
-	
-		/**
-		 * document 简写。
-		 * @type Document
-		 */
-		document = window.document,
-	
-		/**
-		 * JPlus 简写。
-		 * @namespace JPlus
-		 */
-		p = JPlus,
-	
-		/// #if SupportIE6
-	
-		/**
-		 * 元素。
-		 * @type Function 如果页面已经存在 Element， 不管是不是用户自定义的，都直接使用。只需保证 Element 是一个函数即可。
-		 */
-		e = window.Element || function() {},
-	
-		/// #else
-	
-		/// e = window.Element,
-	
-		/// #endif
-	
-		/**
-		 * 元素原型。
-		 * @type Object
-		 */
-		ep = e.prototype,
 	
 		/**
 		 * 用于测试的元素。
@@ -526,132 +641,7 @@
 		Document = p.Native(document.constructor || {
 			prototype: document
 		}),
-	
-		/**
-		 * 所有控件基类。
-		 * @class Control
-		 * @abstract
-		 * @extends Element
-		 * 控件的周期： constructor - 创建控件对于的 Javascript 类。
-		 *          不建议重写，除非你知道你在做什么。 create - 创建本身的 dom 节点。 可重写 - 默认使用 this.tpl 创建。
-		 *          init - 初始化控件本身。 可重写 - 默认为无操作。 render - 渲染控件到文档。
-		 *          不建议重写，如果你希望额外操作渲染事件，则重写。 detach - 删除控件。不建议重写，如果一个控件用到多个 dom
-		 *          内容需重写。
-		 */
-		Control = namespace(".Control", Class({
 
-            /**
-			 * 封装的节点。
-			 * @type Element
-			 */
-            dom: null,
-
-            /**
-			 * xType 。
-			 */
-            xType: "control",
-
-            /**
-			 * 根据一个节点返回。
-			 * @param {String/Element/Object} [options] 对象的 id 或对象或各个配置。
-			 */
-            constructor: function(options) {
-
-	            // 这是所有控件共用的构造函数。
-
-	            var me = this,
-	
-		            // 临时的配置对象。
-		            opt = apply({}, me.options),
-	
-		            // 当前实际的节点。
-		            dom;
-
-	            assert(!arguments.length || options, "Control.prototype.constructor(options): 参数 {options} 不能为空。", options);
-
-	            // 如果存在配置。
-	            if (options) {
-
-		            // 如果参数是一个 DOM 节点或 ID 。
-		            if (typeof options == 'string' || options.nodeType) {
-
-			            // 直接赋值， 在下面用 $ 获取节点 。
-			            dom = options;
-		            } else {
-
-			            // 否则 options 是一个对象。
-
-			            // 复制成员到临时配置。
-			            apply(opt, options);
-
-			            // 保存 dom 。
-			            dom = opt.dom;
-			            delete opt.dom;
-		            }
-	            }
-
-	            // 如果 dom 的确存在，使用已存在的， 否则使用 create(opt)生成节点。
-	            me.dom = dom ? $(dom) : me.create(opt);
-
-	            assert(
-	                    me.dom && me.dom.nodeType,
-	                    "Control.prototype.constructor(options): 当前实例的 dom 属性为空，或此属性不是 DOM 对象。(检查 options.dom 是否是合法的节点或ID(options 或 options.dom 指定的ID的节点不存在?) 或当前实例的 create 方法是否正确返回一个节点)\r\n当前控件: {dom} {xType}",
-	                    me.dom, me.xType);
-
-	            // 调用 init 初始化控件。
-	            me.init(opt);
-
-	            // 处理样式。
-	            if ('style' in opt) {
-		            assert(me.dom.style, "Control.prototype.constructor(options): 当前控件不支持样式。");
-		            me.dom.style.cssText += ';' + opt.style;
-		            delete opt.style;
-	            }
-	            
-	            // 如果指定的节点已经在 DOM 树上，且重写了 render 方法，则调用之。
-	            if(me.dom.parentNode && this.render !== Control.prototype.render){
-	            	this.render(me.dom.parentNode, me.dom.nextSibling);
-	            }
-
-	            // 复制各个选项。
-	            Object.set(me, opt);
-            },
-
-            /**
-			 * 当被子类重写时，生成当前控件。
-			 * @param {Object} options 选项。
-			 * @protected
-			 */
-            create: function() {
-
-	            assert(this.tpl,
-	                    "Control.prototype.create(): 当前类不存在 tpl 属性。Control.prototype.create 会调用 tpl 属性，根据这个属性中的 HTML 代码动态地生成节点并返回。子类必须定义 tpl 属性或重写 Control.prototype.create 方法返回节点。");
-
-	            // 转为对 tpl解析。
-	            return Element.parse(this.tpl);
-            },
-
-            /**
-			 * 当被子类重写时，渲染控件。
-			 * @method
-			 * @param {Object} options 配置。
-			 * @protected
-			 */
-            init: Function.empty,
-
-            /**
-			 * 创建并返回控件的副本。
-			 * @param {Boolean} keepId=fasle 是否复制 id 。
-			 * @return {Control} 新的控件。
-			 */
-            clone: function(keepId) {
-
-	            // 创建一个控件。
-	            return new this.constructor(this.dom.nodeType === 1 ? this.dom.clone(false, true, keepId) : this.dom.cloneNode(!keepId));
-
-            }
-
-        })),
 	
 		/**
 		 * 节点集合。
