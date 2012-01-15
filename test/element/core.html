@@ -42,43 +42,43 @@
 			//  Element Class
 			
 			
-			Element.implement({
+			Control.implement({
 				a: function(){return 1;}
 			});
 			
-			Element.implement({
+			Control.implement({
 				b: function(){return 1;}
 			}, 2);
 			
-			Element.implement({
+			Control.implement({
 				c: function(){return this;}
 			}, 3);
 			
-			Element.implement({
-				d: function(){return  new ElementList([this]);}
+			Control.implement({
+				d: function(){return  new NodeList([this]);}
 			}, 3);
 		
-			var a = $('a'), b = $('b'), c = $('c'), d = $('d'), o = $('o'), abcd = new ElementList($('all').getElementsByTagName("div"));
+			var a = $('a'), b = $('b'), c = $('c'), d = $('d'), o = $('o'), abcd = new NodeList($('all').dom.getElementsByTagName("div"));
 			
 			var testcases = {
-				'Element': '-',
+				'Control': '-',
 				'$': '"o" => assert.isTrue(value.a)',
-				'Element.prototype.xType': {method: false, overrides: '@o; =>   "element"'},
-				'Element.parse': '"<div/>" ; "<div><div />a<\/div>"; "   <div/> f <div/>"; "<object />"; "<input type=\'radio\' checked=\'checked\'>"', 
+				'Control.prototype.xType': {method: false, overrides: '@o; =>   "element"'},
 				'Element.getDocument': 'a=>document; document=>document', 
-				'ElementList': '-',
-				'ElementList.prototype.length': {method: false, overrides:  '@abcd;4'},
-				'ElementList.prototype.each': '@abcd; function(value){ assert.log(value.id)} => assert.logged("abcd")',
-				'ElementList.prototype.filter': '@abcd; function(value) {return value === a || value === c} => assert.areEqual(value, [a, c])',
-				'ElementList.prototype.invoke': '@abcd; "setAttr", ["ff", 1] => assert.isTrue(a.getAttr("ff") == 1),  assert.isTrue(d.getAttr("ff") == 1) ',
-				'ElementList.prototype.indexOf': '@abcd; a => 0; d => 3; o => -1',
-				'ElementList.prototype.a': '@abcd; => abcd',
-				'ElementList.prototype.b': '@abcd; => [1,1,1,1]',
-				'ElementList.prototype.c': '@abcd; => assert.areEqual(value, [a, b,c, d])',
-				'ElementList.prototype.d': '@abcd; => assert.areEqual(value, [a, b,c, d])',
+				'NodeList': '-',
+				'NodeList.prototype.length': {method: false, overrides:  '@abcd;4'},
+				'NodeList.prototype.each': '@abcd; function(value){ assert.log(value.id)} => assert.logged("abcd")',
+				'NodeList.prototype.filter': '@abcd; function(value) {return value === a || value === c} => assert.areEqual(value, [a, c])',
+				'NodeList.prototype.invoke': '@abcd; "setAttr", ["ff", 1] => assert.isTrue(a.getAttr("ff") == 1),  assert.isTrue(d.getAttr("ff") == 1) ',
+				'NodeList.prototype.indexOf': '@abcd; a => 0; d => 3; o => -1',
+				'NodeList.prototype.a': '@abcd; => abcd',
+				'NodeList.prototype.b': '@abcd; => [1,1,1,1]',
+				'NodeList.prototype.c': '@abcd; => assert.areEqual(value, [a, b,c, d])',
+				'NodeList.prototype.d': '@abcd; => assert.areEqual(value, [a, b,c, d])',
 				'Document': '-',
-				'Document.prototype.create': '@document; "div", "a" => assert.isTrue(value.tagName === "DIV")',
-				'Document.prototype.getDom': '@document;"a", "c" => assert.areEqual(value, [a, c])',
+				'Document.prototype.createControl': '@document; "div", "a" => assert.isTrue(value.tagName === "DIV")',
+				'Document.prototype.parse': '@document; "<div/>" ; "<div><div />a<\/div>"; "   <div/> f <div/>"; "<object />"; "<input type=\'radio\' checked=\'checked\'>")',
+				'Document.prototype.getControl': '@document;"a", "c" => assert.areEqual(value, [a, c])',
 				'Control': '-',
 				'new Control': 'a => assert.areEqual(value.dom, a)'
 			};

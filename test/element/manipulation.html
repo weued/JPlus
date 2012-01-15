@@ -37,29 +37,32 @@
 		<script>
 			
 			
-			var a = $('a'), b = $('b'), c = $('c'), d = $('d'), o = $('o'), abcd = new ElementList($('all').getElementsByTagName("div"));
+			var a = $('a'), b = $('b'), c = $('c'), d = $('d'), o = $('o'), abcd = new NodeList($('all').dom.getElementsByTagName("div"));
 			
 			
 			var testcases = {
 				'Select': '-',
-				'Element.hasChild': 'a, b => true',
-				'Element.prototype.hasChild': '@a; a => false; b => true; c => true; d => true',
-				'Element.prototype.contains': '@a; a => true; b => true; c => true; d => true',
-				'Element.prototype.clone': '@a;',
+				'Dom.hasChild': 'a, b => true',
+				'Control.prototype.hasChild': '@a; a => false; b => true; c => true; d => true',
+				'Control.prototype.contains': '@a; a => true; b => true; c => true; d => true',
+				'Control.prototype.clone': '@a;',
 				
 				'Insert': '-',
-				'Element.prototype.append': '@a; "appended"',
-				'Element.prototype.insert': '@a; "inserted", "beforeEnd"',
-				'Element.prototype.appendTo': '@a; document.body',
+				'Control.prototype.insertBefore': '@a; b, null',
+				'Control.prototype.attach': '@c; b.dom, null',
+				'Control.prototype.append': '@a; "appended"',
+				'Control.prototype.insert': '@a; "beforeEnd", "inserted"',
+				'Control.prototype.appendTo': '@a; document.body',
 				
 				'Remove': '-',
-				'Element.prototype.remove': '@a; b',
-				'Element.prototype.empty': '@a; ',
-				'Element.prototype.detach': '@a; ',
-				'Element.prototype.dispose': '@a; ',
+				'Control.prototype.removeChild': '@b; c',
+				'Control.prototype.remove': '@a; b',
+				'Control.prototype.empty': '@a; ',
+				'Control.prototype.detach': '@c; b.dom',
+				'Control.prototype.dispose': '@a; ',
 				
 				'Update': '-',
-				'Element.prototype.replaceWith': '@a; b'
+				'Control.prototype.replaceWith': '@a; b'
 			};
 			
 			System.initTestCases(testcases);

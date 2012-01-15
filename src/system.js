@@ -79,9 +79,9 @@
 	
 		    /**
 			 * 获取属于一个元素的数据。
-			 * @param { Base} obj 元素。
+			 * @param {Object} obj 元素。
 			 * @param {String} dataType 类型。
-			 * @return { Base} 值。 这个函数会在对象内生成一个 data 字段， 并生成一个 data.dataType 对象返回。
+			 * @return {Object} 值。 这个函数会在对象内生成一个 data 字段， 并生成一个 data.dataType 对象返回。
 			 *         如果原先存在 data.dataType, 则直接返回。
 			 * @example <code>
 		     * var obj = {};
@@ -107,9 +107,9 @@
 	
 		    /**
 			 * 如果存在，获取属于一个元素的数据。
-			 * @param { Base} obj 元素。
+			 * @param {Object} obj 元素。
 			 * @param {String} dataType 类型。
-			 * @return { Base} 值。 这个函数会在对象内生成一个 data 字段， 并生成一个 data.dataType 对象返回。
+			 * @return {Object} 值。 这个函数会在对象内生成一个 data 字段， 并生成一个 data.dataType 对象返回。
 			 *         如果原先存在 data.dataType, 则直接返回。
 			 * @example <code>
 		     * var obj = {};
@@ -132,9 +132,9 @@
 	
 		    /**
 			 * 设置属于一个元素的数据。
-			 * @param { Base} obj 元素。
+			 * @param {Object} obj 元素。
 			 * @param {String} dataType 类型。
-			 * @param { Base} data 内容。
+			 * @param {Object} data 内容。
 			 * @return data
 			 * @example <code>
 		     * var obj = {};
@@ -152,11 +152,19 @@
 			    // 简单设置变量。
 			    return (obj.$data || (obj.$data = {}))[dataType] = data;
 		    },
+			
+			/**
+			 * 删除属于一个对象的数据。
+			 * @param {Object} obj 元素。
+			 */
+			removeData: function(obj){
+				obj.$data = null;
+			},
 	
 		    /**
 			 * 复制一个对象的事件拷贝到另一个对象。
-			 * @param { Base} src 来源的对象。
-			 * @param { Base} dest 目标的对象。
+			 * @param {Object} src 来源的对象。
+			 * @param {Object} dest 目标的对象。
 			 * @return this
 			 */
 		    cloneEvent: function(src, dest) {
@@ -187,7 +195,7 @@
 	
 		    /**
 			 * 创建一个类。
-			 * @param { Base/Function} [methods] 成员或构造函数。
+			 * @param {Object/Function} [methods] 成员或构造函数。
 			 * @return {Class} 生成的类。 创建一个类，相当于继承于 JPlus.Object创建。
 			 * @see JPlus.Object.extend
 			 * @example <code>
@@ -252,7 +260,7 @@
 		    /**
 			 * 定义名字空间。
 			 * @param {String} name 名字空间。
-			 * @param { Base} [obj] 值。
+			 * @param {Object} [obj] 值。
 			 *            <p>
 			 *            名字空间是项目中表示资源的符合。
 			 *            </p>
@@ -1127,13 +1135,12 @@
 		 * @param { Base} str 字符串。用空格隔开。
 		 * @param { Base/Function} source 更新的函数或源。
 		 * @param { Base} [dest] 如果指明了， 则拷贝结果到这个目标。
-		 * @param {Boolean} copyIf=false 是否跳过本来存在的数据。
 		 * @example <code>
 	     * String.map("aaa bbb ccc", trace); //  aaa bbb ccc
 	     * String.map("aaa bbb ccc", function (v) { return v; }, {});    //    {aaa:aaa, bbb:bbb, ccc:ccc};
 	     * </code>
 		 */
-	    map: function(str, src, dest, copyIf) {
+	    map: function(str, src, dest) {
 
 		    assert(typeof str == 'string', 'String.map(str, src, dest, copyIf): {str} 必须是字符串。', str);
 
@@ -1145,7 +1152,7 @@
 			    var val = isFn ? src(value, index, array) : src[value];
 
 			    // 如果有 dest ，则复制。
-			    if (dest && !(copyIf && (value in dest)))
+			    if (dest)
 				    dest[value] = val;
 		    });
 		    return dest;
@@ -1342,6 +1349,14 @@
             delete fn.$bubble;
         }
     };
+	
+	/**
+	 * 将制定对象转换为字符串。
+	 * @return {String} 对应的字符串。
+	 */
+	Base.prototype.toString = function(){
+		return this.xType || toString.call(this);
+	};
 
 	// 把所有内建对象本地化 。
 	each.call([String, Array, Function, Date, Number], p.Native);
@@ -1592,8 +1607,6 @@
 
 	/// #endregion
 
-	/// #region XMLHttpRequest
-
 	/// #if CompactMode
 
 	/**
@@ -1610,10 +1623,6 @@
 	}
 
 	/// #endif
-	
-	/// #endregion
-	
-	/// #region Page
 
 	/**
 	 * @class
@@ -1632,7 +1641,7 @@
 		window.execScript = function(statements) {
 
 			// 如果正常浏览器，使用 window.eval 。
-			    window["eval"].call( window, statements );
+			window["eval"].call( window, statements );
 
         };
 
@@ -1841,8 +1850,6 @@ function trace() {
 }
 
 /// #region Assert
-
-/// #endregion
 
 /**
  * 确认一个值正确。
@@ -2091,8 +2098,7 @@ function assert(bValue, msg) {
          */
         api: (function() {
 
-            var nodeTypes = 'Window Element Attr Text CDATASection Entity EntityReference ProcessingInstruction Comment HTMLDocument DocumentType DocumentFragment Document Node'
-                .split(' '),
+            var nodeTypes = 'Window Element Attr Text CDATASection Entity EntityReference ProcessingInstruction Comment HTMLDocument DocumentType DocumentFragment Document Node'.split(' '),
 
                 definedClazz = 'String Date Array Number RegExp Function XMLHttpRequest Object'.split(' ').concat(nodeTypes),
 
@@ -2119,7 +2125,7 @@ function assert(bValue, msg) {
                     'Date': 'now parse UTC'
                 },
 
-                APIInfo = p.Class({
+                APIInfo = Class({
 
                     memberName: '',
 
@@ -2165,7 +2171,7 @@ function assert(bValue, msg) {
                     },
 
                     getBaseClassDescription: function(obj) {
-                        if (obj && obj.base) {
+                        if (obj && obj.base && obj.base !== p.Object) {
                             var extObj = this.getTypeName(obj.base, window, "", 3);
                             return " 类" + (extObj && extObj != "JPlus.Object" ? "(继承于 " + extObj + " 类)" : "");
                         }
@@ -2201,7 +2207,7 @@ function assert(bValue, msg) {
                         this.isClass = obj === Function || (obj.prototype && obj.prototype.constructor !== Function);
 
                         // 如果是普通的变量。获取其所在的原型的成员。
-                        if (!this.isClass && obj.constructor !==  Base) {
+                        if (!this.isClass && obj.constructor !==  Object) {
                             this.prefix = this.getPrefix(obj.constructor);
 
                             if (!this.prefix) {
@@ -2247,6 +2253,7 @@ function assert(bValue, msg) {
                             this.getExtInfo(obj);
                             this.addStaticMembers(obj);
                             this.addStaticMembers(obj.prototype, 1, true);
+							this.addEvents(obj, '');
                             delete this.members.prototype;
                             if (this.showPredefinedMembers) {
                                 this.addPredefinedNonStaticMembers(obj, obj.prototype, true);
@@ -2267,10 +2274,7 @@ function assert(bValue, msg) {
 
                     addStaticMembers: function(obj, nonStatic) {
                         for ( var memberName in obj) {
-                            try {
-                                this.addMember(obj, memberName, 1, nonStatic);
-                            } catch (e) {
-                            }
+							this.addMember(obj, memberName, 1, nonStatic);
                         }
 
                     },
@@ -2287,7 +2291,7 @@ function assert(bValue, msg) {
 
                     addPredefinedNonStaticMembers: function(clazz, obj, nonStatic) {
 
-                        if (clazz !==  Base) {
+                        if (clazz !==  Object) {
 
                             predefinedNonStatic.Object.forEach(function(memberName) {
                                 if (clazz.prototype[memberName] !==  Object.prototype[memberName]) {
@@ -2297,7 +2301,7 @@ function assert(bValue, msg) {
 
                         }
 
-                        if (clazz ===  Base && !this.isClass) {
+                        if (clazz ===  Object && !this.isClass) {
                             return;
                         }
 
@@ -2305,41 +2309,59 @@ function assert(bValue, msg) {
 
                     },
 
+					addEvents: function(obj, extInfo){
+						var evtInfo = obj.prototype && p.Events[obj.prototype.xType];
+						
+						if(evtInfo){
+						
+							for(var evt in evtInfo){
+								this.sortInfo[this.members[evt] = obj.prototype.xType + '.' + evt + ' 事件' + extInfo] = 4 + evt;
+							}
+							
+							if(obj.base){
+								this.addEvents(obj.base, '(继承的)');
+							}
+						}
+					},
+					
                     addMember: function(base, memberName, type, nonStatic) {
+						try {
 
-                        var hasOwnProperty =  Object.prototype.hasOwnProperty, owner = hasOwnProperty.call(base, memberName), prefix, extInfo = '';
+							var hasOwnProperty =  Object.prototype.hasOwnProperty, owner = hasOwnProperty.call(base, memberName), prefix, extInfo = '';
 
-                        nonStatic = nonStatic ? 'prototype.' : '';
+							nonStatic = nonStatic ? 'prototype.' : '';
 
-                        // 如果 base 不存在 memberName 的成员，则尝试在父类查找。
-                        if (owner) {
-                            prefix = this.orignalPrefix || (this.prefix + nonStatic);
-                            type--; // 自己的成员置顶。
-                        } else {
+							// 如果 base 不存在 memberName 的成员，则尝试在父类查找。
+							if (owner) {
+								prefix = this.orignalPrefix || (this.prefix + nonStatic);
+								type--; // 自己的成员置顶。
+							} else {
 
-                            // 搜索包含当前成员的父类。
-                            this.baseClasses.each(function(baseClass, i) {
-                                if (baseClass.prototype[memberName] === base[memberName] && hasOwnProperty.call(baseClass.prototype, memberName)) {
-                                    prefix = this.baseClassNames[i] + ".prototype.";
+								// 搜索包含当前成员的父类。
+								this.baseClasses.each(function(baseClass, i) {
+									if (baseClass.prototype[memberName] === base[memberName] && hasOwnProperty.call(baseClass.prototype, memberName)) {
+										prefix = this.baseClassNames[i] + ".prototype.";
 
-                                    if (nonStatic)
-                                        extInfo = '(继承的)';
+										if (nonStatic)
+											extInfo = '(继承的)';
 
-                                    return false;
-                                }
-                            }, this);
+										return false;
+									}
+								}, this);
 
-                            // 如果没找到正确的父类，使用当前类替代，并指明它是继承的成员。
-                            if (!prefix) {
-                                prefix = this.prefix + nonStatic;
-                                extInfo = '(继承的)';
-                            }
+								// 如果没找到正确的父类，使用当前类替代，并指明它是继承的成员。
+								if (!prefix) {
+									prefix = this.prefix + nonStatic;
+									extInfo = '(继承的)';
+								}
 
-                        }
+							}
 
-                        this.sortInfo[this.members[memberName] = (type >= 4 ? '[内置]' : '') + prefix + getDescription(base, memberName) + extInfo] = type
-                            + memberName;
+							this.sortInfo[this.members[memberName] = (type >= 4 ? '[内置]' : '') + prefix + getDescription(base, memberName) + extInfo] = type
+								+ memberName;
 
+						} catch (e) {
+						}
                     },
 
                     copyTo: function(value) {
@@ -2354,7 +2376,7 @@ function assert(bValue, msg) {
                             });
                             value.unshift(this.title);
                         } else {
-                            value.push(this.title + '没有可用的 API 信息。');
+                            value.push(this.title + '没有可用的子成员信息。');
                         }
 
                     }
@@ -2419,10 +2441,32 @@ function assert(bValue, msg) {
                     for ( var i = 0; i < 7; i++) {
                         r.push(getDescription(window, definedClazz[i]));
                     }
+					
+					if(window.using){
+						r.push("using 函数");
+					}
+					
+					if(window.imports){
+						r.push("imports 函数");
+					}
+					
+					if(window.trace){
+						r.push("trace 函数");
+					}
+					
+					if(window.assert){
+						r.push("assert 函数");
+					}
 
-                    for ( var name in JPlus)
-                        if (window[name] && (isUpper(name, 0) || window[name] === JPlus[name]))
-                            r.push(getDescription(window, name));
+                    for ( var name in window) {
+					
+						try{
+							if (isUpper(name, 0) || p[name] === window[name])
+								r.push(getDescription(window, name));
+						} catch(e){
+						
+						}
+					}
 
                     r.sort();
                     r.unshift('全局对象: ');
@@ -2740,22 +2784,6 @@ function assert(bValue, msg) {
          */
         between: function(value, min, max, msg) {
             return assertInternal(value >= min && !(value >= max), msg, value, "超出索引, 它必须在 [" + min + ", " + (max === undefined ? "+∞" : max) + ") 间。");
-        },
-
-        /**
-         * 确认一个值属于一个类型。
-         * @param { Base} v 值。
-         * @param {String/Array} types 类型/表示类型的参数数组。
-         * @param {String} message 错误的提示信息。
-         * @return {Boolean} 返回 assert 是否成功 。
-         */
-        instanceOf: function(v, types, msg) {
-            if (!Array.isArray(types))
-                types = [types];
-            var ty = typeof v, iy =  Object.type(v);
-            return assertInternal(types.filter(function(type) {
-                return type == ty || type == iy;
-            }).length, msg, v, "类型错误。");
         },
 
         /**
