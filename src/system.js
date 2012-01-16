@@ -58,13 +58,13 @@
 		hasOwnProperty = Object.prototype.hasOwnProperty,
 	
 		/**
-		 * 管理所有事件类型的工具。
+		 * 存储所有类的事件信息。
 		 * @type  Object
 		 */
 		eventMgr = {
 	
 			/**
-			 * 管理默认的类事件。
+			 * 默认的事件信息。
 			 * @type  Object
 			 */
 			$default: {}
@@ -497,7 +497,7 @@
 	/**
 	 * @namespace JPlus.Object
 	 */
-	apply( Base, {
+	apply(Base, {
 
 	    /**
 		 * 扩展当前类的动态方法。
@@ -1281,6 +1281,9 @@
 	/// #endregion
 
 	/// #region Methods
+	
+	// 把所有内建对象本地化 。
+	each.call([String, Array, Function, Date, Number], p.Native);
 
 	/**
 	 * xType。
@@ -1357,9 +1360,6 @@
 	Base.prototype.toString = function(){
 		return this.xType || toString.call(this);
 	};
-
-	// 把所有内建对象本地化 。
-	each.call([String, Array, Function, Date, Number], p.Native);
 
 	/**
 	 * @class String

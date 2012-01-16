@@ -42,7 +42,7 @@
 			
 			var testcases = {
 				'Select': '-',
-				'Dom.hasChild': 'a, b => true',
+				'Dom.hasChild': 'a.dom, b.dom => true',
 				'Control.prototype.hasChild': '@a; a => false; b => true; c => true; d => true',
 				'Control.prototype.contains': '@a; a => true; b => true; c => true; d => true',
 				'Control.prototype.clone': '@a;',
@@ -55,8 +55,8 @@
 				'Control.prototype.appendTo': '@a; document.body',
 				
 				'Remove': '-',
-				'Control.prototype.removeChild': '@b; c',
-				'Control.prototype.remove': '@a; b',
+				'Control.prototype.removeChild': '@a; b',
+				'Control.prototype.remove': '@b',
 				'Control.prototype.empty': '@a; ',
 				'Control.prototype.detach': '@c; b.dom',
 				'Control.prototype.dispose': '@a; ',

@@ -38,7 +38,7 @@
 			
 			var testcases = {
 				'Style': '-',
-				'Element.prototype.setStyle': '@a; "font-size", 14 => assert.areEqual(a.style.fontSize, "14px")',
+				'Element.prototype.setStyle': '@a; "font-size", 14 => assert.areEqual(a.dom.style.fontSize, "14px")',
 				'Element.prototype.getStyle': '@a; "font-size" => "14px"',
 				'Element.prototype.setOpacity': '@a; 0.8 => assert.areEqual(a.  getOpacity(), .8)',
 				'Element.prototype.getOpacity': '@a; => 0.8',

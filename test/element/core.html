@@ -63,24 +63,24 @@
 			var testcases = {
 				'Control': '-',
 				'$': '"o" => assert.isTrue(value.a)',
-				'Control.prototype.xType': {method: false, overrides: '@o; =>   "element"'},
-				'Element.getDocument': 'a=>document; document=>document', 
+				'Control.prototype.xType': {method: false, overrides: '@o; =>   "control"'},
+				'Dom.getDocument': 'a.dom=>document; document=>document', 
 				'NodeList': '-',
 				'NodeList.prototype.length': {method: false, overrides:  '@abcd;4'},
 				'NodeList.prototype.each': '@abcd; function(value){ assert.log(value.id)} => assert.logged("abcd")',
-				'NodeList.prototype.filter': '@abcd; function(value) {return value === a || value === c} => assert.areEqual(value, [a, c])',
+				'NodeList.prototype.filter': '@abcd; function(value) {return value === a.dom || value === c.dom} => assert.areEqual(value, [a.dom, c.dom])',
 				'NodeList.prototype.invoke': '@abcd; "setAttr", ["ff", 1] => assert.isTrue(a.getAttr("ff") == 1),  assert.isTrue(d.getAttr("ff") == 1) ',
-				'NodeList.prototype.indexOf': '@abcd; a => 0; d => 3; o => -1',
+				'NodeList.prototype.indexOf': '@abcd; a.dom => 0; d.dom => 3; o.dom => -1',
 				'NodeList.prototype.a': '@abcd; => abcd',
 				'NodeList.prototype.b': '@abcd; => [1,1,1,1]',
-				'NodeList.prototype.c': '@abcd; => assert.areEqual(value, [a, b,c, d])',
-				'NodeList.prototype.d': '@abcd; => assert.areEqual(value, [a, b,c, d])',
+				'NodeList.prototype.c': '@abcd; => assert.areEqual(value, [a.dom, b.dom,c.dom, d.dom])',
+				'NodeList.prototype.d': '@abcd; => assert.areEqual(value, [a.dom, b.dom,c.dom, d.dom])',
 				'Document': '-',
-				'Document.prototype.createControl': '@document; "div", "a" => assert.isTrue(value.tagName === "DIV")',
-				'Document.prototype.parse': '@document; "<div/>" ; "<div><div />a<\/div>"; "   <div/> f <div/>"; "<object />"; "<input type=\'radio\' checked=\'checked\'>")',
-				'Document.prototype.getControl': '@document;"a", "c" => assert.areEqual(value, [a, c])',
+				'Document.prototype.createControl': '@document; "div", "a" => assert.isTrue(value.dom.tagName === "DIV")',
+				'Document.prototype.parse': '@document; "<div/>" ; "<div><div />a<\/div>"; "   <div/> f <div/>"; "<object />"; "<input type=\'radio\' checked=\'checked\'>"',
+				'Document.prototype.getControl': '@document;"a", "c" => assert.areEqual(value, [a.dom, c.dom])',
 				'Control': '-',
-				'new Control': 'a => assert.areEqual(value.dom, a)'
+				'new Control': 'a => assert.areEqual(value.dom, a.dom)'
 			};
 			
 			System.initTestCases(testcases);
