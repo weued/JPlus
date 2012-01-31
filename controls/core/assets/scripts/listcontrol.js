@@ -3,40 +3,44 @@
 //===========================================
 
 
-imports("UPlus.Core.ListControl");
-using("UPlus.Core.IContainerControl");
+imports("Controls.Core.ListControl");
+using("Controls.Core.IContainerControl");
 
 
 
 /**
  * 表示所有管理多个有序列的子控件的控件基类。
  * @class ListControl
- * ListControl 封装了使用  <ul> 创建列表控件一系列方法。
+ * ListControl 封装了使用  &lt;ul&gt; 创建列表控件一系列方法。
  * 子类可以重写 onControlAdded、onControlRemoved、initItem  3　个函数，实现对
  */
-namespace(".ListControl", Control.extend(IContainerControl).implement({
+var ListControl = Control.extend(IContainerControl).implement({
 	
 	create: function(){
-		var dom = document.create('div', 'b-' + this.xType);
-		dom.appendChild(document.create('ul', 'b-list-container b-' + this.xType + '-container'));
-		return dom;
+		var dom = Dom.create('div', 'x-' + this.xType);
+		dom.append(Dom.create('ul', 'x-list-container x-' + this.xType + '-container'));
+		return dom.dom;
 	},
 	
 	init: function(options){
 		this.initChildren('items');
-		this.content = this.get('first', 'ul');
+		this.container = this.getFirst('ul');
 	},
 	
 	onControlAdded: function(childControl, index){
-		var li = document.create('li', 'b-list-content b-' + this.xType + '-content');
+		var li = Dom.create('li', 'x-list-content x-' + this.xType + '-content');
+		li.append(childControl);
 		index = this.controls[index];
-		li.appendChild(childControl.dom || childControl);
-		this.content.insertBefore(li, index ? (index.dom || index).parentNode : null);
+		this.container.insertBefore(li, index ? index.getParent() : null);
 	},
 	
 	onControlRemoved: function(childControl, index){
-		this.content.removeChild((childControl.dom || childControl).parentNode);
+		this.container.removeChild(childControl.getParent());
+	},
+	
+	setActived: function(index, value){
+		this.controls[index].getParent('li').toggleClass('x-' + this.xType + '-actived', value);
 	}
 	
-}));
+});
 

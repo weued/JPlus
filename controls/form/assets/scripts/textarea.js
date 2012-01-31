@@ -1,0 +1,1 @@
+/** * @author  xuld */imports("Controls.Form.TextBox");using("Controls.Form.IInputControl");var TextArea = Control.extend({		xType: 'textarea',		tpl: '<textarea class="x-textbox"></textarea>'	}).implement(IInputControl);

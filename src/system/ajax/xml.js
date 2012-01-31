@@ -4,11 +4,7 @@
 
 using("System.Ajax.Ajax");
 
-
-
-
-
-JPlus.Ajax.XML = JPlus.Ajax.extend({
+Ajax.XML = Ajax.extend({
 	
 	onSuccess: function(response, xhr){
 		this.trigger("success", xhr.responeXML);

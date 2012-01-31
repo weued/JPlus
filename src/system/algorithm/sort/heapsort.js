@@ -5,7 +5,7 @@
 
 using("System.Algorithm.Sort.Sort");
 
-namespace(".Sorter.", {
+namespace("Sorter", {
 
 	/**
 	 * 对集合进行快速排序。

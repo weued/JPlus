@@ -6,12 +6,12 @@
 
 
 
-.b-list-container, .b-list-content {
+.x-list-container, .x-list-content {
 	margin: 0;
 	padding: 0;
 	list-style: none;
 }
 
-.b-list-content {
+.x-list-content {
 	overflow: hidden;
 }

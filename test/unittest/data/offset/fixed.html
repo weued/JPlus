@@ -16,10 +16,10 @@
 		<script src="../../../../src/system.js"></script>
 		<script src="../../../../src/system/dom/element.js"></script>
 		<script type="text/javascript" charset="utf-8">
-			document.onReady(function($) {
+			Dom.ready(function($) {
 				window.scrollTo(1000,1000);
-				document.findAll('.fixed').on('click', function() {
-					$('marker').setOffset( this.getOffset() );
+				document.query('.fixed').on('click', function() {
+					Dom.get('marker').setOffset( this.getOffset() );
 					return false;
 				});
 			});

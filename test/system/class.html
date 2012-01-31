@@ -24,7 +24,7 @@
 			var MyClass2 = MyClass1.extend({
 				xType: "MyClass2",
 				constructor: function MyClass2Ctr(args){
-					this.base('constructor', args);
+					this.base('constructor');
 					console.log("MyClass2->" + args);
 					assert.log("2");
 				}
@@ -33,7 +33,7 @@
 			var MyClass3 = MyClass2.extend({
 				xType: "MyClass3",
 				constructor: function MyClass3Ctr(args){
-					this.base('constructor', args);
+					this.base('constructor');
 					console.log("MyClass3->" + args);
 					assert.log("3");
 				}
@@ -66,7 +66,7 @@
 				xType: "MyClass6",
 				
 				a: function(a){
-					this.base('a', arguments);
+					this.base('a');
 					console.log("MyClass6.a->", a);
 					assert.log("6");
 				}
@@ -90,25 +90,24 @@
 				'类': '-',
 				'new MyClass1': {
 					name: '创建一个类',
-					overrides: '"" => assert.logged("1")'
+					tests: '"" => assert.logged("1")'
 				},
 				'new MyClass6': {
 					name: '继承',
-					overrides: '"" => assert.logged("123333")'
+					tests: '"" => assert.logged("123333")'
 				},
 				'MyClass6.prototype.a': {
 					name: '重载',
-					overrides: '@obj = new MyClass6(""); "" => assert.logged("456")'
+					tests: '@obj = new MyClass6(""); "" => assert.logged("456")'
 				},
 				'MyClass5.prototype.on': {
 					name: '事件',
-					overrides: '@obj = new MyClass6(""); "click", function(){} => assert.logged("bind")'
+					tests: '@obj = new MyClass6(""); "click", function(){} => assert.logged("bind")'
 				},
 				'Data': '-',
 				'JPlus.data': '{}, "a"',
 				'JPlus.getData': '{}, "a"',
-				'JPlus.setData': '{}, "a", 5',
-				'JPlus.cloneEvent': '{}, {}'
+				'JPlus.setData': '{}, "a", 5'
 			};
 			
 			System.initTestCases(testcases);

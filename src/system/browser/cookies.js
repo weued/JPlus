@@ -7,7 +7,7 @@
  * 浏览器 Cookies 处理。
  * @param {Object} name 名字。
  */
-namespace(".Cookies.", {
+var Cookies = {
 	
 	/**
 	 * 获取 Cookies 。
@@ -53,6 +53,6 @@ namespace(".Cookies.", {
 		
 		document.cookie = updatedCookie;
 	}
-});
+};
 
 

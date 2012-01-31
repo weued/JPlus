@@ -1,1 +1,6 @@
-/** * @author  */
+/** * @author  */imports("Controls.Form.CombinedTextbox");using("Controls.Form.TextBox");var CombinedTextBox = TextBox.extend({		/**	 * @protected	 * @virtual	 */	createMenuButton: function(){		return Dom.parse('<input type="button" value="▼" class="x-combinedtextbox-menu" />');	},		/**	 * @protected
+	 */	bindMenuButton: function(type, fn){		this.menuButton.on(type, Function.bind(fn, this));	},		/**	 * @protected	 */	setMenuButton: function(type){		this.menuButton.dom.className = 'x-combinedtextbox-menu x-combinedtextbox-menu-' + type;		return this;	},		/**	 * @protected	 * @override	 */	init: function(){		this.addClass('x-combinedtextbox');		this.menuButton = this.createMenuButton();	},	attach: function(parent, refNode){		this.base('attach');		this.menuButton.attach(parent, refNode);		return this;	},	detach: function(parent){		this.base('detach');		this.menuButton.detach(parent);		return this;	},		setDisabled: function(value){		this.menuButton.dom.disabled = value !== false;		return this.base('setDisabled');	},		show: function () {
+		this.base('show');		this.menuButton.show.apply(this.menuButton, arguments);
+	},		hide: function () {		this.base('hide');		this.menuButton.hide.apply(this.menuButton, arguments);	},		getWidth: function () {
+		return this.base('getWidth') + this.menuButton.getWidth();
+	},		getSize: function () {		return this.base('getSize').add({x: this.menuButton.getWidth(), y:0});	}});

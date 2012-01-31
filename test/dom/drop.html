@@ -1,4 +1,4 @@
-﻿<!doctype html>
+﻿﻿<!doctype html>
 <html>
 	<head>
 		<meta charset="utf-8">
@@ -52,18 +52,23 @@
 		<script>
 		
 		
-		
-			$('drag').findAll('.box').setDraggable(true);
+			// 让 小方块 可拖动。
+			$$('drag').query('.box').setDraggable(true);
 			
-			$('drop').findAll('.zone').on('dragenter', function (e) {
-				this.hover = document.create('div', 'box hover').setHtml(e.dragTarget.dom.id.substr(1));
-				this.append(this.hover);
+			// 拖入之后，创建虚位。
+			$$('drop').query('.zone').on('dragenter', function (e) {
+				this.dom.hover = Dom.create('div', 'box hover').setHtml(e.dragTarget.dom.id.substr(1));
+				this.append(this.dom.hover);
+				
+			// 拖到外面时，隐藏虚位。
 			}).on('dragleave', function (e) {
-				this.hover.remove();
+				this.dom.hover.remove();
+				
+			// 放置时，隐藏虚位，并添加方块。
 			}).on('drop', function (e) {
-				this.hover.remove();
-				e.dragTarget.dom.setOffset({x:0, y: 0});
-				this.append(e.dragTarget.dom);
+				this.dom.hover.remove();
+				e.dragTarget.setOffset({x:0, y: 0});
+				this.append(e.dragTarget);
 			});
 			
 		</script>

@@ -10,7 +10,7 @@ using("System.Ajax.Request");
  * 处理异步请求的功能。
  * @class Ajax
  */
-namespace(".Ajax", Request.extend({
+var Ajax = Request.extend({
 	
 	onError: function(errorMessage){
 		this.trigger("error", errorMessage);
@@ -134,7 +134,7 @@ namespace(".Ajax", Request.extend({
 			
 		// 改成字符串。
 		if(typeof data !== 'string')
-			data = String.param(data);
+			data = me.toParam(data);
 		
 		// get  请求
 		if (data && type == 'GET') {
@@ -263,7 +263,7 @@ namespace(".Ajax", Request.extend({
 	 */
 	xType: "ajax"
 	
-}));
+});
 
 String.map("get post", function(k) {
 	

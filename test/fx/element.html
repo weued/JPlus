@@ -39,7 +39,7 @@
 			</div>
 		</span>
 		<script>
-			var a = $('a'), b = $('b'), c = $('c'), d = $('d'), o = $('o'), abcd = new ElementList($('all').getElementsByTagName("div"));
+			var a = $$('a'), b = $$('b'), c = $$('c'), d = $$('d'), o = $$('o'), abcd = new NodeList($$('all').dom.getElementsByTagName("div"));
 			
 			var testcases = {
 				'Animate': '-',
@@ -58,7 +58,7 @@
 				'animateScrollTop': function(){document.animate({scrollTop: 400});},
 				'animateBackgroundColor': function(){ a.animate({'background-color': '#efefef'});},
 				'Toggle': '-',
-				'toggle': function(){ a.toggle(1000); },
+				'Control.prototype.toggle': function(){ a.toggle(1000); },
 				'toggleHeight': function(){ a.toggle(1000, null, 'height'); },
 				'toggleWidth': function(){ a.toggle(1000, null, 'width'); },
 				'toggleOpacity': function(){ a.toggle(1000, null, 'opacity'); },
@@ -66,11 +66,11 @@
 				'toggleTop': function(){ a.toggle(1000, null, 'top'); },
 				'toggleRight': function(){ a.toggle(1000, null, 'right'); },
 				'toggleBottom': function(){ a.toggle(1000, null, 'bottom'); },
-				'hide(1000)': function(){ a.hide(1000); },
-				'hide': function(){ a.hide(0); },
+				'Control.prototype.hide(1000)': function(){ a.hide(1000); },
+				'Control.prototype.hide': function(){ a.hide(0); },
 				
-				'Element': '-',
-				'Element.prototype.highlight': '@a;'
+				'Control': '-',
+				'Control.prototype.highlight': '@a;'
 			};
 			
 			System.initTestCases(testcases, {times: 8});

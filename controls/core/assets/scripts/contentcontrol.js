@@ -31,7 +31,7 @@ using("System.Dom.Element");
  *  </ul>
  * </p>
  */
-namespace(".ContentControl", Control.extend({
+var ContentControl = Control.extend({
 	
 	/**
 	 * 当前正文。
@@ -40,17 +40,17 @@ namespace(".ContentControl", Control.extend({
 	 */
 	content: null,
 	
-	init: function(){
-		this.content = this.dom;
-	},
-	
 	/**
 	 * 当被子类改写时，实现创建添加和返回一个图标节点。
 	 * @protected
 	 * @virtual
 	 */
 	createIcon: function(){
-		return  this.content.insert(document.createElement("span"), 'beforeBegin');
+		return  this.content.insert('afterBegin', Dom.create('span', 'x-icon'));
+	},
+	
+	init: function(){
+		this.content = Dom.get(this);
 	},
 	
 	/**
@@ -66,20 +66,22 @@ namespace(".ContentControl", Control.extend({
 	 */
 	setIcon: function(icon) {
 		
-		if(!this.icon) {
+		if(!this.icon || !this.icon.getParent()) {
 			
 			this.icon = this.createIcon();
 		}
 		
-		this.icon.className = "b-icon b-icon-" + icon;
+		this.icon.dom.className = "x-icon x-icon-" + icon;
 		
 		return this;
 	}
 	
-}));
+});
 
 
-Control.delegate(ContentControl, 'content', 'setWidth setHeight setText setHtml', 2, 'appendChild insertBefore removeChild replaceChild contains append empty', 3, 'getHtml getText getWidth getHeight', 1);
+Control.delegate
+	(ContentControl, 'content', 'setWidth setHeight setText setHtml empty')
+	(ContentControl, 'content', 'insertBefore removeChild contains append getHtml getText getWidth getHeight', true);
 
 /// #if SupportIE6
 
@@ -138,7 +140,7 @@ if(navigator.isQuirks){
 		});
 		
 		function getWidthForResizingAndTestMinMaxWidth(target, elem){
-			return Math.max(Math.min(target.getWidthForResizing(), Element.styleNumber(elem, 'maxWidth') || Infinity), Element.styleNumber(elem, 'minWidth'));
+			return Math.max(Math.min(target.getWidthForResizing(), Dom.styleNumber(elem, 'maxWidth') || Infinity), Element.styleNumber(elem, 'minWidth'));
 		}
 	};
 	

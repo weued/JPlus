@@ -2,29 +2,53 @@
  * @author 
  */
 
-.b-listbox {
+.x-listbox {
 	position: absolute;
-	padding: 0;
-	margin: 0;
 	border: 1px solid #cccccc;
-	width: 200px;
 	cursor: default;
 	background: white;
-	overflow: auto;
+	z-index:99999;
+	width: 200px;
 	max-height: 200px;
 	_height: expression(Math.min(this.offsetHeight, 200));
-	z-index:99999;
+	overflow: auto;
+}
+
+.x-listbox-plain {
+	border: none;	
+}
+
+.x-listbox-container {
+	padding: 0;
 	margin: 0;
+	background: #fff;
 }
 
-.b-listbox-content {
+.x-listbox-content {
 	color: #585858;
-	padding: 5px;
-	line-height: 20px;
+	padding: 2px;
+	line-height:22px;
+	font-size: 12px;
+    display: block;
+    border: 1px dotted #fff;
 }
 
 
-.b-listbox-content:hover {
-	background-color: #255b9b;
-	color: #ffffff;
+.x-listbox-content:hover{
+	background-color:#DFE8F6;
+	border: 1px dotted #8EABE4;
+}
+
+.x-listbox-selected{
+	background-color: #CBDAF0;
+	border: 1px dotted #8EABE4;
+}
+
+.x-listbox-disabled {
+	color: gray;
+}
+
+.x-listbox-disabled .x-listbox-selected, .x-listbox-disabled .x-listbox-content:hover{
+	background-color: #eeeeee;
+	border-color: #999999;
 }

@@ -8,7 +8,7 @@ using("System.Ajax.Ajax");
 /**
  * 通过 Ajax 动态更新一个节点
  */
-Element.implement({
+Control.implement({
 
 	/**
 	 * 从一个地址，载入到本元素， 并使用 setHtml 设置内容。
@@ -19,4 +19,4 @@ Element.implement({
 		return this;
 	}
 
-}, 2);
+});

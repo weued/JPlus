@@ -25,7 +25,7 @@
 	/**
 	 * @namespace Fx
 	 */
-	namespace(".Fx.", {
+	JPlus.namespace("Fx", {
 		
 		/**
 		 * 实现特效。

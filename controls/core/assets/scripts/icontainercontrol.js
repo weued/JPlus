@@ -20,17 +20,14 @@ Control.ControlCollection = Collection.extend({
 	},
 	
 	initItem: function(item){
-		return this.owner.initItem(item);
+		return this.owner.initChildControl(item);
 	},
 	
 	onInsert: function(childControl, index){
-		var me = this.owner;
-		me.onControlAdded(childControl, index);
-		childControl.parentControl = me;
+		this.owner.onControlAdded(childControl, index);
 	},
 	
 	onRemove: function(childControl, index){
-		childControl.parentControl = null;
 		this.owner.onControlRemoved(childControl);
 	}
 	
@@ -87,7 +84,7 @@ Control.ControlCollection = Collection.extend({
  * </p>
  * 
  */
-namespace(".IContainerControl", {
+var IContainerControl = {
 	
 	/**
 	 * 获取目前所有子控件。
@@ -95,22 +92,20 @@ namespace(".IContainerControl", {
 	 * @name controls
 	 */
 	
-	initItem: function(item){
+	initChildControl: function(item){
 		if(typeof item === 'string')
-			return document.createTextNode(item);
-		else if(item.parentControl)
-			item.parentControl.controls.remove(item);    //   如果有指定父元素， 删除。
+			item = document.createTextNode(item);
+		if(item.nodeType)
+			item = new Dom(item);
 		return item;
 	},
 	
 	onControlAdded: function(childControl, index){
 		index = this.controls[index];
-		this.dom.insertBefore(childControl.dom || childControl, index ? index.dom || index : null);
+		childControl.attach(this.dom, index ? index.dom : null);
 	},
 	
-	onControlRemoved: function(childControl, index){
-		this.dom.removeChild(childControl.dom || childControl);
-	},
+	onControlRemoved: Dom.prototype.removeChild,
 	
 	initChildren: function(alternativeName){
 		this.controls = this[alternativeName] = new Control.ControlCollection(this);
@@ -147,13 +142,8 @@ namespace(".IContainerControl", {
 		
 	},
 	
-	/**
-	 * 重写 appendChild ，实现将元素包装到 controls 内。
-	 * @protected
-	 * @virtual
-	 */
-	appendChild: function(childControl){
-		return this.controls.add(childControl);
+	hasChild: function(childControl){
+		return this.controls.indexOf(childControl) >= 0;
 	},
 	
 	removeChild: function (childControl) {
@@ -161,14 +151,8 @@ namespace(".IContainerControl", {
 	},
 	
 	insertBefore: function (newControl, childControl) {
-		return this.controls.insertAt(this.controls.indexOf(childControl), newControl);
-	},
-	
-	replaceChild: function (newControl, childControl) {
-		this.insertBefore(newControl, childControl);
-		this.removeChild(childControl);
-		return newControl;
+		return this.controls.insert(this.controls.indexOf(childControl), newControl);
 	}
 	
 	
-});
+};

@@ -1,0 +1,1635 @@
+<?xml version='1.0' encoding='utf-8'?>
+<?xml-stylesheet type='text/xsl' href='style/stylecn.xsl'?>
+
+<docs version="2.0">
+  <cat value="核心">
+    <subcat value="DOM 核心函数">
+      <function name="Dom.get" return="Control">
+        <desc>这个函数接收一个包含 ID 的字符串，然后查找这个字符串的节点。</desc>
+        <longdesc>该方法是从已有的DOM节点转换为 Control 对象的最佳方法。如果没有节点，则返回 null 。</longdesc>
+        <params name="id" type="String">
+          <desc>要查找的节点ID</desc>
+        </params>
+        <example>
+          <desc>找到所有 p 元素，并且这些元素都必须是 div 元素的子元素。</desc>
+          <html>&lt;p id="a"&gt;one&lt;/p&gt; &lt;div&gt;&lt;p&gt;two&lt;/p&gt;&lt;/div&gt; &lt;p&gt;three&lt;/p&gt;</html>
+          <code>Dom.get("a");</code>
+          <result>Control{dom = #a}</result>
+        </example>
+      </function>
+      <function name="Dom.get" return="Control">
+        <desc>将一个DOM元素 或 Control 对象转化为 Control 对象。</desc>
+        <params name="element" type="Element">
+          <desc>用于封装成 Control 对象的DOM元素</desc>
+        </params>
+        <example>
+          <desc>设置页面背景色。</desc>
+          <code>Dom.get(document.body).setStyle( "background", "black" );</code>
+        </example>
+        <example>
+          <desc>设置页面中所有div的innerHTML为test。</desc>
+          <code>Dom.get(document.getElementsByTagName('div')[0]).setHtml( 'test' )</code>
+        </example>
+      </function>
+      <function name="Dom.query" return="NodeList">
+        <desc>这个函数接收一个包含 CSS 选择器的字符串，然后用这个字符串去匹配一组元素。</desc>
+        <longdesc>参考 Selectors 获取更多用于 expression 参数的 CSS 语法的信息。</longdesc>
+        <params name="expression" type="String">
+          <desc>用来查找的字符串</desc>
+        </params>
+        <example>
+          <desc>找到所有 p 元素，并且这些元素都必须是 div 元素的子元素。</desc>
+          <html>&lt;p&gt;one&lt;/p&gt; &lt;div&gt;&lt;p&gt;two&lt;/p&gt;&lt;/div&gt; &lt;p&gt;three&lt;/p&gt;</html>
+          <code>$("div &gt; p");</code>
+          <result>[ &lt;p&gt;two&lt;/p&gt; ]</result>
+        </example>
+        <example>
+          <desc>在指定的页面文档中查找所有的单选按钮(即: type 值为 radio 的 input 元素)。</desc>
+          <code>$("input[type=radio]", window.frames['test'].contentWindow.document);</code>
+        </example>
+      </function>
+      <function name="Dom.parse" return="Control">
+        <desc>根据提供的原始 HTML 标记字符串，动态创建由 Control 对象包装的 DOM 元素。</desc>
+        <longdesc>你可以传递一个手写的 HTML 字符串，或者由某些模板引擎或插件创建的字符串，也可以是通过 AJAX 加载过来的字符串。但是在你创建 input 元素的时会有限制，可以参考第二个示例。当然这个字符串可以包含斜杠 (比如一个图像地址)，还有反斜杠。当创建单个元素时，请使用闭合标签或 XHTML 格式。</longdesc>
+        <params name="html" type="String">
+          <desc>用于动态创建DOM元素的HTML标记字符串</desc>
+        </params>
+        <params name="ownerDocument" type="Document" optional="true">
+          <desc>创建DOM元素所在的文档</desc>
+        </params>
+        <example>
+          <desc>动态创建一个 div 元素（以及其中的所有内容），并将它追加到 body 元素中。在这个函数的内部，是通过临时创建一个元素，并将这个元素的 innerHTML 属性设置为给定的标记字符串，来实现标记到 DOM 元素转换的。所以，这个函数既有灵活性，也有局限性。</desc>
+          <code>Dom.parse("&lt;div&gt;&lt;p&gt;Hello&lt;/p&gt;&lt;/div&gt;").appendTo("body");</code>
+        </example>
+        <example>
+          <desc>创建一个 &lt;input&gt; 元素必须同时设定 type 属性。因为微软规定 &lt;input&gt; 元素的 type 只能写一次。</desc>
+          <code>// 在 IE 中无效:
+Dom.parse("&lt;input&gt;").setAttr("type", "checkbox");
+// 在 IE 中有效:
+Dom.parse("&lt;input type='checkbox'&gt;");</code>
+        </example>
+      </function>
+      <function name="Dom.create" return="Control">
+        <desc>创建一个节点，动态创建由 Control 对象包装的 DOM 元素。</desc>
+        <longdesc>创建一个空节点。相当于 document.createElement </longdesc>
+        <params name="tagName" type="String">
+          <desc>要创建的节点标签。</desc>
+        </params>
+		<params name="className" type="String">
+          <desc>用于新节点的 CSS 类名。</desc>
+        </params>
+        <example>
+          <desc>动态创建一个 div 元素（以及其中的所有内容），并将它追加到 body 元素中。在这个函数的内部，是通过临时创建一个元素，并将这个元素的 innerHTML 属性设置为给定的标记字符串，来实现标记到 DOM 元素转换的。所以，这个函数既有灵活性，也有局限性。</desc>
+          <code>Dom.create("div", "cls").appendTo("body");</code>
+        </example>
+        <example>
+          <desc>创建一个 &lt;input&gt; 元素必须同时设定 type 属性。因为微软规定 &lt;input&gt; 元素的 type 只能写一次。</desc>
+          <code>// 在 IE 中无效:
+Dom.parse("&lt;input&gt;").setAttr("type", "checkbox");
+// 在 IE 中有效:
+Dom.parse("&lt;input type='checkbox'&gt;");</code>
+        </example>
+      </function>
+      <function name="Dom.ready" return="void">
+        <desc>设置在页面加载(不包含图片)完成时执行函数。</desc>
+        <longdesc>允许你绑定一个在DOM文档载入完成后执行的函数。需要把页面中所有需要在 DOM 加载完成时执行的Dom.ready()操作符都包装到其中来。从技术上来说，这个函数是可链接的－－但真正以这种方式链接的情况并不多。</longdesc>
+        <params name="callback" type="Function">
+          <desc>当DOM加载完成后要执行的函数</desc>
+        </params>
+        <example>
+          <desc>当DOM加载完成后，执行其中的函数。</desc>
+          <code>Dom.ready(function(){
+  // 文档就绪
+});</code>
+        </example>
+      </function>
+      <function name="Dom.load" return="void">
+        <desc>设置在页面加载(包含图片)完成时执行函数。</desc>
+        <longdesc>允许你绑定一个在DOM文档载入完成后执行的函数。需要把页面中所有需要在 DOM 加载完成时执行的Dom.load()操作符都包装到其中来。从技术上来说，这个函数是可链接的－－但真正以这种方式链接的情况并不多。</longdesc>
+        <params name="callback" type="Function">
+          <desc>当DOM加载完成后要执行的函数</desc>
+        </params>
+        <example>
+          <desc>当DOM加载完成后，执行其中的函数。</desc>
+          <code>Dom.load(function(){
+  // 文档就绪
+});</code>
+        </example>
+      </function>
+    </subcat>
+    <subcat value="DOM 函数扩展(组件开发)">
+      <function name="Control.implement" return="Control">
+        <desc>扩展 Control 元素集来提供新的方法（通常用来制作插件）。</desc>
+        <params name="object" type="Object">
+          <desc>用来扩充 Control 对象。</desc>
+        </params>
+        <example>
+          <desc>增加两个方法。</desc>
+          <code>Control.implement({
+  check: function() {
+    this.checked = true;
+	return this;
+  },
+  uncheck: function() {
+    this.checked = false;
+	return this;
+  }
+});</code>
+          <result>$("input[type=checkbox]").check();
+$("input[type=radio]").uncheck();</result>
+        </example>
+      </function>
+      <function name="Control.extend" return="Control">
+        <desc>继承 Control 创建新控件。</desc>
+        <longdesc>继承的组件附带完成组件周期。 </longdesc>
+        <params name="object" type="Object">
+          <desc>用以扩展 Control 对象</desc>
+        </params>
+      </function>
+    </subcat>
+  </cat>
+  <cat value="选择器">
+    <subcat value="基本">
+      <selector name="id" return="Array&lt;Element>">
+        <sample>#id</sample>
+        <desc>根据给定的ID匹配一个元素。</desc>
+        <longdesc>如果选择器中包含特殊字符，可以用两个斜杠转义。参见示例。</longdesc>
+        <params name="id" type="String">
+          <desc>用于搜索的，通过元素的 id 属性中给定的值</desc>
+        </params>
+        <example>
+          <desc>查找 ID 为"myDiv"的元素。</desc>
+          <html>&lt;div id="notMe"&gt;&lt;p&gt;id="notMe"&lt;/p&gt;&lt;/div&gt;
+&lt;div id="myDiv"&gt;id="myDiv"&lt;/div&gt;</html>
+          <code>$("#myDiv");</code>
+          <result>[ &lt;div id="myDiv"&gt;id="myDiv"&lt;/div&gt; ]</result>
+        </example>
+        <example>
+          <desc>查找含有特殊字符的元素</desc>
+          <html>&lt;span id="foo:bar"&gt;&lt;/span&gt;
+&lt;span id="foo[bar]"&gt;&lt;/span&gt;
+&lt;span id="foo.bar"&gt;&lt;/span&gt;</html>
+          <code>#foo\\:bar
+#foo\\[bar\\]
+#foo\\.bar</code>
+        </example>
+      </selector>
+      <selector name="element" return="NodeList">
+        <sample>element</sample>
+        <desc>根据给定的元素名匹配所有元素</desc>
+        <params name="element" type="String">
+          <desc>一个用于搜索的元素。指向 DOM 节点的标签名。</desc>
+        </params>
+        <example>
+          <desc>查找一个 DIV 元素。</desc>
+          <html>&lt;div&gt;DIV1&lt;/div&gt;
+&lt;div&gt;DIV2&lt;/div&gt;
+&lt;span&gt;SPAN&lt;/span&gt;</html>
+          <code>$("div");</code>
+          <result>[ &lt;div&gt;DIV1&lt;/div&gt;, &lt;div&gt;DIV2&lt;/div&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="class" return="NodeList">
+        <sample>.class</sample>
+        <desc>根据给定的类匹配元素。</desc>
+        <params name="class" type="String">
+          <desc>一个用以搜索的类。一个元素可以有多个类，只要有一个符合就能被匹配到。</desc>
+        </params>
+        <example>
+          <desc>查找所有类是 "myClass" 的元素.</desc>
+          <html>&lt;div class="notMe"&gt;div class="notMe"&lt;/div&gt;
+&lt;div class="myClass"&gt;div class="myClass"&lt;/div&gt;
+&lt;span class="myClass"&gt;span class="myClass"&lt;/span&gt;</html>
+          <code>$(".myClass");</code>
+          <result>[ &lt;div class="myClass"&gt;div class="myClass"&lt;/div&gt;, &lt;span class="myClass"&gt;span class="myClass"&lt;/span&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="all" return="NodeList">
+        <sample>*</sample>
+        <desc>匹配所有元素</desc>
+        <longdesc>多用于结合上下文来搜索。</longdesc>
+        <example>
+          <desc>找到每一个元素</desc>
+          <html>&lt;div&gt;DIV&lt;/div&gt;
+&lt;span&gt;SPAN&lt;/span&gt;
+&lt;p&gt;P&lt;/p&gt;</html>
+          <code>$("*")</code>
+          <result>[ &lt;div&gt;DIV&lt;/div&gt;, &lt;span&gt;SPAN&lt;/span&gt;, &lt;p&gt;P&lt;/p&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="multiple" return="NodeList">
+        <sample>selector1,selector2,selectorN</sample>
+        <desc>将每一个选择器匹配到的元素合并后一起返回。</desc>
+        <longdesc>你可以指定任意多个选择器，并将匹配到的元素合并到一个结果内。</longdesc>
+        <params name="selector1" type="Selector">
+          <desc>一个有效的选择器</desc>
+        </params>
+        <params name="selector2" type="Selector">
+          <desc>另一个有效的选择器</desc>
+        </params>
+        <params name="selectorN" type="Selector" optional="true">
+          <desc>任意多个有效选择器</desc>
+        </params>
+        <example>
+          <desc>找到匹配任意一个类的元素。</desc>
+          <html>&lt;div&gt;div&lt;/div&gt;
+&lt;p class="myClass"&gt;p class="myClass"&lt;/p&gt;
+&lt;span&gt;span&lt;/span&gt;
+&lt;p class="notMyClass"&gt;p class="notMyClass"&lt;/p&gt;</html>
+          <code>$("div,span,p.myClass")</code>
+          <result>[ &lt;div&gt;div&lt;/div&gt;, &lt;p class="myClass"&gt;p class="myClass"&lt;/p&gt;, &lt;span&gt;span&lt;/span&gt; ]</result>
+        </example>
+      </selector>
+    </subcat>
+    <subcat value="层级">
+      <selector name="descendant" return="NodeList">
+        <sample>ancestor descendant</sample>
+        <desc>在给定的祖先元素下匹配所有的后代元素</desc>
+        <params name="ancestor" type="Selector">
+          <desc>任何有效选择器</desc>
+        </params>
+        <params name="descendant" type="Selector">
+          <desc>用以匹配元素的选择器，并且它是第一个选择器的后代元素</desc>
+        </params>
+        <example>
+          <desc>找到表单中所有的 input 元素</desc>
+          <html>&lt;form&gt;
+  &lt;label&gt;Name:&lt;/label&gt;
+  &lt;input name="name" /&gt;
+  &lt;fieldset&gt;
+      &lt;label&gt;Newsletter:&lt;/label&gt;
+      &lt;input name="newsletter" /&gt;
+ &lt;/fieldset&gt;
+&lt;/form&gt;
+&lt;input name="none" /&gt;</html>
+          <code>$("form input")</code>
+          <result>[ &lt;input name="name" /&gt;, &lt;input name="newsletter" /&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="child" return="NodeList">
+        <sample>parent &gt; child</sample>
+        <desc>在给定的父元素下匹配所有的子元素</desc>
+        <params name="parent" type="Selector">
+          <desc>任何有效选择器</desc>
+        </params>
+        <params name="child" type="Selector">
+          <desc>用以匹配元素的选择器，并且它是第一个选择器的子元素</desc>
+        </params>
+        <example>
+          <desc>匹配表单中所有的子级input元素。</desc>
+          <html>&lt;form&gt;
+  &lt;label&gt;Name:&lt;/label&gt;
+  &lt;input name="name" /&gt;
+  &lt;fieldset&gt;
+      &lt;label&gt;Newsletter:&lt;/label&gt;
+      &lt;input name="newsletter" /&gt;
+ &lt;/fieldset&gt;
+&lt;/form&gt;
+&lt;input name="none" /&gt;</html>
+          <code>$("form &gt; input")</code>
+          <result>[ &lt;input name="name" /&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="next" return="NodeList">
+        <sample>prev + next</sample>
+        <desc>匹配所有紧接在 prev 元素后的 next 元素</desc>
+        <params name="prev" type="Selector">
+          <desc>任何有效选择器</desc>
+        </params>
+        <params name="next" type="Selector">
+          <desc>一个有效选择器并且紧接着第一个选择器</desc>
+        </params>
+        <example>
+          <desc>匹配所有跟在 label 后面的 input 元素</desc>
+          <html>&lt;form&gt;
+  &lt;label&gt;Name:&lt;/label&gt;
+  &lt;input name="name" /&gt;
+  &lt;fieldset&gt;
+      &lt;label&gt;Newsletter:&lt;/label&gt;
+      &lt;input name="newsletter" /&gt;
+ &lt;/fieldset&gt;
+&lt;/form&gt;
+&lt;input name="none" /&gt;</html>
+          <code>$("label + input")</code>
+          <result>[ &lt;input name="name" /&gt;, &lt;input name="newsletter" /&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="siblings" return="NodeList">
+        <sample>prev ~ siblings</sample>
+        <desc>匹配 prev 元素之后的所有 siblings 元素</desc>
+        <params name="prev" type="Selector">
+          <desc>任何有效选择器</desc>
+        </params>
+        <params name="siblings" type="Selector">
+          <desc>一个选择器，并且它作为第一个选择器的同辈</desc>
+        </params>
+        <example>
+          <desc>找到所有与表单同辈的 input 元素</desc>
+          <html>&lt;form&gt;
+  &lt;label&gt;Name:&lt;/label&gt;
+  &lt;input name="name" /&gt;
+  &lt;fieldset&gt;
+      &lt;label&gt;Newsletter:&lt;/label&gt;
+      &lt;input name="newsletter" /&gt;
+ &lt;/fieldset&gt;
+&lt;/form&gt;
+&lt;input name="none" /&gt;</html>
+          <code>$("form ~ input")</code>
+          <result>[ &lt;input name="none" /&gt; ]</result>
+        </example>
+      </selector>
+    </subcat>
+    <subcat value="简单">
+      <selector name="first" return="Array&lt;Element>">
+        <sample>:first</sample>
+        <desc>匹配找到的第一个元素</desc>
+        <example>
+          <desc>查找表格的第一行</desc>
+          <html>&lt;table&gt;
+  &lt;tr&gt;&lt;td&gt;Header 1&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Value 1&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Value 2&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</html>
+          <code>$("tr:first")</code>
+          <result>[ &lt;tr&gt;&lt;td&gt;Header 1&lt;/td&gt;&lt;/tr&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="last" return="Array&lt;Element>">
+        <sample>:last</sample>
+        <desc>匹配找到的最后一个元素</desc>
+        <example>
+          <desc>查找表格的最后一行</desc>
+          <html>&lt;table&gt;
+  &lt;tr&gt;&lt;td&gt;Header 1&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Value 1&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Value 2&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</html>
+          <code>$("tr:last")</code>
+          <result>[ &lt;tr&gt;&lt;td&gt;Value 2&lt;/td&gt;&lt;/tr&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="not" return="NodeList">
+        <sample>:not</sample>
+        <desc>去除所有与给定选择器匹配的元素</desc>
+        <params name="selector" type="Selector">
+          <desc>用于筛选的选择器</desc>
+        </params>
+        <example>
+          <desc>查找所有未选中的 input 元素</desc>
+          <html>&lt;input name="apple" /&gt;
+&lt;input name="flower" checked="checked" /&gt;</html>
+          <code>$("input:not(:checked)")</code>
+          <result>[ &lt;input name="apple" /&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="even" return="NodeList">
+        <sample>:even</sample>
+        <desc>匹配所有索引值为偶数的元素，从 0 开始计数</desc>
+        <example>
+          <desc>查找表格的1、3、5...行（即索引值0、2、4...）</desc>
+          <html>&lt;table&gt;
+  &lt;tr&gt;&lt;td&gt;Header 1&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Value 1&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Value 2&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</html>
+          <code>$("tr:even")</code>
+          <result>[ &lt;tr&gt;&lt;td&gt;Header 1&lt;/td&gt;&lt;/tr&gt;, &lt;tr&gt;&lt;td&gt;Value 2&lt;/td&gt;&lt;/tr&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="odd" return="NodeList">
+        <sample>:odd</sample>
+        <desc>匹配所有索引值为奇数的元素，从 0 开始计数</desc>
+        <example>
+          <desc>查找表格的2、4、6行（即索引值1、3、5...）</desc>
+          <html>&lt;table&gt;
+  &lt;tr&gt;&lt;td&gt;Header 1&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Value 1&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Value 2&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</html>
+          <code>$("tr:odd")</code>
+          <result>[ &lt;tr&gt;&lt;td&gt;Value 1&lt;/td&gt;&lt;/tr&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="header" return="NodeList">
+        <sample>:header</sample>
+        <desc>匹配如 h1, h2, h3之类的标题元素</desc>
+        <example>
+          <desc>给页面内所有标题加上背景色</desc>
+          <html>&lt;h1&gt;Header 1&lt;/h1&gt;
+&lt;p&gt;Contents 1&lt;/p&gt;
+&lt;h2&gt;Header 2&lt;/h2&gt;
+&lt;p&gt;Contents 2&lt;/p&gt;</html>
+          <code>$(":header").set("background", "#EEE");</code>
+          <result>[ &lt;h1 style="background:#EEE;"&gt;Header 1&lt;/h1&gt;, &lt;h2 style="background:#EEE;"&gt;Header 2&lt;/h2&gt; ]</result>
+        </example>
+      </selector>
+    </subcat>
+    <subcat value="内容">
+      <selector name="contains" return="NodeList">
+        <sample>:contains</sample>
+        <desc>匹配包含给定文本的元素</desc>
+        <params name="text" type="String">
+          <desc>一个用以查找的字符串</desc>
+        </params>
+        <example>
+          <desc>查找所有包含 "John" 的 div 元素</desc>
+          <html>&lt;div&gt;John Resig&lt;/div&gt;
+&lt;div&gt;George Martin&lt;/div&gt;
+&lt;div&gt;Malcom John Sinclair&lt;/div&gt;
+&lt;div&gt;J. Ohn</html>
+          <code>$("div:contains('John')")</code>
+          <result>[ &lt;div&gt;John Resig&lt;/div&gt;, &lt;div&gt;Malcom John Sinclair&lt;/div&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="empty" return="NodeList">
+        <sample>:empty</sample>
+        <desc>匹配所有不包含子元素或者文本的空元素</desc>
+        <example>
+          <desc>查找所有不包含子元素或者文本的空元素</desc>
+          <html>&lt;table&gt;
+  &lt;tr&gt;&lt;td&gt;Value 1&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Value 2&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</html>
+          <code>$("td:empty")</code>
+          <result>[ &lt;td&gt;&lt;/td&gt;, &lt;td&gt;&lt;/td&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="has" return="NodeList">
+        <sample>:has</sample>
+        <desc>匹配含有选择器所匹配的元素的元素</desc>
+        <params name="selector" type="Selector">
+          <desc>一个用于筛选的选择器</desc>
+        </params>
+        <example>
+          <desc>给所有包含 p 元素的 div 元素添加一个 text 类</desc>
+          <html>&lt;div&gt;&lt;p&gt;Hello&lt;/p&gt;&lt;/div&gt;
+&lt;div&gt;Hello again!&lt;/div&gt;</html>
+          <code>$("div:has(p)").addClass("test");</code>
+          <result>[ &lt;div class="test"&gt;&lt;p&gt;Hello&lt;/p&gt;&lt;/div&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="parent" return="NodeList">
+        <sample>:parent</sample>
+        <desc>匹配含有子元素或者文本的元素</desc>
+        <example>
+          <desc>查找所有含有子元素或者文本的 td 元素</desc>
+          <html>&lt;table&gt;
+  &lt;tr&gt;&lt;td&gt;Value 1&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Value 2&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</html>
+          <code>$("td:parent")</code>
+          <result>[ &lt;td&gt;Value 1&lt;/td&gt;, &lt;td&gt;Value 1&lt;/td&gt; ]</result>
+        </example>
+      </selector>
+    </subcat>
+    <subcat value="可见性">
+      <selector name="hidden" return="NodeList">
+        <sample>:hidden</sample>
+        <desc>匹配所有的不可见元素，input 元素的 type 属性为 "hidden" 的话也会被匹配到</desc>
+        <example>
+          <desc>查找所有不可见的 tr 元素</desc>
+          <html>&lt;table&gt;
+  &lt;tr style="display:none"&gt;&lt;td&gt;Value 1&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Value 2&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</html>
+          <code>$("tr:hidden")</code>
+          <result>[ &lt;tr style="display:none"&gt;&lt;td&gt;Value 1&lt;/td&gt;&lt;/tr&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="visible" return="NodeList">
+        <sample>:visible</sample>
+        <desc>匹配所有的可见元素</desc>
+        <example>
+          <desc>查找所有可见的 tr 元素</desc>
+          <html>&lt;table&gt;
+  &lt;tr style="display:none"&gt;&lt;td&gt;Value 1&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Value 2&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</html>
+          <code>$("tr:visible")</code>
+          <result>[ &lt;tr&gt;&lt;td&gt;Value 2&lt;/td&gt;&lt;/tr&gt; ]</result>
+        </example>
+      </selector>
+    </subcat>
+    <subcat value="属性">
+      <selector name="attributeHas" return="NodeList">
+        <sample>[attribute]</sample>
+        <desc>匹配包含给定属性的元素。</desc>
+        <params name="attribute" type="String">
+          <desc>属性名</desc>
+        </params>
+        <example>
+          <desc>查找所有含有 id 属性的 div 元素</desc>
+          <html>&lt;div&gt;
+  &lt;p&gt;Hello!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id="test2"&gt;&lt;/div&gt;</html>
+          <code>$("div[id]")</code>
+          <result>[ &lt;div id="test2"&gt;&lt;/div&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="attributeEquals" return="NodeList">
+        <sample>[attribute=value]</sample>
+        <desc>匹配给定的属性是某个特定值的元素</desc>
+        <params name="attribute" type="String">
+          <desc>属性名</desc>
+        </params>
+        <params name="value" type="String" optional="true">
+          <desc>属性值。引号在大多数情况下是可选的。但在遇到诸如属性值包含"]"时，用以避免冲突。</desc>
+        </params>
+        <example>
+          <desc>查找所有 name 属性是 newsletter 的 input 元素</desc>
+          <html>&lt;input type="checkbox" name="newsletter" value="Hot Fuzz" /&gt;
+&lt;input type="checkbox" name="newsletter" value="Cold Fusion" /&gt;
+&lt;input type="checkbox" name="accept" value="Evil Plans" /&gt;</html>
+          <code>$("input[name='newsletter']").attr("checked", true);</code>
+          <result>[ &lt;input type="checkbox" name="newsletter" value="Hot Fuzz" checked="true" /&gt;, &lt;input type="checkbox" name="newsletter" value="Cold Fusion" checked="true" /&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="attributeNotEqual" return="NodeList">
+        <sample>[attribute!=value]</sample>
+        <desc>匹配所有不含有指定的属性，或者属性不等于特定值的元素。</desc>
+        <longdesc>此选择器等价于:not([attr=value])&lt;br&gt;要匹配含有特定属性但不等于特定值的元素，请使用[attr]:not([attr=value])</longdesc>
+        <params name="attribute" type="String">
+          <desc>属性名</desc>
+        </params>
+        <params name="value" type="String" optional="true">
+          <desc>属性值。引号在大多数情况下是可选的。但在遇到诸如属性值包含"]"时，用以避免冲突。</desc>
+        </params>
+        <example>
+          <desc>查找所有 name 属性不是 newsletter 的 input 元素</desc>
+          <html>&lt;input type="checkbox" name="newsletter" value="Hot Fuzz" /&gt;
+&lt;input type="checkbox" name="newsletter" value="Cold Fusion" /&gt;
+&lt;input type="checkbox" name="accept" value="Evil Plans" /&gt;</html>
+          <code>$("input[name!='newsletter']").attr("checked", true);</code>
+          <result>[ &lt;input type="checkbox" name="accept" value="Evil Plans" checked="true" /&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="attributeStartsWith" return="NodeList">
+        <sample>[attribute^=value]</sample>
+        <desc>匹配给定的属性是以某些值开始的元素</desc>
+        <params name="attribute" type="String">
+          <desc>属性名</desc>
+        </params>
+        <params name="value" type="String" optional="true">
+          <desc>属性值。引号在大多数情况下是可选的。但在遇到诸如属性值包含"]"时，用以避免冲突。</desc>
+        </params>
+        <example>
+          <desc>查找所有 name 以 'news' 开始的 input 元素</desc>
+          <html>&lt;input name="newsletter" /&gt;
+&lt;input name="milkman" /&gt;
+&lt;input name="newsboy" /&gt;</html>
+          <code>$("input[name^='news']")</code>
+          <result>[ &lt;input name="newsletter" /&gt;, &lt;input name="newsboy" /&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="attributeEndsWith" return="NodeList">
+        <sample>[attributeJ=value]</sample>
+        <desc>匹配给定的属性是以某些值结尾的元素</desc>
+        <params name="attribute" type="String">
+          <desc>属性名</desc>
+        </params>
+        <params name="value" type="String" optional="true">
+          <desc>属性值。引号在大多数情况下是可选的。但在遇到诸如属性值包含"]"时，用以避免冲突。</desc>
+        </params>
+        <example>
+          <desc>查找所有 name 以 'letter' 结尾的 input 元素</desc>
+          <html>&lt;input name="newsletter" /&gt;
+&lt;input name="milkman" /&gt;
+&lt;input name="jobletter" /&gt;</html>
+          <code>$("input[nameJ='letter']")</code>
+          <result>[ &lt;input name="newsletter" /&gt;, &lt;input name="jobletter" /&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="attributeContains" return="NodeList">
+        <sample>[attribute*=value]</sample>
+        <desc>匹配给定的属性是以包含某些值的元素</desc>
+        <params name="attribute" type="String">
+          <desc>属性名</desc>
+        </params>
+        <params name="value" type="String" optional="true">
+          <desc>属性值。引号在大多数情况下是可选的。但在遇到诸如属性值包含"]"时，用以避免冲突。</desc>
+        </params>
+        <example>
+          <desc>查找所有 name 包含 'man' 的 input 元素</desc>
+          <html>&lt;input name="man-news" /&gt;
+&lt;input name="milkman" /&gt;
+&lt;input name="letterman2" /&gt;
+&lt;input name="newmilk" /&gt;</html>
+          <code>$("input[name*='man']")</code>
+          <result>[ &lt;input name="man-news" /&gt;, &lt;input name="milkman" /&gt;, &lt;input name="letterman2" /&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="attributeMultiple" return="NodeList">
+        <sample>[selector1][selector2][selectorN]</sample>
+        <desc>复合属性选择器，需要同时满足多个条件时使用。</desc>
+        <params name="selector1" type="Selector">
+          <desc>属性选择器</desc>
+        </params>
+        <params name="selector2" type="Selector">
+          <desc>另一个属性选择器，用以进一步缩小范围</desc>
+        </params>
+        <params name="selectorN" type="Selector">
+          <desc>任意多个属性选择器</desc>
+        </params>
+        <example>
+          <desc>找到所有含有 id 属性，并且它的 name 属性是以 man 结尾的</desc>
+          <html>&lt;input id="man-news" name="man-news" /&gt;
+&lt;input name="milkman" /&gt;
+&lt;input id="letterman" name="new-letterman" /&gt;
+&lt;input name="newmilk" /&gt;</html>
+          <code>$("input[id][nameJ='man']")</code>
+          <result>[ &lt;input id="letterman" name="new-letterman" /&gt; ]</result>
+        </example>
+      </selector>
+    </subcat>
+    <subcat value="子元素">
+      <selector name="nthChild" return="NodeList">
+        <sample>:nth-child</sample>
+        <desc>匹配其父元素下的第N个子或奇偶元素</desc>
+        <longdesc>':eq(index)' 只匹配一个元素，而这个将为每一个父元素匹配子元素。:nth-child从1开始的，而:eq()是从0算起的！可以使用:&lt;br&gt;nth-child(even)&lt;br&gt;:nth-child(odd)&lt;br&gt;:nth-child(3n)&lt;br&gt;:nth-child(2)&lt;br&gt;:nth-child(3n+1)&lt;br&gt;:nth-child(3n+2)</longdesc>
+        <params name="index" type="Number">
+          <desc>要匹配元素的序号，从1开始</desc>
+        </params>
+        <example>
+          <desc>在每个 ul 查找第 2 个li</desc>
+          <html>&lt;ul&gt;
+  &lt;li&gt;John&lt;/li&gt;
+  &lt;li&gt;Karl&lt;/li&gt;
+  &lt;li&gt;Brandon&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ul&gt;
+  &lt;li&gt;Glen&lt;/li&gt;
+  &lt;li&gt;Tane&lt;/li&gt;
+  &lt;li&gt;Ralph&lt;/li&gt;
+&lt;/ul&gt;</html>
+          <code>$("ul li:nth-child(2)")</code>
+          <result>[ &lt;li&gt;Karl&lt;/li&gt;,   &lt;li&gt;Tane&lt;/li&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="firstChild" return="NodeList">
+        <sample>:first-child</sample>
+        <desc>匹配第一个子元素</desc>
+        <longdesc>':first' 只匹配一个元素，而此选择符将为每个父元素匹配一个子元素</longdesc>
+        <example>
+          <desc>在每个 ul 中查找第一个 li</desc>
+          <html>&lt;ul&gt;
+  &lt;li&gt;John&lt;/li&gt;
+  &lt;li&gt;Karl&lt;/li&gt;
+  &lt;li&gt;Brandon&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ul&gt;
+  &lt;li&gt;Glen&lt;/li&gt;
+  &lt;li&gt;Tane&lt;/li&gt;
+  &lt;li&gt;Ralph&lt;/li&gt;
+&lt;/ul&gt;</html>
+          <code>$("ul li:first-child")</code>
+          <result>[ &lt;li&gt;John&lt;/li&gt;, &lt;li&gt;Glen&lt;/li&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="lastChild" return="NodeList">
+        <sample>:last-child</sample>
+        <desc>匹配最后一个子元素</desc>
+        <longdesc>':last'只匹配一个元素，而此选择符将为每个父元素匹配一个子元素</longdesc>
+        <example>
+          <desc>在每个 ul 中查找最后一个 li</desc>
+          <html>&lt;ul&gt;
+  &lt;li&gt;John&lt;/li&gt;
+  &lt;li&gt;Karl&lt;/li&gt;
+  &lt;li&gt;Brandon&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ul&gt;
+  &lt;li&gt;Glen&lt;/li&gt;
+  &lt;li&gt;Tane&lt;/li&gt;
+  &lt;li&gt;Ralph&lt;/li&gt;
+&lt;/ul&gt;</html>
+          <code>$("ul li:last-child")</code>
+          <result>[ &lt;li&gt;Brandon&lt;/li&gt;, &lt;li&gt;Ralph&lt;/li&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="onlyChild" return="NodeList">
+        <sample>:only-child</sample>
+        <desc>如果某个元素是父元素中唯一的子元素，那将会被匹配</desc>
+        <longdesc>如果父元素中含有其他元素，那将不会被匹配。</longdesc>
+        <example>
+          <desc>在 ul 中查找是唯一子元素的 li</desc>
+          <html>&lt;ul&gt;
+  &lt;li&gt;John&lt;/li&gt;
+  &lt;li&gt;Karl&lt;/li&gt;
+  &lt;li&gt;Brandon&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ul&gt;
+  &lt;li&gt;Glen&lt;/li&gt;
+&lt;/ul&gt;</html>
+          <code>$("ul li:only-child")</code>
+          <result>[ &lt;li&gt;Glen&lt;/li&gt; ]</result>
+        </example>
+      </selector>
+    </subcat>
+    <subcat value="表单对象属性">
+      <selector name="enabled" return="NodeList">
+        <sample>:enabled</sample>
+        <desc>匹配所有可用元素</desc>
+        <example>
+          <desc>查找所有可用的input元素</desc>
+          <html>&lt;form&gt;
+  &lt;input name="email" disabled="disabled" /&gt;
+  &lt;input name="id" /&gt;
+&lt;/form&gt;</html>
+          <code>$("input:enabled")</code>
+          <result>[ &lt;input name="id" /&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="disabled" return="NodeList">
+        <sample>:disabled</sample>
+        <desc>匹配所有不可用元素</desc>
+        <example>
+          <desc>查找所有不可用的input元素</desc>
+          <html>&lt;form&gt;
+  &lt;input name="email" disabled="disabled" /&gt;
+  &lt;input name="id" /&gt;
+&lt;/form&gt;</html>
+          <code>$("input:disabled")</code>
+          <result>[ &lt;input name="email" disabled="disabled" /&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="checked" return="NodeList">
+        <sample>:checked</sample>
+        <desc>匹配所有选中的被选中元素(复选框、单选框等，不包括select中的option)</desc>
+        <example>
+          <desc>查找所有选中的复选框元素</desc>
+          <html>&lt;form&gt;
+  &lt;input type="checkbox" name="newsletter" checked="checked" value="Daily" /&gt;
+  &lt;input type="checkbox" name="newsletter" value="Weekly" /&gt;
+  &lt;input type="checkbox" name="newsletter" checked="checked" value="Monthly" /&gt;
+&lt;/form&gt;</html>
+          <code>$("input:checked")</code>
+          <result>[ &lt;input type="checkbox" name="newsletter" checked="checked" value="Daily" /&gt;, &lt;input type="checkbox" name="newsletter" checked="checked" value="Monthly" /&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="selected" return="NodeList">
+        <sample>:selected</sample>
+        <desc>匹配所有选中的option元素</desc>
+        <example>
+          <desc>查找所有选中的选项元素</desc>
+          <html>&lt;select&gt;
+  &lt;option value="1"&gt;Flowers&lt;/option&gt;
+  &lt;option value="2" selected="selected"&gt;Gardens&lt;/option&gt;
+  &lt;option value="3"&gt;Trees&lt;/option&gt;
+&lt;/select&gt;</html>
+          <code>$("select option:selected")</code>
+          <result>[ &lt;option value="2" selected="selected"&gt;Gardens&lt;/option&gt; ]</result>
+        </example>
+      </selector>
+    </subcat>
+  </cat>
+  <cat value="属性">
+    <subcat value="属性">
+      <function name="getAttr" return="String">
+        <desc>取得第一个匹配元素的属性值。通过这个方法可以方便地从第一个匹配元素中获取一个属性的值。如果元素没有相应属性，则返回 undefined 。</desc>
+        <params name="name" type="String">
+          <desc>属性名称</desc>
+        </params>
+        <example>
+          <desc>返回文档中第一个图像的src属性值。</desc>
+          <html>&lt;img src="test.jpg"/&gt;</html>
+          <code>$("img").getAttr("src");</code>
+          <result>test.jpg</result>
+        </example>
+      </function>
+      <function name="setAttr" return="Control">
+        <desc>为所有匹配的元素设置一个属性值。</desc>
+        <params name="key" type="String">
+          <desc>属性名称</desc>
+        </params>
+        <params name="value" type="Object">
+          <desc>属性值</desc>
+        </params>
+        <example>
+          <desc>为所有图像设置src属性。</desc>
+          <html>&lt;img/&gt; 
+&lt;img/&gt;</html>
+          <code>$("img").attr("src","test.jpg");</code>
+          <result>[ &lt;img src= "test.jpg" /&gt; , &lt;img src= "test.jpg" /&gt; ]</result>
+        </example>
+      </function>
+    </subcat>
+    <subcat value="CSS 类">
+      <function name="addClass" return="Control">
+        <desc>为每个匹配的元素添加指定的类名。</desc>
+        <params name="class" type="String">
+          <desc>一个或多个要添加到元素中的CSS类名，请用空格分开</desc>
+        </params>
+        <example>
+          <desc>为匹配的元素加上 'selected' 类</desc>
+          <html>&lt;p&gt;Hello&lt;/p&gt;</html>
+          <code>$("p").addClass("selected");</code>
+          <result>[ &lt;p class="selected"&gt;Hello&lt;/p&gt; ]</result>
+        </example>
+        <example>
+          <desc>为匹配的元素加上 selected highlight 类</desc>
+          <html>&lt;p&gt;Hello&lt;/p&gt;</html>
+          <code>$("p").addClass("selected highlight");</code>
+          <result>[ &lt;p class="selected highlight"&gt;Hello&lt;/p&gt; ]</result>
+        </example>
+      </function>
+      <function name="removeClass" return="Control">
+        <desc>从所有匹配的元素中删除全部类。</desc>
+        <example>
+          <desc>删除匹配元素的所有类</desc>
+          <html>&lt;p class="selected first"&gt;Hello&lt;/p&gt;</html>
+          <code>$("p").removeClass();</code>
+          <result>[ &lt;p&gt;Hello&lt;/p&gt; ]</result>
+        </example>
+      </function>
+      <function name="toggleClass" return="Control">
+        <desc>如果存在（不存在）就删除（添加）一个类。</desc>
+        <params name="class" type="String">
+          <desc>CSS类名</desc>
+        </params>
+        <example>
+          <desc>为匹配的元素切换 'selected' 类</desc>
+          <html>&lt;p&gt;Hello&lt;/p&gt;&lt;p class="selected"&gt;Hello Again&lt;/p&gt;</html>
+          <code>$("p").toggleClass("selected");</code>
+          <result>[ &lt;p class="selected"&gt;Hello&lt;/p&gt;, &lt;p&gt;Hello Again&lt;/p&gt; ]</result>
+        </example>
+      </function>
+      <function name="toggleClass" return="Control">
+        <desc>如果开关switch参数为true则加上对应的class，否则就删除。</desc>
+        <params name="class" type="String">
+          <desc>要切换的CSS类名</desc>
+        </params>
+        <params name="switch" type="Boolean">
+          <desc>用于决定元素是否包含class的布尔值。</desc>
+        </params>
+        <example>
+          <desc>每点击三下加上一次 'selected' 类</desc>
+          <html>&lt;strong&gt;Control 代码:&lt;/strong&gt;</html>
+          <code>  var count = 0;
+  $("p").click(function(){
+      $(this).toggleClass("highlight", count++ % 3 == 0);
+  });</code>
+        </example>
+      </function>
+    </subcat>
+    <subcat value="HTML代码">
+      <function name="getHtml" return="String">
+        <desc>取得第一个匹配元素的html内容。这个函数不能用于XML文档。但可以用于XHTML文档。</desc>
+      </function>
+      <function name="setHtml" return="Control">
+        <desc>设置每一个匹配元素的html内容。这个函数不能用于XML文档。但可以用于XHTML文档。</desc>
+        <params name="value" type="String">
+          <desc>用于设定HTML内容的值</desc>
+        </params>
+      </function>
+    </subcat>
+    <subcat value="文本">
+      <function name="getText" return="String">
+        <desc>取得所有匹配元素的内容。</desc>
+        <longdesc>结果是由所有匹配元素包含的文本内容组合起来的文本。这个方法对HTML和XML文档都有效。</longdesc>
+      </function>
+      <function name="setText" return="Control">
+        <desc>设置所有匹配元素的文本内容</desc>
+        <longdesc>与 setText() 类似, 但将编码 HTML (将 "&lt;" 和 "&gt;" 替换成相应的HTML实体).</longdesc>
+        <params name="value" type="String">
+          <desc>用于设置元素内容的文本</desc>
+        </params>
+      </function>
+    </subcat>
+  </cat>
+  <cat value="筛选">
+    <subcat value="过滤">
+      <function name="getChild" return="Control">
+        <desc>获取第N个元素</desc>
+        <longdesc>这个元素的位置是从0算起。</longdesc>
+        <params name="index" type="Integer">
+          <desc>元素在Control对象中的索引</desc>
+        </params>
+        <example>
+          <desc>获取匹配的第二个元素</desc>
+          <html>&lt;p&gt; This is just a test.&lt;/p&gt; &lt;p&gt; So is this&lt;/p&gt;</html>
+          <code>$("p").eq(1)</code>
+          <result>[ &lt;p&gt; So is this&lt;/p&gt; ]</result>
+        </example>
+      </function>
+      <function name="match" return="Boolean">
+        <desc>用一个表达式来检查当前选择的元素集合，如果其中至少有一个元素符合这个给定的表达式就返回true。</desc>
+        <longdesc>如果没有元素符合，或者表达式无效，都返回'false'。</longdesc>
+        <params name="expr" type="String">
+          <desc>用于筛选的表达式</desc>
+        </params>
+        <example>
+          <desc>由于input元素的父元素是一个表单元素，所以返回true。</desc>
+          <html>&lt;form&gt;&lt;input type="checkbox" /&gt;&lt;/form&gt;</html>
+          <code>$("input[type='checkbox']").match("input")</code>
+          <result>true</result>
+        </example>
+      </function>
+      <function name="getChild" return="Control">
+        <desc>将一组元素转换成其他数组（不论是否是元素数组）</desc>
+        <longdesc>你可以用这个函数来建立一个列表，不论是值、属性还是CSS样式，或者其他特别形式。这都可以用'J.map()'来方便的建立。</longdesc>
+        <params name="callback" type="Function">
+          <desc>给每个元素执行的函数</desc>
+        </params>
+        <example>
+          <desc>把form中的每个input元素的值建立一个列表。</desc>
+          <html>&lt;p&gt;&lt;b&gt;Values: &lt;/b&gt;&lt;/p&gt;
+&lt;form&gt;
+  &lt;input type="text" name="name" value="John"/&gt;
+  &lt;input type="text" name="password" value="password"/&gt;
+  &lt;input type="text" name="url" value="http://ejohn.org/"/&gt;
+&lt;/form&gt;</html>
+          <code>$("p").append( $("input").map(function(){
+  return $(this).getText();
+}).get().join(", ") );</code>
+          <result>[ &lt;p&gt;John, password, http://ejohn.org/&lt;/p&gt; ]</result>
+        </example>
+      </function>	  
+    </subcat>
+    <subcat value="查找">
+      <function name="getChildren" return="Control">
+        <desc>取得一个包含匹配的元素集合中每一个元素的所有子元素的元素集合。</desc>
+        <longdesc>可以通过可选的表达式来过滤所匹配的子元素。注意：parents()将查找所有祖辈元素，而children()只考虑子元素而不考虑所有后代元素。</longdesc>
+        <params name="expr" type="String" optional="true">
+          <desc>用以过滤子元素的表达式</desc>
+        </params>
+        <example>
+          <desc>查找DIV中的每个子元素。</desc>
+          <html>&lt;p&gt;Hello&lt;/p&gt;&lt;div&gt;&lt;span&gt;Hello Again&lt;/span&gt;&lt;/div&gt;&lt;p&gt;And Again&lt;/p&gt;</html>
+          <code>$("div").getChildren()</code>
+          <result>[ &lt;span&gt;Hello Again&lt;/span&gt; ]</result>
+        </example>
+        <example>
+          <desc>在每个div中查找 div。</desc>
+          <html>&lt;div&gt;&lt;span&gt;Hello&lt;/span&gt;&lt;p class="selected"&gt;Hello Again&lt;/p&gt;&lt;p&gt;And Again&lt;/p&gt;&lt;/div&gt;</html>
+          <code>$("div").getChildren("div")</code>
+          <result>[ &lt;p class="selected"&gt;Hello Again&lt;/p&gt; ]</result>
+        </example>
+      </function>
+      <function name="getNext" return="Control">
+        <desc>取得一个包含匹配的元素集合中每一个元素紧邻的后面同辈元素的元素集合。</desc>
+        <longdesc>这个函数只返回后面那个紧邻的同辈元素，而不是后面所有的同辈元素（可以使用nextAll）。可以用一个可选的表达式进行筛选。</longdesc>
+        <params name="expr" type="String" optional="true">
+          <desc>用于筛选的表达式</desc>
+        </params>
+        <example>
+          <desc>找到每个段落的后面紧邻的同辈元素。</desc>
+          <html>&lt;p&gt;Hello&lt;/p&gt;&lt;p&gt;Hello Again&lt;/p&gt;&lt;div&gt;&lt;span&gt;And Again&lt;/span&gt;&lt;/div&gt;</html>
+          <code>$("p").getNext()</code>
+          <result>[ &lt;p&gt;Hello Again&lt;/p&gt;, &lt;div&gt;&lt;span&gt;And Again&lt;/span&gt;&lt;/div&gt; ]</result>
+        </example>
+      </function>
+      <function name="getAllNext" return="Control">
+        <desc>查找当前元素之后所有的同辈元素。</desc>
+        <longdesc>可以用表达式过滤</longdesc>
+        <params name="expr" type="String" optional="true">
+          <desc>(可选)用来过滤的表达式</desc>
+        </params>
+        <example>
+          <desc>给第一个div之后的所有元素加个类</desc>
+          <html>&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;</html>
+          <code>$("div:first").nextAll().addClass("after");</code>
+          <result>[ &lt;div class="after"&gt;&lt;/div&gt;, &lt;div class="after"&gt;&lt;/div&gt;, &lt;div class="after"&gt;&lt;/div&gt; ]</result>
+        </example>
+      </function>
+      <function name="getAllParent" return="Control">
+        <desc>取得一个包含着所有匹配元素的祖先元素的元素集合（不包含根元素）。可以通过一个可选的表达式进行筛选。</desc>
+        <params name="expr" type="String" optional="true">
+          <desc>用于筛选祖先元素的表达式</desc>
+        </params>
+        <example>
+          <desc>找到每个span元素的所有祖先元素。</desc>
+          <html>&lt;html&gt;&lt;body&gt;&lt;div&gt;&lt;p&gt;&lt;span&gt;Hello&lt;/span&gt;&lt;/p&gt;&lt;span&gt;Hello Again&lt;/span&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</html>
+          <code>$("span").getAllParent()</code>
+        </example>
+        <example>
+          <desc>找到每个span的所有是p元素的祖先元素。</desc>
+          <code>$("span").getAllParent("p")</code>
+        </example>
+      </function>
+      <function name="getPrevious" return="Control">
+        <desc>取得一个包含匹配的元素集合中每一个元素紧邻的前一个同辈元素的元素集合。</desc>
+        <longdesc>可以用一个可选的表达式进行筛选。只有紧邻的同辈元素会被匹配到，而不是前面所有的同辈元素。</longdesc>
+        <params name="expr" type="String" optional="true">
+          <desc>用于筛选前一个同辈元素的表达式</desc>
+        </params>
+        <example>
+          <desc>找到每个段落紧邻的前一个同辈元素。</desc>
+          <html>&lt;p&gt;Hello&lt;/p&gt;&lt;div&gt;&lt;span&gt;Hello Again&lt;/span&gt;&lt;/div&gt;&lt;p&gt;And Again&lt;/p&gt;</html>
+          <code>$("p").getPrevious()</code>
+          <result>[ &lt;div&gt;&lt;span&gt;Hello Again&lt;/span&gt;&lt;/div&gt; ]</result>
+        </example>
+        <example>
+          <desc>找到每个段落紧邻的前一个同辈元素中类名为selected的元素。</desc>
+          <html>&lt;div&gt;&lt;span&gt;Hello&lt;/span&gt;&lt;/div&gt;&lt;p class="selected"&gt;Hello Again&lt;/p&gt;&lt;p&gt;And Again&lt;/p&gt;</html>
+          <code>$("p").getPrevious("div")</code>
+          <result>[ &lt;p class="selected"&gt;Hello Again&lt;/p&gt; ]</result>
+        </example>
+      </function>
+      <function name="getAllPrevious" return="Control">
+        <desc>查找当前元素之前所有的同辈元素</desc>
+        <longdesc>可以用表达式过滤。</longdesc>
+        <params name="expr" type="String" optional="true">
+          <desc>用于过滤的表达式</desc>
+        </params>
+        <example>
+          <desc>给最后一个之前的所有div加上一个类</desc>
+          <html>&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;</html>
+          <code>$("div:last").getAllPrevious().addClass("before");</code>
+          <result>[ &lt;div class="before"&gt;&lt;/div&gt;, &lt;div class="before"&gt;&lt;/div&gt;, &lt;div class="before"&gt;&lt;/div&gt; ]</result>
+        </example>
+      </function>
+      <function name="getSiblings" return="Control">
+        <desc>取得一个包含匹配的元素集合中每一个元素的所有唯一同辈元素的元素集合。可以用可选的表达式进行筛选。</desc>
+        <params name="expr" type="String" optional="true">
+          <desc>用于筛选同辈元素的表达式</desc>
+        </params>
+        <example>
+          <desc>找到每个div的所有同辈元素。</desc>
+          <html>&lt;p&gt;Hello&lt;/p&gt;&lt;div&gt;&lt;span&gt;Hello Again&lt;/span&gt;&lt;/div&gt;&lt;p&gt;And Again&lt;/p&gt;</html>
+          <code>$("div").getSiblings()</code>
+          <result>[ &lt;p&gt;Hello&lt;/p&gt;, &lt;p&gt;And Again&lt;/p&gt; ]</result>
+        </example>
+        <example>
+          <desc>找到每个div的所有同辈元素中带有类名为selected的元素。</desc>
+          <html>&lt;div&gt;&lt;span&gt;Hello&lt;/span&gt;&lt;/div&gt;&lt;p class="selected"&gt;Hello Again&lt;/p&gt;&lt;p&gt;And Again&lt;/p&gt;</html>
+          <code>$("div").getSiblings("div")</code>
+          <result>[ &lt;p class="selected"&gt;Hello Again&lt;/p&gt; ]</result>
+        </example>
+      </function>
+	</subcat>
+  </cat>
+  <cat value="文档处理">
+    <subcat value="插入">
+      <function name="append" return="Control">
+        <desc>向每个匹配的元素内部追加内容。</desc>
+        <longdesc>这个操作与对指定的元素执行appendChild方法，将它们添加到文档中的情况类似。</longdesc>
+        <params name="content" type="String, Element, Control">
+          <desc>要追加到目标中的内容</desc>
+        </params>
+        <example>
+          <desc>向所有段落中追加一些HTML标记。</desc>
+          <html>&lt;p&gt;I would like to say: &lt;/p&gt;</html>
+          <code>$("p").append("&lt;b&gt;Hello&lt;/b&gt;");</code>
+          <result>[ &lt;p&gt;I would like to say: &lt;b&gt;Hello&lt;/b&gt;&lt;/p&gt; ]</result>
+        </example>
+      </function>
+      <function name="appendTo" return="Control">
+        <desc>把所有匹配的元素追加到另一个、指定的元素元素集合中。</desc>
+        <longdesc>实际上，使用这个方法是颠倒了常规的$(A).append(B)的操作，即不是把B追加到A中，而是把A追加到B中。</longdesc>
+        <params name="content" type="String">
+          <desc>用于被追加的内容</desc>
+        </params>
+        <example>
+          <desc>把所有段落追加到ID值为foo的元素中。</desc>
+          <html>&lt;p&gt;I would like to say: &lt;/p&gt;&lt;div id="foo"&gt;&lt;/div&gt;</html>
+          <code>$("p").appendTo("#foo");</code>
+          <result>&lt;div id="foo"&gt;&lt;p&gt;I would like to say: &lt;/p&gt;&lt;/div&gt;</result>
+        </example>
+      </function>
+      <function name="insert" return="Control">
+        <desc>向每个匹配的元素内部前置内容。</desc>
+        <longdesc>这是向所有匹配元素内部的开始处插入内容的最佳方式。</longdesc>
+		 <params name="where" type="String">
+          <desc>可以是 beforeBegin; beforeEnd; afterBegin; afterEnd 之一，表示插入的位置。</desc>
+        </params>
+        <params name="content" type="String, Element, Control">
+          <desc>要插入到目标元素内部前端的内容</desc>
+        </params>
+        <example>
+          <desc>向所有段落中前置一些HTML标记代码。</desc>
+          <html>&lt;p&gt;I would like to say: &lt;/p&gt;</html>
+          <code>$("p").insert("afterBegin","&lt;b&gt;Hello&lt;/b&gt;");</code>
+          <result>[ &lt;p&gt;&lt;b&gt;Hello&lt;/b&gt;I would like to say: &lt;/p&gt; ]</result>
+        </example>
+      </function>
+    </subcat>
+    <subcat value="替换">
+      <function name="replaceWith" return="Control">
+        <desc>将所有匹配的元素替换成指定的HTML或DOM元素。</desc>
+        <params name="content" type="String, Element, Control">
+          <desc>用于将匹配元素替换掉的内容</desc>
+        </params>
+        <example>
+          <desc>把所有的段落标记替换成加粗的标记。</desc>
+          <html>&lt;p&gt;Hello&lt;/p&gt;&lt;p&gt;cruel&lt;/p&gt;&lt;p&gt;World&lt;/p&gt;</html>
+          <code>$("p").replaceWith("&lt;b&gt;Paragraph. &lt;/b&gt;");</code>
+          <result>&lt;b&gt;Paragraph. &lt;/b&gt;&lt;b&gt;Paragraph. &lt;/b&gt;&lt;b&gt;Paragraph. &lt;/b&gt;</result>
+        </example>
+      </function>
+    </subcat>
+    <subcat value="删除">
+      <function name="empty" return="Control">
+        <desc>删除匹配的元素集合中所有的子节点。</desc>
+        <example>
+          <desc>把所有段落的子元素（包括文本节点）删除</desc>
+          <html>&lt;p&gt;Hello, &lt;span&gt;Person&lt;/span&gt; &lt;a href="#"&gt;and person&lt;/a&gt;&lt;/p&gt;</html>
+          <code>$("p").empty();</code>
+          <result>&lt;p&gt;&lt;/p&gt;</result>
+        </example>
+      </function>
+	  <function name="remove" return="Control">
+        <desc>从DOM中删除所有匹配的元素。</desc>
+        <example>
+          <desc>从DOM中把所有段落删除</desc>
+          <html>&lt;p&gt;Hello&lt;/p&gt; how are &lt;p&gt;you?&lt;/p&gt;</html>
+          <code>$("p").remove();</code>
+          <result>how are</result>
+        </example>
+      </function>
+    </subcat>
+  </cat>
+  <cat value="CSS">
+    <subcat value="CSS">
+      <function name="getStyle" return="String">
+        <desc>访问第一个匹配元素的样式属性。</desc>
+        <params name="name" type="String">
+          <desc>要访问的属性名称</desc>
+        </params>
+        <example>
+          <desc>取得第一个段落的color样式属性的值。</desc>
+          <code>$("p").set("color");</code>
+        </example>
+      </function>
+      <function name="setStyle" return="Control">
+        <desc>把一个“名/值对”对象设置为所有匹配元素的样式属性。</desc>
+        <longdesc>这是一种在所有匹配的元素上设置大量样式属性的最佳方式。</longdesc>
+        <params name="properties" type="Map">
+          <desc>要设置为样式属性的名/值对</desc>
+        </params>
+        <example>
+          <desc>将所有段落的字体颜色设为红色并且背景为蓝色。</desc>
+          <code>$("p").set({ color: "#ff0011", background: "blue" });</code>
+        </example>
+      </function>
+      <function name="set" return="Control">
+        <desc>在所有匹配的元素中，设置一个样式属性的值。</desc>
+        <longdesc>数字将自动转化为像素值</longdesc>
+        <params name="name" type="value">
+          <desc>属性名</desc>
+        </params>
+        <params name="value" type="String, Number">
+          <desc>属性值</desc>
+        </params>
+        <example>
+          <desc>将所有段落字体设为红色</desc>
+          <code>$("p").set("color","red");</code>
+        </example>
+      </function>
+    </subcat>
+  </cat>
+  <cat value="事件">
+    <subcat value="事件处理">
+      <function name="on" return="Control">
+        <desc>为每一个匹配元素的特定事件（像click）绑定一个事件处理器函数。</desc>
+        <longdesc>这个事件处理函数会接收到一个事件对象，可以通过它来阻止（浏览器）默认的行为。如果既想取消默认的行为，又想阻止事件起泡，这个事件处理函数必须返回false。多数情况下，可以把事件处理器函数定义为匿名函数（见示例一）。</longdesc>
+        <params name="type" type="String">
+          <desc>事件类型</desc>
+        </params>
+        <params name="fn" type="Function">
+          <desc>绑定到每个匹配元素的事件上面的处理函数</desc>
+        </params>
+        <example>
+          <desc>当每个段落被点击的时候，弹出其文本。</desc>
+          <code>$("p").on("click", function(){
+  alert( $(this).getText() );
+});</code>
+        </example>
+        <example>
+          <desc>通过返回false来取消默认的行为并阻止事件起泡。</desc>
+          <code>$("form").on("submit", function() { return false; })</code>
+        </example>
+        <example>
+          <desc>通过使用 preventDefault() 方法只取消默认的行为。</desc>
+          <code>$("form").on("submit", function(event){
+  event.preventDefault();
+});</code>
+        </example>
+        <example>
+          <desc>通过使用 stopPropagation() 方法只阻止一个事件起泡。</desc>
+          <code>$("form").bind("submit", function(event){
+  event.stopPropagation();
+});</code>
+        </example>
+      </function>
+      <function name="one" return="Control">
+        <desc>为每一个匹配元素的特定事件（像click）绑定一个事件处理器函数。事件只执行一次。</desc>
+        <longdesc>这个事件处理函数会接收到一个事件对象，可以通过它来阻止（浏览器）默认的行为。如果既想取消默认的行为，又想阻止事件起泡，这个事件处理函数必须返回false。多数情况下，可以把事件处理器函数定义为匿名函数（见示例一）。</longdesc>
+        <params name="type" type="String">
+          <desc>事件类型</desc>
+        </params>
+        <params name="fn" type="Function">
+          <desc>绑定到每个匹配元素的事件上面的处理函数</desc>
+        </params>
+        <example>
+          <desc>当每个段落被点击的时候，弹出其文本。</desc>
+          <code>$("p").one("click", function(){
+  alert( $(this).getText() );
+});</code>
+        </example>
+        <example>
+          <desc>通过返回false来取消默认的行为并阻止事件起泡。</desc>
+          <code>$("form").bind("submit", function() { return false; })</code>
+        </example>
+        <example>
+          <desc>通过使用 preventDefault() 方法只取消默认的行为。</desc>
+          <code>$("form").bind("submit", function(event){
+  event.preventDefault();
+});</code>
+        </example>
+        <example>
+          <desc>通过使用 stopPropagation() 方法只阻止一个事件起泡。</desc>
+          <code>$("form").bind("submit", function(event){
+  event.stopPropagation();
+});</code>
+        </example>
+      </function>
+      <function name="un" return="Control">
+        <desc>on()的反向操作，从每一个匹配的元素中删除绑定的事件。</desc>
+        <params name="type" type="String">
+          <desc>事件类型</desc>
+        </params>
+        <params name="fn" type="Function">
+          <desc>要从每个匹配元素的事件中反绑定的事件处理函数</desc>
+        </params>
+        <example>
+          <desc>把所有段落的所有事件取消绑定</desc>
+          <code>$("p").un()</code>
+        </example>
+        <example>
+          <desc>将段落的click事件取消绑定</desc>
+          <code>$("p").un( "click" )</code>
+        </example>
+      </function>
+	  <function name="trigger" return="Control">
+        <desc>手动触发事件。</desc>
+        <params name="type" type="String">
+          <desc>事件类型</desc>
+        </params>
+        <params name="e" type="Object">
+          <desc>事件对象</desc>
+        </params>
+        <example>
+          <desc>将段落的click事件执行</desc>
+          <code>$("p").trigger( "click" )</code>
+        </example>
+      </function>
+	</subcat>
+    <subcat value="事件">
+      <function name="blur" return="Control">
+        <desc>在每一个匹配元素的blur事件中绑定一个处理函数。</desc>
+        <longdesc>blur事件会在元素失去焦点的时候触发，既可以是鼠标行为，也可以是按tab键离开的</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的blur事件中绑定的处理函数。</desc>
+        </params>
+        <example>
+          <desc>任何段落失去焦点时弹出一个 "Hello World!"在每一个匹配元素的blur事件中绑定的处理函数。</desc>
+          <code>$("p").blur( function () { alert("Hello World!"); } );</code>
+        </example>
+      </function>
+      <function name="change" return="Control">
+        <desc>在每一个匹配元素的change事件中绑定一个处理函数。</desc>
+        <longdesc>change事件会在元素失去焦点的时候触发，也会当其值在获得焦点后改变时触发。</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的change事件中绑定的处理函数。</desc>
+        </params>
+        <example>
+          <desc>给所有的文本框增加输入验证</desc>
+          <code>$("input[type='text']").change( function() {
+  // 这里可以写些验证代码
+});</code>
+        </example>
+      </function>
+      <function name="click" return="Control">
+        <desc>在每一个匹配元素的click事件中绑定一个处理函数。</desc>
+        <longdesc>点击事件会在你的指针设备的按钮在元素上单击时触发。单击的定义是在屏幕的同一点触发了mousedown和mouseup.几个事件触发的顺序是：mousedownmouseupclick</longdesc>
+        <params name="fn" type="Function">
+          <desc>绑定到click事件的函数</desc>
+        </params>
+        <example>
+          <desc>将页面内所有段落点击后隐藏。</desc>
+          <code>$("p").click( function () { $(this).hide(); });</code>
+        </example>
+      </function>
+      <function name="dblclick" return="Control">
+        <desc>在每一个匹配元素的dblclick事件中绑定一个处理函数。</desc>
+        <longdesc>的那个在某个元素上双击的时候就会触发dblclick事件</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的dblclick事件中绑定的处理函数。</desc>
+        </params>
+        <example>
+          <desc>给页面上每个段落的双击事件绑上 "Hello World!" 警告框</desc>
+          <code>$("p").dblclick( function () { alert("Hello World!"); });</code>
+        </example>
+      </function>
+      <function name="error" return="Control">
+        <desc>在每一个匹配元素的error事件中绑定一个处理函数。</desc>
+        <longdesc>对于error事件，没有一个公众的标准。在大多数浏览器中，当页面的JavaScript发生错误时，window对象会触发error事件;当图像的src属性无效时，比如文件不存在或者图像数据错误时，也会触发图像对象的error事件。
+
+如果异常是由window对象抛出，事件处理函数将会被传入三个参数：
+
+1. 描述事件的信息 ("varName is not defined", "missing operator in expression", 等等.),
+
+2. 包含错误的文档的完整URL
+
+3. 异常发生的行数 如果事件处理函数返回true，则表示事件已经被处理，浏览器将认为没有异常。
+
+更多相关信息: 
+
+&lt;a href="http://msdn2.microsoft.com/en-us/library/ms536930.aspx"&gt;msdn - onerror Event&lt;/a&gt;
+
+&lt;a href="http://developer.mozilla.org/en/docs/DOM:window.onerror"&gt;Gecko DOM Reference - onerror Event&lt;/a&gt;
+
+&lt;a href="http://developer.mozilla.org/en/docs/DOM:event"&gt;Gecko DOM Reference - Event object&lt;/a&gt;
+
+&lt;a href="http://en.wikipedia.org/wiki/DOM_Events"&gt;Wikipedia: DOM Events&lt;/a&gt;</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的error事件中绑定的处理函数。</desc>
+        </params>
+        <example>
+          <desc>隐藏JavaScript错误:</desc>
+          <code>$(window).error(function(){
+  return true;
+});</code>
+        </example>
+        <example>
+          <desc>给你IE的用户隐藏无效的图像:</desc>
+          <code>$("img").error(function(){
+  $(this).hide();
+});</code>
+        </example>
+      </function>
+      <function name="focus" return="Control">
+        <desc>在每一个匹配元素的focus事件中绑定一个处理函数。</desc>
+        <longdesc>focus事件可以通过鼠标点击或者键盘上的TAB导航触发</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的focus事件中绑定的处理函数。</desc>
+        </params>
+        <example>
+          <desc>使人无法使用文本框:</desc>
+          <code>$("input[type=text]").focus(function(){
+  this.blur();
+});</code>
+        </example>
+      </function>
+      <function name="keydown" return="Control">
+        <desc>在每一个匹配元素的keydown事件中绑定一个处理函数。</desc>
+        <longdesc>keydown事件会在键盘按下时触发。</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的keydown事件中绑定的处理函数。</desc>
+        </params>
+        <example>
+          <desc>在页面内对键盘按键做出回应，可以使用如下代码:</desc>
+          <code>$(window).keydown(function(event){
+  switch(event.keyCode) {
+    // ...
+    // 不同的按键可以做不同的事情
+    // 不同的浏览器的keycode不同
+    // 更多详细信息:     http://unixpapa.com/js/key.html
+    // ...
+  }
+});</code>
+        </example>
+      </function>
+      <function name="keypress" return="Control">
+        <desc>在每一个匹配元素的keypress事件中绑定一个处理函数。</desc>
+        <longdesc>keypress事件会在敲击按键时触发。 敲击按键的定义为按下并抬起同一个按键。这几个事件发生的顺序是:keydown
+
+keypress
+
+keyup</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的keypress事件中绑定的处理函数。</desc>
+        </params>
+      </function>
+      <function name="keyup" return="Control">
+        <desc>在每一个匹配元素的keyup事件中绑定一个处理函数。</desc>
+        <longdesc>keyup 事件会在键盘按下时触发。</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的keyup事件中绑定的处理函数。</desc>
+        </params>
+      </function>
+      <function name="load" return="Control">
+        <desc>在每一个匹配元素的load事件中绑定一个处理函数。</desc>
+        <longdesc>如果绑定给window对象，则会在所有内容加载后触发，包括窗口，框架，对象和图像。如果绑定在元素上，则当元素的内容加载完毕后触发。
+
+'''注意:'''只有当在这个元素完全加载完之前绑定load的处理函数,才会在他加载完后触发。如果之后再绑定就永远不会触发了。所以'''不要'''在$(document).ready()里绑定load事件，因为Control会在所有DOM加载完成后再绑定load事件。</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的load事件中绑定的处理函数。</desc>
+        </params>
+      </function>
+      <function name="mousedown" return="Control">
+        <desc>在每一个匹配元素的mousedown事件中绑定一个处理函数。</desc>
+        <longdesc>mousedown事件在鼠标在元素上点击后会触发</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的mousedown事件中绑定的处理函数。</desc>
+        </params>
+      </function>
+      <function name="mousemove" return="Control">
+        <desc>在每一个匹配元素的mousemove事件中绑定一个处理函数。</desc>
+        <longdesc>mousemove 事件通过鼠标在元素上移动来触发。事件处理函数会被传递一个变量——事件对象，其.clientX 和 .clientY 属性代表鼠标的坐标</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的mousemove事件中绑定的处理函数。</desc>
+        </params>
+      </function>
+      <function name="mouseout" return="Control">
+        <desc>在每一个匹配元素的mouseout事件中绑定一个处理函数。</desc>
+        <longdesc>mouseout事件在鼠标从元素上离开后会触发</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的mouseout事件中绑定的处理函数。</desc>
+        </params>
+      </function>
+      <function name="mouseover" return="Control">
+        <desc>在每一个匹配元素的mouseover事件中绑定一个处理函数。</desc>
+        <longdesc>mouseover事件会在鼠标移入对象时触发</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的mouseover事件中绑定的处理函数。</desc>
+        </params>
+      </function>
+      <function name="mouseup" return="Control">
+        <desc>在每一个匹配元素的mouseup事件中绑定一个处理函数。</desc>
+        <longdesc>mouseup事件会在鼠标点击对象释放时</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的mouseup事件中绑定的处理函数。</desc>
+        </params>
+      </function>
+      <function name="resize" return="Control">
+        <desc>在每一个匹配元素的resize事件中绑定一个处理函数。</desc>
+        <longdesc>当文档窗口改变大小时触发</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的resize事件中绑定的处理函数。</desc>
+        </params>
+        <example>
+          <desc>让人每次改变页面窗口的大小时很郁闷的方法:</desc>
+          <code>$(window).resize(function(){
+  alert("Stop it!");
+});</code>
+        </example>
+      </function>
+      <function name="scroll" return="Control">
+        <desc>在每一个匹配元素的scroll事件中绑定一个处理函数。</desc>
+        <longdesc>当滚动条发生变化时触发</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的resize事件中绑定的处理函数。</desc>
+        </params>
+        <example>
+          <desc>当页面滚动条变化时，执行的函数:</desc>
+          <code>$(window).scroll( function() { /* ...do something... */ } );</code>
+        </example>
+      </function>
+      <function name="select" return="Control">
+        <desc>在每一个匹配元素的select事件中绑定一个处理函数。</desc>
+        <longdesc>当用户在文本框(包括input和textarea)中选中某段文本时会触发select事件。</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的select事件中绑定的处理函数。</desc>
+        </params>
+        <example>
+          <desc>当文本框中文本被选中时执行的函数:</desc>
+          <code>$("input[type=text]").select( function () { /* ...do something... */ } );</code>
+        </example>
+      </function>
+      <function name="submit" return="Control">
+        <desc>在每一个匹配元素的submit事件中绑定一个处理函数。</desc>
+        <longdesc>submit事件将会在表单提交时触发</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的submit事件中绑定的处理函数</desc>
+        </params>
+        <example>
+          <desc>如果你要阻止表单提交:</desc>
+          <code>$("form").submit( function () {
+  return false;
+} );</code>
+        </example>
+      </function>
+      <function name="unload" return="Control">
+        <desc>在每一个匹配元素的unload事件中绑定一个处理函数。</desc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的unload事件中绑定的处理函数。</desc>
+        </params>
+        <example>
+          <desc>页面卸载的时候弹出一个警告框:</desc>
+          <code>$(window).unload( function () { alert("Bye now!"); } );</code>
+        </example>
+      </function>
+    </subcat>
+  </cat>
+  <cat value="工具">
+    <subcat value="数组和对象操作">
+      <function name="Object.each" return="Object">
+        <desc>通用例遍方法，可用于例遍对象和数组。</desc>
+        <longdesc>不同于例遍 Control 对象的 $().each() 方法，此方法可用于例遍任何对象。回调函数拥有两个参数：第一个为对象的成员或数组的索引，第二个为对应变量或内容。如果需要退出 each 循环可使回调函数返回 false，其它返回值将被忽略。</longdesc>
+        <params name="object" type="Object">
+          <desc>需要例遍的对象或数组。</desc>
+        </params>
+        <params name="callback" type="Function" optional="true">
+          <desc>每个成员/元素执行的回调函数。</desc>
+        </params>
+        <example>
+          <desc>例遍数组，同时使用元素索引和内容。</desc>
+          <code>Object.each( [0,1,2], function(i, n){
+  alert( "Item #" + i + ": " + n );
+});</code>
+        </example>
+        <example>
+          <desc>例遍对象，同时使用成员名称和变量内容。</desc>
+          <code>Object.each( { name: "John", lang: "JS" }, function(i, n){
+  alert( "Name: " + i + ", Value: " + n );
+});</code>
+        </example>
+      </function>
+      <function name="Array.create" return="Array">
+        <desc>将类数组对象转换为数组对象。</desc>
+        <longdesc>类数组对象有 length 属性，其成员索引为 0 至 length - 1。实际中此函数在 Control 中将自动使用而无需特意转换。</longdesc>
+        <params name="obj" type="Object">
+          <desc>类数组对象。</desc>
+        </params>
+        <example>
+          <desc>过滤数组中小于 0 的元素。</desc>
+          <html>&lt;div&gt;First&lt;/div&gt;&lt;div&gt;Second&lt;/div&gt;&lt;div&gt;Third&lt;/div&gt;&lt;div&gt;Fourth&lt;/div&gt;</html>
+          <code>var arr = Array.create(document.getElementsByTagName("div"));
+arr.reverse(); // 使用数组翻转函数</code>
+          <result>Fourth
+Third
+Second
+First</result>
+        </example>
+      </function>
+      <function name="arr.indexOf" return="Number">
+        <desc>确定第一个参数在数组中的位置，从0开始计数(如果没有找到则返回 -1 )。</desc>
+        <params name="value" type="Any">
+          <desc>用于在数组中查找是否存在</desc>
+        </params>
+        <params name="array" type="Array">
+          <desc>待处理数组。</desc>
+        </params>
+        <example>
+          <desc>查看对应元素的位置</desc>
+          <code>var arr = [ 4, "Pete", 8, "John" ];
+arr.indexOf("John", );  //3
+arr.indexOf(4);  //0
+arr.indexOf("David");  //-1</code>
+        </example>
+      </function>
+      <function name="arr.unique" return="Array">
+        <desc>删除数组中重复元素。只处理删除DOM元素数组，而不能处理字符串或者数字数组。</desc>
+        <params name="array" type="Array">
+          <desc>待处理数组。</desc>
+        </params>
+        <example>
+          <desc>删除重复 div 标签。</desc>
+          <code>document.query("div").unique();</code>
+          <result>[&lt;div&gt;, &lt;div&gt;, ...]</result>
+        </example>
+      </function>
+    </subcat>
+    <subcat value="测试操作">
+      <function name="Array.isArray" return="Boolean">
+        <desc>测试对象是否为数组。</desc>
+        <params name="obj" type="Object">
+          <desc>用于测试是否为数组的对象</desc>
+        </params>
+        <example>
+          <desc>检测是否为数组</desc>
+          <code>$("b").append( "" + Array.isArray([]) );</code>
+          <result>&lt;b&gt;true&lt;/b&gt;</result>
+        </example>
+      </function>
+      <function name="Function.isFunction" return="Boolean">
+        <desc>测试对象是否为函数。</desc>
+        <params name="obj" type="Object">
+          <desc>用于测试是否为函数的对象</desc>
+        </params>
+        <example>
+          <desc>检测是否为函数</desc>
+          <code>function stub() {
+    }
+var objs = [
+            function () {},
+            { x:15, y:20 },
+            null,
+            stub,
+            "function"
+          ];
+        Control.each(objs, function (i) {
+        var isFunc = Function.isFunction(objs[i]);
+        $("span").setText(isFunc);
+      });</code>
+          <result>[ true,false,false,true,false ]</result>
+        </example>
+      </function>
+    </subcat>
+    <subcat value="字符串操作">
+      <function name="str.trim" return="String">
+        <desc>去掉字符串起始和结尾的空格。</desc>
+        <params name="str" type="String">
+          <desc>需要处理的字符串</desc>
+        </params>
+        <example>
+          <desc>去掉字符串起始和结尾的空格。</desc>
+          <code>"  hello, how are you?  ".trim();</code>
+          <result>"hello, how are you?"</result>
+        </example>
+      </function>
+    </subcat>
+  </cat>
+</docs>
+

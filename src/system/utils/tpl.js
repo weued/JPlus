@@ -25,7 +25,7 @@
  * 4.3 $index 在 for 循环中，表示当前循环的次号。
  * 4.4 $value 在 for 循环中，表示当前被循环的目标。
  */
-namespace(".Tpl.", {
+var Tpl = {
 	
 	cache: {},
 	
@@ -109,4 +109,4 @@ namespace(".Tpl.", {
 		return (Tpl.cache[tpl] || (Tpl.cache[tpl] = Tpl.compile(tpl)))(data);
 	}
 	
-});
+};

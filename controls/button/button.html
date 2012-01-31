@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>share - J+ Control Libaray</title>
+		
+		<link rel="stylesheet" type="text/css" href="../core/assets/styles/index.css">
+		<link rel="stylesheet" type="text/css" href="../form/assets/styles/textbox.css">
+		<link rel="stylesheet" type="text/css" href="assets/styles/button.css">
+			
+		<script type="text/javascript" src="../../src/system.js"></script>
+		<script type="text/javascript" src="../../src/system/dom/element.js"></script>
+		<script type="text/javascript" src="../../src/controls.js"></script>
+		
+		<script type="text/javascript" src="../core/assets/scripts/contentcontrol.js"></script>
+		<script type="text/javascript" src="assets/scripts/button.js"></script>
+		
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+	</head>
+	<body>
+		
+		普通按钮： <a class="x-button">
+			<span class="x-button-container">
+				<span class="x-button-content">
+					<button type="button">.x-button</button>
+				</span>
+			</span>
+		</a>
+		<br><br>
+		
+		按钮-激活：
+		
+		<a class="x-button x-button-actived">
+			<span class="x-button-container">
+				<span class="x-button-content">
+					<button type="button">x-button.x-button-actived</button>
+				</span>
+			</span>
+		</a>
+		<br><br>
+		
+		普通按钮-禁用：
+		
+		<a class="x-button x-button-disabled">
+			<span class="x-button-container">
+				<span class="x-button-content">
+					<button disabled="disabled" type="button">x-button.x-button-disabled</button>
+				</span>
+			</span>
+		</a>
+		<br><br>
+		
+		平板按钮：
+		<a class="x-button x-button-plain">
+			<span class="x-button-container">
+				<span class="x-button-content">
+					<button type="button">.x-button.x-button-plain</button>
+				</span>
+			</span>
+		</a>
+		
+		<script>
+			
+			document.query('.x-button').insert('beforeBegin', '<input type="text" class="x-textbox" style="width:16px;margin-right:10px" value="汉" />');
+			
+			document.query('.x-button button').on('click', function(){
+				this.setHtml('喂' + this.getHtml());
+			});
+			
+			var a = new Button().setText("aaa").appendTo();
+			
+		</script>
+	</body>
+</html>

@@ -74,7 +74,7 @@ var testcases = {
 		name: '显示的名字',       	 // 名字， 默认同函数名
 		summary: 'summary',  	 //  功能的说明
 		init: 'var a = 1;', 	 // 初始化的时候执行
-		overrides: '[] =&gt; assert.<br>areEqual(value, true); null =&gt; assert.areEqual(value, false)',  // 重载的参数列表
+		tests: '[] =&gt; assert.<br>areEqual(value, true); null =&gt; assert.areEqual(value, false)',  // 重载的参数列表
 		uninit: 'a = null;', // 执行结束后执行
 		time: 1000  // 测试速度时执行才次数，  默认 1000
 	},
@@ -94,10 +94,10 @@ System.initTestCases(testcases);
 			<em>组名</em> 对应的值为 '-' ，表示它不是真正的测试案例，只是用来分组的记号。
 		</p>
 		<p class="content">
-			<em>Array.isArray</em> 对应的值为一个对象，这个对象包括了一个测试案例需要的全部信息。一个测试案例，不是每个信息都是必须的，除了overrides， 其它都可以省略。因此，当只有overrides时，可以像 <em>Array.prototype.push</em> 一样，直接把 overrides 的内容写在后面。
+			<em>Array.isArray</em> 对应的值为一个对象，这个对象包括了一个测试案例需要的全部信息。一个测试案例，不是每个信息都是必须的，除了tests， 其它都可以省略。因此，当只有tests时，可以像 <em>Array.prototype.push</em> 一样，直接把 tests 的内容写在后面。
 		</p>
 		<p class="content">
-			各个信息的意义见上面的注释，这里详细说明 overrides 字段的意义。
+			各个信息的意义见上面的注释，这里详细说明 tests 字段的意义。
 		</p>
 		<p class="content">
 			每个测试案例都是对一个函数进行的测试，测试的时候，会调用不同的参数进行测试。以<em>Array.isArray</em>为例， 它是对 Array.isArray 函数进行测试，为了测试这个函数的正确性，我们需要运行这样的代码：
@@ -108,15 +108,15 @@ assert.areEqual(value, true);   //  assert.areEqual  用于 验证 2 个值是�
 var value = Array.isArray(<strong>null</strong>);  //以 null 作参数进行调用。
 assert.areEqual(value, false);   //
 				 </code></pre>
-<p class="content">			上面的代码简写为 overrides 就是：
+<p class="content">			上面的代码简写为 tests 就是：
 			'[] =&gt; assert.areEqual(value, true); null =&gt; assert.areEqual(value, false)'
 			<br>
 			不同的测试参数用;隔开， 测试前的参数和结果的判断用 =&gt; 隔开， 参数如果有多个，使用 ‘，’ 隔开。 结果如果有多个， 也使用 ‘，’隔开。
-			此外， assert.areEqual(value, <u>XXX</u>) 可以简写为 <u>XXX</u>, 因此，最后，对 Array.isArray 的测试 overrides 可以写为：
+			此外， assert.areEqual(value, <u>XXX</u>) 可以简写为 <u>XXX</u>, 因此，最后，对 Array.isArray 的测试 tests 可以写为：
 			'[] =&gt; true; null =&gt; false'
 		</p>
 		<p class="content">
-			现在解决最后一个问题： 在例子的<em>Array.prototype.push</em> 测试的 overrides 中， 有个@me = []; 它表示对某个对象调用函数，如果没有这句话，
+			现在解决最后一个问题： 在例子的<em>Array.prototype.push</em> 测试的 tests 中， 有个@me = []; 它表示对某个对象调用函数，如果没有这句话，
 			这个测试案例会变成 Array.prototype.push(1)，
 			显然，这不是目标，目标是对一个数组对象调用 push， 因此 @me = [] 表示：测试时，使用   var me = []; me.push(1);
 			这里为 me 赋初值不是必须的，所以可以在文件顶部执行 var me = []; 以后只需使用 @me ;即可

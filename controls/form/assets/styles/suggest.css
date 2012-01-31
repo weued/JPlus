@@ -5,7 +5,7 @@
 
 
 
-.b-suggest {
+.x-suggest {
 	position: absolute;
 	width: 233px;
 	background: #ffffff;
@@ -17,15 +17,14 @@
 	_height: expression(this.scrollHeight    < 400 ? 'auto' : '400px');
 }
 
-.b-suggest-content{
+.x-suggest-content{
 	line-height: 26px; 
 	text-indent: 10px;
 	cursor: default;
 	color: #999999;
 }
 
-.b-suggest-content:hover {
+.x-suggest-selected {
 	background: #CCE9F1;
-	width: 100%;
 	color: black;
 }

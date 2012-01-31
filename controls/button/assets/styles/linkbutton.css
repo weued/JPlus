@@ -2,11 +2,15 @@
  * @author 
  */
 
-
-
-.b-linkbutton {
-	display: inline-block;
-	padding-left: 20px;
-	background-position: 2px 50%;
-	background-repeat: no-repeat;
+.x-linkbutton {
+	text-decoration: none;
+	color: #183152;
 }
+
+
+.x-linkbutton:hover {
+	text-decoration: underline;
+	color: #183152;
+}
+
+

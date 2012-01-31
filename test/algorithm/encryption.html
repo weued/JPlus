@@ -1,0 +1,26 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>System.Algorithm.Encryption  测试</title>
+		<script src="../../py/system.js" type="text/javascript"></script>
+		<script src="../../py/system/algorithm/encryption/md5.js" type="text/javascript"></script>
+		<script src="../../py/system/algorithm/encryption/hmacmd5.js" type="text/javascript"></script>
+		<script src="../../py/system/algorithm/encryption/base64md5.js" type="text/javascript"></script>
+		<script src="../../py/system/algorithm/encryption/base64hmacmd5.js" type="text/javascript"></script>
+		
+		<script src="../../common/project/project.js" type="text/javascript"></script>
+		<script src="../../common/assets/scripts/default.js" type="text/javascript"></script>
+		<script src="../../common/assets/scripts/debug.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<script>
+			var fns = [
+				["Encryption.md5('abc')", function(){ return Encryption.md5("abc"); }, "900150983cd24fb0d6963f7d28e17f72"],
+				["Encryption.base64Md5('abc')", function(){ return Encryption.base64Md5("abc"); }, "kAFQmDzST7DWlj99KOF/cg"],
+				["Encryption.hmacMd5('abc')", function(){ return Encryption.hmacMd5("abc", "key"); }, "6c92d61250468fe4e841f00839380cfe"],
+				["Encryption.base64HmacMd5('abc')", function(){ return Encryption.base64HmacMd5("abc", "key"); }, "rB0fA9COpW63Z6sfkXcxdA"]
+			];
+		</script>
+	</body>
+</html>

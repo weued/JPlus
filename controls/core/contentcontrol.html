@@ -2,16 +2,15 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>U+ DPL</title>
+		<title>J+ Control Libaray</title>
 		
 		<link rel="stylesheet" type="text/css" href="../core/assets/styles/index.css">
 		<link rel="stylesheet" type="text/css" href="assets/styles/contentcontrol.css">
 
-		<script type="text/javascript" src="../../assets/libs/jquery/jquery.js"></script>
-		<script type="text/javascript" src="../../src/jquery-adapter.js"></script>
-		<script type="text/javascript" src="../../src/uplus.js"></script>
+		<script type="text/javascript" src="../../src/system.js"></script>
+		<script type="text/javascript" src="../../src/system/dom/element.js"></script>
+		<script type="text/javascript" src="../../src/controls.js"></script>
 		
-		<script type="text/javascript" src="../core/assets/scripts/index.js"></script>
 		<script type="text/javascript" src="assets/scripts/contentcontrol.js"></script>
 		
 		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
@@ -19,17 +18,17 @@
 	</head>
 	<body>
 		
-		<div class="b-inline-block b-debug" id="c">文字</div>
+		<div class="x-inline-block x-debug" id="c">文字</div>
 		
 		
 		<script>
 		
-			var c = new ContentControl("c");
+			var a = new ContentControl("c");
 			
 			
 			var testcases = {
-				'ContentControl.prototype.setText': "@c; '内容内容内容内容内容内容内容内容内容内容内容'",
-				'ContentControl.prototype.setHtml': "@c; '<b>内容</b>'"
+				'ContentControl.prototype.setText': "@a; '内容内容内容内容内容内容内容内容内容内容内容'",
+				'ContentControl.prototype.setHtml': "@a; '<b>内容</b>'"
 			};
 			
 			System.initTestCases(testcases);

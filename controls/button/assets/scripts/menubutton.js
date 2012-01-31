@@ -1,0 +1,4 @@
+/** * @author  */using("Controls.Core.IDropDownMenuContainer");using("Controls.Button.Button");var MenuButton = Button.extend({		xType: 'menubutton',		init: function () {		this.base('init');		this.addClass('x-' + this.xType);		this.content.append(Dom.create('span'));		this.content.append(Dom.create('span', 'x-button-menu').setHtml('&nbsp;'));		this.on('click', this.toggleDropDownMenu);
+	},		setText: function (value) {
+		this.content.find('span').setText(value);		return this;
+	},		getText: function () {		return this.content.find('span').getText();	},		setHtml: function () {		this.content.find('span').setHtml(value);		return this;	},		getHtml: function () {		return this.content.find('span').getHtml();	}	}).implement(IDropDownMenuContainer);

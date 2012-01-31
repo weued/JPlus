@@ -3,8 +3,8 @@
  */
 
 
-System.title = 'U+ DPL';
-System.subtitle = 'U+ DPL';
+System.title = 'J+ Control Libaray';
+System.subtitle = 'J+ Control Libaray';
 System.copyright = '';
 
 
@@ -18,6 +18,3 @@ var menus = {
 	Display: '+TipBox +Face +Image Pager -Navigator +ImageBox +Ad +Banner *ToolTip -BalloonTip',
 	Widget: 'Index +Topbar *BreadCrumb +ShareTo +Flash'
 };
-
-
-

@@ -12,14 +12,14 @@
 		
 			var list = new Collection();
 			list.add(2);  // [2]
-			list.insertAt(0, 1);   //  [1, 2]
+			list.insert(0, 1);   //  [1, 2]
 			list.remove(2);  // [1]
 			list.removeAt(0);  // []
-			list.insertAt(0, 2);   // [2]
-			list.insertAt(0, 8);   // [8, 2]
+			list.insert(0, 2);   // [2]
+			list.insert(0, 8);   // [8, 2]
 			
 			var testcases = {
-				'Collection.prototype.length': {method: false, overrides:  '@list; => 2' },
+				'Collection.prototype.length': {method: false, tests:  '@list; => 2' },
 				'Collection.prototype.item': '@list; 0=>8; 1=>2; -1=>2;2=>undefined'
 			};
 			

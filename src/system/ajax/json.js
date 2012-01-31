@@ -5,18 +5,14 @@
 
 using("System.Ajax.Ajax");
 
-
-
-
-
-Ajax.JSON = Ajax.extend({
-
+JPlus.namespace("Ajax").JSON = Ajax.extend({
+	
 	/**
 	 * 获取请求头。
 	 */
 	headers: Object.extendIf({
 		'Accept': 'application/json'
-	}, JPlus.Ajax.prototype.headers),
+	}, Ajax.prototype.headers),
 	
 	parseJSON: function(response){
 		return eval("(" + response + ")");
@@ -32,7 +28,7 @@ Ajax.JSON = Ajax.extend({
 
 String.map("get post", function(k) {
 	
-	JPlus.Ajax[k + 'JSON'] = function(url, data, onsuccess, onerror, timeouts, ontimeout, oncomplete){
+	Ajax[k + 'JSON'] = function(url, data, onsuccess, onerror, timeouts, ontimeout, oncomplete){
 		var emptyFn = Function.empty;
 		new Ajax.JSON({
 			url: url,

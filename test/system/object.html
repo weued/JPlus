@@ -15,7 +15,7 @@
 				'Object.type': '1 => "number"',
 				//'Object.clone': {
 				//	params: '',
-				//	overrides: '[5] => [5]'
+				//	tests: '[5] => [5]'
 				//},
 				'Object.extendIf': '{"a":"g"}, [] => assert.areEqual(value["a"], "g")',
 				'Object.extend': '{"a":"g"}, [] => assert.areEqual(value["a"], "g")',
@@ -24,7 +24,7 @@
 				'Object.set': '{a:assert.log}, {a:2, b:4} => assert.logged("2")',
 				//'Object.addCallback': {
 				//	init: 'var a = {click: assert.log}',
-				//	overrides: 'a, "click", function(){assert.log(2)} =>assert, a.click(1), assert.logged("12")'
+				//	tests: 'a, "click", function(){assert.log(2)} =>assert, a.click(1), assert.logged("12")'
 				//},
 				'Object.update': '["aa","aa23"], "length", [] => [2, 4]; [{a: 1},{a: 4}], "a", [{},{}], true => [{a: 1},{a: 4}]',
 				'Array': '-',
@@ -39,9 +39,9 @@
 				//'Array.prototype.select': '@ar = [5,4]; function(v){return v > 2} => [5,4]',
 				'Array.prototype.item': '@ar = [5,4]; 0 => 5; 1 => 4; -1 => 4; 2 => undefined',
 				'Array.prototype.include': '@ar = [5,4]; 4 => true; 2 => assert.areEqual(ar, [5, 4, 2])',
-				'Array.prototype.insert': '@ar = [5,4]; 1, "1" => [5, "1", 4]',
+				'Array.prototype.insert': '@ar = [5,4]; 1, "1" => assert.areEqual(ar, [5, "1", 4])',
 				'Array.prototype.invoke': '@ar = [5,4]; "toString", [] => ["5", "4"]',
-				'Array.prototype.unique': {overrides:'@ar = [2, 5, 7, 5]; => [2, 5, 7]', time: 10000},
+				'Array.prototype.unique': {tests:'@ar = [2, 5, 7, 5]; => [2, 5, 7]', time: 10000},
 				'Array.prototype.remove': '@ar = [5,4]; 5 =>assert,  true, assert.areEqual(ar, [4])',
 				'Function': '-',
 				'Function.empty': '=> undefined',

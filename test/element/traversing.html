@@ -37,13 +37,20 @@
 		<script>
 			
 			
-			var a = $('a'), b = $('b'), c = $('c'), d = $('d'), o = $('o'), abcd = new NodeList($('all').dom.getElementsByTagName("div"));
+			var a = $$('a'), b = $$('b'), c = $$('c'), d = $$('d'), o = $$('o'), abcd = new NodeList($$('all').dom.getElementsByTagName("div"));
 			
 			
 			var testcases = {
-				'Element.prototype.find': '@a; "div" => b; ".b" => b; "[_tag=\\\"b\\\"]" => b',
-				'Element.prototype.findAll': '@a; "div" => assert.areEqual(value[0], b); ".b" => assert.areEqual(value[0], b); "[_tag=\\\"b\\\"]" => assert.areEqual(value[0], b)',
-				'Element.prototype.get': '@b; "previous" => null; "next" => d; "first" => c; "parent" => a; "last" => c',
+				'Control.prototype.find': '@a; "div" => b; ".b" => b; "[_tag=\\\"b\\\"]" => b',
+				'Control.prototype.query': '@a; "div" => assert.areEqual(value[0], b.dom); ".b" => assert.areEqual(value[0], b.dom); "[_tag=\\\"b\\\"]" => assert.areEqual(value[0], b.dom)',
+				'Control.prototype.getPrevious': '@b;  => null',
+				'Control.prototype.getNext': '@b; => assert.areEqual(value.dom,  d.dom)',
+				'Control.prototype.getFirst': '@b; => assert.areEqual(value.dom,  c.dom)',
+				'Control.prototype.getParent': '@b; => assert.areEqual(value.dom,  a.dom)',
+				'Control.prototype.getLast': '@b;  => assert.areEqual(value.dom,  c.dom)',
+				'Control.prototype.getAllParent': '@b; => assert.areEqual(value[0],  a.dom)',
+				'Control.prototype.getAllPrevious': '@b; => assert.areEqual(value[0],  undefined)',
+				'Control.prototype.getAllNext': '@b; => assert.areEqual(value[0],  d.dom)'
 			};
 			
 			System.initTestCases(testcases);

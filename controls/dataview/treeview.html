@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>J+ Control Libaray</title>
+		
+		<link rel="stylesheet" type="text/css" href="../core/assets/styles/reset.css">
+		<link rel="stylesheet" type="text/css" href="assets/styles/treeview.css">
+		
+		<script type="text/javascript" src="../../src/system.js"></script>
+		<script type="text/javascript" src="../../src/system/dom/element.js"></script>
+		<script type="text/javascript" src="../../src/controls.js"></script>
+		<script type="text/javascript" src="../../src/system/data/collection.js"></script>
+		<script type="text/javascript" src="../../src/system/fx/base.js"></script>
+		<script type="text/javascript" src="../../src/system/fx/element.js"></script>
+		
+		<script type="text/javascript" src="../core/assets/scripts/icontainercontrol.js"></script>
+		<script type="text/javascript" src="../core/assets/scripts/icollapsable.js"></script>
+		<script type="text/javascript" src="assets/scripts/treeview.js"></script>
+		
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+	</head>
+	<body>
+		
+		
+		
+		
+		<div class="x-treeview">
+	        <ul class="x-list-container x-treeview-container">
+	            <li class="x-list-content x-treeview-content">
+	                <div class="x-treenode">
+	                    <span class="x-treenode-space x-treenode-plus">
+	                    </span>
+	                    <span>菜单</span>
+	                </div>
+	                <ul class="x-list-container x-treeview-container">
+	                    <li class="x-list-content x-treeview-content">
+	                        <div class="x-treenode">
+	                            <span class="x-treenode-space x-treenode-line">
+	                            </span>
+	                            <span class="x-treenode-space x-treenode-normal">
+	                            </span>
+	                            <span>菜单</span>
+	                        </div>
+	                    </li>
+	                    <li class="x-list-content x-treeview-content">
+	                        <div class="x-treenode x-treenode-selected x-treenode-last">
+	                            <span class="x-treenode-space x-treenode-line">
+	                            </span>
+	                            <span class="x-treenode-space x-treenode-line">
+	                            </span>
+	                            <span>菜单</span>
+	                        </div>
+	                    </li>
+	                </ul>
+	            </li>
+	            <li class="x-list-content x-treeview-content">
+	                <div class="x-treenode">
+	                    <span class="x-treenode-space x-treenode-normal">
+	                    </span>
+	                    <span>菜单</span>
+	                </div>
+	            </li>
+	            <li class="x-list-content x-treeview-content">
+	                <div class="x-treenode">
+	                    <span class="x-treenode-space x-treenode-plus">
+	                    </span>
+	                    <span>菜单</span>
+	                </div>
+	                <ul class="x-list-container x-treeview-container">
+	                    <li class="x-list-content x-treeview-content">
+	                        <div class="x-treenode">
+	                            <span class="x-treenode-space x-treenode-space">
+	                            </span>
+	                            <span class="x-treenode-space x-treenode-minus">
+	                            </span>
+	                            <span>菜单</span>
+	                        </div>
+	                    </li>
+	                    <li class="x-list-content x-treeview-content">
+	                        <div class="x-treenode x-treenode-last">
+	                            <span class="x-treenode-space x-treenode-space">
+	                            </span>
+	                            <span class="x-treenode-space x-treenode-normal">
+	                            </span>
+	                            <span>菜单</span>
+	                        </div>
+	                    </li>
+	                </ul>
+	            </li>
+	            <li class="x-list-content x-treeview-content">
+	                <div class="x-treenode">
+	                    <span class="x-treenode-space x-treenode-normal">
+	                    </span>
+	                    <span>菜单</span>
+	                </div>
+	            </li>
+	            <li class="x-list-content x-treeview-content">
+	                <div class="x-treenode x-treenode-last">
+	                    <span class="x-treenode-space x-treenode-plus">
+	                    </span>
+	                    <span>菜单</span>
+	                </div>
+	            </li>
+	        </ul>
+		</div>
+		
+		<script>
+			
+			var a = new TreeView().appendTo();
+			
+			var b = new TreeNode();
+			b.setText("1");
+			a.nodes.add(b);
+			
+			var c = new TreeNode();
+			c.setText("1-1");
+			b.nodes.add(c);
+			
+			var d = new TreeNode();
+			d.setText("1-2");
+			b.nodes.add(d);
+			
+			var e = new TreeNode();
+			e.setText("2");
+			a.nodes.add(e);
+			
+		</script>
+	</body>
+</html>

@@ -34,22 +34,21 @@
 		
 		<script>
 		
-			var a = $('a'), b = $('b'), c = $('c'), d = $('d');
+			var a = $$('a'), b = $$('b'), c = $$('c'), d = $$('d');
 			
 			var testcases = {
 				'Style': '-',
-				'Element.prototype.setStyle': '@a; "font-size", 14 => assert.areEqual(a.dom.style.fontSize, "14px")',
-				'Element.prototype.getStyle': '@a; "font-size" => "14px"',
-				'Element.prototype.setOpacity': '@a; 0.8 => assert.areEqual(a.  getOpacity(), .8)',
-				'Element.prototype.getOpacity': '@a; => 0.8',
+				'Control.prototype.setStyle': '@a; "font-size", 14 => assert.areEqual(a.dom.style.fontSize, "14px")',
+				'Control.prototype.getStyle': '@a; "font-size" => "14px"',
+				'Control.prototype.setOpacity': '@a; 0.8 => assert.areEqual(a.  getOpacity(), .8)',
+				'Control.prototype.getOpacity': '@a; => 0.8',
 				'Application': '-',
-				'Element.prototype.toggle': '@a;',
-				'Element.prototype.hide': '@a; =>assert.areEqual(a.isHidden(), true)',
-				'Element.prototype.show': '@a; => assert.areEqual(a.isHidden(), false)',
-				'Element.prototype.isHidden': '@a; => false',
-				//'Element.prototype.animate': '@a;',
-				'Element.prototype.setUnselectable': '@a;',
-				'Element.prototype.bringToFront': '@a;'
+				'Control.prototype.toggle': '@a;',
+				'Control.prototype.hide': '@a; =>assert.areEqual(Dom.isHidden(a.dom), true)',
+				'Control.prototype.show': '@a; => assert.areEqual(Dom.isHidden(a.dom), false)',
+				//'Control.prototype.animate': '@a;',
+				'Control.prototype.setUnselectable': '@a;',
+				'Control.prototype.bringToFront': '@a;'
 			};
 			
 			System.initTestCases(testcases);

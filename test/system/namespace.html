@@ -11,8 +11,9 @@
 			
 			var testcases = {
 				'namespace': '-',
-				'namespace': '"MyName.MyClass", {a:1} => assert.isTrue(typeof MyName != "undefined" && MyName.MyClass)',
+				'JPlus.namespace': '"MyName.MyClass", {a:1} => assert.isTrue(typeof MyName != "undefined" && MyName.MyClass)',
 				'using': '"System.Ajax.Ajax" => assert.isTrue(window.Ajax)',
+				'imports': '"System.Ajax.Ajax" => assert.isTrue(window.Ajax)',
 				'Load': '-',
 				'execScript': '"assert.log(false)" => assert.logged("false")',
 				'JPlus.loadStyle': '"../../assets/styles/default.css"',

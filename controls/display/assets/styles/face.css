@@ -4,32 +4,32 @@
 
 
 
-.b-face {
+.x-face {
 	
 }
 
-.b-face-smallest {
+.x-face-smallest {
 	border: 1px solid #8f8f8f;
 	padding: 1px;
 	width: 20px;
 	height: 20px;
 }
 
-.b-face-small {
+.x-face-small {
 	border: 1px solid #c5c5c5;
 	padding: 2px;
 	width: 44px;
 	height: 44px;
 }
 
-.b-face-normal {
+.x-face-normal {
 	border: 1px solid #c5c5c5;
 	padding: 4px;
 	width: 60px;
 	height: 60px;
 }
 
-.b-face-large {
+.x-face-large {
 	width: 165px;
 	height: 165px;
 }

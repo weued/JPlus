@@ -16,12 +16,12 @@
 		<script src="../../../../src/system.js"></script>
 		<script src="../../../../src/system/dom/element.js"></script>
 		<script type="text/javascript" charset="utf-8">
-			document.onReady(function() {
+			Dom.ready(function() {
 				window.scrollTo(1000,1000);
-				$('scroll-1').scrollLeft = 5;
-				$('scroll-1').scrollTop = 5;
+				Dom.get('scroll-1').dom.scrollLeft = 5;
+				Dom.get('scroll-1').dom.scrollTop = 5;
 				document.find('.scroll').on('click', function() {
-					$('marker').setOffset( $(this).getOffset() );
+					Dom.get('marker').setOffset( this.getOffset() );
 					return false;
 				});
 			});

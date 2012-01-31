@@ -1,36 +1,37 @@
-//===========================================
-//  请求    
-//   A: xuld
-//===========================================
-
-
 /**
- * 返回变量的地址形式。
- * @param { Base} obj 变量。
- * @return {String} 字符串。
- * @example <code>
- * String.param({a: 4, g: 7}); //  a=4&g=7
- * </code>
+ * @fileOverview 提供最底层的 AJAX 辅助函数。
  */
-param: function(obj) {
-    if (!obj)
-        return "";
-    var s = [], e = encodeURIComponent;
-    Object.each(obj, function(value, key) {
-        s.push(e(key) + '=' + e(value));
-    });
-
-    // %20 -> + 。
-    return s.join('&').replace(/%20/g, '+');
-},
-
 
 /**
  * 提供一个请求的基本功能。
  * @class Request
  * @abstract
  */
-namespace(".Request", Class({
+var Request = Class({
+	
+	/**
+	 * 返回变量的地址形式。
+	 * @param { Base} obj 变量。
+	 * @return {String} 字符串。
+	 * @example <code>
+	 * String.param({a: 4, g: 7}); //  a=4&g=7
+	 * </code>
+	 */
+	toParam: function (obj) {
+		if (!obj)
+	        return "";
+	    var s = [], e = encodeURIComponent;
+	    Object.each(obj, function(value, key) {
+	        s.push(e(key) + '=' + e(value));
+	    });
+	
+	    // %20 -> + 。
+	    return s.join('&').replace(/%20/g, '+');
+	},
+	
+	combineUrl: function (url, param) {
+		return url + (url.indexOf('?') >= 0 ? '&' : '?') + param;
+	},
 	
 	onStart: function(data){
 		this.trigger("start", data);
@@ -64,10 +65,6 @@ namespace(".Request", Class({
 	 */
 	constructor: function(obj) {
 		Object.extend(this, obj);
-	},
-	
-	combineUrl: function (url, param) {
-		return url + (url.indexOf('?') >= 0 ? '&' : '?') + param;
 	},
 	
 	/**
@@ -131,6 +128,6 @@ namespace(".Request", Class({
 	 */
 	xType: "request"
 	
-}).addEvents());
+});
 
 

@@ -158,40 +158,10 @@
 			 * @param {Object} obj 元素。
 			 */
 			removeData: function(obj){
+				if(obj.dom)
+                    obj = obj.dom;
 				obj.$data = null;
 			},
-	
-		    /**
-			 * 复制一个对象的事件拷贝到另一个对象。
-			 * @param {Object} src 来源的对象。
-			 * @param {Object} dest 目标的对象。
-			 * @return this
-			 */
-		    cloneEvent: function(src, dest) {
-	
-			    assert.isObject(src, "JPlus.cloneEvent(src, dest): {src} ~");
-			    assert.isObject(dest, "JPlus.cloneEvent(src, dest): {dest} ~");
-
-                // 内部支持 dom 属性。
-                if(src.dom)
-                    src = src.dom;
-
-                if(dest.dom)
-                    dest = dest.dom;
-	
-			    // event 作为系统内部对象。事件的拷贝必须重新进行 on 绑定。
-			    var eventName = src.$data, event = eventName && eventName.event;
-	
-			    if (event)
-				    for (eventName in event)
-	
-					    // 对每种事件。
-					    event[eventName].handlers.forEach(function(handler) {
-	
-						    // 如果源数据的 target 是 src， 则改 dest 。
-						    p.IEvent.on.call(dest, eventName, handler[0], handler[1] === src ? dest : handler[1]);
-					    });
-		    },
 	
 		    /**
 			 * 创建一个类。
@@ -312,181 +282,7 @@
 			 * @type  Object
 			 * @private 所有类的事件信息存储在这个变量。使用 xType -> name的结构。
 			 */
-		    Events: eventMgr,
-	
-		    /**
-			 * 表示一个事件接口。
-			 * @interface
-			 * @singleton JPlus.IEvent 提供了事件机制的基本接口，凡实现这个接口的类店都有事件的处理能力。 在调用
-			 *            {@link JPlus.Object.addEvents} 的时候，将自动实现这个接口。
-			 */
-		    IEvent: {
-	
-		        /**
-				 * 增加一个监听者。
-				 * @param {String} type 监听名字。
-				 * @param {Function} listener 调用函数。
-				 * @param { Base} bind=this listener 执行时的作用域。
-				 * @return  Base this
-				 * @example <code>
-		         * elem.on('click', function (e) {
-		         * 		return true;
-		         * });
-		         * </code>
-				 */
-		        on: function(type, listener, bind) {
-	
-			        assert.isFunction(listener, 'IEvent.on(type, listener, bind): {listener} ~');
-	
-			        // 获取本对象 本对象的数据内容 本事件值
-			        var me = this, d = p.data(me, 'event'), evt = d[type];
-	
-			        // 如果未绑定过这个事件。
-			        if (!evt) {
-	
-				        // 支持自定义安装。
-				        d[type] = evt = function(e) {
-					        var listener = arguments.callee, handlers = listener.handlers.slice(0), i = -1, len = handlers.length;
-	
-					        // 循环直到 return false。
-					        while (++i < len)
-						        if (handlers[i][0].call(handlers[i][1], e) === false)
-							        return false;
-	
-					        return true;
-				        };
-	
-				        // 获取事件管理对象。
-				        d = getMgr(me, type);
-	
-				        // 当前事件的全部函数。
-				        evt.handlers =d.initEvent ? [[d.initEvent, me]] : [];
-
-                        // 添加事件。
-                        if(d.add)
-                            d.add(me, type, evt);
-	
-			        }
-	
-			        // 添加到 handlers 。
-			        evt.handlers.push([listener, bind || me]);
-	
-			        return me;
-		        },
-	
-		        /**
-				 * 删除一个监听器。
-				 * @param {String} [type] 监听名字。
-				 * @param {Function} [listener] 回调器。
-				 * @return  Base this 注意: function () {} !== function () {},
-				 *         这意味着这个代码有问题: <code>
-		         * elem.on('click', function () {});
-		         * elem.un('click', function () {});
-		         * </code>
-				 *         你应该把函数保存起来。 <code>
-		         * var c =  function () {};
-		         * elem.on('click', c);
-		         * elem.un('click', c);
-		         * </code>
-				 * @example <code>
-		         * elem.un('click', function (e) {
-		         * 		return true;
-		         * });
-		         * </code>
-				 */
-		        un: function(type, listener) {
-	
-			        assert(!listener || Function.isFunction(listener), 'IEvent.un(type, listener): {listener} 必须是函数或空参数。', listener);
-	
-			        // 获取本对象 本对象的数据内容 本事件值
-			        var me = this, d = p.getData(me, 'event'), evt, handlers, i;
-			        if (d) {
-				        if (evt = d[type]) {
-	
-					        handlers = evt.handlers;
-	
-					        if (listener) {
-	
-						        // 搜索符合的句柄。
-						        for (i = handlers.length - 1; i; i--) {
-							        if (handlers[i][0] === listener) {
-								        handlers.splice(i, 1);
-								        break;
-							        }
-						        }
-	
-					        }
-	
-					        // 检查是否存在其它函数或没设置删除的函数。
-					        if (!listener || handlers.length < 2) {
-	
-						        // 删除对事件处理句柄的全部引用，以允许内容回收。
-						        delete d[type];
-
-                                d = getMgr(me, type);
-	
-						        // 内部事件管理的删除。
-                                if(d.remove)
-						            d.remove(me, type, evt);
-					        }
-				        } else if (!type) {
-					        for (evt in d)
-						        me.un(evt);
-				        }
-			        }
-			        return me;
-		        },
-	
-		        /**
-				 * 触发一个监听器。
-				 * @param {String} type 监听名字。
-				 * @param { Base} [e] 事件参数。
-				 * @return  Base this trigger 只是手动触发绑定的事件。
-				 * @example <code>
-		         * elem.trigger('click');
-		         * </code>
-				 */
-		        trigger: function(type, e) {
-	
-			        // 获取本对象 本对象的数据内容 本事件值 。
-			        var me = this, evt = p.getData(me, 'event'), eMgr;
-	
-			        // 执行事件。
-			        return !evt || !(evt = evt[type]) || ((eMgr = getMgr(me, type)).trigger ? eMgr.trigger(me, type, evt, e) : evt(e));
-	
-		        },
-	
-		        /**
-				 * 增加一个只执行一次的监听者。
-				 * @param {String} type 监听名字。
-				 * @param {Function} listener 调用函数。
-				 * @param { Base} bind=this listener 执行时的作用域。
-				 * @return  Base this
-				 * @example <code>
-		         * elem.one('click', function (e) {
-		         * 		trace('a');  
-		         * });
-		         * 
-		         * elem.trigger('click');   //  输出  a
-		         * elem.trigger('click');   //  没有输出 
-		         * </code>
-				 */
-		        one: function(type, listener, bind) {
-	
-			        assert.isFunction(listener, 'IEvent.one(type, listener): {listener} ~');
-	
-			        // one 本质上是 on , 只是自动为 listener 执行 un 。
-			        return this.on(type, function() {
-	
-				        // 删除，避免闭包。
-				        this.un(type, arguments.callee);
-	
-				        // 然后调用。
-				        return listener.apply(this, arguments);
-			        }, bind);
-		        }
-	
-		    }
+		    Events: eventMgr
 	
 		});
 
@@ -639,23 +435,13 @@
 		 */
 	    addEvents: function(events) {
 
-		    var ep = this.prototype;
-
 		    assert(!events || Object.isObject(events),
 		            "Class.addEvents(events): {event} 必须是一个包含事件的对象。 如 {click: { add: ..., remove: ..., initEvent: ..., trigger: ... } ", events);
 
-		    // 实现 事件 接口。
-		    applyIf(ep, p.IEvent);
+			var ep = this.prototype, xType = hasOwnProperty.call(ep, 'xType') ? ep.xType : (ep.xType = (p.id++).toString());
 
-		    // 如果有自定义事件，则添加。
-		    if (events) {
-
-			    var xType = hasOwnProperty.call(ep, 'xType') ? ep.xType : (ep.xType = (p.id++).toString());
-
-			    // 更新事件对象。
-			    apply(eventMgr[xType] || (eventMgr[xType] = {}), events);
-
-		    }
+			// 更新事件对象。
+			apply(eventMgr[xType] || (eventMgr[xType] = {}), events);
 
 		    return this;
 	    },
@@ -1205,7 +991,7 @@
 	 * 浏览器。
 	 * @namespace navigator
 	 */
-	applyIf(navigator, (function(ua) {
+	apply(navigator, (function(ua) {
 
 		// 检查信息
 		var match = ua.match(/(IE|Firefox|Chrome|Safari|Opera|Navigator).((\d+)\.?[\d.]*)/i) || ["", "Other", 0, 0],
@@ -1294,72 +1080,250 @@
 	 * xType。
 	 */
 	RegExp.prototype.xType = "regexp";
-
-    /**
-     * 调用父类的成员变量。
-     * @param {String} methodName 属性名。
-     * @param { Base} ... 调用的参数数组。
-     * @return { Base} 父类返回。 注意只能从子类中调用父类的同名成员。
-     * @protected
-     * @example <code>
-     *
-     * var MyBa = new Class({
-     *    a: function (g, b) {
-     * 	    alert(g + b);
-     *    }
-     * });
-     *
-     * var MyCls = MyBa.extend({
-     * 	  a: function (g, b) {
-     * 	    this.base('a', g, b);   // 或   this.base('a', arguments);
-     *    }
-     * });
-     *
-     * new MyCls().a();
-     * </code>
-     */
-    Base.prototype.base = function(methodName, args) {
-
-        var me = this.constructor,
-
-            fn = this[methodName];
-
-        assert(fn, "Base.prototype.base(methodName, args): 子类不存在 {methodName} 的属性或方法。", name);
-
-        // 标记当前类的 fn 已执行。
-        fn.$bubble = true;
-
-        assert(!me || me.prototype[methodName], "Base.prototype.base(methodName, args): 父类不存在 {methodName} 的属性或方法。", name);
-
-        // 保证得到的是父类的成员。
-
-        do {
-            me = me.base;
-            assert(me && me.prototype[methodName], "Base.prototype.base(methodName, args): 父类不存在 {methodName} 的属性或方法。", name);
-        } while ('$bubble' in (fn = me.prototype[methodName]));
-
-        assert.isFunction(fn, "Base.prototype.base(methodName, args): 父类的成员 {fn}不是一个函数。  ");
-
-        fn.$bubble = true;
-
-        // 确保 bubble 记号被移除。
-        try {
-            if (args === arguments.callee.caller.arguments)
-                return fn.apply(this, args);
-            arguments[0] = this;
-            return fn.call.apply(fn, arguments);
-        } finally {
-            delete fn.$bubble;
-        }
-    };
 	
 	/**
-	 * 将制定对象转换为字符串。
-	 * @return {String} 对应的字符串。
+	 * @class JPlus.Object
 	 */
-	Base.prototype.toString = function(){
-		return this.xType || toString.call(this);
-	};
+    Base.implement({
+    	
+	    /**
+	     * 调用父类的成员变量。
+	     * @param {String} methodName 属性名。
+	     * @param { Base} ... 调用的参数数组。
+	     * @return { Base} 父类返回。 注意只能从子类中调用父类的同名成员。
+	     * @protected
+	     * @example <code>
+	     *
+	     * var MyBa = new Class({
+	     *    a: function (g, b) {
+	     * 	    alert(g + b);
+	     *    }
+	     * });
+	     *
+	     * var MyCls = MyBa.extend({
+	     * 	  a: function (g, b) {
+	     * 	    this.base('a', g, b);   // 或   this.base('a', arguments);
+	     *    }
+	     * });
+	     *
+	     * new MyCls().a();
+	     * </code>
+	     */
+    	base: function(methodName) {
+	
+	        var me = this.constructor,
+	
+	            fn = this[methodName],
+	            
+	            oldFn = fn,
+	            
+	            args = arguments;
+	
+	        assert(fn, "Base.prototype.base(methodName, args): 子类不存在 {methodName} 的属性或方法。", name);
+	
+	        // 标记当前类的 fn 已执行。
+	        fn.$bubble = true;
+	
+	        assert(!me || me.prototype[methodName], "Base.prototype.base(methodName, args): 父类不存在 {methodName} 的属性或方法。", name);
+	
+	        // 保证得到的是父类的成员。
+	
+	        do {
+	            me = me.base;
+	            assert(me && me.prototype[methodName], "Base.prototype.base(methodName, args): 父类不存在 {methodName} 的属性或方法。", name);
+	        } while ('$bubble' in (fn = me.prototype[methodName]));
+	
+	        assert.isFunction(fn, "Base.prototype.base(methodName, args): 父类的成员 {fn}不是一个函数。  ");
+	
+	        fn.$bubble = true;
+	
+	        // 确保 bubble 记号被移除。
+	        try {
+	            if (args.length <= 1)
+	                return fn.apply(this, args.callee.caller.arguments);
+	            args[0] = this;
+	            return fn.call.apply(fn, args);
+	        } finally {
+	            delete fn.$bubble;
+	            delete oldFn.$bubble;
+	        }
+	    },
+	
+        /**
+		 * 增加一个监听者。
+		 * @param {String} type 监听名字。
+		 * @param {Function} listener 调用函数。
+		 * @param { Base} bind=this listener 执行时的作用域。
+		 * @return  Base this
+		 * @example <code>
+         * elem.on('click', function (e) {
+         * 		return true;
+         * });
+         * </code>
+		 */
+        on: function(type, listener, bind) {
+
+	        assert.isFunction(listener, 'JPlus.Object.prototype.on(type, listener, bind): {listener} ~');
+
+	        // 获取本对象 本对象的数据内容 本事件值
+	        var me = this, d = p.data(me, 'event'), evt = d[type];
+
+	        // 如果未绑定过这个事件。
+	        if (!evt) {
+
+		        // 支持自定义安装。
+		        d[type] = evt = function(e) {
+			        var listener = arguments.callee, handlers = listener.handlers.slice(0), i = -1, len = handlers.length;
+
+			        // 循环直到 return false。
+			        while (++i < len)
+				        if (handlers[i][0].call(handlers[i][1], e) === false)
+					        return false;
+
+			        return true;
+		        };
+
+		        // 获取事件管理对象。
+		        d = getMgr(me, type);
+
+		        // 当前事件的全部函数。
+		        evt.handlers =d.initEvent ? [[d.initEvent, me]] : [];
+
+                // 添加事件。
+                if(d.add)
+                    d.add(me, type, evt);
+
+	        }
+
+	        // 添加到 handlers 。
+	        evt.handlers.push([listener, bind || me]);
+
+	        return me;
+        },
+
+        /**
+		 * 删除一个监听器。
+		 * @param {String} [type] 监听名字。
+		 * @param {Function} [listener] 回调器。
+		 * @return  Base this 注意: function () {} !== function () {},
+		 *         这意味着这个代码有问题: <code>
+         * elem.on('click', function () {});
+         * elem.un('click', function () {});
+         * </code>
+		 *         你应该把函数保存起来。 <code>
+         * var c =  function () {};
+         * elem.on('click', c);
+         * elem.un('click', c);
+         * </code>
+		 * @example <code>
+         * elem.un('click', function (e) {
+         * 		return true;
+         * });
+         * </code>
+		 */
+        un: function(type, listener) {
+
+	        assert(!listener || Function.isFunction(listener), 'JPlus.Object.prototype.un(type, listener): {listener} 必须是函数或空参数。', listener);
+
+	        // 获取本对象 本对象的数据内容 本事件值
+	        var me = this, d = p.getData(me, 'event'), evt, handlers, i;
+	        if (d) {
+		        if (evt = d[type]) {
+
+			        handlers = evt.handlers;
+
+			        if (listener) {
+
+				        // 搜索符合的句柄。
+				        for (i = handlers.length - 1; i; i--) {
+					        if (handlers[i][0] === listener) {
+						        handlers.splice(i, 1);
+						        break;
+					        }
+				        }
+
+			        }
+
+			        // 检查是否存在其它函数或没设置删除的函数。
+			        if (!listener || handlers.length < 2) {
+
+				        // 删除对事件处理句柄的全部引用，以允许内容回收。
+				        delete d[type];
+
+                        d = getMgr(me, type);
+
+				        // 内部事件管理的删除。
+                        if(d.remove)
+				            d.remove(me, type, evt);
+			        }
+		        } else if (!type) {
+			        for (evt in d)
+				        me.un(evt);
+		        }
+	        }
+	        return me;
+        },
+
+        /**
+		 * 触发一个监听器。
+		 * @param {String} type 监听名字。
+		 * @param { Base} [e] 事件参数。
+		 * @return  Base this trigger 只是手动触发绑定的事件。
+		 * @example <code>
+         * elem.trigger('click');
+         * </code>
+		 */
+        trigger: function(type, e) {
+
+	        // 获取本对象 本对象的数据内容 本事件值 。
+	        var me = this, evt = p.getData(me, 'event'), eMgr;
+
+	        // 执行事件。
+	        return !evt || !(evt = evt[type]) || ((eMgr = getMgr(me, type)).trigger ? eMgr.trigger(me, type, evt, e) : evt(e));
+
+        },
+
+        /**
+		 * 增加一个只执行一次的监听者。
+		 * @param {String} type 监听名字。
+		 * @param {Function} listener 调用函数。
+		 * @param { Base} bind=this listener 执行时的作用域。
+		 * @return  Base this
+		 * @example <code>
+         * elem.one('click', function (e) {
+         * 		trace('a');  
+         * });
+         * 
+         * elem.trigger('click');   //  输出  a
+         * elem.trigger('click');   //  没有输出 
+         * </code>
+		 */
+        one: function(type, listener, bind) {
+
+	        assert.isFunction(listener, 'JPlus.Object.prototype.one(type, listener): {listener} ~');
+			
+			var me = this;
+
+	        // one 本质上是 on , 只是自动为 listener 执行 un 。
+	        return this.on(type, function() {
+
+		        // 删除，避免闭包。
+		        me.un(type, arguments.callee);
+
+		        // 然后调用。
+		        return listener.apply(this, arguments);
+	        }, bind);
+        },
+		        
+		/**
+		 * 将制定对象转换为字符串。
+		 * @return {String} 对应的字符串。
+		 */
+		toString: function(){
+			return this.xType || toString.call(this);
+		}
+		
+	});
 
 	/**
 	 * @class String
@@ -1460,11 +1424,16 @@
 		 */
 	    insert: function(index, value) {
 		    assert.isNumber(index, "Array.prototype.insert(index, value): 参数 index ~");
-		    var me = this, tmp = ap.slice.call(me, index);
-		    me.length = index + 1;
-		    this[index] = value;
-		    ap.push.apply(me, tmp);
-		    return me;
+		    var me = this, tmp;
+		    if(index < 0 || index >= me.length){
+		    	me[index = me.length++] = value;
+		    } else {
+			    tmp = ap.slice.call(me, index);
+			    me.length = index + 1;
+			    this[index] = value;
+			    ap.push.apply(me, tmp);
+			}
+		    return index;
 
 	    },
 
@@ -1609,26 +1578,21 @@
 
 	/// #if CompactMode
 
-	/**
-	 * 生成一个请求。
-	 * @class window.XMLHttpRequest
-	 * @return {XMLHttpRequest} 请求的对象。
-	 */
-
-	// IE 7 的 XMLHttpRequest 有错，强制覆盖。
-	if (navigator.isQuirks || !window.XMLHttpRequest) {
+	if (!window.XMLHttpRequest) {
+		
+		/**
+		 * 生成一个请求。
+		 * @class window.XMLHttpRequest
+		 * @return {XMLHttpRequest} 请求的对象。
+		 */
 		window.XMLHttpRequest = function() {
 			return new ActiveXObject("Microsoft.XMLHTTP");
 		};
 	}
 
 	/// #endif
-
-	/**
-	 * @class
-	 */
 	
-	if (!window.execScript)
+	if (!window.execScript) {
 
 		/**
 		 * 全局运行一个函数。
@@ -1644,6 +1608,8 @@
 			window["eval"].call( window, statements );
 
         };
+        
+	}
 
     // 将以下成员赋予 window ，这些成员是全局成员。
     String.map('undefined Class', p, window);
@@ -1794,6 +1760,8 @@
 function using(ns, isStyle) {
 
     assert.isString(ns, "using(ns): {ns} 不是合法的名字空间。");
+    
+    var p = JPlus;
 
     // 已经载入。
     if (p.namespaces.include(ns))
@@ -1802,7 +1770,7 @@ function using(ns, isStyle) {
     if (ns.indexOf('/') === -1)
         ns = p.resolveNamespace(ns.toLowerCase(), isStyle) + (isStyle ? '.css' : '.js');
 
-    var dom, callback, path = ns.replace(/^[\.\/\\]+/, "");
+    var doms, callback, path = ns.replace(/^[\.\/\\]+/, "");
     if (isStyle) {
         callback = p.loadStyle;
         doms = document.styleSheets;
@@ -1814,7 +1782,7 @@ function using(ns, isStyle) {
     }
 
     // 如果在节点找到符合的就返回，找不到，调用 callback 进行真正的 加载处理。
-    each.call(dom, function(dom) {
+    Object.each(doms, function(dom) {
         return !dom[src] || dom[src].toLowerCase().indexOf(path) === -1;
     }) && callback(p.rootPath + ns);
 };
@@ -1837,14 +1805,16 @@ function imports(ns){
  */
 function trace() {
     if (JPlus.debug) {
+    	
+    	var hasLog = window.console && console.log;
 
         // 如果存在控制台，则优先使用控制台。
-        if(window.console && console.log && console.log.apply){
+        if(hasLog && console.log.apply){
             console.log.apply(console, arguments);
+        } else if(hasLog && arguments.length === 1){
+        	console.log(arguments[0]);
         } else {
-
-            // 否则生成调试时字符串。
-            trace.log(Object.update(arguments, trace.inspect, []).join(" "));
+			(hasLog ? console : trace).log(Object.update(arguments, trace.inspect, []).join(" "));
         }
     }
 }

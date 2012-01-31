@@ -35,16 +35,14 @@
 		<script>
 			
 			
-			var a = $('a'), b = $('b'), c = $('c'), d = $('d'), o = $('o'), abcd = new NodeList([a, b, c, d]);
+			var a = $$('a'), b = $$('b'), c = $$('c'), d = $$('d'), o = $$('o');
 			
 			
 			var testcases = {
-				'Element.prototype.on': '@a; "click", function(){console.log("clicked") }',
-				'Element.prototype.un': '@a; "click"',
-				'Element.prototype.trigger': '@a; "click"',
-				'Element.prototype.one': '@a; "click", function(){console.log("clicked - once") }',
-				'Element.prototype.addEventListener': '@a; "click", function(){console.log("clicked") }, false',
-				'Element.prototype.removeEventListener': '@a; "click", function(){console.log("clicked") }, false'
+				'Control.prototype.on': '@a; "click", function(){console.log("clicked") }',
+				'Control.prototype.un': '@a; "click"',
+				'Control.prototype.trigger': '@a; "click"',
+				'Control.prototype.one': '@a; "click", function(){console.log("clicked - once") }'
 			};
 			
 			System.initTestCases(testcases);

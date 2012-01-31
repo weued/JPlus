@@ -7,18 +7,21 @@ using("System.Dom.Element");
 
 
 	
-namespace(".Draggable", Class({
+var Draggable = Class({
+	
+	initEvent: function (e) {
+		e.draggable = this;
+		e.dragTarget = this.target;
+	},
 	
 	/**
 	 * 触发 dragstart 事件。
 	 * @param {Event} e 原生的 mousemove 事件。
 	 */
 	onDragStart: function(e){
-		
-		e.dragTarget = this;
-		
+		this.initEvent(e);
 		// 如果都正常。
-		return this.dom.trigger('dragstart', e);
+		return this.target.trigger('dragstart', e);
 	},
 	
 	/**
@@ -26,11 +29,8 @@ namespace(".Draggable", Class({
 	 * @param {Event} e 原生的 mousemove 事件。
 	 */
 	onDrag: function(e){
-		
-		e.dragTarget = this;
-		
-		this.dom.trigger('drag', e);
-			
+		this.initEvent(e);
+		this.target.trigger('drag', e);
 	},
 	
 	/**
@@ -38,10 +38,8 @@ namespace(".Draggable", Class({
 	 * @param {Event} e 原生的 mouseup 事件。
 	 */
 	onDragEnd: function(e){
-
-		e.dragTarget = this;
-		
-		return this.dom.trigger('dragend', e);
+		this.initEvent(e);
+		return this.target.trigger('dragend', e);
 	},
 	
 	/**
@@ -77,7 +75,7 @@ namespace(".Draggable", Class({
 		}, me.dragDelay);
 		
 		// 设置文档  mouseup 和   mousemove
-		me.handle.ownerDocument.on('mouseup', me.stopDrag, me).on('mousemove', me.handleDrag, me);
+		Dom.getDocument(me.handle.dom).on('mouseup', me.stopDrag, me).on('mousemove', me.handleDrag, me);
 	
 	},
 	
@@ -168,7 +166,7 @@ namespace(".Draggable", Class({
 	beforeDrag: function(e){
 		this.offset = this.proxy.getOffset();
 		this.cursor = document.getStyle('cursor');
-		document.setStyle('cursor', this.dom.getStyle('cursor'));
+		document.setStyle('cursor', this.target.getStyle('cursor'));
 	},
 	
 	doDrag: function(e){
@@ -187,8 +185,8 @@ namespace(".Draggable", Class({
 	dragDelay: 500,
 	
 	constructor: function(dom, handle){
-		this.proxy = this.dom = dom;
-		this.handle = handle ? handle.dom || handle : dom;
+		this.proxy = this.target = dom;
+		this.handle = handle || dom;
 		this.setDraggable();
 	},
 
@@ -196,17 +194,16 @@ namespace(".Draggable", Class({
 	 * 停止当前对象的拖动。
 	 */
 	stopDragging: function(){
-		this.handle.ownerDocument.un('mousemove', this.handleDrag).un('mouseup', this.stopDrag);
+		Dom.getDocument(this.handle.dom).un('mousemove', this.handleDrag).un('mouseup', this.stopDrag);
 		clearTimeout(this.timer);
 		Draggable.current = null;
 	},
 	
 	setDraggable: function(value){
-		value = value !== false;
-		this.handle[value ? 'on' : 'un']('mousedown', this.initDrag, this);
+		this.handle[value !== false ? 'on' : 'un']('mousedown', this.initDrag, this);
 	}
 	
-}));
+});
 
 /// #endregion
 
@@ -215,7 +212,7 @@ namespace(".Draggable", Class({
 /**
  * @class Element
  */
-Element.implement({
+Control.implement({
 	
 	/**
 	 * 使当前元素支持拖动。
@@ -227,10 +224,10 @@ Element.implement({
 		if(handle !== false) {
 			if (handle === true) handle = null;
 			if(draggable) {
-				assert(!handle || draggable.handle === handle.dom || handle, "Element.prototype.setDraggable(handle): 无法重复设置 {handle}, 如果希望重新设置handle，使用以下代码：elem.$data.draggable.setDraggable(false);elem.$data.draggable = null;elem.setDraggable(handle) 。", handle);
+				assert(!handle || draggable.handle.target === handle.target, "Control.prototype.setDraggable(handle): 无法重复设置 {handle}, 如果希望重新设置handle，使用以下代码：dom.setDraggable(false);JPlus.removeData(dom, 'draggable');dom.setDraggable(handle) 。", handle);
 				draggable.setDraggable();
 			} else  {
-				Element.setMovable(this.dom || this);
+				Dom.setMovable(this.target);
 				draggable = JPlus.setData(this, 'draggable', new Draggable(this, handle));
 			}
 			

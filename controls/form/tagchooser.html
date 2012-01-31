@@ -2,14 +2,15 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>U+ DPL</title>
+		<title>J+ Control Libaray</title>
 		
 		<link rel="stylesheet" type="text/css" href="../core/assets/styles/index.css">
+		<link rel="stylesheet" type="text/css" href="../form/assets/styles/textbox.css">
 		<link rel="stylesheet" type="text/css" href="assets/styles/tagchooser.css">
 		
-		<script type="text/javascript" src="../../assets/libs/jquery/jquery.js"></script>
-		<script type="text/javascript" src="../../src/jquery-adapter.js"></script>
-		<script type="text/javascript" src="../../src/uplus.js"></script>
+		<script type="text/javascript" src="../../src/system.js"></script>
+		<script type="text/javascript" src="../../src/system/dom/element.js"></script>
+		<script type="text/javascript" src="../../src/controls.js"></script>
 		
 		<script type="text/javascript" src="../core/assets/scripts/index.js"></script>
 		<script type="text/javascript" src="assets/scripts/tagchooser.js"></script>
@@ -18,11 +19,18 @@
 	</head>
 	<body>
 		
+		文字：<input type="text" class="x-textbox" id="a" />
 		
-		文字：<a class="b-tagchooser b-tagchooser-actived" href="javascript:;">选项1</a>
-		<a class="b-tagchooser" href="javascript:;">选项2</a>
-		<a class="b-tagchooser" href="javascript:;">选项2</a>
+		<a class="x-tagchooser x-tagchooser-actived" href="javascript:;">选项1</a>
+		<a class="x-tagchooser" href="javascript:;">选项2</a>
+		<a class="x-tagchooser" href="javascript:;">选项3</a>
 		
 		
+		<script>
+			new CommonTags({
+				dom: 'a',
+				targets: document.query('.x-tagchooser')	
+			});
+		</script>
 	</body>
 </html>

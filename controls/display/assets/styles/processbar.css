@@ -1,0 +1,38 @@
+/**
+ * @author 
+ */
+
+
+.x-processbar {
+	
+	text-align: center;	
+	height: 18px;
+	border: 1px solid #9CBFEE;
+	font-size: 12px;
+	cursor: default;
+	line-height: 18px;
+	position: relative;
+	overflow: hidden;
+}
+
+
+.x-processbar-fore{
+	background: url(../images/process.gif);
+	overflow: hidden;
+	z-index: 3;
+	color: white;
+}
+
+
+
+.x-processbar-fore, .x-processbar-back {
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+
+
+.x-processbar-back {
+	color: #396095;
+	z-index: 0;
+}

@@ -3,32 +3,37 @@
  */
 
  
-.b-textbox {
-	width: 208px;
-	height: 20px;
-	border: 1px solid #cccccc;
+.x-textbox {
+    border: 1px solid #B5B8C8;
 	color: #585858;
-	line-height: 20px;
-	padding: 4px 5px;
-	background:#ffffff;
-	vertical-align: middle;
+	line-height: 16px;
+	padding: 1px 3px;
+	font-size: 12px;
+	background: #ffffff;
+	vertical-align: baseline;
+	*vertical-align: bottom;
+	background: url(../images/shadow.gif) repeat-x left top; 
+	margin: 0;
 }
 
-textarea.b-textbox {
+input.x-textbox {
+	height: 18px;
+}
+
+textarea.x-textbox {
 	vertical-align: top;
 }
 
-.b-textbox:focus {
-	border: 1px solid #78BDF5;
+.x-textbox:focus{
+    border-color: #75BBCD;
 }
 
-.b-textbox-error {
+.x-textbox-error,  .x-textarea-error {
 	border: 1px solid #d13535!important;
-	background: url(../images/text-cor.gif) no-repeat right 0px #ffffff;
 }
 
 
-.b-textbox[disabled] {
-	background: #F2F2F2;
+.x-textbox[disabled] {
 	color: #C2C2C2;
+	border-color: #C2C2C2;
 }

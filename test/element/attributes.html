@@ -34,23 +34,23 @@
 		
 		<script>
 		
-			var a = $('a'), b = $('b'), c = $('c'), d = $('d');
+			var a = $$('a'), b = $$('b'), c = $$('c'), d = $$('d'), o = $$('o');
 			
 			var testcases = {
 				'Attribute': '-',
-				'Element.prototype.setAttr': '@a; "innerText", "12121" => assert.areEqual(a.getAttr("innerText"), "12121")',
-				'Element.prototype.getAttr': '@a; "innerText" =>  "12121"',
-				'Element.prototype.set': '@a; {"innerHTML": "cv"} => assert',
+				'Control.prototype.setAttr': '@a; "innerText", "12121" => assert.areEqual(a.getAttr("innerText"), "12121")',
+				'Control.prototype.getAttr': '@a; "innerText" =>  "12121"',
+				'Control.prototype.set': '@a; {"innerHTML": "cv"} => assert',
 				'Application': '-',
-				'Element.prototype.getText': '@a; => "cv"',
-				'Element.prototype.setText': '@a; "cv" => assert.areEqual(a.getText(), "cv")',
-				'Element.prototype.getHtml': '@a; => "cv"',
-				'Element.prototype.setHtml': '@a; "cv" => assert.areEqual(a.getHtml(), "cv")',
+				'Control.prototype.getText': '@a; => "cv"',
+				'Control.prototype.setText': '@a; "cv" => assert.areEqual(a.getText(), "cv")',
+				'Control.prototype.getHtml': '@a; => "cv"',
+				'Control.prototype.setHtml': '@a; "cv" => assert.areEqual(a.getHtml(), "cv")',
 				'Class': '-',
-				'Element.prototype.addClass': '@a; "light" => assert.areEqual(a.hasClass("light"), true)  ',
-				'Element.prototype.hasClass': '@a; "light" => true ',
-				'Element.prototype.removeClass': '@a; "light" => assert.areEqual(a.hasClass("light"), false)',
-				'Element.prototype.toggleClass': '@a; "light" => assert.areEqual(a.hasClass("light"), true)',
+				'Control.prototype.addClass': '@a; "light" => assert.areEqual(a.hasClass("light"), true)  ',
+				'Control.prototype.hasClass': '@a; "light" => true ',
+				'Control.prototype.removeClass': '@a; "light" => assert.areEqual(a.hasClass("light"), false)',
+				'Control.prototype.toggleClass': '@a; "light" => assert.areEqual(a.hasClass("light"), true)'
 			};
 			
 			System.initTestCases(testcases);

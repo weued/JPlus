@@ -1,147 +1,113 @@
-/**
- * @author 
- */
 
-.b-dialog {
-	overflow:hidden;
+.x-dialog {
+	text-align: left;
 	position: absolute;
-	width:460px; 
-	height: 204px;
-	left: 50%;
-	top: 50%;
-	margin-left: -230px;
-	margin-top: -100px;
-	z-index:1001;
 }
 
-.b-dialog-wrap{
-    display:block;
-	z-index: 1002;
-	position: relative;
-}
-
-.b-dialog-border{
-    background: #000;
-    opacity: 0.5;
-    filter: alpha(opacity=50);
-}
-
-.b-dialog-border, .b-dialog-main {
-    padding: 0;	
-    border: 0;
-}
-
-.b-dialog-corner{
-    width: 6px;
-    height: 6px;
-}
-
-.b-dialog-header {
-    height: 34px;
-    line-height: 34px;
-    border: 1px solid #707070;
-    border-bottom: 0;
-    background: url(../images/dialog-header.gif) repeat-x;
-    margin: 0;
-}
-
-.b-dialog-title {
-    float:left;
-    margin-left:15px;
-    color:#2D2D2D;
-    font-size: 14px;
-    font-weight: bold;
-}
-
-.b-dialog-close {
-    display: inline-block;
-    float: right;
-    background: url(../images/dialog-close.gif) no-repeat;
-    height: 16px;
-    width: 16px;
-    margin: 8px 10px;
-    cursor: pointer;
-}
-
-.b-dialog-close:hover {
-	background-position: 0 -25px;
-}
-
-.b-dialog-body {
-    border: 1px solid #707070;
-    border-top: 0;
-    background-color: #FFFFFF;
-    text-align: center;
-    width: 448px;
-    height: 156px;
-}
-
-.b-dialog-mask {
-    z-index: 1000;
-    position:absolute;
-    top:0;
-    left:0;
-    border:0px;
-    background: #000;
-    opacity:0.3;
-    filter:alpha(opacity=30);
-	width:100%;
-	height:100%;
+.x-dialog-proxy {
+	opacity: 0.8;
+	filter: alpha( opacity = 80);
 }
 
 
-.b-dialog-container {
-	padding: 21px 14px;
+/* 窗口 */
+
+
+.x-dialog-header, .x-dialog-header .x-header-container, .x-dialog-header .x-header-content , .x-dialog-footer, .x-dialog-footer .x-footer-container, .x-dialog-footer .x-footer-content { 
+	background-image:url(../images/dialog.gif);
 }
 
-.b-dialog-mask iframe {
-    position:absolute;
-    top:0;
-    left:0;
-    display:none;
-    display/**/:block;
-    border: 0;
-    z-index:-1;
-    filter:mask();
-	width:100%;
-	height: 100%;
+.x-dialog-header .x-header-container {
+    background-position: 100% -60px;
 }
 
-.b-dialog-content{
-    height: 60px;
-    width: 220px;
-    margin: 0 auto;
-    padding:16px 0 0 80px;
-    background-position:left center;
-    font-weight: bold;
-    text-align: left;
-    overflow: hidden;
+.x-dialog-header .x-header-content {
+     background-position: 0 -30px;
 }
 
-.b-dialog-content-info{
-    background:url(../images/info.gif) no-repeat;
-}
-.b-dialog-content-recycler{
-    background:url(../images/recycler.gif) no-repeat;
-}
-.b-dialog-content-success{
-    background:url(../images/success.gif) no-repeat;
+.x-dialog-body, .x-dialog-container {
+	background-color: #e3eaec;
+	background-repeat: repeat-y;
 }
 
-.b-dialog-buttons{
-    margin-top:8px;
-    text-align:center;
+.x-dialog-body   {
+	padding-left: 4px;
+	background-position: left top;
+	background-image:url(../images/dialog-sides-left.gif);
 }
 
-.b-dialog-plain  .b-dialog-border {
-	background: transparent;
-	visibility: hidden;
+.x-dialog-container {
+	padding-right: 4px;
+	background-position: right bottom;
+	background-image:url(../images/dialog-sides-right.gif);
 }
 
-.b-dialog-plain  .b-dialog-mask{
-	display: none;
+.x-dialog-content {
+    background-color: white;
+    border: 1px solid #99bce8;
 }
-.b-dialog-plain .b-dialog-body,
-.b-dialog-plain .b-dialog-header  {
-	border: none;
+
+.x-dialog-footer {
+    background-position: 0 -90px;
 }
+
+.x-dialog-footer .x-footer-container {
+    background-position: 100% -110px;
+}
+
+.x-dialog-footer .x-footer-content {
+    background-position: 0 -100px;
+}
+
+.x-dialog-buttons {
+	text-align: right;
+	padding: 5px;
+}
+
+
+
+/* 按钮 */
+.x-dialog.x-resizable .x-resizable-rb {
+	background-image:url(../../../core/assets/images/icons.gif);
+	width: 11px;
+	height: 11px;
+	background-position: -100px -100px;
+}
+
+/* 按钮 */
+
+.x-icon-close {
+    background-position: -50px -50px;
+}
+
+.x-icon-close:hover {
+    background-position: -50px -75px;
+}
+
+.x-icon-maximize {
+    background-position: -25px 0;
+}
+
+.x-icon-maximize:hover {
+    background-position: -25px -25px;
+}
+
+.x-icon-restore {
+    background-position: -25px -50px;
+}
+
+.x-icon-restore:hover {
+    background-position: -25px -75px;
+}
+
+.x-icon-minimize {
+    background-position: -50px 0;
+}
+
+.x-icon-minimize:hover {
+    background-position: -50px -25px;
+}
+
+
+
+

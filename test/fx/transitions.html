@@ -31,9 +31,9 @@
 		<script>
 			var width = 300, duration = 3500, fps = 100;
 
-			$('v').setHeight(width);
-			$('b').setHeight(width);
-			$('t').setWidth(width + 20);
+			$$('v').setHeight(width);
+			$$('b').setHeight(width);
+			$$('t').setWidth(width + 20);
 
 			var Trans = Fx.Base.extend({
 
@@ -47,25 +47,25 @@
 					this.x++;
 					var y = Fx.compute(this.from, this.to, delta);
 					this.y = width - y;
+					
+					Dom.create('div',  'p').appendTo('v').setOffset(this);
 
-					document.create('div',  'p').appendTo('v').setOffset(this);
-
-					$('f').style.left = y + 'px';
+					Dom.get('f').dom.style.left = y + 'px';
 				},
 				start : function() {
 
 					arguments.length = 5;
 					arguments[4] = function() {
-						$('v') .empty();
+						$$('v') .empty();
 						this.x = 0;
 					}
-					this.base('start', arguments);
+					this.base('start');
 				}
 			});
 
 			var f = new Trans();
 
-			for(var i in Fx.Transitions) {
+			for(var i in Transitions) {
 				if(/^ease/.test(i))
 					break;
 				document.write('<input type="button" onclick="f.transition = Transitions.' + i + ';  f.start(0, ' + width + ');" value="' + i + '">');

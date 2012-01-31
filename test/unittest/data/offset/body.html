@@ -11,9 +11,9 @@
 		<script src="../../../../src/system.js"></script>
 		<script src="../../../../src/system/dom/element.js"></script>
 		<script type="text/javascript" charset="utf-8">
-			document.onReady(function() {
-				$(document.body).on('click', function() {
-					$('marker').setOffset( $(this).getOffset() );
+			Dom.ready(function() {
+				Dom.get(document.body).on('click', function() {
+					Dom.get('marker').setOffset( this.getOffset() );
 					return false;
 				});
 			});

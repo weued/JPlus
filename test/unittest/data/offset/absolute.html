@@ -18,10 +18,10 @@
 		<script src="../../../../src/system.js"></script>
 		<script src="../../../../src/system/dom/element.js"></script>
 		<script type="text/javascript" charset="utf-8">
-			document.onReady(function() {
+			Dom.ready(function() {
 				document.find('.absolute').on('click', function() {
-					$('marker').setOffset( $(this).getOffset() );
-					var pos = $(this).getPosition();
+					Dom.get('marker').setOffset( this.getOffset() );
+					var pos = this.getPosition();
 					this.setOffset(pos);
 					return false;
 				});

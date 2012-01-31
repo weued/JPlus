@@ -84,21 +84,15 @@ using("System.Fx.Base");
 	/// #endregion
 	
 	/**
-	 * Element 简写。
-	 * @type Element
+	 * compute 简写。
+	 * @param {Object} from 从。
+	 * @param {Object} to 到。
+	 * @param {Object} delta 变化。
+	 * @return {Object} 结果。
 	 */
-	var e = Element,
+	var c = Fx.compute,
 	
-		Fx = p.Fx,
-		
-		/**
-		 * compute 简写。
-		 * @param {Object} from 从。
-		 * @param {Object} to 到。
-		 * @param {Object} delta 变化。
-		 * @return {Object} 结果。
-		 */
-		c = Fx.compute,
+		Dom = window.Dom,
 		
 		/**
 		 * 缓存已解析的属性名。
@@ -140,11 +134,11 @@ using("System.Fx.Base");
 		 * @class Animate
 		 * @extends Fx.Base
 		 */
-		Animate = namespace(".Fx.Animate", Fx.Base.extend({
+		Animate = Fx.Animate = Fx.Base.extend({
 			
 			/**
 			 * 当前绑定的节点。
-			 * @type Element
+			 * @type Control
 			 * @protected
 			 */
 			dom: null,
@@ -216,7 +210,7 @@ using("System.Fx.Base");
 					// 已经编译过，直接使用， 否则找到合适的解析器。
 					if (!parser) {
 						
-						if(key in e.styleNumbers) {
+						if(key in Dom.styleNumbers) {
 							cache[key] = numberParser;
 						} else {
 							
@@ -229,7 +223,6 @@ using("System.Fx.Base");
 								
 								// 如果转换后结果合格，证明这个转换器符合此属性。
 								if (parsed || parsed === 0) {
-									me.dom = me.dom.dom || me.dom;
 									// 缓存，下次直接使用。
 									cache[key] = parser;
 									break;
@@ -255,16 +248,18 @@ using("System.Fx.Base");
 				return me;
 			}
 		
-		})),
+		}),
 		
 		numberParser = {
 			set: function(target, name, from, to, delta){
-				target.style[name] = c(from, to, delta);
+				target.dom.style[name] = c(from, to, delta);
 			},
 			parse: function(value){
 				return typeof value == "number" ? value : parseFloat(value);
 			},
-			get: e.styleNumber
+			get: function(target, name){
+				return Dom.styleNumber(target.dom, name);
+			}
 		};
 	
 	Animate.parsers = {
@@ -272,18 +267,21 @@ using("System.Fx.Base");
 		/**
 		 * 数字。
 		 */
-		number: {
-			set: navigator.isStandard ? function(target, name, from, to, delta){
+		length: {
+			
+			set: eval("-[1,]") ? function(target, name, from, to, delta){
 				
-				target.style[name] = c(from, to, delta) + 'px';
+				target.dom.style[name] = c(from, to, delta) + 'px';
 			} : function(target, name, from, to, delta){
 				try {
 					
 					// ie 对某些负属性内容报错
-					target.style[name] = c(from, to, delta);
+					target.dom.style[name] = c(from, to, delta);
 				}catch(e){}
 			},
+			
 			parse: numberParser.parse,
+			
 			get: numberParser.get
 			
 		},
@@ -292,18 +290,23 @@ using("System.Fx.Base");
 		 * 颜色。
 		 */
 		color: {
+			
 			set: function set(target, name, from, to, delta){
-				target.style[name] = String.arrayToHex([
+				target.dom.style[name] = String.arrayToHex([
 					Math.round(c(from[0], to[0], delta)),
 					Math.round(c(from[1], to[1], delta)),
 					Math.round(c(from[2], to[2], delta))
 				]);
 			},
+			
 			parse: function(value){
 				return String.hexToArray(value) || String.rgbToArray(value);
 			},
-			get: e.getStyle
 			
+			get: function(target, name){
+				return Dom.getStyle(target.dom, name);
+			}
+	
 		}
 		
 	};
@@ -323,7 +326,7 @@ using("System.Fx.Base");
 			width: 'width marginLeft paddingLeft marginRight paddingRight'
 		},
 	
-		ep = e.prototype,
+		ep = Dom.prototype,
 		show = ep.show,
 		hide = ep.hide;
 	
@@ -333,17 +336,17 @@ using("System.Fx.Base");
 	
 	String.map('left right top bottom', Function.from({$slide: true}), maps);
 	
-	e.implement({
+	Control.implement({
 		
 		/**
 		 * 获取和当前节点有关的 Animate 实例。
 		 * @return {Animate} 一个 Animate 的实例。
 		 */
 		fx: function(){
-			return p.getData(this, 'fx') || p.setData(this, 'fx', new p.Fx.Animate(this));
+			return p.getData(this, 'fx') || p.setData(this, 'fx', new Fx.Animate(this));
 		}
 		
-	}, 2)	
+	}, 2)
 	
 	.implement({
 		
@@ -388,17 +391,17 @@ using("System.Fx.Base");
 		show: function(duration, callBack, type){
 			var me = this;
 			if (duration) {
-				var elem = me.dom || me, savedStyle = {};
+				var elem = me.dom, savedStyle = {};
 		       
 				me.fx().start(getAnimate(type),  {}, duration, function(){
-					Element.setStyles(elem, savedStyle);
+					Dom.setStyles(elem, savedStyle);
 					
 					if(callBack)
 						callBack.call(me, true);
 				}, function(from, to){
-					if(!me.isHidden())
+					if(!Dom.isHidden(elem))
 						return false;
-					e.show(elem);
+					Dom.show(elem);
 					
 					if(from.$slide){
 						initSlide(from, elem, type, savedStyle);
@@ -409,7 +412,7 @@ using("System.Fx.Base");
 					
 					for(var style in from){
 						savedStyle[style] = elem.style[style];
-						to[style] = e.styleNumber(elem, style);
+						to[style] = Dom.styleNumber(elem, style);
 					}
 				});
 			} else {
@@ -430,12 +433,12 @@ using("System.Fx.Base");
 			if (duration) {
 				var  elem = me.dom || me, savedStyle = {};
 				me.fx().start({}, getAnimate(type), duration, function(){  
-					e.hide(elem);
-					e.setStyles(elem, savedStyle);
+					Dom.hide(elem);
+					Dom.setStyles(elem, savedStyle);
 					if(callBack)
 						callBack.call(me, false);
 				}, function (from, to) {
-					if(me.isHidden())
+					if(Dom.isHidden(elem))
 						return false;
 					if(to.$slide) {
 						initSlide(to, elem, type, savedStyle);
@@ -461,8 +464,7 @@ using("System.Fx.Base");
 		 * @return this
 		 */
 		highlight: function(color, duration, callBack){
-			assert(!color || Array.isArray(color) || rhex.test(color) || rRgb.test(color), "Element.prototype.highlight(color, duration, callBack): 参数 {color} 不是合法的颜色。", color);
-			assert(!callBack || Function.isFunction(callBack), "Element.prototype.highlight(color, duration, callBack): 参数 {callBack} 不是可执行的函数。", callBack);
+			assert(!callBack || Function.isFunction(callBack), "Control.prototype.highlight(color, duration, callBack): 参数 {callBack} 不是可执行的函数。", callBack);
 			var from = {},
 				to = {
 					backgroundColor: color || '#ffff88'
@@ -471,7 +473,7 @@ using("System.Fx.Base");
 			duration /= 2;
 			
 			this.fx().start(from, to, duration, null, function (from) {
-				from.backgroundColor = e.getStyle(this.dom.dom || this.dom, 'backgroundColor');
+				from.backgroundColor = Dom.getStyle(this.dom.dom, 'backgroundColor');
 			}).start(to, from, duration, callBack);
 			return this;
 		}

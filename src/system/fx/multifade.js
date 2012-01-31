@@ -11,7 +11,7 @@
 
 using("System.Fx.Element");
 
-ElementList.implement({
+NodeList.implement({
 	
 	multiFade: function( opacity, onFade, onShow ) {
 		opacity = opacity === undefined ? 0.3 : opacity;
@@ -21,7 +21,7 @@ ElementList.implement({
 		this.on('mouseenter', function(e){
 			me.each( function( elem ) {
 		    	if( elem != e.target ){
-					elem.animate('opacity', opacity, -1, onFade, null, 'restart' );
+					new Dom(elem).animate('opacity', opacity, -1, onFade, null, 'restart' );
 				}
 		    });
 		});
@@ -29,11 +29,11 @@ ElementList.implement({
 		this.on('mouseleave', function(e) {
 		    me.each( function( elem ){
 		      if( elem != e.target )
-					elem.animate('opacity', 1, -1, onShow, null, 'restart');
+					new Dom(elem).animate('opacity', 1, -1, onShow, null, 'restart');
 		    });
 		});
 		
 	}
 
-})
+});
 

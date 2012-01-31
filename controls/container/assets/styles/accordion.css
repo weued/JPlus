@@ -1,0 +1,71 @@
+/**
+ * @author 
+ */
+
+
+
+
+
+
+
+/*  accordion  */
+.x-accordion-header {
+	background-repeat: repeat-x;
+	cursor: pointer;
+	height: auto;
+}
+
+.x-accordion-header h3 {
+	padding-right:25px;
+	height: 25px;
+	line-height: 24px;
+}
+
+
+.x-accordion-body {
+	overflow: auto;
+}
+
+
+
+
+
+
+ /* Accordion */
+.x-accordion {
+    border-style: solid;
+    border-width: 1px 1px 0 1px;
+	border-color:#b8d0d6;
+}
+
+.x-accordion-header, .x-accordion-header h3 {
+	 background-image:url(../images/accordion.gif);
+}
+
+.x-accordion-header:hover {
+    background-position: 0 -25px;
+}
+
+.x-accordion-header h3 {
+    background-repeat: no-repeat;
+    background-position: 100% -50px;
+}
+
+.x-accordion-header:hover h3 {
+    background-position: 100% -75px;
+}
+
+.x-accordion-header h3.x-collapsable {
+    background-position: 100% -100px;
+}
+
+.x-accordion-header:hover h3.x-collapsable {
+    background-position: 100% -125px;
+}
+
+.x-accordion-body {
+    border-width: 0 0 1px 0;
+    border-color: #b8d0d6;
+    border-style: solid;
+}
+

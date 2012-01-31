@@ -10,7 +10,7 @@ using("System.Dom.Drag");
 
 
 
-(function(p){
+var Droppable = (function(p){
 	
 	/**
 	 * 全部的区。
@@ -19,7 +19,13 @@ using("System.Dom.Drag");
 		
 		dp = Draggable.prototype,
 		
-		Droppable = namespace(".Droppable", Class({
+		Droppable = Class({
+		
+			initEvent: function (draggable, e) {
+				e.draggable = draggable;
+				e.droppable = this;
+				e.dragTarget = draggable.dom;
+			},
 			
 			/**
 			 * 触发 dragenter 执行。
@@ -27,7 +33,7 @@ using("System.Dom.Drag");
 			 * @param {Event} e 事件参数。
 			 */
 			onDragEnter: function(draggable, e){
-				e.dragTarget = draggable;
+				this.initEvent(draggable, e);
 				return this.dom.trigger('dragenter', e);
 			},
 			
@@ -37,7 +43,7 @@ using("System.Dom.Drag");
 			 * @param {Event} e 事件参数。
 			 */
 			onDragOver: function(draggable, e){
-				e.dragTarget = draggable;
+				this.initEvent(draggable, e);
 				return this.dom.trigger('dragover', e);
 			},
 
@@ -47,7 +53,7 @@ using("System.Dom.Drag");
 			 * @param {Event} e 事件参数。
 			 */
 			onDrop: function(draggable, e){
-				e.dragTarget = draggable;
+				this.initEvent(draggable, e);
 				return this.dom.trigger('drop', e);
 			},
 			
@@ -57,7 +63,7 @@ using("System.Dom.Drag");
 			 * @param {Event} e 事件参数。
 			 */
 			onDragLeave: function(draggable, e){
-				e.dragTarget = draggable;
+				this.initEvent(draggable, e);
 				return this.dom.trigger('dragleave', e);
 			},
 			
@@ -117,7 +123,7 @@ using("System.Dom.Drag");
 				return true;
 			}
 			
-		})),
+		}),
 		
 		beforeDrag = dp.beforeDrag,
 		
@@ -125,7 +131,7 @@ using("System.Dom.Drag");
 		
 		afterDrag = dp.afterDrag,
 		
-		mouseEvent = p.Events.element.mousemove;
+		mouseEvents = p.Events.control.mousemove;
 	
 	Draggable.implement({
 		
@@ -179,17 +185,25 @@ using("System.Dom.Drag");
 		}
 	});
 	
-	Element.addEvents(String.map('dragenter dragleave dragover drop', Object.extendIf(Function.from({
+	Control.addEvents(String.map('dragenter dragleave dragover drop', Function.from(Object.extendIf({
 		add:  function(elem, type, fn){
-			elem.addEventListener(type, fn, false);
-			p.getData(elem, 'droppable') || p.setData(elem, 'droppable', new Droppable(elem));
+			mouseEvents.add(elem, type, fn);
+			fn = p.getData(elem, 'droppable');
+			if(fn){
+				fn.setDisabled(false);
+			} else {
+				p.setData(elem, 'droppable', new Droppable(elem));
+			}
 		},
 		remove: function(elem, type, fn){
-			elem.removeListener(type, fn, false);
+			mouseEvents.remove(elem, type, fn);
 			p.getData(elem, 'droppable').setDisabled();
 			p.setData(elem, 'droppable', null);
 		}
-	}, mouseEvent)), {}));
+	}, mouseEvents)), {}));
+	
+	
+	return Droppable;
 
 })(JPlus);
 

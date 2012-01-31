@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>J+ UI</title>
+		<title>J+ Control Libaray</title>
 		<script type="text/javascript" src="../assets/scripts/default.js" ></script>
 	</head>
 	<body>
@@ -48,8 +48,8 @@
 			</tr>
 			<tr>
 				<td>选中的、激活的、当前的</td>
-				<td>actived</td>
-				<td><del>selected</del> <del>actived</del> <del>current</del> <del>checked</del></td>
+				<td>actived selected</td>
+				<td><del>hover</del> <del>current</del> <del>checked</del></td>
 			</tr>
 			<tr>
 				<td>禁用的、只读的</td>
@@ -143,7 +143,7 @@
 				info (information)
 			</li>
 			<li>
-				dir
+				dir (directory)
 			</li>
 			<li>
 				col (column)
@@ -206,10 +206,10 @@
 		</p>
 		<ol>
 			<li>
-				组件跟节点的 CSS 命名必须是 b-当前组件名。
+				组件跟节点的 CSS 命名必须是 x-当前组件名。
 			</li>
 			<li>
-				组件内部节点的 CSS 命名必须以 b-当前组件名- 开头。
+				组件内部节点的 CSS 命名必须以 x-当前组件名- 开头。
 			</li>
 			<li>
 				使用多个类名，而不是一个类多个功能。(即使用 .a-b 而不是使用 .a.b)
@@ -228,16 +228,16 @@
 			正确的 CSS 命名：
 		</p>
 		<code>
-			&lt;a href="#" class="b-button"&gt;&lt;span class="b-button-content"&gt;文字&lt;/span&gt;&lt;/a&gt;</code>
+			&lt;a href="#" class="x-button"&gt;&lt;span class="x-button-content"&gt;文字&lt;/span&gt;&lt;/a&gt;</code>
 		<p>
 			错误的 CSS 命名：
 		</p>
 		<code>
-			&lt;a href="#" class="b-button"&gt;&lt;span class="b-content"&gt;文字&lt;/span&gt;&lt;/a&gt;</code>
+			&lt;a href="#" class="x-button"&gt;&lt;span class="x-content"&gt;文字&lt;/span&gt;&lt;/a&gt;</code>
 		<code>
-			&lt;a href="#" class="b-button-outer"&gt;&lt;span class="b-button-content"&gt;文字&lt;/span&gt;&lt;/a&gt;</code>
+			&lt;a href="#" class="x-button-outer"&gt;&lt;span class="x-button-content"&gt;文字&lt;/span&gt;&lt;/a&gt;</code>
 		<code>
-			&lt;a href="#" class="b-btn"&gt;&lt;span class="b-btn-cnt"&gt;文字&lt;/span&gt;&lt;/a&gt;</code>
+			&lt;a href="#" class="x-btn"&gt;&lt;span class="x-btn-cnt"&gt;文字&lt;/span&gt;&lt;/a&gt;</code>
 		<p>
 			如 grid 组件：
 		</p>
@@ -250,15 +250,15 @@
 			正确的 CSS 命名：
 		</p>
 		<code>
-			&lt;div class="b-grid b-grid-2"&gt;&lt;/div&gt;
+			&lt;div class="x-grid x-grid-2"&gt;&lt;/div&gt;
 		</code>
 		<p>
 			错误的 CSS 命名：
 		</p>
 		<code>
-			&lt;div class="b-grid-2"&gt;&lt;/div&gt;</code>
+			&lt;div class="x-grid-2"&gt;&lt;/div&gt;</code>
 		<code>
-			&lt;div class="b-grid b-2"&gt;&lt;/div&gt;</code>
+			&lt;div class="x-grid x-2"&gt;&lt;/div&gt;</code>
 		<h3>五、 CSS 样式值规范</h3>
 		<h4>z-index 规范</h4>
 		 <ul>

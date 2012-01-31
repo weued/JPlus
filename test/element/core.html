@@ -58,15 +58,17 @@
 				d: function(){return  new NodeList([this]);}
 			}, 3);
 		
-			var a = $('a'), b = $('b'), c = $('c'), d = $('d'), o = $('o'), abcd = new NodeList($('all').dom.getElementsByTagName("div"));
+			var a = $$('a'), b = $$('b'), c = $$('c'), d = $$('d'), o = $$('o'), abcd = new NodeList($$('all').dom.getElementsByTagName("div"));
 			
 			var testcases = {
-				'Control': '-',
-				'$': '"o" => assert.isTrue(value.a)',
-				'Control.prototype.xType': {method: false, overrides: '@o; =>   "control"'},
+				'Dom': '-',
+				'Dom.get': '"o" => assert.isTrue(value.a)',
+				'Dom.query': '"#o" => assert.isTrue(value[0])',
+				'Dom.create': '"div", "a" => assert.isTrue(value.dom.tagName === "DIV")',
+				'Dom.parse': '"<div/>" ; "<div><div />a<\/div>"; "   <div/> f <div/>"; "<object />"; "<input type=\'radio\' checked=\'checked\'>"',
 				'Dom.getDocument': 'a.dom=>document; document=>document', 
 				'NodeList': '-',
-				'NodeList.prototype.length': {method: false, overrides:  '@abcd;4'},
+				'NodeList.prototype.length': {method: false, tests:  '@abcd;4'},
 				'NodeList.prototype.each': '@abcd; function(value){ assert.log(value.id)} => assert.logged("abcd")',
 				'NodeList.prototype.filter': '@abcd; function(value) {return value === a.dom || value === c.dom} => assert.areEqual(value, [a.dom, c.dom])',
 				'NodeList.prototype.invoke': '@abcd; "setAttr", ["ff", 1] => assert.isTrue(a.getAttr("ff") == 1),  assert.isTrue(d.getAttr("ff") == 1) ',
@@ -75,10 +77,6 @@
 				'NodeList.prototype.b': '@abcd; => [1,1,1,1]',
 				'NodeList.prototype.c': '@abcd; => assert.areEqual(value, [a.dom, b.dom,c.dom, d.dom])',
 				'NodeList.prototype.d': '@abcd; => assert.areEqual(value, [a.dom, b.dom,c.dom, d.dom])',
-				'Document': '-',
-				'Document.prototype.createControl': '@document; "div", "a" => assert.isTrue(value.dom.tagName === "DIV")',
-				'Document.prototype.parse': '@document; "<div/>" ; "<div><div />a<\/div>"; "   <div/> f <div/>"; "<object />"; "<input type=\'radio\' checked=\'checked\'>"',
-				'Document.prototype.getControl': '@document;"a", "c" => assert.areEqual(value, [a.dom, c.dom])',
 				'Control': '-',
 				'new Control': 'a => assert.areEqual(value.dom, a.dom)'
 			};
@@ -91,10 +89,10 @@
 // 2.  Attribute   g/setAttr   g/setHtml   g/setText    add/remove/toggle/hasClass   
 // 3. Dimension     g/setHeight/Width  g/setSize   getScroolSize
 // 4. Offset   g/setOffset    g/setPosition    g/setScroll
-// 5.  Transfersing   find  findAll   get
+// 5.  Transfersing   find  query   getXXX
 // 6.  Manipulation  append  appendTo  clone  insert     empty   detach contains  hasChild   dispose    remove  replaceWith
 // 7. Event  on one trigger un
-// 8.     $     document.create   Element.parse
+// 8.     Dom.get     Dom.create   Dom.parse
 
 		</script>
 	</body>

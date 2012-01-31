@@ -14,9 +14,9 @@
 		<script src="../../../../src/system.js"></script>
 		<script src="../../../../src/system/dom/element.js"></script>
 		<script type="text/javascript" charset="utf-8">
-			document.onReady(function() {
-				document.findAll('.relative').on('click', function() {
-					$('marker').setOffset( $(this).getOffset() );
+			Dom.ready(function() {
+				document.query('.relative').on('click', function() {
+					Dom.get('marker').setOffset( this.getOffset() );
 					var pos = this.getPosition();
 					this.set({ position: 'absolute', top: pos.top, left: pos.left });
 					return false;

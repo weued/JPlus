@@ -26,7 +26,7 @@ var framewroks = {
 			'../../../../src/system/dom/element.js'
 		],
 		init:  function(window){
-			window.el = window.$("header");
+			window.el = window.$$("header");
 			window.fn = fn;
 		}
 	}
@@ -35,15 +35,15 @@ var framewroks = {
 var cases = {
 	'文档载入': '-',
 	'加载时运行':{
-		jplus: 'document.onReady(fn)',
+		jplus: 'Dom.ready(fn)',
 		mootools: 'document.addEvent("domready", fn)',
 		jQuery: '$(fn)'
 	},
 	'节点': '-',
 	'获取一个节点':{
+		jplus: '$$("header")',
 		jQuery: '$("#header")',
-		mootools: '$("header")',
-		jplus: '$("header")'
+		mootools: '$("header")'
 	},
 	'事件 - 添加':{
 		jplus: 'el.on("click", function(e){})',

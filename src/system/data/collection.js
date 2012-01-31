@@ -7,7 +7,7 @@
  * 集合。
  * @class Collection
  */
-namespace(".Collection", Class({
+var Collection = Class({
 	
 	/**
 	 * 获取当前的项数目。
@@ -24,7 +24,7 @@ namespace(".Collection", Class({
 	},
 	
 	onAdd: function(item){
-		return this.onInsert(item, this.length);
+		this.onInsert(item, this.length);
 	},
 
 	onInsert: Function.empty,
@@ -43,25 +43,25 @@ namespace(".Collection", Class({
 	},
 	
 	push: function(args){
-		Array.prototype.forEach.call(Array.isArray(args) ? args : arguments, this.add, this);
+		return Array.prototype.forEach.call(Array.isArray(args) ? args : arguments, this.add, this);
 	},
 	
 	insert: function(index, item){
 		assert.notNull(item, "Collection.prototype.insert(item): 参数 {item} ~。");
-		Array.prototype.insert.call(this, index, item = this.initItem(item));
+		index = Array.prototype.insert.call(this, index, item = this.initItem(item));
 		this.onInsert(item, index + 1);
 		return item;
 	},
 	
 	clear: function(){
 		var me = this;
-		me.onBeforeSet(index);
+		me.onBeforeSet();
 		while (me.length) {
 			var item = me[--me.length];
 			delete me[me.length];
 			me.onRemove(item, me.length);
 		}
-		me.onAfterSet(index);
+		me.onAfterSet();
 		return me;
 	},
 	
@@ -85,23 +85,26 @@ namespace(".Collection", Class({
 		
 	set: function(index, item){
 		var me = this;
-		if(typeof index == 'number'){
+		me.onBeforeSet();
+		
+		if(typeof index === 'number'){
+			item = this.initItem(item);
 			assert.notNull(item, "Collection.prototype.set(item): 参数 {item} ~。");
-			me.onBeforeSet(index);
 			assert(index >= 0 && index < me.length, 'Collection.prototype.set(index, item): 设置的 {index} 超出范围。请确保  0 <= index < ' + this.length, index);
-			me.onInsert(item, index);
+			item = me.onInsert(item, index);
 			me.onRemove(me[index], index);
 			me[index] = item;
-			me.onAfterSet(index);
 		} else{
 			if(me.length)
 				me.clear();
 			index.forEach(me.add, me);
 		}
+		
+		me.onAfterSet();
 		return me;
 	}
-		
-}));
+	
+});
 
-String.map("indexOf forEach each invoke lastIndexOf item", Array.prototype, Collection.prototype);
+String.map("indexOf forEach each invoke lastIndexOf item filter", Array.prototype, Collection.prototype);
 

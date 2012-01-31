@@ -4,7 +4,7 @@
 
 
 
-.b-pager{
+.x-pager{
 	height:26px;
 	line-height:26px;
 	padding:12px;
@@ -13,13 +13,13 @@
 	text-align:center;
 	color:#666666;
 }
-.b-pager a{
+.x-pager a{
 	display:block;
 }
-.b-pager li{
+.x-pager li{
 	float:left;
 }
-.b-pager .b-pager-pn{
+.x-pager .x-pager-pn{
 	width:61px;
 	height:26px;
 	line-height:26px;
@@ -28,7 +28,7 @@
 	display:inline-block;display:-moz-inline-stack;zoom:1;*display:inline;
 	background:url('../images/pager-bg.png') 0 -30px no-repeat;	
 }
-.b-pager .b-pager-num{
+.x-pager .x-pager-num{
 	width:29px;
 	overflow:hidden;
 	padding:0;
@@ -39,17 +39,17 @@
 	display:inline-block;display:-moz-inline-stack;zoom:1;*display:inline;
 	background:url('../images/pager-bg.png') 0 -60px no-repeat;		
 }
-.b-pager .b-pager-sl{
+.x-pager .x-pager-sl{
 	padding:0 10px 0 5px;
 }
-.b-pager .b-pager-current{
+.x-pager .x-pager-current{
 	background:url('../images/pager-bg.png') -30px -60px no-repeat;	
 }
-.b-pager .b-pager-current a{
+.x-pager .x-pager-current a{
 	color:#fff;	
 	cursor:text;
 }
-.b-pager a.b-pager-disabled{
+.x-pager a.x-pager-disabled{
 	cursor:not-allowed !important;
 	color:#999999 !important;
 }

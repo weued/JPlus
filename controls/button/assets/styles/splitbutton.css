@@ -1,0 +1,58 @@
+/**
+ * @author 
+ */
+
+
+
+/** 分隔菜单   */
+
+.x-splitbutton .x-button-menu{
+	*background-position-y:  20%;
+	_background-position-y: 30%;
+}
+
+
+
+.x-splitbutton .x-button-menu {
+	vertical-align:  baseline;
+}
+
+/*  背景   */
+
+.x-splitbutton .x-button-menu:active{
+	position:relative;
+	top:1px;
+	left:1px;
+}
+
+.x-button-disabled .x-button-menu:active {
+	position: static;
+}
+
+
+/* 分隔 */
+.x-button-split {
+	*margin-top: -5px;
+}
+
+.x-button-split, .x-splitbutton .x-button-menu {
+	vertical-align: middle;
+	height: 16px;
+}
+
+.x-button-split {
+	display: inline-block;
+	width:1px;
+	border-right: 1px solid white;
+	
+	_font-size: 1px;
+	background-color: #9ac6ff;
+}
+
+.x-button-plain .x-button-split {
+	visibility: hidden;
+}
+
+.x-button-disabled .x-button-split{
+	background-color: #999999;
+}

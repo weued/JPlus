@@ -36,18 +36,18 @@
 		
 		<script>
 		
-			var a = $('a'), b = $('b'), c = $('c'), d = $('d'), o = $('o'), abcd = new NodeList($('all').dom.getElementsByTagName("div"));
+			var a = $$('a'), b = $$('b'), c = $$('c'), d = $$('d'), o = $$('o');
 			
 			
 			var testcases = {
 				'Dimension': '-',
-				'Element.prototype.getSize': '@a;',
-				'Element.prototype.setSize': '@a;',
-				'Element.prototype.getWidth': '@a;',
-				'Element.prototype.setWidth': '@a;',
-				'Element.prototype.getHeight': '@a;',
-				'Element.prototype.setHeight': '@a;',
-				'Element.prototype.getScrollSize': '@a;'
+				'Control.prototype.getSize': '@a;',
+				'Control.prototype.setSize': '@a;',
+				'Control.prototype.getWidth': '@a;',
+				'Control.prototype.setWidth': '@a; 23',
+				'Control.prototype.getHeight': '@a;',
+				'Control.prototype.setHeight': '@a; 54',
+				'Control.prototype.getScrollSize': '@a;'
 			};
 			
 			System.initTestCases(testcases);

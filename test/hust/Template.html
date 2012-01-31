@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Core</title>
+		<script src="../../py/system.js" type="text/javascript"></script>
+		<script src="../../py/hust/Template.js" type="text/javascript"></script>
+		<script src="../../py/hust/string.js" type="text/javascript"></script>
+		<script src="../../py/Core/Array.js" type="text/javascript"></script>
+		<script src="../assets/scripts/debug.js" type="text/javascript"></script>
+
+	</head>
+	<body>
+		
+	 <script type="tpl" id="tpl">
+   <div>并不悲观吧
+      #% for(var i in a){ %#
+         <li>#%=i%#</li>
+      #%}%#
+	 <a href=#%=url%#><img src=#%=src%#></a>
+   </div>
+   </script>
+	解析后的文本
+	<div id="tpltext">
+	</div>	
+	<script>
+	Array.prototype.filter=function(fn){
+   var temp=[];
+   for(var i=0,l=this.length;i<l;i++){
+      this[i]&&fn.call(this,i,this[i])&&temp.push(this[i]);
+   } 
+  return temp;
+}
+
+Array.prototype.each=function(fn){
+   var temp=[];
+   for(var i=0,l=this.length;i<l;i++){
+     fn.call(this,i,this[i]);
+   } 
+   return this;
+}
+Template.loadTpl("http://js.t.sinajs.cn/t35/miniblog/static/js/top.js?version=20110426104548");
+  var tpl=Template({tpl:document.getElementById('tpl'),left:"#%",rigth:"%#",target:document.getElementById('tpltext'),
+  data:{a:{
+  name:"coolboy",
+  age:20,
+  love:"good!"},
+  src:"http://i.mmcdn.cn/simba/img/T1ysV.XetzXXXXXXXX.jpg?noq=y",
+  url:"http://www.taobao.com"
+}});  
+        tpl.render()  
+		//alert('good'.capitalize());
+	</script>
+	</body>
+</html>

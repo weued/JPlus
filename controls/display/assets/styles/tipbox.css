@@ -3,17 +3,17 @@
  */
 
 
-.b-tipbox {
+.x-tipbox {
 	display:inline-block;
-	padding: 5px 12px 5px 30px;
-	line-height: 20px;
+	padding: 4px 12px 4px 30px;
+	line-height: 16px;
 	background-repeat: no-repeat;
-	background-position: 8px 8px;
+	background-position: 8px 6px;
 	*vertical-align: middle;
 }
 
 
-.b-tipbox-success {
+.x-tipbox-success {
 	border: 1px solid #d1e9ab;
     background-color: #f2fae2; 
     background-image: url(../images/success.png);
@@ -21,7 +21,7 @@
 }
 
 
-.b-tipbox-error {
+.x-tipbox-error {
 	border: 1px solid #ffcfb9;
     background-color: #fffbe1; 
     background-image: url(../images/error.png);
@@ -29,7 +29,7 @@
 }
 
 
-.b-tipbox-info{
+.x-tipbox-info{
     border: 1px solid #bad5ef;
     background-color: #ebf1fa; 
     background-image: url(../images/info.png);
@@ -37,7 +37,7 @@
 }
 
 
-.b-tipbox-message{
+.x-tipbox-message{
     border: 1px solid #DEDEDE;
     background-color: #F2F2F2; 
     background-image: url(../images/message.png);
@@ -45,11 +45,11 @@
 }
 
 
-div.b-tipbox {
+div.x-tipbox {
     display: block;
 }
 
-.b-tipbox-plain {
+.x-tipbox-plain {
 	background-color: transparent;
 	border: 1px solid transparent;
 	_border: none;

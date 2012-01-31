@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>J+ Control Libaray</title>
+		
+		
+		
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+	</head>
+	<body>
+		
+		<h2>Core</h2>
+		<h4>Reset</h4>
+		<link rel="stylesheet" type="text/css" href="../core/assets/styles/reset.css">
+		
+		<h4>Icon</h4>
+		<link rel="stylesheet" type="text/css" href="../core/assets/styles/icon.css">
+		
+		<h4>ContainerControl</h4>
+		<link rel="stylesheet" type="text/css" href="../core/assets/styles/containercontrol.css">
+		
+		<h2>Container</h2>
+		<h4>Panel</h4>
+		<link rel="stylesheet" type="text/css" href="../container/assets/styles/panel.css">
+		
+		<div style="width:200px;" class="x-panel">
+            <div class="x-header x-panel-header">
+                <div class="x-header-container">
+                	<div class="x-header-content">
+                		<a class="x-icon x-icon-layout"></a>
+                		<h3>
+                			<span class="x-icon x-icon-layout"></span>
+							标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题</h3>
+						</div>
+                </div>
+            </div>
+            <div class="x-body x-panel-body">
+                <div class="x-body-container x-panel-container">
+                    <div class="x-body-content x-panel-content"  style="height: 150px; ">
+						<p style="font-size: 50px;">内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容</p>
+					</div>
+                </div>
+            </div>
+            <div class="x-footer x-panel-footer">
+                <div class="x-footer-container">
+                    <div class="x-footer-content"></div>
+                </div>
+            </div>
+        </div>
+		
+		<h4>Accordion</h4>
+		<link rel="stylesheet" type="text/css" href="../container/assets/styles/accordion.css">
+		
+		<div style="width: 300px; margin: 5px;" class="x-accordion" id="accordion">
+			<div class="x-header x-accordion-header">
+				<h3>面板1</h3>
+			</div>
+			<div style="height: 201px; display: none;" class="x-body x-accordion-body">
+				内容1
+			</div>
+			<div class="x-header x-accordion-header">
+				<h3 class="x-collapsable"><span class="x-icon">icon</span>面板2</h3>
+			</div>
+			<div class="x-body x-accordion-body" style="height: 201px; display: block;">
+				<div class="x-body-content x-accordion-content">
+				内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容容内容内容内容内容内容内容内容内容内容内容内容内容内容容内容内容内容内容内容内容内容内容内容内容内容容内容内容内容内容内容内容内容内容内容内容内容容内容内容内容内容内容内容内容内容内容内容内容容内容内容内容内容内容内容内容内容内容内容内容容内容内容内容内容内容内容内容内容内容内容内容容内容内容内容内容内容容内容内容内容内容内容内容内容容内容内容内容内容内容内容内容
+				</div>
+			</div>
+			<div class="x-header x-accordion-header">
+				<h3>面板3</h3>
+			</div>
+			<div class="x-body x-accordion-body" style="height: 201px; display: none;">
+				内容3
+			</div>
+		</div>
+		
+		<h4>TabControls</h4>
+		<link rel="stylesheet" type="text/css" href="../container/assets/styles/tabcontrols.css">
+		
+		<div class="x-tabcontrols" style="width:200px; height: 150px; ">
+            <div class="x-header x-tabcontrols-header">
+                <div class="x-header-container">
+                    <ul class="x-list-container x-tabcontrols-header-container">
+                        <li class="x-list-content x-tabcontrols-header-content" style="*width:100px;  *height:23px;">
+                            <div>
+                            	<h3><span class="x-icon x-icon-layout"></span>标题1
+                            	<a class="x-icon x-icon-layout"></a></h3>
+							</div>
+                        </li>
+                        <li class="x-list-content x-tabcontrols-header-content">
+                            <div><h3>标题2</h3></div>
+                        </li>
+                        <li class="x-list-content x-tabcontrols-header-content x-selected">
+                            <div><h3>标题3</h3></div>
+                        </li>
+                    </ul>
+					<input type="button" class="x-tabcontrols-header-menubutton x-tabcontrols-header-menubutton-left">
+					<input type="button" class="x-tabcontrols-header-menubutton x-tabcontrols-header-menubutton-right">
+					<input type="button" class="x-tabcontrols-header-menubutton x-tabcontrols-header-menubutton-all">
+                </div>
+            </div>
+            <div class="x-body x-tabcontrols-body" style="height: 100px;">
+                <div class="x-body-container x-tabcontrols-container" style="display: none;">
+                    1
+                </div>
+                <div class="x-body-container x-tabcontrols-container" style="display: none;">
+                    2
+                </div>
+                <div class="x-body-container x-tabcontrols-container" style="display: block;">
+                    3
+                </div>
+            </div>
+            <div class="x-footer x-tabcontrols-footer">
+                <div class="x-footer-container">
+                    <div class="x-footer-content"></div>
+                </div>
+            </div>
+        </div>
+		
+		
+		
+         <div class="x-tabcontrols  x-tabcontrols-plain" style="width:200px; height: 150px; ">
+            <div class="x-header x-tabcontrols-header">
+                <div class="x-header-container">
+                    <ul class="x-list-container x-tabcontrols-header-container">
+                        <li class="x-list-content x-tabcontrols-header-content" style="*width:100px;  *height:23px;">
+                            <div>
+                            	<h3><span class="x-icon x-icon-layout"></span>标题1
+                            	<a class="x-icon x-icon-layout"></a></h3>
+							</div>
+                        </li>
+                        <li class="x-list-content x-tabcontrols-header-content">
+                            <div><h3>标题2</h3></div>
+                        </li>
+                        <li class="x-list-content x-tabcontrols-header-content x-selected">
+                            <div><h3>标题3</h3></div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="x-container x-tabcontrols-container">
+                <div class="x-content x-tabcontrols-content" style="display: none;">
+                    1
+                </div>
+                <div class="x-content x-tabcontrols-content" style="display: none;">
+                    2
+                </div>
+                <div class="x-content x-tabcontrols-content" style="display: block;">
+                    3
+                </div>
+            </div>
+            <div class="x-footer x-tabcontrols-footer">
+                <div class="x-footer-container">
+                    <div class="x-footer-content"></div>
+                </div>
+            </div>
+        </div>
+	
+	
+		<h4>Dialog</h4>
+		<link rel="stylesheet" type="text/css" href="../container/assets/styles/dialog.css">
+		<link rel="stylesheet" type="text/css" href="../core/assets/styles/resizable.css">
+		
+	<div style="  top: 700px; left: 736px;    width:146px; " class="x-dialog x-resizable x-shadow">
+            <div class="x-header x-dialog-header">
+                <div class="x-header-container">
+                	<div class="x-header-content">
+                		<a class="x-icon x-icon-close" href="javascript:;"></a>
+                        <a class="x-icon x-icon-maximize" href="javascript:;"></a>
+                        <a class="x-icon x-icon-restore" href="javascript:;"></a>
+                        <a class="x-icon x-icon-minimize" href="javascript:;"></a>
+                		<h3>
+                			<span class="x-icon x-icon-layout"></span>
+							窗口</h3>
+						</div>
+                </div>
+            </div>
+            <div class="x-body x-dialog-body">
+                <div class="x-body-container x-dialog-container">
+                    <div class="x-body-content x-dialog-content"  style="height: 50px; ">
+						<p style="font-size: 50px;">内容内容内容内容内容内容内容内容内容内容内容内容容内容内容内容内容容内容内容内容内容容内容内容内容内容内容内容内容</p>
+					</div>
+					<div class="x-dialog-buttons">buttons</div>
+                </div>
+            </div>
+            <div class="x-footer x-dialog-footer">
+                <div class="x-footer-container">
+                    <div class="x-footer-content"></div>
+                </div>
+            </div>
+            
+            
+            <div class="x-resizable-lt"></div>
+            <div class="x-resizable-t"  ></div>
+            <div class="x-resizable-rt"></div>
+            <div class="x-resizable-l"></div>
+            <div class="x-resizable-r"></div>
+            <div class="x-resizable-lb"></div>
+            <div class="x-resizable-b"></div>
+            <div class="x-resizable-rb"></div>
+			<div class="x-shadow-lt"></div>
+            <div class="x-shadow-t"></div>
+            <div class="x-shadow-rt"></div>
+            <div class="x-shadow-l"></div>
+            <div class="x-shadow-r"></div>
+            <div class="x-shadow-lb"></div>
+            <div class="x-shadow-b"></div>
+            <div class="x-shadow-rb"></div>
+        </div>   
+        
+        
+		<h4>MessageBox</h4>
+		<link rel="stylesheet" type="text/css" href="../container/assets/styles/messagebox.css">
+		
+<div class="x-dialog x-shadow x-messagebox">
+            <div class="x-header x-dialog-header">
+                <div class="x-header-container">
+                    <div class="x-header-content">
+                        <a class="x-icon x-icon-close" href="javascript:;"></a>
+                        <a class="x-icon x-icon-maximize" href="javascript:;"></a>
+                        <a class="x-icon x-icon-restore" href="javascript:;"></a>
+                        <a class="x-icon x-icon-minimize" href="javascript:;"></a>
+                        <h3><span class="x-icon x-icon-layout"></span>窗口</h3>
+                    </div>
+                </div>
+            </div>
+			<div  class="x-container x-dialog-container">
+				<div class="x-dialog-content">
+					<div class="x-dialog-body">
+						<div class="x-messagebox-content">
+									<span class="x-icon x-icon-error"></span>
+										内容
+						</div>
+						<div class="x-messagebox-buttons">
+							<a class="x-button">
+									<span class="x-button-container">
+										<span class="x-button-content">
+											<button   type="button" onclick="this.firstChild.innerHTML = '#' + this.firstChild.innerHTML"><span class="x-button-label">按钮</span></button>
+										</span>
+									</span>
+								</a>
+						</div>
+					</div>
+				</div>
+		    </div>
+            <div class="x-footer x-dialog-footer">
+                <div class="x-footer-container">
+                    <div class="x-footer-content">
+                    </div>
+                </div>
+            </div>
+			
+			
+				<div class="x-resizable-lt"></div>
+	            <div class="x-resizable-t"  ></div>
+	            <div class="x-resizable-rt"></div>
+	            <div class="x-resizable-l"></div>
+	            <div class="x-resizable-r"></div>
+	            <div class="x-resizable-lb"></div>
+	            <div class="x-resizable-b"></div>
+	            <div class="x-resizable-rb"></div>
+				<div class="x-shadow-lt"></div>
+	            <div class="x-shadow-t"></div>
+	            <div class="x-shadow-rt"></div>
+	            <div class="x-shadow-l"></div>
+	            <div class="x-shadow-r"></div>
+	            <div class="x-shadow-lb"></div>
+	            <div class="x-shadow-b"></div>
+	            <div class="x-shadow-rb"></div>
+				
+				
+        </div>   		
+
+        
+		<br><br>
+		<br><br>
+		<br><br>
+		<br><br>
+		<br><br>
+		<br><br>
+		<br><br>
+		<br><br>
+		<br><br>
+		<br><br>
+		<br><br>
+	</body>
+</html>

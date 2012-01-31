@@ -8,6 +8,7 @@ var menus = {
 		'Javascript 格式化': 'resources/tools/format/index.html',
 		'Javascript 加密': 'resources/tools/pack/index.html',
 		'Javascript 压缩': 'resources/tools/compact/index.html',
+		'正则工具': 'resources/tools/regex/index.html',
 		'速度测试': 'resources/tools/speedmatch/index.html'	
 	},
 	
@@ -44,6 +45,10 @@ var menus = {
 		'使用 TortoiseGit下载项目': 'resources/ide/tortoisegit.html',
 		'如何在 Eclipse 安装  Git 插件': 'resources/ide/installgit.html',
 		'如何使用 GIT': 'resources/ide/gitusage.html'
+	},
+	
+	'API': {
+		'dom 部分 api': 'resources/api/jplusdomapi/jplusdomapi.xml'
 	},
 	
 	'这不是浪漫': {

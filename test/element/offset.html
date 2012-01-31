@@ -51,16 +51,16 @@
 		<div id="rule"></div>
 		<script>
 		
-			var a = $('a'), b = $('b'), c = $('c'), d = $('d'), o = $('o'), abcd = new NodeList($('all').dom.getElementsByTagName("div")), rule = $('rule');
+			var a = $$('a'), b = $$('b'), c = $$('c'), d = $$('d'), o = $$('o');
 			
 			
 			var testcases = {
 				'Offset': '-',
-				'Element.prototype.getOffset': '@a;',
-				'Element.prototype.setOffset': '@a; {x:2, y:5}',
-				'Element.prototype.getPosition': '@a;',
-				'Element.prototype.setPosition': '@a;',
-				'Element.prototype.getScroll': '@a;'
+				'Control.prototype.getOffset': '@a;',
+				'Control.prototype.setOffset': '@a; {x:2, y:5}',
+				'Control.prototype.getPosition': '@a;',
+				'Control.prototype.setPosition': '@a;',
+				'Control.prototype.getScroll': '@a;'
 			};
 			
 			System.initTestCases(testcases);

@@ -1,19 +1,18 @@
-#main, .b-container {
+#main, .x-container {
 	width: 980px;
 	margin: 0 auto;
-	position: relative;
 }
 
 #footer {
 	margin-top: 10px;	
 }
 
-.b-grid {
+.x-grid {
 	margin-top: 10px;
 	zoom: 1;
 }
 
-.b-grid:after  {
+.x-grid:after  {
 	content: ".";
 	display: block;
 	height: 0;
@@ -21,29 +20,29 @@
 	visibility: hidden;
 }
 
-.b-col-side {
+.x-col-side {
 	width: 190px;
 	float: left;
 }
 
-.b-col-extra, .b-grid-2 .b-col-side {
+.x-col-extra, .x-grid-2 .x-col-side {
 	width: 280px;
 	float: right;
 }
 
-.b-grid-2u .b-col-main, .b-grid-3 .b-col-main {
+.x-grid-2u .x-col-main, .x-grid-3 .x-col-main {
 	margin-left: 200px;
 }
 
-.b-grid-2 .b-col-main {
+.x-grid-2 .x-col-main {
 	margin-right: 290px;
 }
 
-.b-grid-3 .b-col-main {
+.x-grid-3 .x-col-main {
 	margin-right: 250px;
 }
 
-.b-grid-3 .b-col-extra {
+.x-grid-3 .x-col-extra {
 	width: 240px;
 }
 

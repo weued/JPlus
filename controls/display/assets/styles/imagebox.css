@@ -4,21 +4,21 @@
 
 
 
-.b-imagebox {
+.x-imagebox {
 	clear: left;
 }
 
-.b-imagebox .b-face {
+.x-imagebox .x-face {
 	float: left;
 	margin-right: 10px;
 	_margin-right: 5px;
 }
 
-.b-imagebox h5, .b-imagebox h4, .b-imagebox h3 {
+.x-imagebox h5, .x-imagebox h4, .x-imagebox h3 {
 	margin: 0;	
 }
 
-.b-imagebox-body {
+.x-imagebox-body {
 	color: #999999;
 	display: block;
 	padding-left: 80px;

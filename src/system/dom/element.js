@@ -1,4 +1,4 @@
-﻿/**
+﻿﻿/**
  * @fileOverview 提供最底层的 DOM 辅助函数。
  */
 
@@ -14,6 +14,8 @@
 // Offset - 定位部分
 
 (function(window) {
+	
+	assert(!window.Dom || window.$$ != window.Dom.get, "重复引入 Element 模块。");
 
 	/**
 	 * document 简写。
@@ -29,6 +31,7 @@
 	
 		/**
 		 * JPlus 简写。
+		 * @type Object
 		 */
 		p = JPlus,
 	
@@ -112,7 +115,7 @@
 				assert(this.tpl, "Control.prototype.create(): 当前类不存在 tpl 属性。Control.prototype.create 会调用 tpl 属性，根据这个属性中的 HTML 代码动态地生成节点并返回。子类必须定义 tpl 属性或重写 Control.prototype.create 方法返回节点。");
 	
 				// 转为对 tpl解析。
-				return Dom.parse(this.tpl);
+				return Dom.parseNode(this.tpl);
 			},
 			
 			/**
@@ -131,7 +134,7 @@
 			 * @protected
 			 */
 			attach: function(parentNode, refNode) {
-				assert(parentNode.nodeType, 'Control.prototype.attach(parentNode, refNode): {parentNode} 必须是 DOM 节点。', parentNode);
+				assert(parentNode && parentNode.nodeType, 'Control.prototype.attach(parentNode, refNode): {parentNode} 必须是 DOM 节点。', parentNode);
 				assert(refNode === null || refNode.nodeType, 'Control.prototype.attach(parentNode, refNode): {refNode} 必须是 null 或 DOM 节点 。', refNode);
 				parentNode.insertBefore(this.dom, refNode);
 			},
@@ -216,9 +219,9 @@
 					delete opt.style;
 				}
 	
-				// 如果指定的节点已经在 DOM 树上，且重写了 render 方法，则调用之。
-				if(me.dom.parentNode && this.render !== Control.prototype.render) {
-					this.render(me.dom.parentNode, me.dom.nextSibling);
+				// 如果指定的节点已经在 DOM 树上，且重写了 attach 方法，则调用之。
+				if(me.dom.parentNode && this.attach !== Control.prototype.attach) {
+					this.attach(me.dom.parentNode, me.dom.nextSibling);
 				}
 	
 				// 复制各个选项。
@@ -255,7 +258,8 @@
 			 * </code>
 			 */
 			item: function(index) {
-				return new Dom(this[index < 0 ? this.length + index: index]);
+				index = this[index < 0 ? this.length + index: index];
+				return index ? new Dom(index) : null;
 			},
 			
 			/**
@@ -269,11 +273,11 @@
 			 */
 			invoke: function(func, args) {
 				assert(args && typeof args.length === 'number', "NodeList.prototype.invoke(func, args): {args} 必须是数组, 无法省略。", args);
-				var r = [], targets;
+				var r = [];
+				assert(Dom.prototype[func] && Dom.prototype[func].apply, "NodeList.prototype.invoke(func, args): Control 不包含方法 {func}。", func);
 				ap.forEach.call(this, function(value) {
-					targets = new Dom(value);
-					assert(targets[func] && targets[func].apply, "NodeList.prototype.invoke(func, args): Control 不包含方法 {func}。", func);
-					r.push(targets[func].apply(targets, args));
+					value = new Dom(value);
+					r.push(value[func].apply(value, args));
 				});
 				return r;
 			},
@@ -305,12 +309,13 @@
 			concat: function() {
 				for(var args = arguments, i = 0; i < args.length; i++){
 					var value = args[i], j = -1;
-					if(typeof value.length !== 'number')
-						value = [value];
-						
-					while(++j < value.length)
-						this.include(value[j].dom || value[j]);
-					
+					if(value){
+						if(typeof value.length !== 'number')
+							value = [value];
+							
+						while(++j < value.length)
+							this.include(value[j].dom || value[j]);
+					}
 				}
 	
 				return this;
@@ -362,7 +367,7 @@
 		}),
 	
 		/**
-		 * 函数 Dom.parse使用的新元素缓存。
+		 * 函数 Dom.parseNode使用的新元素缓存。
 		 * @type Object
 		 */
 		cache = {},
@@ -374,7 +379,7 @@
 		rXhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/ig,
 	
 		/**
-		 * 在 Dom.parse 和 setHtml 中对 HTML 字符串进行包装用的字符串。
+		 * 在 Dom.parseNode 和 setHtml 中对 HTML 字符串进行包装用的字符串。
 		 * @type Object 部分元素只能属于特定父元素， wrapMap 列出这些元素，并使它们正确地添加到父元素中。 IE678
 		 *       会忽视第一个标签，所以额外添加一个 div 标签，以保证此类浏览器正常运行。
 		 */
@@ -388,28 +393,6 @@
 			col: [3, '<table><tbody></tbody><colgroup>', '</colgroup></table>'],
 			area: [2, '<map>', '</map>']
 		},
-	
-		/// #if SupportIE6
-		/**
-		 * CSS 选择器。 对于 IE6/7 提供自定义的选择器。
-		 */
-		/*   cssSelector = div.querySelectorAll ? [ 	function(selector) {
-		return (this.dom).querySelector(selector);
-		},
-	
-		function(selector) {
-		return new NodeList((this.dom).querySelectorAll(selector));
-		}]: CssSelector(),
-	
-		/// #else
-	
-		/// cssSelector = [function(selector) {
-		/// return (this.dom).querySelector(selector);
-		/// }, function(selector) {
-		/// return new NodeList((this.dom).querySelectorAll(selector));
-		/// }],
-	
-		/// #endif */
 		
 		styles = {
 			height: 'setHeight',
@@ -424,6 +407,14 @@
 			innerText: 'innerText' in div ? 'innerText': 'textContent',
 			'for': 'htmlFor',
 			'class': 'className'
+		},
+		
+		/**
+		 * 字符串字段。
+		 * @type Object
+		 */
+		textField = {
+			
 		},
 	
 		/// #if CompactMode
@@ -461,11 +452,11 @@
 			if( name in styles) {
 				switch (name) {
 					case 'height':
-						return elem.offsetHeight === 0 ? 'auto': elem.offsetHeight -  Dom.getSize(elem, 'by+py') + 'px';
+						return elem.offsetHeight === 0 ? 'auto': elem.offsetHeight -  Dom.calc(elem, 'by+py') + 'px';
 					case 'width':
-						return elem.offsetWidth === 0 ? 'auto': elem.offsetWidth -  Dom.getSize(elem, 'bx+px') + 'px';
+						return elem.offsetWidth === 0 ? 'auto': elem.offsetWidth -  Dom.calc(elem, 'bx+px') + 'px';
 					case 'opacity':
-						return new Dom(elem).getOpacity.toString();
+						return new Dom(elem).getOpacity().toString();
 				}
 			}
 			// currentStyle：IE的样式获取方法,runtimeStyle是获取运行时期的样式。
@@ -524,6 +515,10 @@
 		
 		// IE：styleFloat Other：cssFloat
 		
+		/**
+		 * 获取滚动大小的方法。
+		 * @type Function
+		 */
 		getScroll = function() {
 			var elem = this.dom;
 			return new Point(elem.scrollLeft, elem.scrollTop);
@@ -537,8 +532,6 @@
 			var win = this.defaultView;
 			return new Point(win.pageXOffset, win.pageYOffset);
 		}: getScroll,
-		
-		cssSelector = [],
 	
 		/**
 		 * 判断 body 节点的正则表达式。
@@ -547,6 +540,52 @@
 		rBody = /^(?:BODY|HTML|#document)$/i;
 
 	apply(Dom, {
+		
+		/**
+		 * 根据一个 id 获取元素。如果传入的id不是字符串，则直接返回参数。
+		 * @param {String/Element} id 要获取元素的 id 或元素。
+	 	 * @return {Control} 元素。
+		 */
+		get: function(id) {
+			id = typeof id == "string" ? document.getElementById(id): id;
+			assert(!id || id.dom || id.nodeType, "Dom.get(id): {id} 必须是ID字符串或节点本身。", id);
+			return id ? new Dom(id.dom || id) : null;
+		},
+		
+		/**
+		 * 执行一个选择器，返回一个新的 NodeList。
+		 * @param {String} selecter 选择器。 如 h2 .cls attr=value 。
+		 * @return {Element/undefined} 节点。
+		 */
+		query: function(selector) {
+			return document.query(selector);
+		},
+
+		/**
+		 * 解析一个 html 字符串返回相应的控件。
+		 * @param {String/Element} html 字符。
+		 * @param {Element} context=document 生成节点使用的文档中的任何节点。
+		 * @param {Boolean} cachable=true 是否缓存。
+		 * @return {Control} 控件。
+		 */
+		parse: function(html, context, cachable) {
+
+			assert.notNull(html, 'Dom.parse(html, context, cachable): {html} ~');
+
+			return html.dom ? html: new Dom(Dom.parseNode(html, context, cachable));
+		},
+		
+		/**
+		 * 创建一个节点。
+		 * @param {Object} tagName
+		 * @param {Object} className
+		 */
+		create: function(tagName, className) {
+			assert.isString(tagName, 'Dom.create(tagName, className): {tagName} ~');
+			var div = document.createElement(tagName);
+			div.className = className;
+			return new Dom(div);
+		},
 
 		/**
 		 * 转换一个HTML字符串到节点。
@@ -556,7 +595,7 @@
 		 * @return {Element/TextNode/DocumentFragment} 元素。
 		 * @static
 		 */
-		parse: function(html, context, cachable) {
+		parseNode: function(html, context, cachable) {
 
 			// 不是 html，直接返回。
 			if( typeof html === 'string') {
@@ -567,7 +606,7 @@
 				html = cache[srcHTML];
 				context = context && context.ownerDocument || document;
 
-				assert(context.createElement, 'Dom.parse(html, context, cachable): {context} 必须是 DOM 节点。', context);
+				assert(context.createElement, 'Dom.parseNode(html, context, cachable): {context} 必须是 DOM 节点。', context);
 
 				if(html && html.ownerDocument === context) {
 
@@ -582,7 +621,7 @@
 
 					if(tag) {
 
-						assert.isString(srcHTML, 'Dom.parse(html, context, cachable): {html} ~');
+						assert.isString(srcHTML, 'Dom.parseNode(html, context, cachable): {html} ~');
 						html = context.createElement("div");
 
 						var wrap = wrapMap[tag[1].toLowerCase()] || wrapMap.$default;
@@ -598,14 +637,14 @@
 						if(html.previousSibling) {
 							wrap = html.parentNode;
 
-							assert(context.createDocumentFragment, 'Dom.parse(html, context, cachable): {context} 必须是 DOM 节点。', context);
+							assert(context.createDocumentFragment, 'Dom.parseNode(html, context, cachable): {context} 必须是 DOM 节点。', context);
 							html = context.createDocumentFragment();
 							while(wrap.firstChild) {
 								html.appendChild(wrap.firstChild);
 							}
 						}
 
-						assert(html, "Dom.parse(html, context, cachable): 无法根据 {html} 创建节点。", srcHTML);
+						assert(html, "Dom.parseNode(html, context, cachable): 无法根据 {html} 创建节点。", srcHTML);
 
 						// 一般使用最后的节点， 如果存在最后的节点，使用父节点。
 						// 如果有多节点，则复制到片段对象。
@@ -630,19 +669,6 @@
 		},
 		
 		/**
-		 * 根据一个 id 获取元素。如果传入的id不是字符串，则直接返回参数。
-		 * @param {String/Element/Control} id 要获取元素的 id 或元素。
-	 	 * @return {Control} 元素。
-		 */
-		get: function(id) {
-			return new Dom( typeof id == "string" ? document.getElementById(id): id);
-		},
-
-		query: function(selector) {
-			return document.findAll(selector);
-		},
-		
-		/**
 		 * 判断指定节点之后有无存在子节点。
 		 * @param {Element} elem 节点。
 		 * @param {Element} child 子节点。
@@ -656,8 +682,8 @@
 			assert.isNode(elem, "Dom.hasChild(elem, child): {elem} ~");
 			assert.isNode(child, "Dom.hasChild(elem, child): {child} ~");
 			while( child = child.parentNode)
-			if(elem === child)
-				return true;
+				if(elem === child)
+					return true;
 
 			return false;
 		},
@@ -680,6 +706,99 @@
 		 * @private
 		 */
 		attributes: attributes,
+		
+		combinators: {
+			' ': 'getAll',
+			'>': 'getChildren',
+			'+': 'getNext',
+			'~': 'getAllNext',
+			'<': 'getAllParent'
+		},
+		
+		textField: textField,
+	
+		// 用于查找所有支持的伪类的函数。
+		pseudos: {
+			
+			target : function (elem) {
+				var nameOrId = elem.id || elem.name;
+				if(!nameOrId) return false;
+				var doc = getDocument(elem).defaultView;
+				return nameOrId === (doc.defaultView || doc.parentWindow).location.hash.slice(1)
+			},
+			
+			empty: Dom.isEmpty = function(elem) {
+				for( elem = elem.firstChild; elem; elem = elem.nextSibling )
+					if( elem.nodeType === 1 || elem.nodeType === 3 ) 
+						return false;
+				return true;
+			},
+			
+			contains: function( elem, args){ 
+				return Dom.getText(elem).indexOf(args) >= 0;
+			},
+			
+			/**
+			 * 判断一个节点是否隐藏。
+			 * @return {Boolean} 隐藏返回 true 。
+			 */
+			hidden: Dom.isHidden = function(elem) {
+				return (elem.style.display || getStyle(elem, 'display')) === 'none';
+			},
+			visible: function( elem ){ return !Dom.isHidden(elem); },
+			
+			not: function(elem, args){ return !match(args, elem); },
+			has: function(elem, args){ return query(args, new Dom(elem)).length > 0; },
+			
+			selected: function(elem){ return elem.selected; },
+			checked: function(elem){ return elem.checked; },
+			enabled: function(elem){ return elem.disabled === false; },
+			disabled: function(elem){ return elem.disabled === true; },
+			
+			input: function(elem){ return /^(input|select|textarea|button)$/i.test(elem.nodeName); },
+			
+			"nth-child": function(args, oldResult, result){
+				var p = Dom.pseudos;
+				if(p[args]){
+					p[args](null, oldResult, result);	
+				} else if(args = oldResult[args])
+					result.push(args);
+			},
+			"first-child": function (args, oldResult, result) {
+				if(args = oldResult[0])
+					result.push(args);
+			},
+			"last-child": function (args, oldResult, result) {
+				if(args = oldResult[oldResult.length - 1])
+					result.push(args);
+			},
+			"only-child": function(elem){ 
+				var p = new Dom(elem.parentNode).getFirst(elem.nodeName);
+				return p && p.getNext(); 
+			},
+			odd: function(args, oldResult, result){
+				var index = 0, elem, t;
+				while(elem = oldResult[index++]) {
+					if(args){
+						result.push(elem);	
+					}
+				}
+			},
+			even: function(args, oldResult, result){
+				return Dom.pseudos.odd(!args, oldResult, result);
+			}
+			
+		},
+		
+		/**
+		 * 获取值。
+		 * @return {Object/String} 值。对普通节点返回 text 属性。
+		 */
+		getText: function(elem) {
+
+			assert.isNode(elem, "Dom.getText(elem, name): {elem} ~");
+			return elem[textField[elem.nodeName] || attributes.innerText] || '';
+		},
 
 		/**
 		 * 获取一个节点属性。
@@ -720,6 +839,11 @@
 			return fix && (fix.value || null);
 
 		},
+		
+		/**
+		 * 判断一个节点是否隐藏。
+		 * @return {Boolean} 隐藏返回 true 。
+		 */
 		
 		/**
 		 * 检查是否含指定类名。
@@ -864,7 +988,7 @@
 		 *            b。词语也可以是: outer inner 。
 		 * @return {Number} 计算值。 mx+sx -> 外大小。 mx-sx -> 内大小。
 		 */
-		getSize: (function() {
+		calc: (function() {
 
 			var borders = {
 				m: 'margin#',
@@ -896,7 +1020,7 @@
 
 					case 2:
 						t = type.charAt(1);
-						assert( f in borders || f === 's', "Dom.getSize(e, type): {type} 中的 " + type + " 不合法", type);
+						assert( f in borders || f === 's', "Dom.calc(e, type): {type} 中的 " + type + " 不合法", type);
 						if( t in map) {
 							t = borders[f].replace('#', map[t]);
 						} else {
@@ -909,7 +1033,7 @@
 						if( f in map) {
 							t = map[f].toLowerCase();
 						} else if(f !== 'x' && f !== 'y') {
-							assert(f === 'h' || f === 'w', "Dom.getSize(e, type): {type} 中的 " + type + " 不合法", type);
+							assert(f === 'h' || f === 'w', "Dom.calc(e, type): {type} 中的 " + type + " 不合法", type);
 							return 'Dom.styleNumber(e,"' + (f === 'h' ? 'height': 'width') + '")';
 						} else {
 							return f;
@@ -925,8 +1049,8 @@
 			}
 
 			return function(elem, type) {
-				assert.isElement(elem, "Dom.getSize(elem, type): {elem} ~");
-				assert.isString(type, "Dom.getSize(elem, type): {type} ~");
+				assert.isElement(elem, "Dom.calc(elem, type): {elem} ~");
+				assert.isString(type, "Dom.calc(elem, type): {type} ~");
 				return (Dom.sizeMap[type] || (Dom.sizeMap[type] = new Function("e", init + type.replace(/\w+/g, format))))(elem);
 			}
 		})(),
@@ -963,7 +1087,7 @@
 			 * @constructor
 			 */
 			constructor: function(target, type, e) {
-				assert.notNull(target, "JPlus.Event.prototype.constructor(target, type, e): {target} ~");
+				assert.notNull(target, "Dom.Event.prototype.constructor(target, type, e): {target} ~");
 
 				var me = this;
 				me.target = target;
@@ -1075,9 +1199,9 @@
 								default:
 									// return this
 									value = function() {
-										var len = this.length, i = -1, target = new Dom();
+										var len = this.length, i = -1, target;
 										while(++i < len) {
-											target.dom = this[i];
+											target = new Dom(this[i]);
 											target[func].apply(target, arguments);
 										}
 										return this;
@@ -1165,22 +1289,23 @@
 			assert(!initEvent || ee[baseEvent], "Control.addEvents(events, baseEvent, initEvent): 不存在基础事件 {baseEvent}。");
 		
 			// 对每个事件执行定义。
-			map(events, Function.from(Function.isFunction(baseEvent) ? {
+			map(events, Function.from(Function.isFunction(baseEvent) ? o.extendIf({
 		
 				initEvent : baseEvent
 		
-			} : {
+			}, eventObj) : {
 		
 				initEvent : initEvent ? function(e) {
 					return ee[baseEvent].initEvent.call(this, e) !== false && initEvent.call(this, e);
 				} : ee[baseEvent].initEvent,
 				// 如果存在 baseEvent，定义别名， 否则使用默认函数。
 				add : function(elem, type, fn) {
-					elem.addEventListener(baseEvent, fn, false);
+					eventObj.add(elem, baseEvent, fn);
 				},
 				remove : function(elem, type, fn) {
-					elem.removeEventListener(baseEvent, fn, false);
-				}
+					eventObj.remove(elem, baseEvent, fn);
+				},
+				trigger: eventObj.trigger
 			}), ee);
 	
 		
@@ -1195,12 +1320,20 @@
 		 * @param {String} methods 所有成员名。
 		 *            因此经常需要将一个函数转换为对节点的调用。
 		 */
-		delegate: function(control, target, methods) {
-			assert(control && control.prototype, "Control.delegate(control, target, methods, type, methods2, type2): {control} 必须是一个类", control);
-		
-			map(methods, function(func) {
-				return function(args1, args2) {
-					return this[target][func](args1, args2) || this;
+		delegate: function(control, target, setters, getters) {
+			assert(control && control.prototype, "Control.delegate(control, target, setters, getters): {control} 必须是一个类", control);
+			
+			if(typeof getters === 'string'){
+				Control.delegate(control, target, getters, true);
+				getters = false;
+			}
+			
+			map(setters, function(func) {
+				return getters ? function(args1, args2) {
+					return this[target][func](args1, args2);
+				} : function(args1, args2) {
+					this[target][func](args1, args2);
+					return this;
 				};
 			}, control.prototype);
 			return Control.delegate;
@@ -1219,8 +1352,8 @@
 		appendTo: function(parent) {
 		
 			// parent 肯能为 true
-			(parent && parent.length ? Dom.get(parent): new Dom(document.body)).insertBefore(this, null);
-	
+			(parent && parent !== true ? parent instanceof Control ? parent : Dom.get(parent): new Dom(document.body)).insertBefore(this, null);
+
 			return this;
 	
 		},
@@ -1250,7 +1383,7 @@
 			var elem = this.dom;
 			if(elem.nodeType == 1)
 				o.each(elem.getElementsByTagName("*"), clean);
-			while (elem = this.getLast())
+			while (elem = this.getLast(true))
 				this.removeChild(elem);
 			return this;
 		},
@@ -1395,7 +1528,7 @@
 		 * @return {Element} this
 		 */
 		toggle: function(duration, callBack, type, flag) {
-			return this[(flag === undefined ? this.isHidden(): flag) ? 'show': 'hide'](duration, callBack, type);
+			return this[(flag === undefined ? Dom.isHidden(this.dom): flag) ? 'show': 'hide'](duration, callBack, type);
 		},
 	
 		/**
@@ -1594,7 +1727,7 @@
 		 */
 		setText: function(value) {
 			var elem = this.dom;
-			elem[elem.nodeType !== 1 ? 'nodeValue': elem.value !== undefined ? 'value': attributes.innerText] = value;
+			elem[textField[elem.nodeName] || attributes.innerText] = value;
 			return this;
 		},
 	
@@ -1633,9 +1766,9 @@
 			var me = this,
 			p = formatPoint(x, y);
 		
-			if (p.x != null) me.setWidth(p.x - Dom.getSize(me.dom, 'bx+px'));
+			if (p.x != null) me.setWidth(p.x - Dom.calc(me.dom, 'bx+px'));
 		
-			if (p.y != null) me.setHeight(p.y - Dom.getSize(me.dom, 'by+py'));
+			if (p.y != null) me.setHeight(p.y - Dom.calc(me.dom, 'by+py'));
 		
 			return me;
 		},
@@ -1715,8 +1848,6 @@
 
 	})
 
-	.implement(p.IEvent)
-
 	.implement({
 		
 		/**
@@ -1752,7 +1883,7 @@
 		///
 		/// getOpacity: function () {
 		///
-		/// 	return parseFloat(styleString(this.dom, 'opacity')) || 0;
+		/// 	return styleNumber(this.dom, 'opacity');
 		///
 		/// },
 		
@@ -1781,8 +1912,7 @@
 		 * @return {Object/String} 值。对普通节点返回 text 属性。
 		 */
 		getText: function() {
-			var elem = this.dom;
-			return elem[elem.nodeType !== 1 ? 'nodeValue': elem.value !== undefined ? 'value': attributes.innerText];
+			return Dom.getText(this.dom);
 		},
 	
 		/**
@@ -1843,12 +1973,12 @@
 		
 				// 绝对定位需要返回绝对位置。
 				if(styleString(elem, "position") === 'absolute') {
-					top = this.get('offsetParent');
+					top = this.getOffsetParent();
 					left = this.getPosition();
-					if(!rBody.test(top.nodeName))
+					if(!rBody.test(top.dom.nodeName))
 						left = left.sub(top.getPosition());
-					left.x -= styleNumber(elem, 'marginLeft') + styleNumber(top, 'borderLeftWidth');
-					left.y -= styleNumber(elem, 'marginTop') + styleNumber(top, 'borderTopWidth');
+					left.x -= styleNumber(elem, 'marginLeft') + styleNumber(top.dom, 'borderLeftWidth');
+					left.y -= styleNumber(elem, 'marginTop') + styleNumber(top.dom, 'borderTopWidth');
 		
 					return left;
 				}
@@ -1930,16 +2060,10 @@
 	}, 2)
 
 	.implement({
-	
-		/**
-		* 执行一个简单的选择器。
-		* @method
-		* @param {String} selecter 选择器。 如 h2 .cls attr=value 。
-		* @return {Element/undefined} 节点。
-		*/
-		findAll: cssSelector[1],
 		
 		getParent: createTreeWalker(true, 'parentNode'),
+		
+		getAllParent: createTreeWalker(false, 'parentNode'),
 
 		// 第一个节点。
 		getFirst: createTreeWalker(true, 'nextSibling', 'firstChild'),
@@ -1950,22 +2074,30 @@
 		// 前面的节点。
 		getPrevious: createTreeWalker(true, 'previousSibling'),
 
+		// 后面的节点。
+		getAllNext: createTreeWalker(false, 'nextSibling'),
+
 		// 最后的节点。
 		getLast: createTreeWalker(true, 'previousSibling', 'lastChild'),
 
 		// 第一个节点。
 		getChild: createTreeWalker(true, 'nextSibling', 'firstChild'),
 
+		// 前面的节点。
+		getAllPrevious: createTreeWalker(false, 'previousSibling'),
+
 		// 全部子节点。
 		getChildren: createTreeWalker(false, 'nextSibling', 'firstChild'),
 		
 		// 兄弟节点。
-		getSiblings: function(elem, args) {
-			return this.getChildren(args).remove(this.dom);
+		getSiblings: function(args) {
+			return this.getAllPrevious(args).concat(this.getAllNext(args));
 		},
-			
+		
 		// 号次。
-		getIndex: function() {
+		getIndex: 'nodeIndex' in div ? function(){
+			return this.dom.nodeIndex;
+		} : function() {
 			var i = 0, elem = this.dom;
 			while( elem = elem.previousSibling)
 				if(elem.nodeType === 1)
@@ -1974,29 +2106,83 @@
 		},
 
 		// 全部子节点。
-		filter: 'all' in div ? function(args) { // 返回数组
-			args = getFilter(args);
-			assert.isFunction(args, "Control.prototype.filter(args): {args} ~");
-			var r = new NodeList;
-			ap.forEach.call(elem.all, function(elem) {
-				if(args(elem))
-					r.push(elem);
-			});
-			return r;
-		}: function(args) {
-			args = getFilter(args);
-			assert.isFunction(fn, "Control.prototype.filter(args): {args} ~");
-			var r = new NodeList, nodes = [elem];
-			while(elem = nodes.pop()) {
-				for( elem = elem.firstChild; elem; elem = elem.nextSibling)
-					if(elem.nodeType === 1) {
-						if(fn(elem))
-							r.push(elem);
-						nodes.push(elem);
-					}
+		getAll: function(args) {
+			if(!args)
+				args = '*';	
+			else if(typeof args === 'function')
+				return this.getAll().filter(args);
+			var r = new NodeList, nodes = this.dom.getElementsByTagName(args), i = 0, node;
+			while( node = nodes[i++] ) {
+				if(node.nodeType === 1){
+					r.push(node);
+				}	
 			}
 
 			return r;
+		},
+
+		/**
+		 * 执行一个简单的选择器。
+		 * @param {String} selecter 选择器。 如 h2 .cls attr=value 。
+		 * @return {Element/undefined} 节点。
+		 */
+		find: function(selector){
+			assert.isString(selector, "Control.prototype.find(selector): selector ~。");
+			var elem = this.dom, result;
+			if(elem.nodeType !== 1) {
+				return document.find.call(this, selector)
+			}
+			
+			try{ 
+				var oldId = elem.id, displayId = oldId;
+				if(!oldId){
+					elem.id = displayId = '__SELECTOR__';
+					oldId = 0;
+				}
+				result = elem.querySelector('#' + displayId +' ' + selector);
+			} catch(e) {
+				result = query(selector, this)[0];
+			} finally {
+				if(oldId === 0){
+					elem.id = null;	
+				}
+			}
+
+			return result ? new Dom(result) : null;
+		},
+		
+		/**
+		 * 执行选择器。
+		 * @method
+		 * @param {String} selecter 选择器。 如 h2 .cls attr=value 。
+		 * @return {Element/undefined} 节点。
+		 */
+		query: function(selector){
+			assert.isString(selector, "Control.prototype.find(selector): selector ~。");
+			var elem = this.dom, result;
+			
+			if(elem.nodeType !== 1) {
+				return document.query.call(this, selector)
+			}
+			
+			try{ 
+				var oldId = elem.id, displayId = oldId;
+				if(!oldId){
+					elem.id = displayId = '__SELECTOR__';
+					oldId = 0;
+				}
+				result = elem.querySelectorAll('#' + displayId +' ' + selector);
+			} catch(e) {
+				result = query(selector, this);
+			} finally {
+				if(oldId === 0){
+					elem.id = null;	
+				}
+			}
+			
+			
+			
+			return new NodeList(result);
 		},
 			
 		// 偏移父位置。
@@ -2020,10 +2206,12 @@
 			var me = this,
 				parentControl = me,
 				refChild = me;
+				
+			html = Dom.parse(html, me.dom);
 		
 			switch (where) {
 				case "afterEnd":
-					refChild = me.getNext();
+					refChild = me.getNext(true);
 				
 					// 继续。
 				case "beforeBegin":
@@ -2031,14 +2219,15 @@
 					assert(parentControl, "Control.prototype.insert(where, html): 节点无父节点时无法执行 insert({where})。", where);
 					break;
 				case "afterBegin":
-					refChild = me.getFirst();
+					refChild = me.getFirst(true);
 					break;
 				default:
 					refChild = null;
 					break;
 			}
 		
-			return parentControl.insertBefore(document.parse(html, me.dom), refChild);
+			parentControl.insertBefore(html, refChild);
+			return html;
 		},
 	
 		/**
@@ -2047,7 +2236,7 @@
 		 * @return {Element} 元素。
 		 */
 		append: function(html) {
-			html = document.parse(html, this);
+			html = Dom.parse(html, this);
 			this.insertBefore(html, null);
 			return html;
 		},
@@ -2059,7 +2248,7 @@
 		 */
 		replaceWith: function(html) {
 			var elem;
-			html = document.parse(html, this.dom);
+			html = Dom.parse(html, this.dom);
 			if (elem = this.getParent()) {
 				elem.insertBefore(html, this);
 				elem.removeChild(this);
@@ -2094,14 +2283,23 @@
 	}, 3)
 
 	.implement({
-
-		/**
-		 * 执行一个简单的选择器。
-		 * @param {String} selecter 选择器。 如 h2 .cls attr=value 。
-		 * @return {Element/undefined} 节点。
-		 */
-		find: cssSelector[0],
-
+		
+		match: function (selector) {
+			assert.isString(selector, "Control.prototype.find(selector): selector ~。");
+			
+			var elem = this.dom;
+			if(!elem.parentNode){
+				var div = document.createElement('div');
+				div.appendChild(elem);
+				try{
+					return match(selector, elem);
+				} finally {
+					div.removeChild(elem);
+				}
+			}
+			return match(selector, elem);
+		},
+		
 		/**
 		 * 判断一个节点是否包含一个节点。 一个节点包含自身。
 		 * @param {Element} control 子节点。
@@ -2119,17 +2317,7 @@
 		 * @return {Boolean} 有返回true 。
 		 */
 		hasChild: function(control) {
-			return control ? Dom.hasChild(this.dom, control.dom): !!this.getFirst();
-		},
-		
-		/**
-		 * 判断一个节点是否隐藏。
-		 * @return {Boolean} 隐藏返回 true 。
-		 */
-		isHidden: function() {
-			var elem = this.dom;
-
-			return (elem.style.display || getStyle(elem, 'display')) === 'none';
+			return control ? Dom.hasChild(this.dom, control.dom): !Dom.isEmpty(this.dom);
 		}
 		
 	}, 4);
@@ -2138,32 +2326,6 @@
 	 * @class Document
 	 */
 	Dom.Document.implement({
-
-		/**
-		 * 解析一个 html 字符串返回相应的控件。
-		 * @param {String/Element} html 字符。
-		 * @param {Element} context=document 生成节点使用的文档中的任何节点。
-		 * @param {Boolean} cachable=true 是否缓存。
-		 * @return {Control} 控件。
-		 */
-		parse: function(html, context, cachable) {
-
-			assert.notNull(html, 'Dom.parse(html, context, cachable): {html} ~');
-
-			return html.dom ? html: new Dom(Dom.parse(html, context, cachable));
-		},
-		
-		/**
-		 * 创建一个节点。
-		 * @param {Object} tagName
-		 * @param {Object} className
-		 */
-		createControl: function(tagName, className) {
-			assert.isString(tagName, 'Document.prototype.create(tagName, className): {tagName} ~');
-			var div = this.createElement(tagName);
-			div.className = className;
-			return new Dom(div);
-		},
 		
 		/**
 		 * 插入一个HTML 。
@@ -2194,26 +2356,54 @@
 			return this;
 		},
 		
-		/**
-		 * 根据元素返回节点。
-		 * @param {String} ... 对象的 id 或对象。
-		 * @return {NodeList} 如果只有1个参数，返回元素，否则返回元素集合。
-		 */
-		getDom: function(id) {
-			return typeof id == "string" ? this.getElementById(id): id;
+		find: function(selector){
+			assert.isString(selector, "Control.prototype.find(selector): selector ~。");
+			var result;
+			try{
+				result = this.querySelector(selector);
+			} catch(e) {
+				result = query(selector, this)[0];
+			}
+			return result ? new Dom(result) : null;
 		},
 		
 		/**
-		 * 根据元素返回封装后的控件。
-		 * @param {String} ... 对象的 id 或对象。
-		 * @return {NodeList} 如果只有1个参数，返回元素，否则返回元素集合。
+		 * 执行选择器。
+		 * @method
+		 * @param {String} selecter 选择器。 如 h2 .cls attr=value 。
+		 * @return {Element/undefined} 节点。
 		 */
-		getControl: function() {
-			return arguments.length === 1 ? new Dom(this.getDom(arguments[0])): new NodeList(o.update(arguments, this.getDom, null, this));
+		query: function(selector){
+			assert.isString(selector, "Control.prototype.find(selector): selector ~。");
+			var result;
+			try{
+				result = this.querySelectorAll(selector);
+			} catch(e) {
+				result = query(selector, this);
+			}
+			return new NodeList(result);
 		},
 		
+		// /**
+		 // * 根据元素返回节点。
+		 // * @param {String} ... 对象的 id 或对象。
+		 // * @return {NodeList} 如果只有1个参数，返回元素，否则返回元素集合。
+		 // */
+		// getDom: function(id) {
+			// return typeof id == "string" ? this.getElementById(id): id;
+		// },
+// 		
+		// /**
+		 // * 根据元素返回封装后的控件。
+		 // * @param {String} ... 对象的 id 或对象。
+		 // * @return {NodeList} 如果只有1个参数，返回元素，否则返回元素集合。
+		 // */
+		// getControl: function() {
+			// return arguments.length === 1 ? new Dom(this.getDom(arguments[0])): new NodeList(o.update(arguments, this.getDom, null, this));
+		// },
+		
 		/**
-		 * 获取元素可视区域大小。包括 margin 和 border 大小。
+		 * 获取元素可视区域大小。包括 padding 和 border 大小。
 		 * @method getSize
 		 * @return {Point} 位置。
 		 */
@@ -2244,6 +2434,8 @@
 		 * @return {Point} 位置。
 		 */
 		getScroll: getWindowScroll,
+		
+		xType: 'control',
 
 		/**
 		 * 滚到。
@@ -2258,7 +2450,7 @@
 				p.x = doc.getScroll().x;
 			if(p.y == null)
 				p.y = doc.getScroll().y;
-			doc.defaultView.scrollTo(p.x, p.y);
+			(doc.defaultView || doc.parentWindow).scrollTo(p.x, p.y);
 
 			return doc;
 		}
@@ -2269,7 +2461,9 @@
 
 	Control.delegate(Control, 'dom', 'scrollIntoView focus blur select click submit reset');
 
-	map("push shift unshift pop include indexOf each forEach insert", ap, NodeList.prototype);
+	map("push shift unshift pop include indexOf each forEach", ap, NodeList.prototype);
+	NodeList.prototype.insertItem = ap.insert;
+	NodeList.prototype.removeItem = ap.remove;
 
 	map("filter slice splice reverse unique", function(func) {
 		return function() {
@@ -2290,6 +2484,12 @@
 	map("checked selected disabled value innerHTML textContent className autofocus autoplay async controls hidden loop open required scoped compact nowrap ismap declare noshade multiple noresize defer readOnly tabIndex defaultValue accessKey defaultChecked cellPadding cellSpacing rowSpan colSpan frameBorder maxLength useMap contentEditable", function(value) {
 		attributes[value.toLowerCase()] = attributes[value] = value;
 	});
+	
+	textField.INPUT = textField.SELECT = textField.TEXTAREA = 'value';
+	
+	textField['#text'] = textField['#comment'] = 'nodeValue';
+	
+	p.namespace("JPlus.Events.control");
 
 	/**
 	 * @type Function
@@ -2313,7 +2513,7 @@
 		 * @type Object
 		 * @hide
 		 */
-		eventObj = p.namespace("JPlus.Events.control.$default", {
+		eventObj = {
 	
 			/**
 			 * 创建当前事件可用的参数。
@@ -2335,7 +2535,7 @@
 			add: document.addEventListener ? function(ctrl, type, fn) {
 				ctrl.dom.addEventListener(type, fn, false);
 			}: function(ctrl, type, fn) {
-				ctrl.dom.attachEvent('on' + type, listener);
+				ctrl.dom.attachEvent('on' + type, fn);
 			},
 			
 			/**
@@ -2347,10 +2547,10 @@
 			remove: document.removeEventListener ? function(ctrl, type, fn) {
 				ctrl.dom.removeEventListener(type, fn, false);
 			}: function(ctrl, type, fn) {
-				ctrl.dom.detachEvent('on' + type, listener);
+				ctrl.dom.detachEvent('on' + type, fn);
 			}
 			
-		}),
+		},
 		
 		/**
 		 * 浏览器使用的真实的 DOMContentLoaded 事件名字。
@@ -2370,13 +2570,6 @@
 
 	/// #if CompactMode
 	} else {
-
-		/**
-		 * 返回当前文档默认的视图。
-		 * @type {Window}
-		 */
-		if(!document.defaultView)
-			document.defaultView = document.parentWindow;
 
 		if(!('opacity' in div.style)) {
 			styles.opacity = 'setOpacity';
@@ -2486,8 +2679,17 @@
 		Control.addEvents
 			('mouseenter', 'mouseover', checkMouseEnter)
 			('mouseleave', 'mouseout', checkMouseEnter);
+	
+	Control.implement(String.map('on un one trigger', Dom.prototype, {}));
 
-			
+	map('on un trigger', function (name) {
+		Dom.Document.prototype[name] = function(){
+			var doc = new Dom(this);
+			doc[name].apply(doc, arguments);
+			return this;
+		};
+	});
+	
 	/**
 	 * 页面加载时执行。
 	 * @param {Functon} fn 执行的函数。
@@ -2500,30 +2702,28 @@
 	 * @member document.onLoad
 	 */
 
-	/// #else
-	/// var domReady = 'DOMContentLoaded';
-	/// #endif
-	map('Ready Load', function(ReadyOrLoad, isLoad) {
 
-		var readyOrLoad = ReadyOrLoad.toLowerCase(), isReadyOrLoad = isLoad ? 'isReady': 'isLoaded';
+	map('ready load', function(readyOrLoad, isLoad) {
 
-		// 设置 onReady Load
-		document['on' + ReadyOrLoad] = function(fn) {
+		var isReadyOrIsLoad = isLoad ? 'isReady': 'isLoaded';
+
+		// 设置 ready load
+		Dom[readyOrLoad] = function(fn, bind) {
 
 			// 忽略参数不是函数的调用。
 			if(!Function.isFunction(fn))
 				fn = 0;
 
 			// 如果已载入，则直接执行参数。
-			if(document[isReadyOrLoad]) {
+			if(Dom[isReadyOrIsLoad]) {
 
 				if(fn)
-					fn.call(document);
+					fn.call(bind, Dom.get);
 
 				// 如果参数是函数。
 			} else if(fn) {
 
-				document.on(readyOrLoad, fn);
+				document.on(readyOrLoad, fn, bind);
 
 				// 触发事件。
 				// 如果存在 JS 之后的 CSS 文件， 肯能导致 document.body 为空，此时延时执行 DomReady
@@ -2536,7 +2736,7 @@
 					fn = [window, readyOrLoad];
 
 					// 确保 ready 触发。
-					document.onReady();
+					Dom.ready();
 
 				} else {
 					fn = [document, domReady];
@@ -2547,10 +2747,10 @@
 				}, fn[1], arguments.callee);
 
 				// 触发事件。
-				if(document.trigger(readyOrLoad)) {
+				if(document.trigger(readyOrLoad, Dom.get)) {
 
 					// 先设置为已经执行。
-					document[isReadyOrLoad] = true;
+					Dom[isReadyOrIsLoad] = true;
 
 					// 删除事件。
 					document.un(readyOrLoad);
@@ -2568,9 +2768,9 @@
 	if(document.readyState !== "complete") {
 
 		// 使用系统文档完成事件。
-		eventObj.add({dom: document}, domReady, document.onReady);
+		eventObj.add({dom: document}, domReady, Dom.ready);
 
-		eventObj.add({dom: window}, 'load', document.onLoad, false);
+		eventObj.add({dom: window}, 'load', Dom.load, false);
 
 		/// #if CompactMode
 		
@@ -2593,7 +2793,7 @@
 				 * @private
 				 */
 				(function() {
-					if(document.isReady) {
+					if(Dom.isReady) {
 						return;
 					}
 
@@ -2605,14 +2805,14 @@
 						return;
 					}
 
-					document.onReady();
+					Dom.ready();
 				})();
 			}
 		}
 
 		/// #endif
 	} else {
-		setTimeout(document.onLoad, 1);
+		setTimeout(Dom.load, 1);
 	}
 
 	apply(window, {
@@ -2621,13 +2821,15 @@
 
 		Control: Control,
 
+		Point: Point,
+		
 		NodeList: NodeList
 
 	});
 
 	Object.extendIf(window, {
-		$: Dom.get,
-		$$: Dom.query
+		$$: Dom.get,
+		$: Dom.query
 	});
 	
 	div = null;
@@ -2638,6 +2840,7 @@
 
 	/**
 	 * Dom 对象的封装。
+	 * @param {Node} dom 封装的元素。
 	 */
 	function Dom(dom) {
 		this.dom = dom;
@@ -2645,7 +2848,7 @@
 
 	/**
 	 * 获取元素的文档。
-	 * @param {Element} elem 元素。
+	 * @param {Node} elem 元素。
 	 * @return {Document} 文档。
 	 */
 	function getDocument(elem) {
@@ -2663,21 +2866,28 @@
 	function createTreeWalker(getFirst, next, first) {
 		first = first || next;
 		return getFirst ? function(args) {
-			if(args != null) 
-				args = getFilter(args);
 			var node = this.dom[first];
-			while(node) {
-				if(node.nodeType === 1 && (!args || args.call(this.dom, node)))
-					return new Dom(node);
-				node = node[next];
+			if(args == null) {
+				while(node) {
+					if(node.nodeType === 1)
+						return new Dom(node);
+					node = node[next];
+				}
+			} else {
+				args = getFilter(args);
+				while(node) {
+					if(args.call(this.dom, node))
+						return new Dom(node);
+					node = node[next];
+				}
 			}
+			
 			return null;
 		}: function(args) {
-			if(args != null) 
-				args = getFilter(args);
+			args = getFilter(args);
 			var node = this.dom[first], r = new NodeList;
 			while(node) {
-				if(node.nodeType === 1 && (!args || args.call(this.dom, node)))
+				if(args.call(this.dom, node))
 					r.push(node);
 				node = node[next];
 			}
@@ -2687,22 +2897,28 @@
 	
 	/**
 	 * 获取一个选择器。
-	 * @param {Number/Function/String} args 参数。
+	 * @param {Number/Function/String/Boolean} args 参数。
 	 * @return {Funtion} 函数。
 	 */
 	function getFilter(args) {
 		switch (typeof args) {
 			case 'number':
 				return function(elem) {
-					return --args < 0;
+					return elem.nodeType === 1 && --args < 0;
 				};
 			case 'string':
-				args = args.toUpperCase();
-				return function(elem) {
-					return elem.tagName === args;
+				if(args && args !== '*'){
+					args = args.toUpperCase();
+					return function(elem) {
+						return elem.nodeType === 1 && elem.tagName === args;
+					};
+				}
+				
+				// fall through
+			default:
+				return args ? Function.returnTrue : function(elem) {
+					return elem.nodeType === 1;
 				};
-			case 'undefined':
-				return Function.returnTrue;
 		}
 
 		assert.isFunction(args, "Control.prototype.getXXX(args): {args} 必须是一个函数、空、数字或字符串。", args);
@@ -2716,7 +2932,7 @@
 	 */
 	function checkMouseEnter(e) {
 
-		return this !== e.relatedTarget && !Dom.hasChild(this, e.relatedTarget);
+		return this !== e.relatedTarget && !Dom.hasChild(this.dom, e.relatedTarget);
 	}
 	
 	/**
@@ -2725,20 +2941,19 @@
 	 * @param {Element} destElem 目的元素。
 	 * @param {Boolean} cloneEvent=true 是否复制数据。
 	 * @param {Boolean} keepId=false 是否留下ID。
-	 * @return {Element} 元素。
 	 */
 	function cleanClone(srcElem, destElem, cloneEvent, keepId) {
 
 		if(!keepId && destElem.removeAttribute)
 			destElem.removeAttribute('id');
 
-		/// #if SupportIE8
+		/// #if CompactMode
+		
 		if(destElem.clearAttributes) {
 
 			// IE 会复制 自定义事件， 清楚它。
 			destElem.clearAttributes();
 			destElem.mergeAttributes(srcElem);
-			// 在 IE delete destElem.$data 出现异常。
 			p.removeData(destElem);
 
 			if(srcElem.options)
@@ -2746,8 +2961,25 @@
 		}
 
 		/// #endif
-		if(cloneEvent !== false)
-			p.cloneEvent(srcElem, destElem);
+
+		if(cloneEvent !== false) {
+			
+		    // event 作为系统内部对象。事件的拷贝必须重新进行 on 绑定。
+		    var event = p.getData(srcElem, 'event'), dest;
+
+		    if (event) {
+		    	dest = new Dom(destElem);
+			    for (cloneEvent in event)
+
+				    // 对每种事件。
+				    event[cloneEvent].handlers.forEach(function(handler) {
+
+					    // 如果源数据的 target 是 src， 则改 dest 。
+					    dest.on(cloneEvent, handler[0], handler[1].dom === srcElem ? dest : handler[1]);
+				    });
+			}
+			
+		}
 
 		// 特殊属性复制。
 		if( keepId = Dom.properties[srcElem.tagName])
@@ -2833,1682 +3065,222 @@
 		};
 	}
 
-	/// #if CompactMode
-	/**
-	 * 简单的CSS选择器引擎。 只为 IE6/7 FF 2 等老浏览器准备。 代码最短优先，效率不高。
-	 */
-	function CssSelector() {
-
-		/**
-		 * 属性操作符，#表示值。
-		 */
-		var attrs = {
-			'=': '===#',
-			'^=': '.indexOf(#)===0',
-			'*=': '.indexOf(#)>=0',
-			'|=': '.split(/\\b+/).indexOf(#)===0',
-			'~=': '.split(/\\b+/).indexOf(#)>=0'
-		},
-
-		/**
-		 * 连接符转为代码。
-		 */
-		maps = {
-			'': 't=c[i].getElementsByTagName("*");j=0;while(_=t[j++])',
-			'>': 'for(_=c[i].firstChild;_;_=_.nextSibling)',
-			'~': 'for(_=c[i];_;_=_.nextSibling)',
-			'+': 'for(_=c[i];_&&_.nodeType !== 1;_=_.nextSibling);if(_)'
-		},
-
-		/**
-		 * 基本选择器。
-		 */
-		tests = {
-			'.': 'Dom.hasClass(_,#)',
-			'#': '_.id===#',
-			'': '_.tagName===#.toUpperCase()'
-		},
-
-		/**
-		 * find 查询函数缓存。
-		 */
-		findCache = {},
-
-		/**
-		 * findAll 查询函数缓存。
-		 */
-		findAllCache = {},
-
-		/**
-		 * 用于提取简单部分的正式表达式。 一个简单的表达式由2个部分组成。 前面部分可以是 #id .className tagName
-		 * 后面部分可以是 (任意空格) # . > + ~ [ , 并不是全部选择器都是简单选择器。下列情况是复杂的表达式。 > + ~ ,
-		 * [attrName] [attrName=attrVal] [attrName='attrVal']
-		 * [attrName="attrVal"]
-		 */
-		rSimpleSelector = /^\s*([#.]?)([*\w\u0080-\uFFFF_-]+)(([\[#.>+~,])|\s*)/,
-
-		/**
-		 * 复杂的表达式。 只匹配 > + ~ , [ 开头的选择器。其它选择器被认为非法表达式。 如果是 [ 开头的表达式， 则同时找出
-		 * [attrName] 后的内容。
-		 */
-		rRelSelector = /^\s*([>+~,]|\[([^=]+?)\s*(([\^\*\|\~]?=)\s*('([^']*?)'|"([^"]*?)"|([^'"][^\]]*?))\s*)?\])/;
-
-		/**
-		 * 分析选择器，并返回一个等价的函数。
-		 * @param {String} selector css3 选择器。
-		 * @return {Function} 返回执行选择器的函数。函数的参数是 elem, 表示当前的元素。 只支持下列选择器及组合： #id
-		 *         .class tagName [attr] [attr=val] (val
-		 *         可以是单引号或双引号或不包围的字符串，但不支持\转义。) [attr!=val] [attr~=val]
-		 *         [attr^=val] [attr|=val] 选择器组合方式有： selctor1selctor2
-		 *         selctor1,selctor2 selctor1 selctor2 selctor1>selctor2
-		 *         selctor1~selctor2 selctor1+selctor2
-		 */
-		function parse(selector, first) {
-
-			// filter 0 - 对已有元素进行过滤
-			// seperator 1 - 计算分隔操作
-			var type, value, tokens = [[1, '']], matchSize, match, codes = ['var c=[e],n,t,i,j,_;'], i, matchCount = 0;
-
-			// 只要还有没有处理完的选择器。
-			while(selector) {
-
-				// 执行简单的选择器。
-				match = rSimpleSelector.exec(selector);
-
-				// 如果不返回 null, 说明这是简单的选择器。
-				// #id .class tagName 选择器 会进入if语句。
-				if(match) {
-
-					// 记录当前选择器已被处理过的部分的长度。
-					matchSize = match[0].length;
-
-					// 条件。
-					type = 0;
-
-					// 选择器的内容部分， 如 id class tagName
-					value = tests[match[1]].replace('#', toJsString(match[2]));
-
-					// 如果之后有 . # > + ~ [, 则回退一个字符，下次继续处理。
-					if(match[4]) {
-						matchSize--;
-
-					} else {
-
-						// 保存当前的值，以追加空格。
-						tokens.push([type, value]);
-
-						// 如果末尾有空格，则添加，否则说明已经是选择器末尾，跳出循环:)。
-						if(match[3]) {
-							type = 1;
-							value = '';
-						} else {
-							selector = null;
-							break;
-						}
-					}
-				} else {
-
-					// 处理 ~ + > [ , 开头的选择器， 不是这些开头的选择器是非法选择器。
-					match = rRelSelector.exec(selector);
-
-					assert(match, "CssSelector.parse(selector): 选择器语法错误(在 " + selector + ' 附近)');
-
-					// 记录当前选择器已被处理过的部分的长度。
-					matchSize = match[0].length;
-
-					// [ 属性 ]
-					if(match[2]) {
-						type = 0;
-						value = 'Dom.getAttr(_,' + toJsString(match[2]) + ')';
-						if(match[4])
-							value = '(' + value + '||"")' + attrs[match[4]].replace('#', toJsString(match[8] || match[6]));
-
-						// + > ~
-					} else if(match[1] === ',') {
-						selector = selector.substring(matchSize);
-						break;
-					} else {
-						type = 1;
-						value = match[1];
-					}
-				}
-
-				// 忽略多个空格。
-				if(type === 1 && tokens.item(-1) + '' === '1,')
-					tokens.pop();
-
-				// 经过处理后， token 的出现顺序为 0 1 1 0 1 1...
-				tokens.push([type, value]);
-
-				// 去掉已经处理的部分。
-				selector = selector.substring(matchSize);
-
-			}
-
-			// 删除最后多余的空格。
-			if(tokens.item(-1) + '' === '1,')
-				tokens.pop();
-
-			// 计算 map 的个数。
-			i = match = matchSize = 0;
-
-			if(first)
-				while( value = tokens[i++])
-				matchSize += value[0];
-
-			// 从第一个 token 开始，生成代码。
-			while( value = tokens[match++]) {
-
-				// 是否只需第一个元素。
-				type = ++matchCount == matchSize;
-
-				// 如果返回列表，则创建列表。
-				if(!type)
-					codes.push('n=new NodeList;');
-
-				if(matchCount === 2) {
-					codes.push('if((_=e)');
-
-					for( i = match - 1; --i; )codes.push('&&', tokens[i][1]);
-
-					codes.push(')c.include(_);');
-
-				}
-
-				// 加入遍历现在集合的代码。
-				codes.push('for(i=0;i<c.length;i++) {', maps[value[1]]);
-
-				codes.push('if(_.nodeType===1');
-
-				// 处理条件。
-				// 如果有条件则处理。
-				while(tokens[match] && tokens[match][0] === 0)codes.push('&&', tokens[match++][1]);
-
-				codes.push(')');
-
-				codes.push( type ? 'return JPlus.$(_);}': 'n.include(_);}c=n;');
-
-			}
-
-			codes.push('return ');
-			if(selector)
-				codes.push( type ? '(Dom.CssSelector[0].call(e,': 'c.concat(Dom.CssSelector[1].call(e,', toJsString(selector), '))');
-			else
-				codes.push( type ? 'null': 'c');
-
-			// trace.info(tokens);
-			// trace.info(codes.join(' '));
-			return new Function('e', codes.join(''));
-		}
-
-		/**
-		 * 把一个字符串转为Javascript的字符串。
-		 * @param {String} value 输入的字符串。
-		 * @return {String} 带双引号的字符串。
-		 */
-		function toJsString(value) {
-			return '"' + value.replace(/"/g, '\\"') + '"';
-		}
-
-		return Dom.CssSelector = [
-
-		function(selector) {
-			return (findCache[selector] || (findCache[selector] = parse(selector, true)))(this.dom);
-		},
-
-		function(selector) {
-			return (findAllCache[selector] || (findAllCache[selector] = parse(selector)))(this.dom);
-		}];
-
-	}
-
-	/// #endif
+	/// #region Selector
 	
-	/*!
- * Sizzle CSS Selector Engine
- *  Copyright 2011, The Dojo Foundation
- *  Released under the MIT, BSD, and GPL Licenses.
- *  More information: http://sizzlejs.com/
- */
-(function(){
-
-var chunker = /((?:\((?:\([^()]+\)|[^()]+)+\)|\[(?:\[[^\[\]]*\]|['"][^'"]*['"]|[^\[\]'"]+)+\]|\\.|[^ >+~,(\[\\]+)+|[>+~])(\s*,\s*)?((?:.|\r|\n)*)/g,
-	expando = "sizcache" + (Math.random() + '').replace('.', ''),
-	done = 0,
-	toString = Object.prototype.toString,
-	hasDuplicate = false,
-	baseHasDuplicate = true,
-	rBackslash = /\\/g,
-	rReturn = /\r\n/g,
-	rNonWord = /\W/;
-
-// Here we check if the JavaScript engine is using some sort of
-// optimization where it does not always call our comparision
-// function. If that is the case, discard the hasDuplicate value.
-//   Thus far that includes Google Chrome.
-[0, 0].sort(function() {
-	baseHasDuplicate = false;
-	return 0;
-});
-
-var Sizzle = function( selector, context, results, seed ) {
-	results = results || [];
-	context = context || document;
-
-	var origContext = context;
-
-	if ( context.nodeType !== 1 && context.nodeType !== 9 ) {
-		return [];
+	function throwError(string) {
+		throw new SyntaxError('An invalid or illegal string was specified : "' + string + '"!');
 	}
 
-	if ( !selector || typeof selector !== "string" ) {
-		return results;
+	function match(selector, dom){
+		return new Dom(dom.parentNode).query(selector).indexOf(dom) >= 0;
 	}
 
-	var m, set, checkSet, extra, ret, cur, pop, i,
-		prune = true,
-		contextXML = Sizzle.isXML( context ),
-		parts = [],
-		soFar = selector;
-
-	// Reset the position of the chunker regexp (start from head)
-	do {
-		chunker.exec( "" );
-		m = chunker.exec( soFar );
-
-		if ( m ) {
-			soFar = m[3];
-
-			parts.push( m[1] );
-
-			if ( m[2] ) {
-				extra = m[3];
-				break;
-			}
-		}
-	} while ( m );
-
-	if ( parts.length > 1 && origPOS.exec( selector ) ) {
-
-		if ( parts.length === 2 && Expr.relative[ parts[0] ] ) {
-			set = posProcess( parts[0] + parts[1], context, seed );
-
-		} else {
-			set = Expr.relative[ parts[0] ] ?
-				[ context ] :
-				Sizzle( parts.shift(), context );
-
-			while ( parts.length ) {
-				selector = parts.shift();
-
-				if ( Expr.relative[ selector ] ) {
-					selector += parts.shift();
-				}
-
-				set = posProcess( selector, set, seed );
-			}
-		}
-
-	} else {
-		// Take a shortcut and set the context if the root selector is an ID
-		// (but not if it'll be faster if the inner selector is an ID)
-		if ( !seed && parts.length > 1 && context.nodeType === 9 && !contextXML &&
-				Expr.match.ID.test(parts[0]) && !Expr.match.ID.test(parts[parts.length - 1]) ) {
-
-			ret = Sizzle.find( parts.shift(), context, contextXML );
-			context = ret.expr ?
-				Sizzle.filter( ret.expr, ret.set )[0] :
-				ret.set[0];
-		}
-
-		if ( context ) {
-			ret = seed ?
-				{ expr: parts.pop(), set: makeArray(seed) } :
-				Sizzle.find( parts.pop(), parts.length === 1 && (parts[0] === "~" || parts[0] === "+") && context.parentNode ? context.parentNode : context, contextXML );
-
-			set = ret.expr ?
-				Sizzle.filter( ret.expr, ret.set ) :
-				ret.set;
-
-			if ( parts.length > 0 ) {
-				checkSet = makeArray( set );
-
-			} else {
-				prune = false;
-			}
-
-			while ( parts.length ) {
-				cur = parts.pop();
-				pop = cur;
-
-				if ( !Expr.relative[ cur ] ) {
-					cur = "";
-				} else {
-					pop = parts.pop();
-				}
-
-				if ( pop == null ) {
-					pop = context;
-				}
-
-				Expr.relative[ cur ]( checkSet, pop, contextXML );
-			}
-
-		} else {
-			checkSet = parts = [];
-		}
-	}
-
-	if ( !checkSet ) {
-		checkSet = set;
-	}
-
-	if ( !checkSet ) {
-		Sizzle.error( cur || selector );
-	}
-
-	if ( toString.call(checkSet) === "[object Array]" ) {
-		if ( !prune ) {
-			results.push.apply( results, checkSet );
-
-		} else if ( context && context.nodeType === 1 ) {
-			for ( i = 0; checkSet[i] != null; i++ ) {
-				if ( checkSet[i] && (checkSet[i] === true || checkSet[i].nodeType === 1 && Sizzle.contains(context, checkSet[i])) ) {
-					results.push( set[i] );
-				}
-			}
-
-		} else {
-			for ( i = 0; checkSet[i] != null; i++ ) {
-				if ( checkSet[i] && checkSet[i].nodeType === 1 ) {
-					results.push( set[i] );
-				}
-			}
-		}
-
-	} else {
-		makeArray( checkSet, results );
-	}
-
-	if ( extra ) {
-		Sizzle( extra, origContext, results, seed );
-		Sizzle.uniqueSort( results );
-	}
-
-	return results;
-};
-
-Sizzle.uniqueSort = function( results ) {
-	if ( sortOrder ) {
-		hasDuplicate = baseHasDuplicate;
-		results.sort( sortOrder );
-
-		if ( hasDuplicate ) {
-			for ( var i = 1; i < results.length; i++ ) {
-				if ( results[i] === results[ i - 1 ] ) {
-					results.splice( i--, 1 );
-				}
-			}
-		}
-	}
-
-	return results;
-};
-
-Sizzle.matches = function( expr, set ) {
-	return Sizzle( expr, null, null, set );
-};
-
-Sizzle.matchesSelector = function( node, expr ) {
-	return Sizzle( expr, null, null, [node] ).length > 0;
-};
-
-Sizzle.find = function( expr, context, isXML ) {
-	var set, i, len, match, type, left;
-
-	if ( !expr ) {
-		return [];
-	}
-
-	for ( i = 0, len = Expr.order.length; i < len; i++ ) {
-		type = Expr.order[i];
-
-		if ( (match = Expr.leftMatch[ type ].exec( expr )) ) {
-			left = match[1];
-			match.splice( 1, 1 );
-
-			if ( left.substr( left.length - 1 ) !== "\\" ) {
-				match[1] = (match[1] || "").replace( rBackslash, "" );
-				set = Expr.find[ type ]( match, context, isXML );
-
-				if ( set != null ) {
-					expr = expr.replace( Expr.match[ type ], "" );
-					break;
-				}
-			}
-		}
-	}
-
-	if ( !set ) {
-		set = typeof context.getElementsByTagName !== "undefined" ?
-			context.getElementsByTagName( "*" ) :
-			[];
-	}
-
-	return { set: set, expr: expr };
-};
-
-Sizzle.filter = function( expr, set, inplace, not ) {
-	var match, anyFound,
-		type, found, item, filter, left,
-		i, pass,
-		old = expr,
-		result = [],
-		curLoop = set,
-		isXMLFilter = set && set[0] && Sizzle.isXML( set[0] );
-
-	while ( expr && set.length ) {
-		for ( type in Expr.filter ) {
-			if ( (match = Expr.leftMatch[ type ].exec( expr )) != null && match[2] ) {
-				filter = Expr.filter[ type ];
-				left = match[1];
-
-				anyFound = false;
-
-				match.splice(1,1);
-
-				if ( left.substr( left.length - 1 ) === "\\" ) {
-					continue;
-				}
-
-				if ( curLoop === result ) {
-					result = [];
-				}
-
-				if ( Expr.preFilter[ type ] ) {
-					match = Expr.preFilter[ type ]( match, curLoop, inplace, result, not, isXMLFilter );
-
-					if ( !match ) {
-						anyFound = found = true;
-
-					} else if ( match === true ) {
-						continue;
-					}
-				}
-
-				if ( match ) {
-					for ( i = 0; (item = curLoop[i]) != null; i++ ) {
-						if ( item ) {
-							found = filter( item, match, i, curLoop );
-							pass = not ^ found;
-
-							if ( inplace && found != null ) {
-								if ( pass ) {
-									anyFound = true;
-
-								} else {
-									curLoop[i] = false;
-								}
-
-							} else if ( pass ) {
-								result.push( item );
-								anyFound = true;
-							}
-						}
-					}
-				}
-
-				if ( found !== undefined ) {
-					if ( !inplace ) {
-						curLoop = result;
-					}
-
-					expr = expr.replace( Expr.match[ type ], "" );
-
-					if ( !anyFound ) {
-						return [];
-					}
-
-					break;
-				}
-			}
-		}
-
-		// Improper expression
-		if ( expr === old ) {
-			if ( anyFound == null ) {
-				Sizzle.error( expr );
-
-			} else {
-				break;
-			}
-		}
-
-		old = expr;
-	}
-
-	return curLoop;
-};
-
-Sizzle.error = function( msg ) {
-	throw new Error( "Syntax error, unrecognized expression: " + msg );
-};
-
-/**
- * Utility function for retreiving the text value of an array of DOM nodes
- * @param {Array|Element} elem
- */
-var getText = Sizzle.getText = function( elem ) {
-    var i, node,
-		nodeType = elem.nodeType,
-		ret = "";
-
-	if ( nodeType ) {
-		if ( nodeType === 1 || nodeType === 9 ) {
-			// Use textContent || innerText for elements
-			if ( typeof elem.textContent === 'string' ) {
-				return elem.textContent;
-			} else if ( typeof elem.innerText === 'string' ) {
-				// Replace IE's carriage returns
-				return elem.innerText.replace( rReturn, '' );
-			} else {
-				// Traverse it's children
-				for ( elem = elem.firstChild; elem; elem = elem.nextSibling) {
-					ret += getText( elem );
-				}
-			}
-		} else if ( nodeType === 3 || nodeType === 4 ) {
-			return elem.nodeValue;
-		}
-	} else {
-
-		// If no nodeType, this is expected to be an array
-		for ( i = 0; (node = elem[i]); i++ ) {
-			// Do not traverse comment nodes
-			if ( node.nodeType !== 8 ) {
-				ret += getText( node );
-			}
-		}
-	}
-	return ret;
-};
-
-var Expr = Sizzle.selectors = {
-	order: [ "ID", "NAME", "TAG" ],
-
-	match: {
-		ID: /#((?:[\w\u00c0-\uFFFF\-]|\\.)+)/,
-		CLASS: /\.((?:[\w\u00c0-\uFFFF\-]|\\.)+)/,
-		NAME: /\[name=['"]*((?:[\w\u00c0-\uFFFF\-]|\\.)+)['"]*\]/,
-		ATTR: /\[\s*((?:[\w\u00c0-\uFFFF\-]|\\.)+)\s*(?:(\S?=)\s*(?:(['"])(.*?)\3|(#?(?:[\w\u00c0-\uFFFF\-]|\\.)*)|)|)\s*\]/,
-		TAG: /^((?:[\w\u00c0-\uFFFF\*\-]|\\.)+)/,
-		CHILD: /:(only|nth|last|first)-child(?:\(\s*(even|odd|(?:[+\-]?\d+|(?:[+\-]?\d*)?n\s*(?:[+\-]\s*\d+)?))\s*\))?/,
-		POS: /:(nth|eq|gt|lt|first|last|even|odd)(?:\((\d*)\))?(?=[^\-]|$)/,
-		PSEUDO: /:((?:[\w\u00c0-\uFFFF\-]|\\.)+)(?:\((['"]?)((?:\([^\)]+\)|[^\(\)]*)+)\2\))?/
-	},
-
-	leftMatch: {},
-
-	attrMap: {
-		"class": "className",
-		"for": "htmlFor"
-	},
-
-	attrHandle: {
-		href: function( elem ) {
-			return elem.getAttribute( "href" );
-		},
-		type: function( elem ) {
-			return elem.getAttribute( "type" );
-		}
-	},
-
-	relative: {
-		"+": function(checkSet, part){
-			var isPartStr = typeof part === "string",
-				isTag = isPartStr && !rNonWord.test( part ),
-				isPartStrNotTag = isPartStr && !isTag;
-
-			if ( isTag ) {
-				part = part.toLowerCase();
-			}
-
-			for ( var i = 0, l = checkSet.length, elem; i < l; i++ ) {
-				if ( (elem = checkSet[i]) ) {
-					while ( (elem = elem.previousSibling) && elem.nodeType !== 1 ) {}
-
-					checkSet[i] = isPartStrNotTag || elem && elem.nodeName.toLowerCase() === part ?
-						elem || false :
-						elem === part;
-				}
-			}
-
-			if ( isPartStrNotTag ) {
-				Sizzle.filter( part, checkSet, true );
-			}
-		},
-
-		">": function( checkSet, part ) {
-			var elem,
-				isPartStr = typeof part === "string",
-				i = 0,
-				l = checkSet.length;
-
-			if ( isPartStr && !rNonWord.test( part ) ) {
-				part = part.toLowerCase();
-
-				for ( ; i < l; i++ ) {
-					elem = checkSet[i];
-
-					if ( elem ) {
-						var parent = elem.parentNode;
-						checkSet[i] = parent.nodeName.toLowerCase() === part ? parent : false;
-					}
-				}
-
-			} else {
-				for ( ; i < l; i++ ) {
-					elem = checkSet[i];
-
-					if ( elem ) {
-						checkSet[i] = isPartStr ?
-							elem.parentNode :
-							elem.parentNode === part;
-					}
-				}
-
-				if ( isPartStr ) {
-					Sizzle.filter( part, checkSet, true );
-				}
-			}
-		},
-
-		"": function(checkSet, part, isXML){
-			var nodeCheck,
-				doneName = done++,
-				checkFn = dirCheck;
-
-			if ( typeof part === "string" && !rNonWord.test( part ) ) {
-				part = part.toLowerCase();
-				nodeCheck = part;
-				checkFn = dirNodeCheck;
-			}
-
-			checkFn( "parentNode", part, doneName, checkSet, nodeCheck, isXML );
-		},
-
-		"~": function( checkSet, part, isXML ) {
-			var nodeCheck,
-				doneName = done++,
-				checkFn = dirCheck;
-
-			if ( typeof part === "string" && !rNonWord.test( part ) ) {
-				part = part.toLowerCase();
-				nodeCheck = part;
-				checkFn = dirNodeCheck;
-			}
-
-			checkFn( "previousSibling", part, doneName, checkSet, nodeCheck, isXML );
-		}
-	},
-
-	find: {
-		ID: function( match, context, isXML ) {
-			if ( typeof context.getElementById !== "undefined" && !isXML ) {
-				var m = context.getElementById(match[1]);
-				// Check parentNode to catch when Blackberry 4.6 returns
-				// nodes that are no longer in the document #6963
-				return m && m.parentNode ? [m] : [];
-			}
-		},
-
-		NAME: function( match, context ) {
-			if ( typeof context.getElementsByName !== "undefined" ) {
-				var ret = [],
-					results = context.getElementsByName( match[1] );
-
-				for ( var i = 0, l = results.length; i < l; i++ ) {
-					if ( results[i].getAttribute("name") === match[1] ) {
-						ret.push( results[i] );
-					}
-				}
-
-				return ret.length === 0 ? null : ret;
-			}
-		},
-
-		TAG: function( match, context ) {
-			if ( typeof context.getElementsByTagName !== "undefined" ) {
-				return context.getElementsByTagName( match[1] );
-			}
-		}
-	},
-	preFilter: {
-		CLASS: function( match, curLoop, inplace, result, not, isXML ) {
-			match = " " + match[1].replace( rBackslash, "" ) + " ";
-
-			if ( isXML ) {
-				return match;
-			}
-
-			for ( var i = 0, elem; (elem = curLoop[i]) != null; i++ ) {
-				if ( elem ) {
-					if ( not ^ (elem.className && (" " + elem.className + " ").replace(/[\t\n\r]/g, " ").indexOf(match) >= 0) ) {
-						if ( !inplace ) {
-							result.push( elem );
-						}
-
-					} else if ( inplace ) {
-						curLoop[i] = false;
-					}
-				}
-			}
-
-			return false;
-		},
-
-		ID: function( match ) {
-			return match[1].replace( rBackslash, "" );
-		},
-
-		TAG: function( match, curLoop ) {
-			return match[1].replace( rBackslash, "" ).toLowerCase();
-		},
-
-		CHILD: function( match ) {
-			if ( match[1] === "nth" ) {
-				if ( !match[2] ) {
-					Sizzle.error( match[0] );
-				}
-
-				match[2] = match[2].replace(/^\+|\s*/g, '');
-
-				// parse equations like 'even', 'odd', '5', '2n', '3n+2', '4n-1', '-n+6'
-				var test = /(-?)(\d*)(?:n([+\-]?\d*))?/.exec(
-					match[2] === "even" && "2n" || match[2] === "odd" && "2n+1" ||
-					!/\D/.test( match[2] ) && "0n+" + match[2] || match[2]);
-
-				// calculate the numbers (first)n+(last) including if they are negative
-				match[2] = (test[1] + (test[2] || 1)) - 0;
-				match[3] = test[3] - 0;
-			}
-			else if ( match[2] ) {
-				Sizzle.error( match[0] );
-			}
-
-			// TODO: Move to normal caching system
-			match[0] = done++;
-
-			return match;
-		},
-
-		ATTR: function( match, curLoop, inplace, result, not, isXML ) {
-			var name = match[1] = match[1].replace( rBackslash, "" );
-
-			if ( !isXML && Expr.attrMap[name] ) {
-				match[1] = Expr.attrMap[name];
-			}
-
-			// Handle if an un-quoted value was used
-			match[4] = ( match[4] || match[5] || "" ).replace( rBackslash, "" );
-
-			if ( match[2] === "~=" ) {
-				match[4] = " " + match[4] + " ";
-			}
-
-			return match;
-		},
-
-		PSEUDO: function( match, curLoop, inplace, result, not ) {
-			if ( match[1] === "not" ) {
-				// If we're dealing with a complex expression, or a simple one
-				if ( ( chunker.exec(match[3]) || "" ).length > 1 || /^\w/.test(match[3]) ) {
-					match[3] = Sizzle(match[3], null, null, curLoop);
-
-				} else {
-					var ret = Sizzle.filter(match[3], curLoop, inplace, true ^ not);
-
-					if ( !inplace ) {
-						result.push.apply( result, ret );
-					}
-
-					return false;
-				}
-
-			} else if ( Expr.match.POS.test( match[0] ) || Expr.match.CHILD.test( match[0] ) ) {
-				return true;
-			}
-
-			return match;
-		},
-
-		POS: function( match ) {
-			match.unshift( true );
-
-			return match;
-		}
-	},
-
-	filters: {
-		enabled: function( elem ) {
-			return elem.disabled === false && elem.type !== "hidden";
-		},
-
-		disabled: function( elem ) {
-			return elem.disabled === true;
-		},
-
-		checked: function( elem ) {
-			return elem.checked === true;
-		},
-
-		selected: function( elem ) {
-			// Accessing this property makes selected-by-default
-			// options in Safari work properly
-			if ( elem.parentNode ) {
-				elem.parentNode.selectedIndex;
-			}
-
-			return elem.selected === true;
-		},
-
-		parent: function( elem ) {
-			return !!elem.firstChild;
-		},
-
-		empty: function( elem ) {
-			return !elem.firstChild;
-		},
-
-		has: function( elem, i, match ) {
-			return !!Sizzle( match[3], elem ).length;
-		},
-
-		header: function( elem ) {
-			return (/h\d/i).test( elem.nodeName );
-		},
-
-		text: function( elem ) {
-			var attr = elem.getAttribute( "type" ), type = elem.type;
-			// IE6 and 7 will map elem.type to 'text' for new HTML5 types (search, etc)
-			// use getAttribute instead to test this case
-			return elem.nodeName.toLowerCase() === "input" && "text" === type && ( attr === type || attr === null );
-		},
-
-		radio: function( elem ) {
-			return elem.nodeName.toLowerCase() === "input" && "radio" === elem.type;
-		},
-
-		checkbox: function( elem ) {
-			return elem.nodeName.toLowerCase() === "input" && "checkbox" === elem.type;
-		},
-
-		file: function( elem ) {
-			return elem.nodeName.toLowerCase() === "input" && "file" === elem.type;
-		},
-
-		password: function( elem ) {
-			return elem.nodeName.toLowerCase() === "input" && "password" === elem.type;
-		},
-
-		submit: function( elem ) {
-			var name = elem.nodeName.toLowerCase();
-			return (name === "input" || name === "button") && "submit" === elem.type;
-		},
-
-		image: function( elem ) {
-			return elem.nodeName.toLowerCase() === "input" && "image" === elem.type;
-		},
-
-		reset: function( elem ) {
-			var name = elem.nodeName.toLowerCase();
-			return (name === "input" || name === "button") && "reset" === elem.type;
-		},
-
-		button: function( elem ) {
-			var name = elem.nodeName.toLowerCase();
-			return name === "input" && "button" === elem.type || name === "button";
-		},
-
-		input: function( elem ) {
-			return (/input|select|textarea|button/i).test( elem.nodeName );
-		},
-
-		focus: function( elem ) {
-			return elem === elem.ownerDocument.activeElement;
-		}
-	},
-	setFilters: {
-		first: function( elem, i ) {
-			return i === 0;
-		},
-
-		last: function( elem, i, match, array ) {
-			return i === array.length - 1;
-		},
-
-		even: function( elem, i ) {
-			return i % 2 === 0;
-		},
-
-		odd: function( elem, i ) {
-			return i % 2 === 1;
-		},
-
-		lt: function( elem, i, match ) {
-			return i < match[3] - 0;
-		},
-
-		gt: function( elem, i, match ) {
-			return i > match[3] - 0;
-		},
-
-		nth: function( elem, i, match ) {
-			return match[3] - 0 === i;
-		},
-
-		eq: function( elem, i, match ) {
-			return match[3] - 0 === i;
-		}
-	},
-	filter: {
-		PSEUDO: function( elem, match, i, array ) {
-			var name = match[1],
-				filter = Expr.filters[ name ];
-
-			if ( filter ) {
-				return filter( elem, i, match, array );
-
-			} else if ( name === "contains" ) {
-				return (elem.textContent || elem.innerText || getText([ elem ]) || "").indexOf(match[3]) >= 0;
-
-			} else if ( name === "not" ) {
-				var not = match[3];
-
-				for ( var j = 0, l = not.length; j < l; j++ ) {
-					if ( not[j] === elem ) {
-						return false;
-					}
-				}
-
-				return true;
-
-			} else {
-				Sizzle.error( name );
-			}
-		},
-
-		CHILD: function( elem, match ) {
-			var first, last,
-				doneName, parent, cache,
-				count, diff,
-				type = match[1],
-				node = elem;
-
-			switch ( type ) {
-				case "only":
-				case "first":
-					while ( (node = node.previousSibling) ) {
-						if ( node.nodeType === 1 ) {
-							return false;
-						}
-					}
-
-					if ( type === "first" ) {
-						return true;
-					}
-
-					node = elem;
-
-					/* falls through */
-				case "last":
-					while ( (node = node.nextSibling) ) {
-						if ( node.nodeType === 1 ) {
-							return false;
-						}
-					}
-
-					return true;
-
-				case "nth":
-					first = match[2];
-					last = match[3];
-
-					if ( first === 1 && last === 0 ) {
-						return true;
-					}
-
-					doneName = match[0];
-					parent = elem.parentNode;
-
-					if ( parent && (parent[ expando ] !== doneName || !elem.nodeIndex) ) {
-						count = 0;
-
-						for ( node = parent.firstChild; node; node = node.nextSibling ) {
-							if ( node.nodeType === 1 ) {
-								node.nodeIndex = ++count;
-							}
-						}
-
-						parent[ expando ] = doneName;
-					}
-
-					diff = elem.nodeIndex - last;
-
-					if ( first === 0 ) {
-						return diff === 0;
-
-					} else {
-						return ( diff % first === 0 && diff / first >= 0 );
-					}
-			}
-		},
-
-		ID: function( elem, match ) {
-			return elem.nodeType === 1 && elem.getAttribute("id") === match;
-		},
-
-		TAG: function( elem, match ) {
-			return (match === "*" && elem.nodeType === 1) || !!elem.nodeName && elem.nodeName.toLowerCase() === match;
-		},
-
-		CLASS: function( elem, match ) {
-			return (" " + (elem.className || elem.getAttribute("class")) + " ")
-				.indexOf( match ) > -1;
-		},
-
-		ATTR: function( elem, match ) {
-			var name = match[1],
-				result = Sizzle.attr ?
-					Sizzle.attr( elem, name ) :
-					Expr.attrHandle[ name ] ?
-					Expr.attrHandle[ name ]( elem ) :
-					elem[ name ] != null ?
-						elem[ name ] :
-						elem.getAttribute( name ),
-				value = result + "",
-				type = match[2],
-				check = match[4];
-
-			return result == null ?
-				type === "!=" :
-				!type && Sizzle.attr ?
-				result != null :
-				type === "=" ?
-				value === check :
-				type === "*=" ?
-				value.indexOf(check) >= 0 :
-				type === "~=" ?
-				(" " + value + " ").indexOf(check) >= 0 :
-				!check ?
-				value && result !== false :
-				type === "!=" ?
-				value !== check :
-				type === "^=" ?
-				value.indexOf(check) === 0 :
-				type === "$=" ?
-				value.substr(value.length - check.length) === check :
-				type === "|=" ?
-				value === check || value.substr(0, check.length + 1) === check + "-" :
-				false;
-		},
-
-		POS: function( elem, match, i, array ) {
-			var name = match[2],
-				filter = Expr.setFilters[ name ];
-
-			if ( filter ) {
-				return filter( elem, i, match, array );
-			}
-		}
-	}
-};
-
-var origPOS = Expr.match.POS,
-	fescape = function(all, num){
-		return "\\" + (num - 0 + 1);
-	};
-
-for ( var type in Expr.match ) {
-	Expr.match[ type ] = new RegExp( Expr.match[ type ].source + (/(?![^\[]*\])(?![^\(]*\))/.source) );
-	Expr.leftMatch[ type ] = new RegExp( /(^(?:.|\r|\n)*?)/.source + Expr.match[ type ].source.replace(/\\(\d+)/g, fescape) );
-}
-// Expose origPOS
-// "global" as in regardless of relation to brackets/parens
-Expr.match.globalPOS = origPOS;
-
-var makeArray = function( array, results ) {
-	array = Array.prototype.slice.call( array, 0 );
-
-	if ( results ) {
-		results.push.apply( results, array );
-		return results;
-	}
-
-	return array;
-};
-
-// Perform a simple check to determine if the browser is capable of
-// converting a NodeList to an array using builtin methods.
-// Also verifies that the returned array holds DOM nodes
-// (which is not the case in the Blackberry browser)
-try {
-	Array.prototype.slice.call( document.documentElement.childNodes, 0 )[0].nodeType;
-
-// Provide a fallback method if it does not work
-} catch( e ) {
-	makeArray = function( array, results ) {
-		var i = 0,
-			ret = results || [];
-
-		if ( toString.call(array) === "[object Array]" ) {
-			Array.prototype.push.apply( ret, array );
-
-		} else {
-			if ( typeof array.length === "number" ) {
-				for ( var l = array.length; i < l; i++ ) {
-					ret.push( array[i] );
-				}
-
-			} else {
-				for ( ; array[i]; i++ ) {
-					ret.push( array[i] );
-				}
-			}
-		}
-
-		return ret;
-	};
-}
-
-var sortOrder, siblingCheck;
-
-if ( document.documentElement.compareDocumentPosition ) {
-	sortOrder = function( a, b ) {
-		if ( a === b ) {
-			hasDuplicate = true;
-			return 0;
-		}
-
-		if ( !a.compareDocumentPosition || !b.compareDocumentPosition ) {
-			return a.compareDocumentPosition ? -1 : 1;
-		}
-
-		return a.compareDocumentPosition(b) & 4 ? -1 : 1;
-	};
-
-} else {
-	sortOrder = function( a, b ) {
-		// The nodes are identical, we can exit early
-		if ( a === b ) {
-			hasDuplicate = true;
-			return 0;
-
-		// Fallback to using sourceIndex (in IE) if it's available on both nodes
-		} else if ( a.sourceIndex && b.sourceIndex ) {
-			return a.sourceIndex - b.sourceIndex;
-		}
-
-		var al, bl,
-			ap = [],
-			bp = [],
-			aup = a.parentNode,
-			bup = b.parentNode,
-			cur = aup;
-
-		// If the nodes are siblings (or identical) we can do a quick check
-		if ( aup === bup ) {
-			return siblingCheck( a, b );
-
-		// If no parents were found then the nodes are disconnected
-		} else if ( !aup ) {
-			return -1;
-
-		} else if ( !bup ) {
-			return 1;
-		}
-
-		// Otherwise they're somewhere else in the tree so we need
-		// to build up a full list of the parentNodes for comparison
-		while ( cur ) {
-			ap.unshift( cur );
-			cur = cur.parentNode;
-		}
-
-		cur = bup;
-
-		while ( cur ) {
-			bp.unshift( cur );
-			cur = cur.parentNode;
-		}
-
-		al = ap.length;
-		bl = bp.length;
-
-		// Start walking down the tree looking for a discrepancy
-		for ( var i = 0; i < al && i < bl; i++ ) {
-			if ( ap[i] !== bp[i] ) {
-				return siblingCheck( ap[i], bp[i] );
-			}
-		}
-
-		// We ended someplace up the tree so do a sibling check
-		return i === al ?
-			siblingCheck( a, bp[i], -1 ) :
-			siblingCheck( ap[i], b, 1 );
-	};
-
-	siblingCheck = function( a, b, ret ) {
-		if ( a === b ) {
-			return ret;
-		}
-
-		var cur = a.nextSibling;
-
-		while ( cur ) {
-			if ( cur === b ) {
-				return -1;
-			}
-
-			cur = cur.nextSibling;
-		}
-
-		return 1;
-	};
-}
-
-// Check to see if the browser returns elements by name when
-// querying by getElementById (and provide a workaround)
-(function(){
-	// We're going to inject a fake input element with a specified name
-	var form = document.createElement("div"),
-		id = "script" + (new Date()).getTime(),
-		root = document.documentElement;
-
-	form.innerHTML = "<a name='" + id + "'/>";
-
-	// Inject it into the root element, check its status, and remove it quickly
-	root.insertBefore( form, root.firstChild );
-
-	// The workaround has to do additional checks after a getElementById
-	// Which slows things down for other browsers (hence the branching)
-	if ( document.getElementById( id ) ) {
-		Expr.find.ID = function( match, context, isXML ) {
-			if ( typeof context.getElementById !== "undefined" && !isXML ) {
-				var m = context.getElementById(match[1]);
-
-				return m ?
-					m.id === match[1] || typeof m.getAttributeNode !== "undefined" && m.getAttributeNode("id").nodeValue === match[1] ?
-						[m] :
-						undefined :
-					[];
-			}
-		};
-
-		Expr.filter.ID = function( elem, match ) {
-			var node = typeof elem.getAttributeNode !== "undefined" && elem.getAttributeNode("id");
-
-			return elem.nodeType === 1 && node && node.nodeValue === match;
-		};
-	}
-
-	root.removeChild( form );
-
-	// release memory in IE
-	root = form = null;
-})();
-
-(function(){
-	// Check to see if the browser returns only elements
-	// when doing getElementsByTagName("*")
-
-	// Create a fake element
-	var div = document.createElement("div");
-	div.appendChild( document.createComment("") );
-
-	// Make sure no comments are found
-	if ( div.getElementsByTagName("*").length > 0 ) {
-		Expr.find.TAG = function( match, context ) {
-			var results = context.getElementsByTagName( match[1] );
-
-			// Filter out possible comments
-			if ( match[1] === "*" ) {
-				var tmp = [];
-
-				for ( var i = 0; results[i]; i++ ) {
-					if ( results[i].nodeType === 1 ) {
-						tmp.push( results[i] );
-					}
-				}
-
-				results = tmp;
-			}
-
-			return results;
-		};
-	}
-
-	// Check to see if an attribute returns normalized href attributes
-	div.innerHTML = "<a href='#'></a>";
-
-	if ( div.firstChild && typeof div.firstChild.getAttribute !== "undefined" &&
-			div.firstChild.getAttribute("href") !== "#" ) {
-
-		Expr.attrHandle.href = function( elem ) {
-			return elem.getAttribute( "href", 2 );
-		};
-	}
-
-	// release memory in IE
-	div = null;
-})();
-
-if ( document.querySelectorAll ) {
-	(function(){
-		var oldSizzle = Sizzle,
-			div = document.createElement("div"),
-			id = "__sizzle__";
-
-		div.innerHTML = "<p class='TEST'></p>";
-
-		// Safari can't handle uppercase or unicode characters when
-		// in quirks mode.
-		if ( div.querySelectorAll && div.querySelectorAll(".TEST").length === 0 ) {
-			return;
-		}
-
-		Sizzle = function( query, context, extra, seed ) {
-			context = context || document;
-
-			// Only use querySelectorAll on non-XML documents
-			// (ID selectors don't work in non-HTML documents)
-			if ( !seed && !Sizzle.isXML(context) ) {
-				// See if we find a selector to speed up
-				var match = /^(\w+$)|^\.([\w\-]+$)|^#([\w\-]+$)/.exec( query );
-
-				if ( match && (context.nodeType === 1 || context.nodeType === 9) ) {
-					// Speed-up: Sizzle("TAG")
-					if ( match[1] ) {
-						return makeArray( context.getElementsByTagName( query ), extra );
-
-					// Speed-up: Sizzle(".CLASS")
-					} else if ( match[2] && Expr.find.CLASS && context.getElementsByClassName ) {
-						return makeArray( context.getElementsByClassName( match[2] ), extra );
-					}
-				}
-
-				if ( context.nodeType === 9 ) {
-					// Speed-up: Sizzle("body")
-					// The body element only exists once, optimize finding it
-					if ( query === "body" && context.body ) {
-						return makeArray( [ context.body ], extra );
-
-					// Speed-up: Sizzle("#ID")
-					} else if ( match && match[3] ) {
-						var elem = context.getElementById( match[3] );
-
-						// Check parentNode to catch when Blackberry 4.6 returns
-						// nodes that are no longer in the document #6963
-						if ( elem && elem.parentNode ) {
-							// Handle the case where IE and Opera return items
-							// by name instead of ID
-							if ( elem.id === match[3] ) {
-								return makeArray( [ elem ], extra );
-							}
-
-						} else {
-							return makeArray( [], extra );
-						}
-					}
-
-					try {
-						return makeArray( context.querySelectorAll(query), extra );
-					} catch(qsaError) {}
-
-				// qSA works strangely on Element-rooted queries
-				// We can work around this by specifying an extra ID on the root
-				// and working up from there (Thanks to Andrew Dupont for the technique)
-				// IE 8 doesn't work on object elements
-				} else if ( context.nodeType === 1 && context.nodeName.toLowerCase() !== "object" ) {
-					var oldContext = context,
-						old = context.getAttribute( "id" ),
-						nid = old || id,
-						hasParent = context.parentNode,
-						relativeHierarchySelector = /^\s*[+~]/.test( query );
-
-					if ( !old ) {
-						context.setAttribute( "id", nid );
-					} else {
-						nid = nid.replace( /'/g, "\\$&" );
-					}
-					if ( relativeHierarchySelector && hasParent ) {
-						context = context.parentNode;
-					}
-
-					try {
-						if ( !relativeHierarchySelector || hasParent ) {
-							return makeArray( context.querySelectorAll( "[id='" + nid + "'] " + query ), extra );
-						}
-
-					} catch(pseudoError) {
-					} finally {
-						if ( !old ) {
-							oldContext.removeAttribute( "id" );
-						}
-					}
-				}
-			}
-
-			return oldSizzle(query, context, extra, seed);
-		};
-
-		for ( var prop in oldSizzle ) {
-			Sizzle[ prop ] = oldSizzle[ prop ];
-		}
-
-		// release memory in IE
-		div = null;
-	})();
-}
-
-(function(){
-	var html = document.documentElement,
-		matches = html.matchesSelector || html.mozMatchesSelector || html.webkitMatchesSelector || html.msMatchesSelector;
-
-	if ( matches ) {
-		// Check to see if it's possible to do matchesSelector
-		// on a disconnected node (IE 9 fails this)
-		var disconnectedMatch = !matches.call( document.createElement( "div" ), "div" ),
-			pseudoWorks = false;
-
-		try {
-			// This should fail with an exception
-			// Gecko does not error, returns false instead
-			matches.call( document.documentElement, "[test!='']:sizzle" );
-
-		} catch( pseudoError ) {
-			pseudoWorks = true;
-		}
-
-		Sizzle.matchesSelector = function( node, expr ) {
-			// Make sure that attribute selectors are quoted
-			expr = expr.replace(/\=\s*([^'"\]]*)\s*\]/g, "='$1']");
-
-			if ( !Sizzle.isXML( node ) ) {
-				try {
-					if ( pseudoWorks || !Expr.match.PSEUDO.test( expr ) && !/!=/.test( expr ) ) {
-						var ret = matches.call( node, expr );
-
-						// IE 9's matchesSelector returns false on disconnected nodes
-						if ( ret || !disconnectedMatch ||
-								// As well, disconnected nodes are said to be in a document
-								// fragment in IE 9, so check for that
-								node.document && node.document.nodeType !== 11 ) {
-							return ret;
-						}
-					}
-				} catch(e) {}
-			}
-
-			return Sizzle(expr, null, null, [node]).length > 0;
-		};
-	}
-})();
-
-(function(){
-	var div = document.createElement("div");
-
-	div.innerHTML = "<div class='test e'></div><div class='test'></div>";
-
-	// Opera can't find a second classname (in 9.6)
-	// Also, make sure that getElementsByClassName actually exists
-	if ( !div.getElementsByClassName || div.getElementsByClassName("e").length === 0 ) {
-		return;
-	}
-
-	// Safari caches class attributes, doesn't catch changes (in 3.2)
-	div.lastChild.className = "e";
-
-	if ( div.getElementsByClassName("e").length === 1 ) {
-		return;
-	}
-
-	Expr.order.splice(1, 0, "CLASS");
-	Expr.find.CLASS = function( match, context, isXML ) {
-		if ( typeof context.getElementsByClassName !== "undefined" && !isXML ) {
-			return context.getElementsByClassName(match[1]);
-		}
-	};
-
-	// release memory in IE
-	div = null;
-})();
-
-function dirNodeCheck( dir, cur, doneName, checkSet, nodeCheck, isXML ) {
-	for ( var i = 0, l = checkSet.length; i < l; i++ ) {
-		var elem = checkSet[i];
-
-		if ( elem ) {
-			var match = false;
-
-			elem = elem[dir];
-
-			while ( elem ) {
-				if ( elem[ expando ] === doneName ) {
-					match = checkSet[elem.sizset];
-					break;
-				}
-
-				if ( elem.nodeType === 1 && !isXML ){
-					elem[ expando ] = doneName;
-					elem.sizset = i;
-				}
-
-				if ( elem.nodeName.toLowerCase() === cur ) {
-					match = elem;
-					break;
-				}
-
-				elem = elem[dir];
-			}
-
-			checkSet[i] = match;
-		}
-	}
-}
-
-function dirCheck( dir, cur, doneName, checkSet, nodeCheck, isXML ) {
-	for ( var i = 0, l = checkSet.length; i < l; i++ ) {
-		var elem = checkSet[i];
-
-		if ( elem ) {
-			var match = false;
-
-			elem = elem[dir];
-
-			while ( elem ) {
-				if ( elem[ expando ] === doneName ) {
-					match = checkSet[elem.sizset];
-					break;
-				}
-
-				if ( elem.nodeType === 1 ) {
-					if ( !isXML ) {
-						elem[ expando ] = doneName;
-						elem.sizset = i;
-					}
-
-					if ( typeof cur !== "string" ) {
-						if ( elem === cur ) {
-							match = true;
+	/**
+	 * 使用指定的选择器代码对指定的结果集进行一次查找。
+	 * @param {String} selector 选择器表达式。
+	 * @param {NodeList/Control} result 上级结果集，将对此结果集进行查找。
+	 * @return {NodeList} 返回新的结果集。
+	 */
+	function query(selector, result) {
+
+		var prevResult = result, rBackslash = /\\/g, m, key, value, lastSelector, filterData;
+		
+		selector = selector.trim();
+
+		// 解析分很多步进行，每次解析  selector 的一部分，直到解析完整个 selector 。
+		while(selector) {
+			
+			// 保存本次处理前的选择器。
+			// 用于在本次处理后检验 selector 是否有变化。
+			// 如果没变化，说明 selector 不能被正确处理，即 selector 包含非法字符。
+			lastSelector = selector;
+			
+			// 解析的第一步: 解析简单选择器
+			
+			// ‘*’ ‘tagName’ ‘.className’ ‘#id’
+			if( m = /^(^|[#.])((?:[-\w\*]|[^\x00-\xa0]|\\.)+)/.exec(selector)) {
+				
+				// 测试是否可以加速处理。
+				if(!m[1] || (result[m[1] === '#' ? 'getElementById' : 'getElementsByClassName'])) {
+					selector = RegExp.rightContext;
+					switch(m[1]) {
+						
+						// ‘#id’
+						case '#':
+							result = result.getElementById(m[2]);
+							result = new NodeList(result && result.id === m[2] ? [result] : []);
 							break;
-						}
-
-					} else if ( Sizzle.filter( cur, [elem] ).length > 0 ) {
-						match = elem;
+							
+						// ‘.className’
+						case '.':
+							result = new NodeList(result.getElementsByClassName(m[2]));
+							break;
+							
+						// ‘*’ ‘tagName’
+						default:
+							result = result.getAll(m[2].replace(rBackslash, ""));
+							break;
+								
+					}
+					
+					// 如果仅仅为简单的 #id .className tagName 直接返回。
+					if(!selector)
 						break;
+					
+				// 无法加速，等待第四步进行过滤。
+				} else {
+					result = result.getAll();
+				}
+			
+			// 解析的第二步: 解析父子关系操作符(比如子节点筛选)
+			
+			// ‘a>b’ ‘a+b’ ‘a~b’ ‘a b’ ‘a *’
+			} else if(m = /^\s*([\s>+~])\s*(\*|(?:[-\w*]|[^\x00-\xa0]|\\.)*)/.exec(selector)) {
+				selector = RegExp.rightContext;
+				result = result[Dom.combinators[m[1]] || throwError(m[1])](m[2].replace(rBackslash, "").toUpperCase());
+
+				// ‘a>b’: m = ['>', 'b']
+				// ‘a>.b’: m = ['>', '']
+				// result 始终实现了 IDom 接口，所以保证有 Dom.combinators 内的方法。
+
+			// 解析的第三步: 解析剩余的选择器:获取所有子节点。第四步再一一筛选。
+			} else {
+				result = result.getAll();
+			}
+			
+			// 解析的第四步: 筛选以上三步返回的结果。
+	
+			// ‘#id’ ‘.className’ ‘:filter’ ‘[attr’
+			while(m = /^([#\.:]|\[\s*)((?:[-\w]|[^\x00-\xa0]|\\.)+)/.exec(selector)) {
+				selector = RegExp.rightContext;
+				value = m[2].replace(rBackslash, "");
+				
+				// ‘#id’: m = ['#','id']
+				
+				// 筛选的第一步: 分析筛选器。
+	
+				switch (m[1]) {
+	
+					// ‘#id’
+					case "#":
+						filterData = ["id", "=", value];
+						break;
+	
+					// ‘.className’
+					case ".":
+						filterData = ["class", "~=", value];
+						break;
+	
+					// ‘:filter’
+					case ":":
+						filterData = Dom.pseudos[value] || throwError(value);
+						args = undefined;
+	
+						// ‘selector:nth-child(2)’
+						if( m = /^\(\s*("([^"]*)"|'([^']*)'|[^\(\)]*(\([^\(\)]*\))?)\s*\)/.exec(selector)) {
+							selector = RegExp.rightContext;
+							args = m[3] || m[2] || m[1];
+						}
+						
+						
+						break;
+	
+					// ‘[attr’
+					default:
+						filterData = [value.toLowerCase()];
+						
+						// ‘selector[attr]’ ‘selector[attr=value]’ ‘selector[attr='value']’  ‘selector[attr="value"]’    ‘selector[attr_=value]’
+						if( m = /^\s*(?:(\S?=)\s*(?:(['"])(.*?)\2|(#?(?:[\w\u00c0-\uFFFF\-]|\\.)*)|)|)\s*\]/.exec(selector)) {
+							selector = RegExp.rightContext;
+							if(m[1]) {
+								filterData[1] = m[1];
+								filterData[2] = m[3] || m[4];
+								filterData[2] = filterData[2] ? filterData[2].replace(/\\([0-9a-fA-F]{2,2})/g, toHex).replace(rBackslash, "") : "";
+							}
+						}
+						break;
+				}
+		
+				var args, 
+					oldResult = result,
+					i = 0,
+					elem;
+				
+				// 筛选的第二步: 生成新的集合，并放入满足的节点。
+				
+				result = new NodeList();
+				if(filterData.call) {
+					
+					// 仅有 2 个参数则传入 oldResult 和 result
+					if(filterData.length === 3){
+						filterData(args, oldResult, result);
+					} else {
+						while(elem = oldResult[i++]) {
+							if(filterData(elem, args))
+								result.push(elem);
+						}
+					}
+				} else {
+					while(elem = oldResult[i++]){
+						var actucalVal = Dom.getAttr(elem, filterData[0]),
+							expectedVal = filterData[2],
+							tmpResult;
+						switch(filterData[1]){
+							case undefined:
+								tmpResult = actucalVal != null;
+								break;
+							case '=':
+								tmpResult = actucalVal === expectedVal;
+								break;
+							case '~=':
+								tmpResult = (' ' + actucalVal + ' ').indexOf(' ' + expectedVal + ' ') >= 0;
+								break;
+							case '!=':
+								tmpResult = actucalVal !== expectedVal;
+								break;
+							case '|=':
+								tmpResult = ('-' + actucalVal + '-').indexOf('-' + expectedVal + '-') >= 0;
+								break;
+							case '^=':
+								tmpResult = actucalVal && actucalVal.indexOf(expectedVal) === 0;
+								break;
+							case '$=':
+								tmpResult = actucalVal && actucalVal.substr(actucalVal.length - expectedVal.length) === expectedVal;
+								break;
+							case '*=':
+								tmpResult = actucalVal && actucalVal.indexOf(expectedVal) >= 0;
+								break;
+							default:
+								throw 'Not Support Operator : "' + filterData[1] + '"'
+						}
+						
+						if(tmpResult){
+							result.push(elem);	
+						}
 					}
 				}
+			}
+			
+			// 最后解析 , 如果存在，则继续。
 
-				elem = elem[dir];
+			if( m = /^\s*,\s*/.exec(selector)) {
+				selector = RegExp.rightContext;
+				return result.concat(query(selector, prevResult));
 			}
 
-			checkSet[i] = match;
+
+			if(lastSelector.length === selector.length){
+				throwError(selector);
+			}
 		}
+		
+		return result;
 	}
-}
-
-if ( document.documentElement.contains ) {
-	Sizzle.contains = function( a, b ) {
-		return a !== b && (a.contains ? a.contains(b) : true);
-	};
-
-} else if ( document.documentElement.compareDocumentPosition ) {
-	Sizzle.contains = function( a, b ) {
-		return !!(a.compareDocumentPosition(b) & 16);
-	};
-
-} else {
-	Sizzle.contains = function() {
-		return false;
-	};
-}
-
-Sizzle.isXML = function( elem ) {
-	// documentElement is verified for cases where it doesn't yet exist
-	// (such as loading iframes in IE - #4833)
-	var documentElement = (elem ? elem.ownerDocument || elem : 0).documentElement;
-
-	return documentElement ? documentElement.nodeName !== "HTML" : false;
-};
-
-var posProcess = function( selector, context, seed ) {
-	var match,
-		tmpSet = [],
-		later = "",
-		root = context.nodeType ? [context] : context;
-
-	// Position selectors must be done after the filter
-	// And so must :not(positional) so we move all PSEUDOs to the end
-	while ( (match = Expr.match.PSEUDO.exec( selector )) ) {
-		later += match[0];
-		selector = selector.replace( Expr.match.PSEUDO, "" );
+	
+	function toHex(x, y) {
+		return String.fromCharCode(parseInt(y, 16));
 	}
 
-	selector = Expr.relative[selector] ? selector + "*" : selector;
-
-	for ( var i = 0, l = root.length; i < l; i++ ) {
-		Sizzle( selector, root[i], tmpSet, seed );
-	}
-
-	return Sizzle.filter( later, tmpSet );
-};
-
-// EXPOSE
-
-window.Sizzle = Sizzle;
-
-})();
-
+	/// #endregion
 	
 })(this);

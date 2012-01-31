@@ -1,0 +1,1 @@
+/** * @author  */using("System.Dom.Element");var PictureBox = Control.extend({		tpl: '<img class="x-picturebox">'	});

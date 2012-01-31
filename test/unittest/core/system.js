@@ -3,7 +3,7 @@ module("System");
 test("System", function() {
 	ok( JPlus, "JPlus" );
 	ok( $, "$" );
-	ok( Element, "Element" );
+	ok( Dom, "Dom" );
 });
 
 test( "execScript", function() {
@@ -47,8 +47,8 @@ test("Object.type", function() {
 	equals( Object.type(new Function("return;")), "function", "Function" );
 	equals( Object.type(function(){}), "function", "Function" );
 	equals( Object.type(window), "object", "Window" );
-	equals( Object.type(document), "element", "Document" );
-	equals( Object.type($(document.body)), "element", "Element" );
+	equals( Object.type(document), "control", "Document" );
+	equals( Object.type(Dom.get(document.body)), "control", "Element" );
 	equals( Object.type(document.createTextNode("foo")), "object", "TextNode" );
 	
 	// !Safari

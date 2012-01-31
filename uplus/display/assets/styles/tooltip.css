@@ -18,7 +18,6 @@
 	-moz-box-shadow: 2px 2px 2px #ccc; 
 	box-shadow: 2px 2px 2px #ccc; 
 	line-height: 16px;
-	z-index: 10000;
 }
 
 .b-tooltip-container {

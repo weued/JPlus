@@ -1,4 +1,4 @@
-﻿<!doctype html>
+﻿﻿<!doctype html>
 <html>
 	<head>
 		<meta charset="utf-8">
@@ -33,34 +33,34 @@
 		
 		
 			
-			var d1 = $('d1').setDraggable(true).on('dragstart', function(e){
+			var d1 = $$('d1').setDraggable(true).on('dragstart', function(e){
 				this.text = this.getHtml();
 			}).on('drag', function(e){
-			   	this.setHtml(e.dragTarget.to.x + "," + e.dragTarget.to.y);
+			   	this.setHtml(e.draggable.to.x + "," + e.draggable.to.y);
 			}).on('dragend', function(e){
 				this.setHtml(this.text);
 			});
 			
-			var d2 = $('d2').setDraggable(true).on('dragend', function (e) {
-				e.dragTarget.revert();
+			var d2 = $$('d2').setDraggable(true).on('dragend', function (e) {
+				e.draggable.revert();
 			});
 			
-			var d3 = $('d3').setDraggable($('d3').find('button'));
+			var d3 = $$('d3').setDraggable($$('d3').find('button'));
 			
-			var d4 = $('d4').setDraggable(true).on('drag', function(e){
+			var d4 = $$('d4').setDraggable(true).on('drag', function(e){
 				
 				var STHREH = 60;
-				e.dragTarget.setStep('x', STHREH);
-				e.dragTarget.setStep('y', STHREH);
+				e.draggable.setStep('x', STHREH);
+				e.draggable.setStep('y', STHREH);
 			});
 			
-			var d5 = $('d5').setDraggable(true).on('drag', function(e){
-				var container = this.get('parent', 1);
-				e.dragTarget.limit(container.getPosition(), container.getSize()) ;
+			var d5 = $$('d5').setDraggable(true).on('drag', function(e){
+				var container = this.getParent(1);
+				e.draggable.limit(container.getPosition(), container.getSize()) ;
 			});
 			
-			var d6 = $('d6').setDraggable(true).on('drag', function(e){
-				e.dragTarget.autoScroll(document);
+			var d6 = $$('d6').setDraggable(true).on('drag', function(e){
+				e.draggable.autoScroll(document);
 
 			});
 			

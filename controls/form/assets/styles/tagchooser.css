@@ -4,7 +4,7 @@
 
 
 
-.b-tagchooser {
+.x-tagchooser {
     background: url(../images/tagchooser.gif) no-repeat 8px 7px;
     display: inline-block;
     line-height: 14px;
@@ -16,7 +16,7 @@
 }
 
 
-.b-tagchooser-actived, .b-tagchooser:hover {
+.x-tagchooser-actived, .x-tagchooser:hover {
 	background-color: #3079d5;
     background-position: 8px -23px;
     color: #FFFFFF;

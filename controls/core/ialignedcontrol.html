@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>J+ Control Library</title>
+		
+		<link rel="stylesheet" type="text/css" href="../core/assets/styles/reset.css">
+		<link rel="stylesheet" type="text/css" href="assets/styles/ialignedcontrol.css">
+		
+		<script type="text/javascript" src="../../src/system.js"></script>
+		<script type="text/javascript" src="../../src/system/dom/element.js"></script>
+		<script type="text/javascript" src="../../src/controls.js"></script>
+		
+		<script type="text/javascript" src="assets/scripts/ialignedcontrol.js"></script>
+		
+		<script type="text/javascript" src="../../src/system/dom/drag.js"></script>
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+	</head>
+	<body>
+		
+		
+		
+		<div id="target" style="background: yellow; z-index:8; width: 50px; height: 60px; ">
+			拖动本块。
+		</div>
+		
+		<div id="a" style="background: blue; left: 400px; position: absolute; top: 50px;   width: 300px; height: 200px; "></div>
+		
+		<select id="s">
+			<option value="rt">rt</option>
+			<option value="rb">rb</option>
+			<option value="lt">lt</option>
+			<option value="lb">lb</option>
+			<option value="tl">tl</option>
+			<option value="tr">tr</option>
+			<option value="bl">bl</option>
+			<option value="br">br</option>
+		</select>
+		
+		<script>
+			
+			
+			var AlignedControl = Control.extend(IAlignedControl);
+			
+			var a = new  AlignedControl('a');
+			
+			Dom.get('target').setUnselectable().setDraggable().on('dragend', function(){
+				a.realign(this, Dom.get('s').getText(), 0, 0);
+			});
+			
+			
+		
+		</script>
+		
+		
+	</body>
+</html>

@@ -1,0 +1,32 @@
+/**
+ * @author 
+ */
+
+
+
+.x-fileupload {
+	overflow: hidden;
+	
+	cursor: default;
+	height: 24px;
+	position: relative;
+}
+
+
+/* 文件上传   */
+.x-fileupload input{
+	position: absolute;
+	width:60px;
+	opacity: 0;
+	filter: alpha(opacity=0);
+	height:24px;
+	cursor: default;
+	z-index: 2;
+	top: 0;
+	cursor: default;
+}
+
+
+.x-fileupload button{
+	width: 70px;
+}

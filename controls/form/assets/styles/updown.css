@@ -1,0 +1,47 @@
+/**
+ * @author 
+ */
+
+.x-combinedtextbox-menu-updown {
+	background-position: 1000px 1000px;
+}
+
+.x-combinedtextbox-menu-updown-up, .x-combinedtextbox-menu-updown-down{
+	width: 100%;
+    background-image: url(../images/menubuttons.gif);
+	background-repeat: no-repeat;
+	height: 11px;
+	display: block;
+	*font-size: 3px;
+}
+
+.x-combinedtextbox-menu-updown-up{
+	background-position: -96px 0;
+}
+
+.x-combinedtextbox-menu-updown-down{
+	background-position: -96px -11px;
+}
+
+.x-combinedtextbox-menu-updown-up:hover, .x-combinedtextbox:focus + .x-combinedtextbox-menu-updown .x-combinedtextbox-menu-updown-up{
+	background-position: -96px -22px;
+}
+.x-combinedtextbox-menu-updown-down:hover, .x-combinedtextbox:focus + .x-combinedtextbox-menu-updown .x-combinedtextbox-menu-updown-down{
+	background-position: -96px -33px;
+}
+
+.x-combinedtextbox-menu-updown-up:active{
+	background-position: -96px -44px;
+}
+.x-combinedtextbox-menu-updown-down:active{
+	background-position: -96px -55px;
+}
+
+.x-combinedtextbox-menu-updown-disabled .x-combinedtextbox-menu-updown-up{
+	background-position: -96px 0;
+}
+.x-combinedtextbox-menu-updown-disabled .x-combinedtextbox-menu-updown-down{
+	background-position: -96px -11px;
+}
+
+

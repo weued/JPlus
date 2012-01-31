@@ -206,7 +206,7 @@
 						continue ;
 					}
 					
-					testcase = {overrides: testcase};
+					testcase = {tests: testcase};
 				}
 				
 				if(dftOptions)
@@ -479,22 +479,22 @@
 		
 		this.id = name;
 		
-		if(typeof this.overrides === 'function') {
+		if(typeof this.tests === 'function') {
 			window.TestCases = window.TestCases || {};
-			window.TestCases[name] = this.overrides;
+			window.TestCases[name] = this.tests;
 			this.member = 'TestCases["' + encodeJs(name) + '"]';
-			this.overrides = null;
+			this.tests = null;
 		}
 		
-		var overrides = (this.overrides || "").split(';');
-		if(/^\s*@/.test(overrides[0])){
+		var tests = (this.tests || "").split(';');
+		if(/^\s*@/.test(tests[0])){
 			var t = name.indexOf('.prototype.');
 			
 			if(t !== -1) {
 				this.member = name.substr(t + '.prototype.'.length);
 			}
 			
-			t = overrides[0].substr(1).split(/\s*=\s*/);
+			t = tests[0].substr(1).split(/\s*=\s*/);
 			if(t[1]) {
 				this.prefix = 'var ' +  t[0] + ' = ' + t[1] + ';\r\n';
 				this.memberName = t[1] + this.member;
@@ -503,7 +503,7 @@
 			this.member = t[0] + '.' + this.member;
 			
 			
-			overrides.splice(0, 1);
+			tests.splice(0, 1);
 		}
 		
 		if(this.method === false) {
@@ -514,18 +514,18 @@
 			this.memberName =   this.member;
 		}
 		
-		this.overrides = {};
+		this.tests = {};
 		
-		if(!overrides.length) overrides.push('');
+		if(!tests.length) tests.push('');
 		
-		forEach(overrides, function(value){
+		forEach(tests, function(value){
 			value = value.split('=>');
 			
 			if(value[1] && !/assert/.test(value[1])) {
 				value[1] = 'assert.areEqual(value, ' + value[1] + ');';
 			}
 			
-			this.overrides[value[0].replace(/^\s+|\s+$/g, "")] = value[1];
+			this.tests[value[0].replace(/^\s+|\s+$/g, "")] = value[1];
 			
 		}, this);
 	}
@@ -533,7 +533,7 @@
 	TestCase.prototype = {
 			
 		toHTML: function(){
-			for(var p in this.overrides) {
+			for(var p in this.tests) {
 				break;
 			}
 			
@@ -556,7 +556,7 @@
 			    '\');">查看源码</a></span>',
 			    '<a href="javascript://',
 			    encodeHTML(this.member), '(', encodeHTML(p || ''), ')',
-			    encodeHTML(this.overrides[p] ? ' => ' + this.overrides[p] : ''),
+			    encodeHTML(this.tests[p] ? ' => ' + this.tests[p] : ''),
 			    '" onclick="System.doRun(\'', 
 			    this.id,
 			    '\', false)">', encodeHTML(this.name || this.id),
@@ -578,7 +578,7 @@
 
 			r.push('assert.reset();\r\n');
 			r.push('var value;\r\n');
-			for(var override in this.overrides) {
+			for(var override in this.tests) {
 				r.push(this.prefix);
 				r.push('assert.clearLog();\r\n');
 				r.push('console.log("');
@@ -593,9 +593,9 @@
 				r.push(')');
 				r.push(');\r\n');
 				
-				if(this.overrides[override]) {
+				if(this.tests[override]) {
 					
-					r.push(this.overrides[override]);
+					r.push(this.tests[override]);
 					r.push('\r\n');
 					
 				}
@@ -630,7 +630,7 @@
 			r.push('");\r\n');
 			r.push('while(i-- > 0) {\r\n');
 
-			for(var override in this.overrides) {
+			for(var override in this.tests) {
 				c++;
 				r.push(this.member);
 				r.push('(');
@@ -749,7 +749,11 @@
 	function assert(bValue, msg){
 		if(!bValue) {
 			assert.hasError = true;
-			console.error.apply(console, [].slice.call(arguments, 1));
+			if(console.error.apply) {
+				console.error.apply(console, [].slice.call(arguments, 1));
+			} else {
+				console.error([].slice.call(arguments, 1).join('     '));
+			}
 		} else {
 		   assert.hasError  = false;	
 		}

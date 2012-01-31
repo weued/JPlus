@@ -1,35 +1,35 @@
 module("Element");
 
-test("System.Dom.Element", function() {
+test("Dom.get", function() {
 	ok( JPlus, "JPlus" );
-	ok( $, "$" );
-	ok( Element, "Element" );
+	ok( Dom, "Dom" );
+	ok( Dom.get, "Dom.get" );
 });
 
-test("Element.parse", function() {
-	var elem = Element.parse("<div/><hr/><code/><b/>");
-	equals( elem.childNodes.length, 4, "节点个数" );
+test("Dom.parse", function() {
+	var elem = Dom.parse("<div/><hr/><code/><b/>");
+	equals( elem.dom.childNodes.length, 4, "节点个数" );
 
 	for ( var i = 0; i < 3; ++i ) {
-		elem = Element.parse("<input type='text' value='TEST' />");
+		elem = Dom.parse("<input type='text' value='TEST' />");
 	}
-	equals( elem.value, "TEST", "默认值" );
+	equals( elem.dom.value, "TEST", "默认值" );
 
 	elem.remove();
 
-	equals( Element.parse(" <div/> ").tagName, 'DIV', "确保空白被删除" );
-	equals( Element.parse(" a<div/>b ").childNodes.length, 3, "确保空白被删除" );
+	equals( Dom.parse(" <div/> ").dom.tagName, 'DIV', "确保空白被删除" );
+	equals( Dom.parse(" a<div/>b ").dom.childNodes.length, 3, "确保空白被删除" );
 
 	var long1 = "";
 	for ( var i = 0; i < 128; i++ ) {
 		long1 += "12345678";
 	}
 
-	equals( Element.parse(" <div/> ").tagName, 'DIV', "确保空白被删除" );
-	equals( Element.parse(" a<div/>b ").childNodes.length, 3, "确保空白被删除" );
+	equals( Dom.parse(" <div/> ").dom.tagName, 'DIV', "确保空白被删除" );
+	equals( Dom.parse(" a<div/>b ").dom.childNodes.length, 3, "确保空白被删除" );
 
 	// Test multi-line HTML
-	var div = Element.parse("<div>\r\nsome text\n<p>some p</p>\nmore text\r\n</div>");
+	var div = Dom.parse("<div>\r\nsome text\n<p>some p</p>\nmore text\r\n</div>").dom;
 	equals( div.nodeName.toUpperCase(), "DIV", "Make sure we're getting a div." );
 	equals( div.firstChild.nodeType, 3, "Text node." );
 	equals( div.lastChild.nodeType, 3, "Text node." );
@@ -41,13 +41,13 @@ test("Element.parse", function() {
 
 	//  ok( Element.parse("<input/>").setAttr("type", "hidden"), "Create an input and set the type." );
 
-	var j = Element.parse("<span>hi</span> there <!-- mon ami -->");
+	var j = Dom.parse("<span>hi</span> there <!-- mon ami -->").dom;
 	ok( j.childNodes.length >= 2, "Check node,textnode,comment creation (some browsers delete comments)" );
 
-	ok( !Element.parse("<option>test</option>").selected, "Make sure that options are auto-selected" );
+	ok( !Dom.parse("<option>test</option>").dom.selected, "Make sure that options are auto-selected" );
 
-	ok( Element.parse("<div></div>"), "Create a div with closing tag." );
-	ok( Element.parse("<table></table>"), "Create a table with closing tag." );
+	ok( Dom.parse("<div></div>").dom, "Create a div with closing tag." );
+	ok( Dom.parse("<table></table>").dom, "Create a table with closing tag." );
 
 	// Test very large html string
 	var i;
@@ -57,33 +57,33 @@ test("Element.parse", function() {
 		html.push(li);
 	}
 	html.push("</ul>");
-	html = Element.parse(html.join(""));
+	html = Dom.parse(html.join("")).dom;
 	equals( html.nodeName.toUpperCase(), "UL");
 	equals( html.firstChild.nodeName.toUpperCase(), "LI");
 	equals( html.childNodes.length, 50000 );
 	
 	
-	var div = Element.parse("<div/>");
-	var span = Element.parse("<span/>", div);
+	var div = Dom.parse("<div/>").dom;
+	var span = Dom.parse("<span/>", div).dom;
 	equals(span.tagName, 'SPAN', "Verify a span created with a div context works");
 
 });
 
-test("Document.prototype.create",  function() {
-	var el = document.create('div');
-	equals(el.tagName, 'DIV', "成功创建");
-	equals(el.append, Element.prototype.append, "包括 Element 方法");
+test("Dom.create",  function() {
+	var el = Dom.create('div');
+	equals(el.dom.tagName, 'DIV', "成功创建");
+	equals(el.append, Dom.prototype.append, "包括 Element 方法");
 });
 
-test("Document.prototype.getDom",  function() {
-	Element.parse('<div id="a"></div>').appendTo("qunit-fixture");
-	var el = document.getDom('a');
-	equals(el.tagName, 'DIV', "成功创建");
-	equals(el.append, Element.prototype.append, "包括 Element 方法");
+test("Dom.get",  function() {
+	Dom.parse('<div id="a"></div>').appendTo("qunit-fixture");
+	var el = Dom.get('a');
+	equals(el.dom.tagName, 'DIV', "成功创建");
+	equals(el.append, Dom.prototype.append, "包括 Element 方法");
 });
 
-test("ElementList",  function() {
-	var el = new ElementList(document.getElementsByTagName('span'));
+test("NodeList",  function() {
+	var el = new NodeList(document.getElementsByTagName('span'));
 	var length = el.length ;
 	equals(length > 0, true, "可以获取长度");
 	
@@ -114,8 +114,7 @@ test("ElementList",  function() {
 	}
 	ok( pass, "each() 执行" );
 	
-	ok(el[0].xType, "所有节点都包含 DOM 的方法");
-	equals(el.item(-1), el[el.length -1], "item(-1) 返回最后的节点。");
+	equals(el.item(-1).dom, el[el.length -1], "item(-1) 返回最后的节点。");
 });
 
 test("Control",  function() {

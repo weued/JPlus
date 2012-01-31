@@ -1,1 +1,1 @@
-/** * @author  */
+/** * @author  xuld */imports("Controls.Form.TextBox");using("Controls.Form.IInputControl");var TextBox = Control.extend({		xType: 'textbox',		tpl: '<input type="text" class="x-textbox">'	}).implement(IInputControl);
