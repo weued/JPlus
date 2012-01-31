@@ -2,7 +2,7 @@
  * @author  xuld
  */
 
-using("System.Dom.Element");
+using("Controls");
 
 var IInputControl = {
 	

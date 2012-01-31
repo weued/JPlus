@@ -227,7 +227,7 @@ Control.implement({
 				assert(!handle || draggable.handle.target === handle.target, "Control.prototype.setDraggable(handle): 无法重复设置 {handle}, 如果希望重新设置handle，使用以下代码：dom.setDraggable(false);JPlus.removeData(dom, 'draggable');dom.setDraggable(handle) 。", handle);
 				draggable.setDraggable();
 			} else  {
-				Dom.setMovable(this.target);
+				Dom.setMovable(this.dom);
 				draggable = JPlus.setData(this, 'draggable', new Draggable(this, handle));
 			}
 			

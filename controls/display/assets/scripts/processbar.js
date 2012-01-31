@@ -4,8 +4,8 @@
 
 
 
-imports("Controls.Form.ProcessBar");
-using("System.Dom.Element");
+imports("Controls.Display.ProcessBar");
+using("Controls");
 
 
 var ProcessBar = Control.extend({

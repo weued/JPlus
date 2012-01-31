@@ -1,1 +1,1 @@
-/** * @author  */imports("Controls.Display.Label");using("System.Dom.Element");var Label = Control.extend({		tpl: '<span class="x-label"></span>'	});
+/** * @author  */imports("Controls.Display.Label");using("Controls");var Label = Control.extend({		tpl: '<span class="x-label"></span>'	});

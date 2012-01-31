@@ -3,7 +3,7 @@
 
 
 imports("Controls.Button.LinkButton");
-using("System.Dom.Element");
+using("Controls");
 
 
 var LinkButton = Control.extend({
