@@ -1,5 +1,7 @@
 
 
+using("System.Dom.Element");
+
 JPlus.resolveNamespace = (function(resolveNamespace){
 	
 	return function(ns, isStyle){

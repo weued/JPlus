@@ -2,7 +2,7 @@
  * @fileOverview 表示一个包含文本内容的控件。
  */
 
-using("System.Dom.Element");
+using("Controls");
 
 /**
  * 表示一个有内置呈现的控件。
