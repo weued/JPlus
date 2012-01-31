@@ -4,7 +4,7 @@
 		<meta charset="UTF-8">
 		<title>J+ Control Libaray</title>
 		
-		<link rel="stylesheet" type="text/css" href="../core/assets/styles/index.css">
+		<link rel="stylesheet" type="text/css" href="../core/assets/styles/reset.css">
 		<link rel="stylesheet" type="text/css" href="../core/assets/styles/listcontrol.css">
 		<link rel="stylesheet" type="text/css" href="assets/styles/listbox.css">
 		
@@ -47,8 +47,8 @@
 			a.items.add('列表2');
 			a.items.add('列表3');
 			a.items.add('列表4');
-			a.on('valuechanged', function(){
-				trace(this.selectedItem.getText());
+			a.on('change', function(){
+				trace(this.getText());
 			});
 			
 			var s = new ListBox('s');
