@@ -59,9 +59,3 @@ textarea {
 	/* let textareas looks alike to others in IE6 */
 	overflow: auto;
 }
-
-input, textarea, select {
-    font-family:inherit;
-    font-size:inherit;
-    font-weight:inherit;
-}

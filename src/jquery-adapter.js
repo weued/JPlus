@@ -490,10 +490,10 @@
 		    };
 
 		    // 代理类 。
-		     Base.prototype = (subClass.base = this).prototype;
+		     $.noop.prototype = (subClass.base = this).prototype;
 
 		    // 指定成员 。
-		    subClass.prototype = Object.extend(new  Base, members);
+		    subClass.prototype = Object.extend(new  $.noop, members);
 
 		    // 覆盖构造函数。
 		    subClass.prototype.constructor = subClass;
@@ -3191,7 +3191,7 @@ JPlus.namespaces.push('System.Dom.Element');
 		
 	var jQuery_fn = $.fn;
 	
-	$.fn = $.prototype = Object.extend(new NodeList, $.fn);
+	$.fn = $.prototype = $.fn.init.prototype = Object.extend(new NodeList, $.fn);
 
 	apply(Dom, {
 		
@@ -3265,6 +3265,8 @@ JPlus.namespaces.push('System.Dom.Element');
 						html.appendChild(cachable[i]);	
 					}
 					
+				} else {
+					html = html[0];	
 				}
 
 			}
@@ -4418,7 +4420,7 @@ JPlus.namespaces.push('System.Dom.Element');
 		 * @return {Element/undefined} 节点。
 		 */
 		query: function(selector){
-			return $(selector, this);
+			return new NodeList($(selector, this));
 		},
 			
 		// 偏移父位置。
@@ -4584,7 +4586,7 @@ JPlus.namespaces.push('System.Dom.Element');
 		 * @return {Element/undefined} 节点。
 		 */
 		query: function(selector){
-			return $(selector, this);
+			return new NodeList($(selector, this));
 		},
 		
 		// /**

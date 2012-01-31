@@ -493,10 +493,10 @@
 		    };
 
 		    // 代理类 。
-		     Base.prototype = (subClass.base = this).prototype;
+		     emptyFn.prototype = (subClass.base = this).prototype;
 
 		    // 指定成员 。
-		    subClass.prototype = Object.extend(new  Base, members);
+		    subClass.prototype = Object.extend(new  emptyFn, members);
 
 		    // 覆盖构造函数。
 		    subClass.prototype.constructor = subClass;
@@ -829,9 +829,7 @@
 		 * @property
 		 * @type Function Function.empty返回空函数的引用。
 		 */
-	    empty: function emptyFn() {
-
-        },
+	    empty: emptyFn,
 
 	    /**
 		 * 一个返回 true 的函数。
@@ -1672,6 +1670,13 @@
 	 */
 	function Base() {
 
+	}
+	
+	/**
+	 * 空函数。
+	 */
+	function emptyFn(){
+		
 	}
 
 	/**
