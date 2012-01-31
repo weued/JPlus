@@ -1,1 +1,0 @@
-/** * @author  xuld */imports("UPlus.Form.TextBox");using("UPlus.Form.IFormControl");var TextBox = Control.extend({		xType: 'textbox',		tpl: '<input type="text" class="b-textbox">'	}).implement(IFormControl);
