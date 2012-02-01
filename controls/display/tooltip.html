@@ -7,11 +7,11 @@
 		<link rel="stylesheet" type="text/css" href="../core/assets/styles/reset.css">
 		<link rel="stylesheet" type="text/css" href="assets/styles/tooltip.css">
 		
-		<script type="text/javascript" src="../../assets/libs/jquery/jquery.js"></script>
-		<script type="text/javascript" src="../../src/jquery-adapter.js"></script>
-		<script type="text/javascript" src="../../src/uplus.js"></script>
+		<script type="text/javascript" src="../../src/system.js"></script>
+		<script type="text/javascript" src="../../src/system/dom/element.js"></script>
+		<script type="text/javascript" src="../../src/controls.js"></script>
 		
-		<script type="text/javascript" src="../core/assets/scripts/index.js"></script>
+		<script type="text/javascript" src="assets/scripts/itooltip.js"></script>
 		<script type="text/javascript" src="assets/scripts/tooltip.js"></script>
 		
 		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
@@ -28,123 +28,26 @@
 		</style>
 	</head>
 	<body>
-		默认.x-tooltip:
+		
+		
 		
 		<div class="x-tooltip">
-			<span class="x-tooltip-container">↓</span>
-			<a class="x-tooltip-close" href="javascript:;">×</a>
-			<div class="x-tooltip-arrow x-tooltip-arrow-bottom"></div>
+			<div class="x-tooltip-container">
+				<div class="x-tooltip-contetnt">
+					内容
+				</div>
+			</div>
 		</div>
 		
-		<div class="x-tooltip">
-			<span class="x-tooltip-container">←</span>
-			<a class="x-tooltip-close" href="javascript:;">×</a>
-			<div class="x-tooltip-arrow x-tooltip-arrow-left"></div>
-		</div>
+		<div style="border: 1px solid red; width: 300px; height: 300px;" id="a"></div>
 		
-		<div class="x-tooltip">
-			<span class="x-tooltip-container">→</span>
-			<a class="x-tooltip-close" href="javascript:;">×</a>
-			<div class="x-tooltip-arrow x-tooltip-arrow-right"></div>
-		</div>
-		
-		<div class="x-tooltip">
-			<span class="x-tooltip-container">↑</span>
-			<a class="x-tooltip-close" href="javascript:;">×</a>
-			<div class="x-tooltip-arrow x-tooltip-arrow-top"></div>
-		</div>
-		
-		<br>
-		<br>
-		
-		小提示.x-tooltip-alt：
-		
-		<div class="x-tooltip x-tooltip-alt">
-			<span class="x-tooltip-container">↓</span>
-			<a class="x-tooltip-close" href="javascript:;">×</a>
-			<div class="x-tooltip-arrow x-tooltip-arrow-bottom"></div>
-		</div>
-		
-		<div class="x-tooltip x-tooltip-alt">
-			<span class="x-tooltip-container">←</span>
-			<a class="x-tooltip-close" href="javascript:;">×</a>
-			<div class="x-tooltip-arrow x-tooltip-arrow-left"></div>
-		</div>
-		
-		<div class="x-tooltip x-tooltip-alt">
-			<span class="x-tooltip-container">→</span>
-			<a class="x-tooltip-close" href="javascript:;">×</a>
-			<div class="x-tooltip-arrow x-tooltip-arrow-right"></div>
-		</div>
-		
-		<div class="x-tooltip x-tooltip-alt">
-			<span class="x-tooltip-container">↑</span>
-			<a class="x-tooltip-close" href="javascript:;">×</a>
-			<div class="x-tooltip-arrow x-tooltip-arrow-top"></div>
-		</div>
-		
-		<br>
-		<br>
-		
-		高亮.x-tooltip-highlight：
-		
-		<div class="x-tooltip x-tooltip-highlight">
-			<span class="x-tooltip-container">↓</span>
-			<a class="x-tooltip-close" href="javascript:;">×</a>
-			<div class="x-tooltip-arrow x-tooltip-arrow-bottom"></div>
-		</div>
-		
-		<div class="x-tooltip x-tooltip-highlight">
-			<span class="x-tooltip-container">←</span>
-			<a class="x-tooltip-close" href="javascript:;">×</a>
-			<div class="x-tooltip-arrow x-tooltip-arrow-left"></div>
-		</div>
-		
-		<div class="x-tooltip x-tooltip-highlight">
-			<span class="x-tooltip-container">→</span>
-			<a class="x-tooltip-close" href="javascript:;">×</a>
-			<div class="x-tooltip-arrow x-tooltip-arrow-right"></div>
-		</div>
-		
-		<div class="x-tooltip x-tooltip-highlight">
-			<span class="x-tooltip-container">↑</span>
-			<a class="x-tooltip-close" href="javascript:;">×</a>
-			<div class="x-tooltip-arrow x-tooltip-arrow-top"></div>
-		</div>
-		
-		<br>
-		<br>
-		
-		其它提示：
-		<div class="x-tooltip">
-			<span class="x-tooltip-container"> 换行
-				<br>
-				的提示 </span>
-			<a class="x-tooltip-close" href="javascript:;">×</a>
-			<div class="x-tooltip-arrow x-tooltip-arrow-bottom"></div>
-		</div>
-		
-		<div class="x-tooltip">
-			<span class="x-tooltip-container"> <h4>标题</h4>
-				<p>内容</p> </span>
-			<a class="x-tooltip-close" href="javascript:;">×</a>
-			<div class="x-tooltip-arrow x-tooltip-arrow-bottom"></div>
-		</div>
-		
-		<div class="x-tooltip">
-			<span class="x-tooltip-container"> 无叉 </span>
-			<div class="x-tooltip-arrow x-tooltip-arrow-bottom"></div>
-		</div>
-		
-		<div class="x-tooltip">
-			<span class="x-tooltip-container"> 无叉无方向 </span>
-		</div>
-		
-		<div class="x-tooltip">
-			<span class="x-tooltip-container">ssssssssssssssssssssssssssss</span>
-			<a class="x-tooltip-close" href="javascript:;">×</a>
-			<div class="x-tooltip-arrow x-tooltip-arrow-top"></div>
-		</div>
+		<script>
+			
+			
+			var a = ToolTip.show('a', 'aaa');
+			
+			
+		</script>
 		
 	</body>
 </html>

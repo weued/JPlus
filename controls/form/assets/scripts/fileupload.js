@@ -1,6 +1,6 @@
 /** * @author  */imports("Controls.Button.Button");imports("Controls.Form.FileUpload");using("Controls.Form.CombinedTextBox");var FileUpload = CombinedTextBox.extend({		createMenuButton: function (args) {
 		var button = Dom.parse('<span class="x-fileupload">\			<input type="file" size="1">\			<a class="x-button">\				<span class="x-button-container">\					<span class="x-button-content">\						<button type="button">浏览...</button>\					</span>\				</span>\			</a>\    	</span>'), me = this;    	button.find('[type=file]').on('change', function(){			me.setText(this.getText());		});		this.setReadOnly();		return button;
 	},		setDisabled: function(value){		var button = Dom.get(this).getNext();		button.find('.x-button').toggleClass('x-button-disabled', value !== false);		button.find('[type=file]').dom.disabled = value !== false;				return this.base('setDisabled');	},		focus: function () {
-		Dom.get(this).getNext().find('[type=file]').dom.focus();
+		new Dom(this.dom).getNext().find('[type=file]').dom.focus();
 	},		hideTextBox: function () {
-		Dom.get(this).hide();	}	});
+		new Dom(this.dom).hide();	}	});

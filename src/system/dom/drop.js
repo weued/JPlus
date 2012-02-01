@@ -24,7 +24,7 @@ var Droppable = (function(p){
 			initEvent: function (draggable, e) {
 				e.draggable = draggable;
 				e.droppable = this;
-				e.dragTarget = draggable.dom;
+				e.dragTarget = draggable.target;
 			},
 			
 			/**
@@ -34,7 +34,7 @@ var Droppable = (function(p){
 			 */
 			onDragEnter: function(draggable, e){
 				this.initEvent(draggable, e);
-				return this.dom.trigger('dragenter', e);
+				return this.target.trigger('dragenter', e);
 			},
 			
 			/**
@@ -44,7 +44,7 @@ var Droppable = (function(p){
 			 */
 			onDragOver: function(draggable, e){
 				this.initEvent(draggable, e);
-				return this.dom.trigger('dragover', e);
+				return this.target.trigger('dragover', e);
 			},
 
 			/**
@@ -54,7 +54,7 @@ var Droppable = (function(p){
 			 */
 			onDrop: function(draggable, e){
 				this.initEvent(draggable, e);
-				return this.dom.trigger('drop', e);
+				return this.target.trigger('drop', e);
 			},
 			
 			/**
@@ -64,15 +64,15 @@ var Droppable = (function(p){
 			 */
 			onDragLeave: function(draggable, e){
 				this.initEvent(draggable, e);
-				return this.dom.trigger('dragleave', e);
+				return this.target.trigger('dragleave', e);
 			},
 			
 			/**
 			 * 初始化。
 			 * @constructor Droppable
 			 */
-			constructor: function(dom){
-				this.dom = dom;
+			constructor: function(ctrl){
+				this.target = ctrl;
 				this.setDisabled(false);
 			},
 			
@@ -118,8 +118,8 @@ var Droppable = (function(p){
 			},
 			
 			accept: function(elem){
-				this.position = this.dom.getPosition();
-				this.size = this.dom.getSize();
+				this.position = this.target.getPosition();
+				this.size = this.target.getSize();
 				return true;
 			}
 			
@@ -138,8 +138,8 @@ var Droppable = (function(p){
 		beforeDrag: function(e){
 			var me = this;
 			beforeDrag.call(me, e);
-			me.position = me.dom.getPosition();
-			me.size = me.dom.getSize();
+			me.position = me.proxy.getPosition();
+			me.size = me.proxy.getSize();
 			me.droppables = droppables.filter(function(droppable){
 				return droppable.accept(me);
 			});

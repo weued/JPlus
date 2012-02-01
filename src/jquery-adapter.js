@@ -3203,7 +3203,7 @@ JPlus.namespaces.push('System.Dom.Element');
 		get: function(id) {
 			id = typeof id == "string" ? document.getElementById(id): id;
 			assert(!id || id.dom || id.nodeType, "Dom.get(id): {id} 必须是ID字符串或节点本身。", id);
-			return id ? new Dom(typeof id.length === 'number' ? id[0] : id.dom || id) : null;
+			return id ? id.dom ? id : new Dom(id) : null;
 		},
 		
 		/**

@@ -50,7 +50,7 @@ var ContentControl = Control.extend({
 	},
 	
 	init: function(){
-		this.content = Dom.get(this);
+		this.content = new Dom(this.dom);
 	},
 	
 	/**
