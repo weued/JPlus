@@ -4420,7 +4420,7 @@ JPlus.namespaces.push('System.Dom.Element');
 		 * @return {Element/undefined} 节点。
 		 */
 		query: function(selector){
-			return new NodeList($(selector, this));
+			return new NodeList($(selector, this.dom));
 		},
 			
 		// 偏移父位置。
