@@ -12,6 +12,3 @@ var menus = {
 	DataView: '+TreeView ListView Table DataGridView DataNavigator',
 	Display: '+ProcessBar *TipBox *Face Image Pager Navigator *ImageBox *Ad *Banner ToolTip BalloonTip +Label +PictureBox WebBroswer ScrollBar'
 };
-
-
-
