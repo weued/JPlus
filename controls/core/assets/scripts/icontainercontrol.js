@@ -28,7 +28,7 @@ Control.ControlCollection = Collection.extend({
 	},
 	
 	onRemove: function(childControl, index){
-		this.owner.onControlRemoved(childControl);
+		this.owner.onControlRemoved(childControl, index);
 	}
 	
 });
