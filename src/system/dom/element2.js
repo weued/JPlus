@@ -689,7 +689,7 @@
 	
 			    if (doms) {
 	
-				    assert(doms.length !== undefined, 'ElementList.prototype.constructor(doms): 参数 {doms} 必须是一个 NodeList 或 Array 类型的变量。', doms);
+				    assert(doms.length !== undefined, 'ElementList.prototype.constructor(doms): 参数 {doms} 必须是一个 DomList 或 Array 类型的变量。', doms);
 	
 				    var len = this.length = doms.length;
 				    while (len--)

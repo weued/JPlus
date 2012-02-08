@@ -3021,10 +3021,10 @@ namespace("System");
 	
 		/**
 		 * 表示节点的集合。用于批量操作节点。
-		 * @class NodeList
-		 * NodeList 是对元素数组的只读包装。 NodeList 允许快速操作多个节点。 NodeList 的实例一旦创建，则不允许修改其成员。
+		 * @class DomList
+		 * DomList 是对元素数组的只读包装。 DomList 允许快速操作多个节点。 DomList 的实例一旦创建，则不允许修改其成员。
 		 */
-		NodeList = Class({
+		DomList = Class({
 	
 			/**
 			 * 获取当前集合的元素个数。
@@ -3058,9 +3058,9 @@ namespace("System");
 			 * </code>
 			 */
 			invoke: function(func, args) {
-				assert(args && typeof args.length === 'number', "NodeList.prototype.invoke(func, args): {args} 必须是数组, 无法省略。", args);
+				assert(args && typeof args.length === 'number', "DomList.prototype.invoke(func, args): {args} 必须是数组, 无法省略。", args);
 				var r = [];
-				assert(Dom.prototype[func] && Dom.prototype[func].apply, "NodeList.prototype.invoke(func, args): Control 不包含方法 {func}。", func);
+				assert(Dom.prototype[func] && Dom.prototype[func].apply, "DomList.prototype.invoke(func, args): Control 不包含方法 {func}。", func);
 				ap.forEach.call(this, function(value) {
 					value = new Dom(value);
 					r.push(value[func].apply(value, args));
@@ -3069,15 +3069,15 @@ namespace("System");
 			},
 			
 			/**
-			 * 初始化 NodeList 实例。
-			 * @param {Array/NodeList} nodes 节点集合。
+			 * 初始化 DomList 实例。
+			 * @param {Array/DomList} nodes 节点集合。
 			 * @constructor
 			 */
 			constructor: function(nodes) {
 	
 				if(nodes) {
 	
-					assert(nodes.length !== undefined, 'NodeList.prototype.constructor(nodes): {nodes} 必须是一个 NodeList 或 Array 类型的变量。', nodes);
+					assert(nodes.length !== undefined, 'DomList.prototype.constructor(nodes): {nodes} 必须是一个 DomList 或 Array 类型的变量。', nodes);
 	
 					var len = this.length = nodes.length;
 					while(len--)
@@ -3089,7 +3089,7 @@ namespace("System");
 			
 			/**
 			 * 将参数数组添加到当前集合。
-			 * @param {Element/NodeList} value 元素。
+			 * @param {Element/DomList} value 元素。
 			 * @return this
 			 */
 			concat: function() {
@@ -3339,7 +3339,7 @@ namespace("System");
 		},
 		
 		/**
-		 * 执行一个选择器，返回一个新的 NodeList。
+		 * 执行一个选择器，返回一个新的 DomList。
 		 * @param {String} selecter 选择器。 如 h2 .cls attr=value 。
 		 * @return {Element/undefined} 节点。
 		 */
@@ -3936,13 +3936,13 @@ namespace("System");
 		/**
 		 * 将一个成员附加到 Control 对象和相关类。
 		 * @param {Object} obj 要附加的对象。
-		 * @param {Number} listType = 1 说明如何复制到 NodeList 实例。
+		 * @param {Number} listType = 1 说明如何复制到 DomList 实例。
 		 * @return {Element} this
-		 * @static 对 Element 扩展，内部对 Element NodeList document 皆扩展。
+		 * @static 对 Element 扩展，内部对 Element DomList document 皆扩展。
 		 *         这是由于不同的函数需用不同的方法扩展，必须指明扩展类型。 所谓的扩展，即一个类所需要的函数。 DOM 方法
 		 *         有 以下种 1, 其它 setText - 执行结果返回 this， 返回 this 。(默认) 2
 		 *         getText - 执行结果是数据，返回结果数组。 3 getElementById - 执行结果是DOM
-		 *         或 ElementList，返回 NodeList 包装。 4 hasClass -
+		 *         或 ElementList，返回 DomList 包装。 4 hasClass -
 		 *         只要有一个返回等于 true 的值， 就返回这个值。 参数 copyIf 仅内部使用。
 		 */
 		implement: function(members, listType, copyIf) {
@@ -3965,9 +3965,9 @@ namespace("System");
 									break;
 		
 								case 3:
-									// return NodeList
+									// return DomList
 									value = function() {
-										var r = new NodeList;
+										var r = new DomList;
 										return r.concat.apply(r, this.invoke(func, arguments));
 									};
 									break;
@@ -3999,7 +3999,7 @@ namespace("System");
 					}
 				}
 		
-			}, [NodeList, Dom.Document, Control]);
+			}, [DomList, Dom.Document, Control]);
 		
 			return this;
 
@@ -4009,7 +4009,7 @@ namespace("System");
 		 * 若不存在，则将一个对象附加到 Element 对象。
 		 * @static
 		 * @param {Object} obj 要附加的对象。
-		 * @param {Number} listType = 1 说明如何复制到 NodeList 实例。
+		 * @param {Number} listType = 1 说明如何复制到 DomList 实例。
 		 * @param {Number} docType 说明如何复制到 Document 实例。
 		 * @return {Element} this
 		 */
@@ -4897,7 +4897,7 @@ namespace("System");
 				args = '*';	
 			else if(typeof args === 'function')
 				return this.getAll().filter(args);
-			var r = new NodeList, nodes = this.dom.getElementsByTagName(args), i = 0, node;
+			var r = new DomList, nodes = this.dom.getElementsByTagName(args), i = 0, node;
 			while( node = nodes[i++] ) {
 				if(node.nodeType === 1){
 					r.push(node);
@@ -4968,7 +4968,7 @@ namespace("System");
 			
 			
 			
-			return new NodeList(result);
+			return new DomList(result);
 		},
 			
 		// 偏移父位置。
@@ -5167,13 +5167,13 @@ namespace("System");
 			} catch(e) {
 				result = query(selector, this);
 			}
-			return new NodeList(result);
+			return new DomList(result);
 		},
 		
 		// /**
 		 // * 根据元素返回节点。
 		 // * @param {String} ... 对象的 id 或对象。
-		 // * @return {NodeList} 如果只有1个参数，返回元素，否则返回元素集合。
+		 // * @return {DomList} 如果只有1个参数，返回元素，否则返回元素集合。
 		 // */
 		// getDom: function(id) {
 			// return typeof id == "string" ? this.getElementById(id): id;
@@ -5182,10 +5182,10 @@ namespace("System");
 		// /**
 		 // * 根据元素返回封装后的控件。
 		 // * @param {String} ... 对象的 id 或对象。
-		 // * @return {NodeList} 如果只有1个参数，返回元素，否则返回元素集合。
+		 // * @return {DomList} 如果只有1个参数，返回元素，否则返回元素集合。
 		 // */
 		// getControl: function() {
-			// return arguments.length === 1 ? new Dom(this.getDom(arguments[0])): new NodeList(o.update(arguments, this.getDom, null, this));
+			// return arguments.length === 1 ? new Dom(this.getDom(arguments[0])): new DomList(o.update(arguments, this.getDom, null, this));
 		// },
 		
 		/**
@@ -5247,15 +5247,15 @@ namespace("System");
 
 	Control.delegate(Control, 'dom', 'scrollIntoView focus blur select click submit reset');
 
-	map("push shift unshift pop include indexOf each forEach", ap, NodeList.prototype);
-	NodeList.prototype.insertItem = ap.insert;
-	NodeList.prototype.removeItem = ap.remove;
+	map("push shift unshift pop include indexOf each forEach", ap, DomList.prototype);
+	DomList.prototype.insertItem = ap.insert;
+	DomList.prototype.removeItem = ap.remove;
 
 	map("filter slice splice reverse unique", function(func) {
 		return function() {
-			return new NodeList(ap[func].apply(this, arguments));
+			return new DomList(ap[func].apply(this, arguments));
 		};
-	}, NodeList.prototype);
+	}, DomList.prototype);
 	
 	Dom.prototype = Control.prototype;
 
@@ -5609,7 +5609,7 @@ namespace("System");
 
 		Point: Point,
 		
-		NodeList: NodeList
+		DomList: DomList
 
 	});
 
@@ -5671,7 +5671,7 @@ namespace("System");
 			return null;
 		}: function(args) {
 			args = getFilter(args);
-			var node = this.dom[first], r = new NodeList;
+			var node = this.dom[first], r = new DomList;
 			while(node) {
 				if(args.call(this.dom, node))
 					r.push(node);
@@ -5864,8 +5864,8 @@ namespace("System");
 	/**
 	 * 使用指定的选择器代码对指定的结果集进行一次查找。
 	 * @param {String} selector 选择器表达式。
-	 * @param {NodeList/Control} result 上级结果集，将对此结果集进行查找。
-	 * @return {NodeList} 返回新的结果集。
+	 * @param {DomList/Control} result 上级结果集，将对此结果集进行查找。
+	 * @return {DomList} 返回新的结果集。
 	 */
 	function query(selector, result) {
 
@@ -5894,12 +5894,12 @@ namespace("System");
 						// ‘#id’
 						case '#':
 							result = result.getElementById(m[2]);
-							result = new NodeList(result && result.id === m[2] ? [result] : []);
+							result = new DomList(result && result.id === m[2] ? [result] : []);
 							break;
 							
 						// ‘.className’
 						case '.':
-							result = new NodeList(result.getElementsByClassName(m[2]));
+							result = new DomList(result.getElementsByClassName(m[2]));
 							break;
 							
 						// ‘*’ ‘tagName’
@@ -5994,7 +5994,7 @@ namespace("System");
 				
 				// 筛选的第二步: 生成新的集合，并放入满足的节点。
 				
-				result = new NodeList();
+				result = new DomList();
 				if(filterData.call) {
 					
 					// 仅有 2 个参数则传入 oldResult 和 result

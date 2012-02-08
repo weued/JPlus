@@ -17,22 +17,22 @@
 	moduleName = moduleName.substr(0, moduleName.indexOf('/'));
 	
 	document.write('<link type="text/css" rel="stylesheet" href="' + root + 'assets/styles/default.css" />');
-	document.write('<script type="text/javascript" src="' + root + 'assets/libs/firebug-lite/build/firebug-lite.js"></script>');
+	if(!window.console || !window.console.groupEnd)
+		document.write('<script type="text/javascript" src="' + root + 'assets/libs/firebug-lite/build/firebug-lite.js"></script>');
 	
 	if(moduleName.indexOf('.') == -1)
-		document.write('<script type="text/javascript" src="' + root + 'assets/project/' + moduleName + '.js"></script>');
-	document.write('<script type="text/javascript" src="' + root + 'assets/project/project.js"></script>');
+		document.write('<script type="text/javascript" src="' + root + moduleName + '/project.js"></script>');
+	document.write('<script type="text/javascript" src="' + root + 'assets/scripts/project.js"></script>');
 	
-	window._ = window._ || window.trace || (window.console && console.log || alert);
 	window.System = window.System || {};
 	
 	apply(System, {
 		
-		title: 'J+',
+		title: 'J+ Library',
 		
 		subtitle: '让 Javascript 成为一门艺术',
 		
-		copyright: 'Copyright &copy; 2011 JPlus Team',
+		copyright: 'Copyright &copy; 2011-2012 JPlus Team',
 		
 		/**
 		 * 初始化整个页面。
@@ -43,25 +43,25 @@
 				result.push('<a href="' + root + navs[nav] +'">' + nav + '</a>');
 			}
 			
-			result[result.length - 1] = result[result.length - 1].replace('<a href="', '<a class="last" href="');
+			result[result.length - 1] = result[result.length - 1].replace('<a href="', '<a class="system-last" href="');
 			navs =  result.join('\r\n');
 			
 			document.write('\
-				<div id="wrap" style="visibility: visible">\
-					<div id="toolbar"></div>\
-					<div id="header">\
+				<div id="system-wrap" style="visibility: visible">\
+					<div id="system-toolbar" class="system"></div>\
+					<div id="system-header" class="system">\
 						<h1>' + System.title + '</h1>\
 						<em>' + System.subtitle + '</em>\
-						<div id="navbar">' + 
+						<div id="system-navbar">' + 
 						navs +	
 						'</div>\
 					</div>\
-					<div id="body">\
-						<div id="main">\
+					<div id="system-body">\
+						<div id="system-main">\
 						正在载入...\
 						</div>\
 					</div>\
-					<div id="footer">' + 
+					<div id="system-footer" class="system">' + 
 						System.copyright + 
 					'</div>\
 				</div>');
@@ -75,7 +75,7 @@
 			}
 			
 			addEvent(window, 'load', function(){
-				var main = document.getElementById('main'), last, next = document.getElementById('wrap').nextSibling;
+				var main = document.getElementById('system-main'), last, next = document.getElementById('system-wrap').nextSibling;
 				
 				while(main.firstChild)
 					main.removeChild(main.firstChild);
@@ -100,10 +100,11 @@
 		 * 初始化右边的菜单。
 		 */
 		initMenu: function (menus){
-			var sidebar = document.getElementById('sidebar');
+			var sidebar = document.getElementById('system-sidebar');
 			if(!sidebar){
-				sidebar = document.getElementById('body').appendChild(document.createElement('div'));
-				sidebar.id = 'sidebar';
+				sidebar = document.getElementById('system-body').appendChild(document.createElement('div'));
+				sidebar.id = 'system-sidebar';
+				sidebar.className = 'system';
 			}
 			var result = [];
 			
@@ -113,7 +114,7 @@
 				
 				if(typeof menus[group] === 'string') {
 					var currenHeader = result.length - 1, total = 0, finished = 0;
-					result.push('<ul class="menu">');
+					result.push('<ul class="system-menu">');
 					forEach(menus[group].split(' '), function(value){
 						var clazz;
 						switch(value.charAt(0)) {
@@ -124,17 +125,17 @@
 								finished++;
 								break;
 							case '-':
-								clazz = ' class="removed"';
+								clazz = ' class="system-removed"';
 								value = value.substring(1);
 								break;
 							case '#':
-								clazz = ' class="strong"';
+								clazz = ' class="system-strong"';
 								value = value.substring(1);
 								total++;
 								finished++;
 								break;
 							case '*':
-								clazz = ' class="notcomplete"';
+								clazz = ' class="system-notcomplete"';
 								value = value.substring(1);
 								total++;
 								break;
@@ -143,7 +144,7 @@
 								result.push('<li>' + value + '</li>');
 								return;
 							default:
-								clazz = ' class="disabled"';
+								clazz = ' class="system-disabled"';
 								total++;
 								break;
 						}
@@ -167,11 +168,11 @@
 					});
 					
 					
-					result[currenHeader] = '<h2>' + encodeHTML(group) + ' <span class="small">(' + finished + '/' + total + ')</span></h2>';
+					result[currenHeader] = '<h2>' + encodeHTML(group) + ' <span class="system-small">(' + finished + '/' + total + ')</span></h2>';
 					
 				} else {
 					
-					result.push('<ul class="menu break-line">');
+					result.push('<ul class="system-menu break-line">');
 					
 					for(var menu in menus[group]) {
 						var url = menus[group][menu] ? root + menus[group][menu] : 'javascript:;';
@@ -191,9 +192,9 @@
 		 * 初始化测试用例。
 		 */
 		initTestCases: function (testcases, dftOptions) {
-			document.write('<div class="right small"><a href="javascript:;" onclick="System.doRunAll();">全部测试</a> | <a href="javascript:;" onclick="System.doTimeAll();">全部时间</a> | <a href="javascript:;" onclick="System.doTestAll();">恶意测试</a></div>');
+			document.write('<div class="system system-right system-small"><a href="javascript:;" onclick="System.doRunAll();">全部测试</a> | <a href="javascript:;" onclick="System.doTimeAll();">全部时间</a> | <a href="javascript:;" onclick="System.doTestAll();">全部自测</a></div>');
 			
-			document.write('<div id="testcases" class="clear">');
+			document.write('<div id="system-testcases" class="system system-clear">');
 			
 			current.testCases = {};
 			
@@ -202,7 +203,7 @@
 				
 				if(type === 'string' || type === 'function') {
 					if(testcase === '-'){
-						document.write('<h2 class="testcasegroup">' + encodeHTML(name) + '</h2>');
+						document.write('<h2 class="system-testcasegroup">' + encodeHTML(name) + '</h2>');
 						continue ;
 					}
 					
@@ -257,7 +258,7 @@
 				
 				info = runFn(new Function(info.toRun()));
 				
-				document.getElementById('testcase-' + name).className = assert.hasError === true ? 'testcase error' : showSuccess === false ? 'testcase' : assert.hasError === false ? 'testcase success' : 'testcase warn';
+				document.getElementById('system-testcase-' + name).className = assert.hasError === true ? 'system-testcase system-error' : showSuccess === false ? 'system-testcase' : assert.hasError === false ? 'system-testcase system-success' : 'system-testcase system-warn';
 				
 				return  info;
 			
@@ -324,15 +325,15 @@
 			current.answers = [''];
 			for(var question in questions) {
 				var answers = questions[question];
-				document.write('<div class="testcase" id="qd');
+				document.write('<div class="system-testcase" id="system-qd');
 				document.write(i);
 				document.write('">\r\n');
-				document.write('<div class="questions">\r\n');
+				document.write('<div class="system-questions">\r\n');
 				document.write(i);
 				document.write('. ');
 				document.write(encodeHTML(question));
 				document.write('\r\n</div>\r\n');
-				document.write('<div class="note">\r\n');
+				document.write('<div class="system-note">\r\n');
 				
 				for(var j = 0; j < answers.length; j++) {
 					if(answers[j].charAt(0) === '@') {
@@ -342,10 +343,10 @@
 					
 					document.write('<input type="radio" name="q');
 					document.write(i);
-					document.write('" id="q');
+					document.write('" id="system-q');
 					document.write(i);
 					document.write(j);
-					document.write('"><label for="q');
+					document.write('"><label for="system-q');
 					document.write(i);
 					document.write(j);
 					document.write('">');
@@ -361,7 +362,7 @@
 			}
 			
 			document.write('<input type="button" onclick="System.checkAnswers()" value="验证">');
-			document.write('<div id="info"></div>');
+			document.write('<div id="system-info"></div>');
 			
 		},
 		
@@ -370,25 +371,25 @@
 			for(var i = 1; i <= total; i++){
 				if(current.answers[i] === undefined) 
 					continue;
-				if(!document.getElementById('q' + i + current.answers[i]).checked){
+				if(!document.getElementById('system-q' + i + current.answers[i]).checked){
 					errorCount++;
-					document.getElementById('qd' + i).className = 'error';
+					document.getElementById('system-qd' + i).className = 'error';
 				} else {
-					document.getElementById('qd' + i).className = 'testcase';
+					document.getElementById('system-qd' + i).className = 'testcase';
 				}
 			}
 			
 			var r = (total - errorCount) * 100 / total;
 			for(var key in current.result){
 				if(parseFloat(key) <= r){
-					document.getElementById('info').innerHTML = '答对 ' + (total - errorCount) + '/' + total + ' &nbsp;' +  current.result[key];
-					document.getElementById('info').className = 'success';
+					document.getElementById('system-info').innerHTML = '答对 ' + (total - errorCount) + '/' + total + ' &nbsp;' +  current.result[key];
+					document.getElementById('system-info').className = 'success';
 					return;
 				}
 			}
 			
-			document.getElementById('info').innerHTML = '要认真哦';
-			document.getElementById('info').className = 'error';
+			document.getElementById('system-info').innerHTML = '要认真哦';
+			document.getElementById('system-info').className = 'error';
 					
 		},
 		
@@ -538,9 +539,9 @@
 			}
 			
 			return [
-			    '<div id="testcase-',
+			    '<div id="system-testcase-',
 			    this.id,
-			    '" class="testcase" onmouseover="this.className += \' active\'" onmouseout="this.className = this.className.replace(\' active\', \'\');">',
+			    '" class="system-testcase" onmouseover="this.className += \' system-testcase-actived\'" onmouseout="this.className = this.className.replace(\' system-testcase-actived\', \'\');">',
 			     '<span><a href="javascript://',
 			    encodeHTML(this.member),
 			    '" onclick="System.doRun(\'',

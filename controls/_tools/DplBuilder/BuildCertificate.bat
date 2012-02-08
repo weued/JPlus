@@ -1,0 +1,2 @@
+@DplBuilder ../../.. ../../../../dota/certificate/assets/styles/share.css ../../../../dota/certificate/assets/scripts/share.js ../images Controls.Layout.CertificatePage Controls.Widget.CertificateQueryBox
+@pause

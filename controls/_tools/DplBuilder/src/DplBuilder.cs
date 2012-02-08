@@ -108,7 +108,7 @@ namespace Xuld.Tools.DplBuilder {
                 return _imageRelative;
             }
             set {
-                if(value == null){
+                if(value == null) {
                     value = "/";
                 } else if(!value.EndsWith("/")) {
                     value += '/';
@@ -166,14 +166,20 @@ namespace Xuld.Tools.DplBuilder {
             string name;
             string path;
 
-            ResolveNamespace(nameOrPath, true, out path, out name);
-            TryScanFile(path, name, true);
+            try {
+
+                ResolveNamespace(nameOrPath, true, out path, out name);
+                TryScanFile(path, name, true);
 
 
 
-            ResolveNamespace(nameOrPath, false, out path, out name);
-            TryScanFile(path, name, false);
+                ResolveNamespace(nameOrPath, false, out path, out name);
+                TryScanFile(path, name, false);
 
+
+            } catch(Exception e) {
+                Warning(nameOrPath + ": " + e.Message);
+            }
 
 
 
@@ -207,10 +213,10 @@ namespace Xuld.Tools.DplBuilder {
                 } else if(DisableJsAssert && StartWith(c, "assert")) {
                     continue;
                 } else if(c.Length == 0 || (c.Length > 1 && c[0] == '*') || (c.Length > 2 && c[0] == '/' && (c[1] == '/' || c[1] == '*'))) {
-                    
+
                 } else {
                     break;
-                } 
+                }
 
             }
 
@@ -229,7 +235,7 @@ namespace Xuld.Tools.DplBuilder {
                 _js.WriteLine(lines[i]);
             }
 
-          //  _js.WriteLine("namespace(\"" + name + "\");");
+            //  _js.WriteLine("namespace(\"" + name + "\");");
         }
 
         static string CleanUsings(string value, int left) {
@@ -276,10 +282,13 @@ namespace Xuld.Tools.DplBuilder {
 
             path = nameOrPath.ToLowerInvariant();
 
-            if(path.StartsWith("system.")) {
-                path = "src." + path;
-            } else if(path.StartsWith("uplus.")) {
+            if(path.StartsWith("controls.")) {
                 path = _lastP.Replace(path, isJs ? ".assets.scripts$1" : ".assets.styles$1");
+            } else if(path == "system.dom.element"){
+                path = null;
+                return;
+            } else {
+                path = "src." + path;
             }
 
             path = path.Replace('.', '/') + (isJs ? ".js" : ".css");
@@ -288,14 +297,14 @@ namespace Xuld.Tools.DplBuilder {
         }
 
         private void ScanNamespace(string nameOrPath, bool isJs) {
-           string name;
-           string path;
+            string name;
+            string path;
 
-           ResolveNamespace(nameOrPath, isJs, out path, out name);
+            ResolveNamespace(nameOrPath, isJs, out path, out name);
 
-           if(path != null) {
-               ScanFile(path, name, isJs);
-           }
+            if(path != null) {
+                ScanFile(path, name, isJs);
+            }
         }
 
         bool TryScanFile(string path, string name, bool isJs) {
@@ -307,7 +316,6 @@ namespace Xuld.Tools.DplBuilder {
             }
 
             _sources[path] = true;
-
 
             if(isJs)
                 ScanJavascript(path, name);
@@ -346,7 +354,7 @@ namespace Xuld.Tools.DplBuilder {
 
         static Regex _image = new Regex(@"url\s*\((['""]?)(.*)\1\)");
 
-       static   string GetParentName(string name) {
+        static string GetParentName(string name) {
             int i = name.LastIndexOf('.');
             if(i > 0) {
                 int j = name.LastIndexOf('.', i - 1);
@@ -373,8 +381,8 @@ namespace Xuld.Tools.DplBuilder {
         }
 
         void ScanCss(string path, string name) {
-            
-          //  Console.WriteLine("Css: {0}", name);
+
+            //  Console.WriteLine("Css: {0}", name);
 
             WriteHeader(_css, name);
 

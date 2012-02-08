@@ -6,37 +6,37 @@
 /*********************************** 全局 *******************************************/
 
 body {
-	color: #555555;
-    font-size: 14px;
     margin: 0;
     padding: 0;
+	color: #555555;
+    font-size: 14px;
     background-color: #F9F9F9;
     font-family: 'Microsoft YaHei';
 }
 
-h1, h2, h5 {
+.system h1, .system h2, .system h5 {
 	color: #666666;
 }
 
-h3, h4, h6 {
+.system h3, .system h4, .system h6 {
 	color: #E27B00;
 }
 
-a {
+.system a {
 	color: #E27B00;
 }
 
-a:hover {
+.system a:hover {
 	color: #F4C369;
 }
 
-hr {
+.system hr {
 	border-bottom: none;
 	border-top: 1px solid   #DDDDDD;
 }
 
 
-code {
+.system code {
 	border:1px solid #EB9100;
 	display: block;
 	padding: 0 30px;
@@ -44,21 +44,21 @@ code {
 	font-family: "Courier New";
 }
 
-table {
+.system table {
 	border-collapse: collapse;
 	empty-cells: show;
 }
 
-pre {
+.system pre {
 	line-height:18px;
 }
 
-textarea {
+.system textarea {
 	width: 500px;
 	height: 136px;	
 }
 
-td, th {
+.system td, .system th {
 	border: 1px solid #777;	
 	padding: 5px;
 }
@@ -67,33 +67,33 @@ td, th {
 
 /*********************************** 布局 *******************************************/
 
-#topbar {
+#system-topbar {
 	height: 30px;
 	line-height: 30px;
 	background-color: #E69A10;
 	padding: 0 10px;
 }
 
-#toolbar a, .toolbar {
+#system-toolbar a, .toolbar {
 	font-size: 16px;
 	color: #FCEFD8;
 }
 
-#toolbar a:hover {
+#system-toolbar a:hover {
 	color: #FEFAF3;
 }
 
-#wrap{
+#system-wrap{
 	width: 950px;
 	margin: 0px auto;
 }
 
-#header {
+#system-header {
 	border-bottom: 1px solid #DDDDDD;
 	position: relative;
 }
 
-#header h1{
+#system-header h1{
 	color: #E27B00;
 	font-size: 40px;
 	text-indent: 8px;
@@ -101,19 +101,19 @@ td, th {
 	font-family: Arial, Helvetica, sans-serif;
 }
 
-#header em{
+#system-header em{
 	color: #999999;	
 	position: relative;
 	top: -20px;
 }
 
-#navbar {
+#system-navbar {
 	position: absolute;
     right: 8px;
     top: 20px;
 }
 
-#navbar a {
+#system-navbar a {
 	display: block;
 	float: left;
 	width: 80px;
@@ -125,18 +125,18 @@ td, th {
 	font-size: 16px;
 }
 
-#navbar a.last {
+#system-navbar a.system-last {
 	border-right: none;
 }
 
-#main {
+#system-main {
 	width: 680px;
 	padding: 10px;
 	float: left;
 	_overflow:hidden;
 }
 
-#sidebar {
+#system-sidebar {
 	width: 200px;
 	margin: 10px;
 	padding: 0 10px 10px;
@@ -147,181 +147,181 @@ td, th {
 	float: right;
 }
 
-#sidebar h2{
+#system-sidebar h2{
 	margin: 0 0 -10px;
 	font-size: 16px;
 	line-height: 36px;
 	clear: left;
 }
 
-#sidebar .menu {
+#system-sidebar .system-menu {
 	margin: 0;
 	padding: 0;
 }
 
-#sidebar .menu li {
+#system-sidebar .system-menu li {
 	list-style: none;
 	padding: 1px 1px 1px 20px;
 	float: left;
 }
 
-#sidebar .menu li a.disabled{
+#system-sidebar .system-menu li a.system-disabled{
 	color: gray!important;
 }
 
-#sidebar .menu li a.removed{
+#system-sidebar .system-menu li a.system-removed{
 	color: gray!important;
 	text-decoration: line-through;
 }
 
-#sidebar .break-line li {
+#system-sidebar .break-line li {
 	float: none;
 }
 
-#sidebar .menu a{
+#system-sidebar .system-menu a{
 	text-decoration: underline;
 	font-size: 12px;
 }
 
-#footer {
+#system-footer {
 	border-top: 1px solid #DDDDDD;
 	text-align: center;
 	padding: 10px;
 	clear: both;
 }
 
-.testcase, .testcasegroup {
+.system-testcase, .system-testcasegroup {
 	width: 660px;
 }
 
-.testcasegroup {
+.system-testcasegroup {
 	border-bottom: 1px solid #DDDDDD;
 	margin: 13px 2px 2px;
 	text-indent: 15px;
 	font-size: 20px;
 }
 
-.testcase span{
+.system-testcase span{
 	float: right;
 	display: none;
 	margin-right: 20px;
 }
 
-.testcase.active {
-	background: #eee;	
-}
-
-.testcase.active span {
-	display: block;
-	font-size:12px;
-}
-
-.testcase, .error, .warn, .success {
+.system-testcase, .system-error, .system-warn, .system-success {
 	padding: 2px 10px;
 	line-height:16px;
 	border: 2px solid #F9F9F9;
 	margin: 2px 0;
 }
 
-.error {
+.system-error {
 	background:#FBE3E4;
 	color:#8a1f11;
 	border-color:#FBC2C4;
 }
 
-.warn {
+.system-warn {
 	background:#FFF6BF;
 	color:#514721;
 	border-color:#FFD324;
 }
 
-.success {
+.system-success {
 	background:#E6EFC2;
 	color:#264409;
 	border-color:#C6D880;
 }
 
-.error a {
+.system-error a {
 	color:#8a1f11;
 }
  	
-.warn a {
+.system-warn a {
 	color:#514721;
 }
 
-.success a {
+.system-success a {
 	color:#264409;
+}
+
+.system-testcase-actived {
+	background: #eee;	
+}
+
+.system-testcase-actived span {
+	display: block;
+	font-size:12px;
 }
 
 
 
 /*********************************** 工具 *******************************************/
 
-.large {
+.system-large {
 	font-size:x-large;
 }
 
-.small {
+.system-small {
 	font-size:x-small;
 }
 
-.left {
+.system-left {
 	float: left;
 }
 
-.right {
+.system-right {
 	float: right;
 }
 
-.center {
+.system-center {
 	margin-left:auto;
 	margin-right:auto;
 }
 
-.strong {
+.system-strong {
 	font-weight: bold;
 }
 
-.notcomplete {
+.system-notcomplete {
 	font-style: italic;
 }
 
-.clear {
+.system-clear {
 	clear: both;
 }
 
-* html .clear {
+* html .system-clear {
 	height: 1%;
 }
 
-.hide {
+.system-hide {
 	display: none;
 }
 
-.indigo {
+.system-indigo {
 	background-color: #90D9E8;
 }
 
-.blue {
+.system-blue {
 	background-color: #285A8F;
 	color: #ffffff;
 }
 
-.green {
+.system-green {
 	background-color: #B4B900;
 	color: #ffffff;
 }
 
-.purple {
+.system-purple {
 	background-color: #B05A89;
 	color: #ffffff;
 }
 
-.gray{
+.system-gray{
 	background-color: #F3F3F3;
 }
 
-.box {
+.system-box {
 	border: 1pt solid #ffffff;
 	width: 80px;
 	height: 80px;
@@ -333,7 +333,7 @@ td, th {
 	position:relative;
 }
 
-.area {
+.system-area {
 	background-color: #E95C41;
 	color: #ffffff;
 	padding: 10px;
@@ -341,7 +341,7 @@ td, th {
 	width: 200px;
 }
 
-.space {
+.system-space {
 	height: 5px;
 	display: block;
 	visibility: hidden;
@@ -349,33 +349,33 @@ td, th {
 	color:#fff;
 }
 
-.content{
+.system-content{
 	text-align:left;
 	padding:3px 30px 9px 30px;
 }
 
-p.content {
+p.system-content {
 	text-indent:2em;
 }
 
-.content img {
+.system-content img {
 	margin: 6px;
 }
 
-.list {
+.system-list {
 	list-style-type: none;
 	list-style-position:inside;
 }
 
-.list li {
+.system-list li {
 	line-height: 28px;
 	text-indent: 2em;
 }
 
-.list code {
+.system-list code {
 	text-indent: 0;
 }
 
-.note {
+.system-note {
 	padding-left: 10px;
 }

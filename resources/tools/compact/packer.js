@@ -1046,7 +1046,7 @@ function(_) {
 	var DOM = new base2.Package(this, {
 		name: "DOM",
 		version: "1.0 (beta 1)",
-		exports: "Interface, Binding, Node, Document, Element, AbstractView, Event, EventTarget, DocumentEvent, " + "NodeSelector, DocumentSelector, ElementSelector, StaticNodeList, " + "ViewCSS, HTMLDocument, HTMLElement, Selector, Traversal, XPathParser",
+		exports: "Interface, Binding, Node, Document, Element, AbstractView, Event, EventTarget, DocumentEvent, " + "NodeSelector, DocumentSelector, ElementSelector, StaticDomList, " + "ViewCSS, HTMLDocument, HTMLElement, Selector, Traversal, XPathParser",
 		bind: function(a) {
 			if (a && a.nodeType) {
 				var b = assignID(a);
@@ -1624,7 +1624,7 @@ function(_) {
 			}
 		}
 	});
-	var StaticNodeList = Base.extend({
+	var StaticDomList = Base.extend({
 		constructor: function(b) {
 			b = b || [];
 			this.length = b.length;
@@ -1650,7 +1650,7 @@ function(_) {
 			}
 		}
 	});
-	StaticNodeList.implement(Enumerable);
+	StaticDomList.implement(Enumerable);
 	var CSSParser = RegGrp.extend({
 		constructor: function(a) {
 			this.base(a);
@@ -1873,7 +1873,7 @@ function(_) {
 				} catch(error) {
 					throw new SyntaxError(format("'%1' is not a valid CSS selector.", this));
 				}
-				return b ? c: new StaticNodeList(c)
+				return b ? c: new StaticDomList(c)
 			}
 		}
 	},

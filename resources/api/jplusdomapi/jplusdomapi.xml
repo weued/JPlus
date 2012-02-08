@@ -31,7 +31,7 @@
           <code>Dom.get(document.getElementsByTagName('div')[0]).setHtml( 'test' )</code>
         </example>
       </function>
-      <function name="Dom.query" return="NodeList">
+      <function name="Dom.query" return="DomList">
         <desc>这个函数接收一个包含 CSS 选择器的字符串，然后用这个字符串去匹配一组元素。</desc>
         <longdesc>参考 Selectors 获取更多用于 expression 参数的 CSS 语法的信息。</longdesc>
         <params name="expression" type="String">
@@ -174,7 +174,7 @@ $("input[type=radio]").uncheck();</result>
 #foo\\.bar</code>
         </example>
       </selector>
-      <selector name="element" return="NodeList">
+      <selector name="element" return="DomList">
         <sample>element</sample>
         <desc>根据给定的元素名匹配所有元素</desc>
         <params name="element" type="String">
@@ -189,7 +189,7 @@ $("input[type=radio]").uncheck();</result>
           <result>[ &lt;div&gt;DIV1&lt;/div&gt;, &lt;div&gt;DIV2&lt;/div&gt; ]</result>
         </example>
       </selector>
-      <selector name="class" return="NodeList">
+      <selector name="class" return="DomList">
         <sample>.class</sample>
         <desc>根据给定的类匹配元素。</desc>
         <params name="class" type="String">
@@ -204,7 +204,7 @@ $("input[type=radio]").uncheck();</result>
           <result>[ &lt;div class="myClass"&gt;div class="myClass"&lt;/div&gt;, &lt;span class="myClass"&gt;span class="myClass"&lt;/span&gt; ]</result>
         </example>
       </selector>
-      <selector name="all" return="NodeList">
+      <selector name="all" return="DomList">
         <sample>*</sample>
         <desc>匹配所有元素</desc>
         <longdesc>多用于结合上下文来搜索。</longdesc>
@@ -217,7 +217,7 @@ $("input[type=radio]").uncheck();</result>
           <result>[ &lt;div&gt;DIV&lt;/div&gt;, &lt;span&gt;SPAN&lt;/span&gt;, &lt;p&gt;P&lt;/p&gt; ]</result>
         </example>
       </selector>
-      <selector name="multiple" return="NodeList">
+      <selector name="multiple" return="DomList">
         <sample>selector1,selector2,selectorN</sample>
         <desc>将每一个选择器匹配到的元素合并后一起返回。</desc>
         <longdesc>你可以指定任意多个选择器，并将匹配到的元素合并到一个结果内。</longdesc>
@@ -242,7 +242,7 @@ $("input[type=radio]").uncheck();</result>
       </selector>
     </subcat>
     <subcat value="层级">
-      <selector name="descendant" return="NodeList">
+      <selector name="descendant" return="DomList">
         <sample>ancestor descendant</sample>
         <desc>在给定的祖先元素下匹配所有的后代元素</desc>
         <params name="ancestor" type="Selector">
@@ -266,7 +266,7 @@ $("input[type=radio]").uncheck();</result>
           <result>[ &lt;input name="name" /&gt;, &lt;input name="newsletter" /&gt; ]</result>
         </example>
       </selector>
-      <selector name="child" return="NodeList">
+      <selector name="child" return="DomList">
         <sample>parent &gt; child</sample>
         <desc>在给定的父元素下匹配所有的子元素</desc>
         <params name="parent" type="Selector">
@@ -290,7 +290,7 @@ $("input[type=radio]").uncheck();</result>
           <result>[ &lt;input name="name" /&gt; ]</result>
         </example>
       </selector>
-      <selector name="next" return="NodeList">
+      <selector name="next" return="DomList">
         <sample>prev + next</sample>
         <desc>匹配所有紧接在 prev 元素后的 next 元素</desc>
         <params name="prev" type="Selector">
@@ -314,7 +314,7 @@ $("input[type=radio]").uncheck();</result>
           <result>[ &lt;input name="name" /&gt;, &lt;input name="newsletter" /&gt; ]</result>
         </example>
       </selector>
-      <selector name="siblings" return="NodeList">
+      <selector name="siblings" return="DomList">
         <sample>prev ~ siblings</sample>
         <desc>匹配 prev 元素之后的所有 siblings 元素</desc>
         <params name="prev" type="Selector">
@@ -368,7 +368,7 @@ $("input[type=radio]").uncheck();</result>
           <result>[ &lt;tr&gt;&lt;td&gt;Value 2&lt;/td&gt;&lt;/tr&gt; ]</result>
         </example>
       </selector>
-      <selector name="not" return="NodeList">
+      <selector name="not" return="DomList">
         <sample>:not</sample>
         <desc>去除所有与给定选择器匹配的元素</desc>
         <params name="selector" type="Selector">
@@ -382,7 +382,7 @@ $("input[type=radio]").uncheck();</result>
           <result>[ &lt;input name="apple" /&gt; ]</result>
         </example>
       </selector>
-      <selector name="even" return="NodeList">
+      <selector name="even" return="DomList">
         <sample>:even</sample>
         <desc>匹配所有索引值为偶数的元素，从 0 开始计数</desc>
         <example>
@@ -396,7 +396,7 @@ $("input[type=radio]").uncheck();</result>
           <result>[ &lt;tr&gt;&lt;td&gt;Header 1&lt;/td&gt;&lt;/tr&gt;, &lt;tr&gt;&lt;td&gt;Value 2&lt;/td&gt;&lt;/tr&gt; ]</result>
         </example>
       </selector>
-      <selector name="odd" return="NodeList">
+      <selector name="odd" return="DomList">
         <sample>:odd</sample>
         <desc>匹配所有索引值为奇数的元素，从 0 开始计数</desc>
         <example>
@@ -410,7 +410,7 @@ $("input[type=radio]").uncheck();</result>
           <result>[ &lt;tr&gt;&lt;td&gt;Value 1&lt;/td&gt;&lt;/tr&gt; ]</result>
         </example>
       </selector>
-      <selector name="header" return="NodeList">
+      <selector name="header" return="DomList">
         <sample>:header</sample>
         <desc>匹配如 h1, h2, h3之类的标题元素</desc>
         <example>
@@ -425,7 +425,7 @@ $("input[type=radio]").uncheck();</result>
       </selector>
     </subcat>
     <subcat value="内容">
-      <selector name="contains" return="NodeList">
+      <selector name="contains" return="DomList">
         <sample>:contains</sample>
         <desc>匹配包含给定文本的元素</desc>
         <params name="text" type="String">
@@ -441,7 +441,7 @@ $("input[type=radio]").uncheck();</result>
           <result>[ &lt;div&gt;John Resig&lt;/div&gt;, &lt;div&gt;Malcom John Sinclair&lt;/div&gt; ]</result>
         </example>
       </selector>
-      <selector name="empty" return="NodeList">
+      <selector name="empty" return="DomList">
         <sample>:empty</sample>
         <desc>匹配所有不包含子元素或者文本的空元素</desc>
         <example>
@@ -454,7 +454,7 @@ $("input[type=radio]").uncheck();</result>
           <result>[ &lt;td&gt;&lt;/td&gt;, &lt;td&gt;&lt;/td&gt; ]</result>
         </example>
       </selector>
-      <selector name="has" return="NodeList">
+      <selector name="has" return="DomList">
         <sample>:has</sample>
         <desc>匹配含有选择器所匹配的元素的元素</desc>
         <params name="selector" type="Selector">
@@ -468,7 +468,7 @@ $("input[type=radio]").uncheck();</result>
           <result>[ &lt;div class="test"&gt;&lt;p&gt;Hello&lt;/p&gt;&lt;/div&gt; ]</result>
         </example>
       </selector>
-      <selector name="parent" return="NodeList">
+      <selector name="parent" return="DomList">
         <sample>:parent</sample>
         <desc>匹配含有子元素或者文本的元素</desc>
         <example>
@@ -483,7 +483,7 @@ $("input[type=radio]").uncheck();</result>
       </selector>
     </subcat>
     <subcat value="可见性">
-      <selector name="hidden" return="NodeList">
+      <selector name="hidden" return="DomList">
         <sample>:hidden</sample>
         <desc>匹配所有的不可见元素，input 元素的 type 属性为 "hidden" 的话也会被匹配到</desc>
         <example>
@@ -496,7 +496,7 @@ $("input[type=radio]").uncheck();</result>
           <result>[ &lt;tr style="display:none"&gt;&lt;td&gt;Value 1&lt;/td&gt;&lt;/tr&gt; ]</result>
         </example>
       </selector>
-      <selector name="visible" return="NodeList">
+      <selector name="visible" return="DomList">
         <sample>:visible</sample>
         <desc>匹配所有的可见元素</desc>
         <example>
@@ -511,7 +511,7 @@ $("input[type=radio]").uncheck();</result>
       </selector>
     </subcat>
     <subcat value="属性">
-      <selector name="attributeHas" return="NodeList">
+      <selector name="attributeHas" return="DomList">
         <sample>[attribute]</sample>
         <desc>匹配包含给定属性的元素。</desc>
         <params name="attribute" type="String">
@@ -527,7 +527,7 @@ $("input[type=radio]").uncheck();</result>
           <result>[ &lt;div id="test2"&gt;&lt;/div&gt; ]</result>
         </example>
       </selector>
-      <selector name="attributeEquals" return="NodeList">
+      <selector name="attributeEquals" return="DomList">
         <sample>[attribute=value]</sample>
         <desc>匹配给定的属性是某个特定值的元素</desc>
         <params name="attribute" type="String">
@@ -545,7 +545,7 @@ $("input[type=radio]").uncheck();</result>
           <result>[ &lt;input type="checkbox" name="newsletter" value="Hot Fuzz" checked="true" /&gt;, &lt;input type="checkbox" name="newsletter" value="Cold Fusion" checked="true" /&gt; ]</result>
         </example>
       </selector>
-      <selector name="attributeNotEqual" return="NodeList">
+      <selector name="attributeNotEqual" return="DomList">
         <sample>[attribute!=value]</sample>
         <desc>匹配所有不含有指定的属性，或者属性不等于特定值的元素。</desc>
         <longdesc>此选择器等价于:not([attr=value])&lt;br&gt;要匹配含有特定属性但不等于特定值的元素，请使用[attr]:not([attr=value])</longdesc>
@@ -564,7 +564,7 @@ $("input[type=radio]").uncheck();</result>
           <result>[ &lt;input type="checkbox" name="accept" value="Evil Plans" checked="true" /&gt; ]</result>
         </example>
       </selector>
-      <selector name="attributeStartsWith" return="NodeList">
+      <selector name="attributeStartsWith" return="DomList">
         <sample>[attribute^=value]</sample>
         <desc>匹配给定的属性是以某些值开始的元素</desc>
         <params name="attribute" type="String">
@@ -582,7 +582,7 @@ $("input[type=radio]").uncheck();</result>
           <result>[ &lt;input name="newsletter" /&gt;, &lt;input name="newsboy" /&gt; ]</result>
         </example>
       </selector>
-      <selector name="attributeEndsWith" return="NodeList">
+      <selector name="attributeEndsWith" return="DomList">
         <sample>[attributeJ=value]</sample>
         <desc>匹配给定的属性是以某些值结尾的元素</desc>
         <params name="attribute" type="String">
@@ -600,7 +600,7 @@ $("input[type=radio]").uncheck();</result>
           <result>[ &lt;input name="newsletter" /&gt;, &lt;input name="jobletter" /&gt; ]</result>
         </example>
       </selector>
-      <selector name="attributeContains" return="NodeList">
+      <selector name="attributeContains" return="DomList">
         <sample>[attribute*=value]</sample>
         <desc>匹配给定的属性是以包含某些值的元素</desc>
         <params name="attribute" type="String">
@@ -619,7 +619,7 @@ $("input[type=radio]").uncheck();</result>
           <result>[ &lt;input name="man-news" /&gt;, &lt;input name="milkman" /&gt;, &lt;input name="letterman2" /&gt; ]</result>
         </example>
       </selector>
-      <selector name="attributeMultiple" return="NodeList">
+      <selector name="attributeMultiple" return="DomList">
         <sample>[selector1][selector2][selectorN]</sample>
         <desc>复合属性选择器，需要同时满足多个条件时使用。</desc>
         <params name="selector1" type="Selector">
@@ -643,7 +643,7 @@ $("input[type=radio]").uncheck();</result>
       </selector>
     </subcat>
     <subcat value="子元素">
-      <selector name="nthChild" return="NodeList">
+      <selector name="nthChild" return="DomList">
         <sample>:nth-child</sample>
         <desc>匹配其父元素下的第N个子或奇偶元素</desc>
         <longdesc>':eq(index)' 只匹配一个元素，而这个将为每一个父元素匹配子元素。:nth-child从1开始的，而:eq()是从0算起的！可以使用:&lt;br&gt;nth-child(even)&lt;br&gt;:nth-child(odd)&lt;br&gt;:nth-child(3n)&lt;br&gt;:nth-child(2)&lt;br&gt;:nth-child(3n+1)&lt;br&gt;:nth-child(3n+2)</longdesc>
@@ -666,7 +666,7 @@ $("input[type=radio]").uncheck();</result>
           <result>[ &lt;li&gt;Karl&lt;/li&gt;,   &lt;li&gt;Tane&lt;/li&gt; ]</result>
         </example>
       </selector>
-      <selector name="firstChild" return="NodeList">
+      <selector name="firstChild" return="DomList">
         <sample>:first-child</sample>
         <desc>匹配第一个子元素</desc>
         <longdesc>':first' 只匹配一个元素，而此选择符将为每个父元素匹配一个子元素</longdesc>
@@ -686,7 +686,7 @@ $("input[type=radio]").uncheck();</result>
           <result>[ &lt;li&gt;John&lt;/li&gt;, &lt;li&gt;Glen&lt;/li&gt; ]</result>
         </example>
       </selector>
-      <selector name="lastChild" return="NodeList">
+      <selector name="lastChild" return="DomList">
         <sample>:last-child</sample>
         <desc>匹配最后一个子元素</desc>
         <longdesc>':last'只匹配一个元素，而此选择符将为每个父元素匹配一个子元素</longdesc>
@@ -706,7 +706,7 @@ $("input[type=radio]").uncheck();</result>
           <result>[ &lt;li&gt;Brandon&lt;/li&gt;, &lt;li&gt;Ralph&lt;/li&gt; ]</result>
         </example>
       </selector>
-      <selector name="onlyChild" return="NodeList">
+      <selector name="onlyChild" return="DomList">
         <sample>:only-child</sample>
         <desc>如果某个元素是父元素中唯一的子元素，那将会被匹配</desc>
         <longdesc>如果父元素中含有其他元素，那将不会被匹配。</longdesc>
@@ -726,7 +726,7 @@ $("input[type=radio]").uncheck();</result>
       </selector>
     </subcat>
     <subcat value="表单对象属性">
-      <selector name="enabled" return="NodeList">
+      <selector name="enabled" return="DomList">
         <sample>:enabled</sample>
         <desc>匹配所有可用元素</desc>
         <example>
@@ -739,7 +739,7 @@ $("input[type=radio]").uncheck();</result>
           <result>[ &lt;input name="id" /&gt; ]</result>
         </example>
       </selector>
-      <selector name="disabled" return="NodeList">
+      <selector name="disabled" return="DomList">
         <sample>:disabled</sample>
         <desc>匹配所有不可用元素</desc>
         <example>
@@ -752,7 +752,7 @@ $("input[type=radio]").uncheck();</result>
           <result>[ &lt;input name="email" disabled="disabled" /&gt; ]</result>
         </example>
       </selector>
-      <selector name="checked" return="NodeList">
+      <selector name="checked" return="DomList">
         <sample>:checked</sample>
         <desc>匹配所有选中的被选中元素(复选框、单选框等，不包括select中的option)</desc>
         <example>
@@ -766,7 +766,7 @@ $("input[type=radio]").uncheck();</result>
           <result>[ &lt;input type="checkbox" name="newsletter" checked="checked" value="Daily" /&gt;, &lt;input type="checkbox" name="newsletter" checked="checked" value="Monthly" /&gt; ]</result>
         </example>
       </selector>
-      <selector name="selected" return="NodeList">
+      <selector name="selected" return="DomList">
         <sample>:selected</sample>
         <desc>匹配所有选中的option元素</desc>
         <example>

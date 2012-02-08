@@ -11,7 +11,7 @@
 
 using("System.Fx.Element");
 
-NodeList.implement({
+DomList.implement({
 	
 	multiFade: function( opacity, onFade, onShow ) {
 		opacity = opacity === undefined ? 0.3 : opacity;
