@@ -1769,7 +1769,7 @@ function using(ns, isStyle) {
     var p = JPlus;
 
     // 已经载入。
-    if (p.namespaces.include(ns))
+    if (p[isStyle ? 'styles' : 'scripts'].include(ns))
         return;
 
     if (ns.indexOf('/') === -1)
@@ -1991,11 +1991,18 @@ function assert(bValue, msg) {
         })(),
 
         /**
+         * 全部已载入的样式。
+         * @type Array
+         * @private
+         */
+        styles: [],
+
+        /**
          * 全部已载入的名字空间。
          * @type Array
          * @private
          */
-        namespaces: [],
+        scripts: [],
 
         /**
          * 将指定的名字空间转为路径。

@@ -1477,7 +1477,11 @@
 		 * @return Number 位置，找不到返回 -1 。 现在大多数浏览器已含此函数.除了 IE8- 。
 		 */
 	    indexOf: function(item, startIndex) {
-		    return $.inArray(this, item, startIndex);
+		   startIndex = startIndex || 0;
+		    for ( var len = this.length; startIndex < len; startIndex++)
+			    if (this[startIndex] === item)
+				    return startIndex;
+		    return -1;
 	    },
 
 	    /**
@@ -1703,6 +1707,8 @@
 
 /// #if !Release
 
+/// #if !Release
+
 /// #region Using
 
 /**
@@ -1719,7 +1725,7 @@ function using(ns, isStyle) {
     var p = JPlus;
 
     // 已经载入。
-    if (p.namespaces.include(ns))
+    if (p[isStyle ? 'styles' : 'scripts'].include(ns))
         return;
 
     if (ns.indexOf('/') === -1)
@@ -1941,11 +1947,18 @@ function assert(bValue, msg) {
         })(),
 
         /**
+         * 全部已载入的样式。
+         * @type Array
+         * @private
+         */
+        styles: [],
+
+        /**
          * 全部已载入的名字空间。
          * @type Array
          * @private
          */
-        namespaces: [],
+        scripts: [],
 
         /**
          * 将指定的名字空间转为路径。
@@ -2738,6 +2751,8 @@ function assert(bValue, msg) {
 
 /// #endif
 
+/// #endif
+
 // Core - 核心部分
 // Parse - 节点解析部分
 // Traversing - 节点转移部分
@@ -2750,7 +2765,7 @@ function assert(bValue, msg) {
 // Offset - 定位部分
 
 
-JPlus.namespaces.push('System.Dom.Element');
+JPlus.scripts.push('System.Dom.Element');
 	
 (function($) {
 	
