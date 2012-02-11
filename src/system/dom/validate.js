@@ -11,7 +11,7 @@ var Validator = Class({
 	target: null,
 	
 	getText: function(){
-		return this.target.getText();
+		return this.target.getText().trim();
 	},
 	
 	createValidator: function(validateType, value, errorMsg){
@@ -22,11 +22,13 @@ var Validator = Class({
 				} : null;
 			case 'maxLength':
 				return value >= 0 ? function(validator){
-					return validator.getText().length <= value ? '' : String.format(errorMsg || Validator.messages.maxLength, value);
+					var len = validator.getText().length;
+					return len <= value ? '' : String.format(errorMsg || Validator.messages.maxLength, value, len);
 				} : null;
 			case 'minLength':
 				return value >= 0 ? function(validator){
-					return validator.getText().length >= value ? '' : String.format(errorMsg || Validator.messages.minLength, value);
+					var len = validator.getText().length;
+					return len >= value ? '' : String.format(errorMsg || Validator.messages.minLength, value, len);
 				} : null;
 			case 'pattern':
 				return value ? function(validator){
@@ -141,9 +143,10 @@ var Validator = Class({
 				}
 			}
 			
-			if(async)
-				this.onAsyncValidate();
-			else
+			if(async) {
+				this.onAsync();
+				return false;
+			} else
 				this.validated('');
 		
 		}
@@ -171,12 +174,12 @@ var Validator = Class({
 	/**
 	 * 刷新验证状态。
 	 */
-	reset: function(){
-		return this.trigger('reset', result);
+	reset: function(updateUI){
+		return this.trigger('reset', updateUI);
 	},
 	
-	onAsyncValidate: function(){
-		return this.trigger('asyncvalidate');
+	onAsync: function(){
+		return this.trigger('async');
 	},
 	
 	onSuccess: function(result){
@@ -223,4 +226,6 @@ Validator.messages = {
 
 
 };
+
+
 

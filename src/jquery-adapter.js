@@ -3939,9 +3939,16 @@ JPlus.scripts.push('System.Dom.Element');
 		 * @param {String} [type] 方式。
 		 * @return {Element} this
 		 */
-		show: function(duration, callBack) {
-			Dom.show(this.dom);
-			if (callBack) setTimeout(callBack, 0);
+		show: function(duration, callBack, type) {
+			
+			if(!duration)
+				$(this.dom).show(0, null, callBack);
+			else if(type == 'opacity')
+				$(this.dom).fadeIn(duration, null, callBack);
+			else if(type == 'top')
+				$(this.dom).slideDown(duration, null, callBack);
+			else
+				$(this.dom).show(duration, null, callBack);
 			return this;
 		},
 	
@@ -3952,9 +3959,16 @@ JPlus.scripts.push('System.Dom.Element');
 		 * @param {String} [type] 方式。
 		 * @return {Element} this
 		 */
-		hide: function(duration, callBack) {
-			Dom.hide(this.dom);
-			if (callBack) setTimeout(callBack, 0);
+		hide: function(duration, callBack, type) {
+			
+			if(!duration)
+				$(this.dom).hide(0, null, callBack);
+			else if(type == 'opacity')
+				$(this.dom).fadeOut(duration, null, callBack);
+			else if(type == 'top')
+				$(this.dom).slideUp(duration, null, callBack);
+			else
+				$(this.dom).hide(duration, null, callBack);
 			return this;
 		},
 	
@@ -4013,7 +4027,11 @@ JPlus.scripts.push('System.Dom.Element');
 		 * @return {Element} this
 		 */
 		setAttr: function(name, value) {
-			$(this.dom).attr(name, value);
+			if(value === null){
+				$(this.dom).removeAttr(name);
+			} else {
+				$(this.dom).attr(name, value);
+			}
 		
 			return this;
 
