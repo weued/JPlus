@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 D:\Projects\JPlus\uplus\_tools\DplBuilder\src\obj\x86\Debug\ResolveAssemblyReference.cache
 D:\Projects\JPlus\uplus\_tools\DplBuilder\src\obj\x86\Debug\DplBuilder.exe
 D:\Projects\JPlus\uplus\_tools\DplBuilder\src\obj\x86\Debug\DplBuilder.pdb
@@ -8,3 +9,15 @@ D:\Projects\web\dpl\controls\_tools\DplBuilder\src\obj\x86\Debug\DplBuilder.pdb
 D:\Projects\web\dpl\controls\_tools\DplBuilder\src\obj\x86\Debug\ResolveAssemblyReference.cache
 D:\Projects\web\dpl\controls\_tools\DplBuilder\DplBuilder.exe
 D:\Projects\web\dpl\controls\_tools\DplBuilder\DplBuilder.pdb
+=======
+D:\Projects\JPlus\uplus\_tools\DplBuilder\src\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\Projects\JPlus\uplus\_tools\DplBuilder\src\obj\x86\Debug\DplBuilder.exe
+D:\Projects\JPlus\uplus\_tools\DplBuilder\src\obj\x86\Debug\DplBuilder.pdb
+D:\Projects\JPlus\uplus\_tools\DplBuilder\DplBuilder.exe
+D:\Projects\JPlus\uplus\_tools\DplBuilder\DplBuilder.pdb
+D:\Projects\web\dpl\controls\_tools\DplBuilder\src\obj\x86\Debug\DplBuilder.exe
+D:\Projects\web\dpl\controls\_tools\DplBuilder\src\obj\x86\Debug\DplBuilder.pdb
+D:\Projects\web\dpl\controls\_tools\DplBuilder\src\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\Projects\web\dpl\controls\_tools\DplBuilder\DplBuilder.exe
+D:\Projects\web\dpl\controls\_tools\DplBuilder\DplBuilder.pdb
+>>>>>>> 8b05f7235c31b25c102eab53b7a431c956a7b2ed

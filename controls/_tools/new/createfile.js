@@ -1,4 +1,3 @@
-
 Console.Write("输入模块名(如form/textbox):  ");
 var root = "../../";
 var moduleName = Console.ReadLine().toLowerCase();
