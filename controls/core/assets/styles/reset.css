@@ -4,7 +4,7 @@
 
 
 /* reset margin, padding */
-html, body, object, iframe, img, pre {
+html, body, form, object, iframe, img, pre {
 	margin: 0;
 	padding: 0;
 }
