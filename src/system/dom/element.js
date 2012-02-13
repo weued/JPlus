@@ -539,6 +539,9 @@
 		 */
 		rBody = /^(?:BODY|HTML|#document)$/i;
 
+	/**
+	 * @namespace Dom
+	 */
 	apply(Dom, {
 		
 		/**

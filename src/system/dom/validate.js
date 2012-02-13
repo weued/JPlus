@@ -222,7 +222,7 @@ Validator.messages = {
 	
 	password: '两次密码输入不同',
 	
-	phone: '请填写正确的号码',
+	phone: '请填写正确的号码'
 
 
 };
