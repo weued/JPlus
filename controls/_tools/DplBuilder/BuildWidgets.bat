@@ -1,2 +1,2 @@
-@DplBuilder ../../.. ../../../../lib/css/widget.css ../../../../lib/js/widget.js ../images  Controls.Display.TimeCounter Controls.Core.Marquee System.Ajax.Submit Controls.Widget.WangWang Controls.Widget.SwfUpload Controls.Form.ImageCroper
+@DplBuilder ../../.. ../../../../lib/css/widget.css ../../../../lib/js/widget.js ../images  Controls.Display.TimeCounter Controls.Core.Marquee System.Ajax.Request System.Ajax.Ajax System.Ajax.Submit Controls.Widget.WangWang Controls.Widget.SwfUpload Controls.Form.ImageCroper
 @pause

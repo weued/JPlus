@@ -1,2 +1,2 @@
-@DplBuilder ../../.. ../../../../dota/certificate/assets/styles/share.css ../../../../dota/certificate/assets/scripts/share.js ../images Controls.Layout.CertificatePage Controls.Widget.CertificateQueryBox Controls.Display.StepInfo Controls.Display.StepGuider Controls.Button.PayButton
+@DplBuilder ../../.. ../../../../dota/certificate/assets/styles/share.css ../../../../dota/certificate/assets/scripts/share.js ../images Controls.Layout.CertificatePage Controls.Widget.CertificateQueryBox Controls.Display.StepInfo Controls.Display.StepGuider Controls.Button.PayButton Controls.Form.ImageCroper Controls.Widget.SwfUpload Controls.Widget.CertificatePhotoCroper
 @pause
