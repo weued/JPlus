@@ -7,7 +7,7 @@ J+ is a libaray of javascript in purpose of:
 2. Works as a ui library.
 3. Makes code more meaningful and lifes easier.
 
-This libaray try to write **oop javascript code**. For example: 
+This libaray trys to write **oop javascript code**. For example: 
 	
 	var Book = new Class({ 
 	
@@ -21,11 +21,11 @@ This libaray try to write **oop javascript code**. For example:
 	
 The dom helper looks like: 
 	
-	$('id').setStyle('margin', 4); 
+	$$('id').setStyle('margin', 4); 
 
-In which $ is an alternative name of document.getDom  .
+in which $ is an alternative name of Dom.get  .
 
 
 ## What's the main difference with other frameworks?
 
-The object-orient programming style, which supports the component develop.
+The object-orient programming style, which supports the component developing.
