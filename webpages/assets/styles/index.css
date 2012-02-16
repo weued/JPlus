@@ -86,3 +86,13 @@ hr {
 	padding: 7px 10px;
 	margin: 10px;	
 }
+
+
+
+/*   panel1  */
+
+
+.splitcontainer-west {
+	border: 1px solid #B5BCC7;
+	float: left;
+}
