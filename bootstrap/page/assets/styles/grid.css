@@ -1,0 +1,113 @@
+.x-grid {
+  margin-top: 10px;
+  *zoom: 1;
+}
+.x-grid:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+.x-col {
+  float: left;
+  margin-left: 10px;
+}
+.x-col-1 {
+  width: 60px;
+}
+.x-col-2 {
+  width: 130px;
+}
+.x-col-3 {
+  width: 200px;
+}
+.x-col-4 {
+  width: 270px;
+}
+.x-col-5 {
+  width: 340px;
+}
+.x-col-6 {
+  width: 410px;
+}
+.x-col-7 {
+  width: 480px;
+}
+.x-col-8 {
+  width: 550px;
+}
+.x-col-9 {
+  width: 620px;
+}
+.x-col-10 {
+  width: 690px;
+}
+.x-col-11 {
+  width: 760px;
+}
+.x-col-12 {
+  width: 830px;
+}
+.x-container {
+  margin-left: auto;
+  margin-right: auto;
+  width: 830px;
+}
+.x-col-first, .x-col:first-child {
+  margin-left: 0;
+}
+.row-fluid {
+  width: 100%;
+  *zoom: 1;
+}
+.row-fluid:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+.row-fluid > [class*="span"] {
+  float: left;
+  margin-left: 2.13%;
+}
+.row-fluid > [class*="span"]:first-child {
+  margin-left: 0;
+}
+.row-fluid .span1 {
+  width: 6.38%;
+}
+.row-fluid .span2 {
+  width: 14.89%;
+}
+.row-fluid .span3 {
+  width: 23.4%;
+}
+.row-fluid .span4 {
+  width: 31.91%;
+}
+.row-fluid .span5 {
+  width: 40.43%;
+}
+.row-fluid .span6 {
+  width: 48.94%;
+}
+.row-fluid .span7 {
+  width: 57.45%;
+}
+.row-fluid .span8 {
+  width: 65.96%;
+}
+.row-fluid .span9 {
+  width: 74.47%;
+}
+.row-fluid .span10 {
+  width: 82.98%;
+}
+.row-fluid .span11 {
+  width: 91.49%;
+}
+.row-fluid .span12 {
+  width: 100%;
+}

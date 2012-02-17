@@ -4,13 +4,12 @@
 		<meta charset="UTF-8">
 		<title>J+ Control Library</title>
 		
-		<link rel="stylesheet" type="text/css" href="../core/assets/styles/bootstrap.css">
+		<link rel="stylesheet" type="text/css" href="../core/assets/styles/reset.css">
 		<link rel="stylesheet" type="text/css" href="assets/styles/button.css">
 		
 		<script type="text/javascript" src="../../src/system.js"></script>
 		<script type="text/javascript" src="../../src/system/dom/element.js"></script>
-		<script type="text/javascript" src="../../src/bootstrap.js"></script>
-		
+		<script type="text/javascript" src="../core/assets/scripts/reset.js"></script>
 		<script type="text/javascript" src="assets/scripts/button.js"></script>
 		
 		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
@@ -33,33 +32,33 @@
     </thead>
     <tbody>
       <tr>
-        <td><a href="#" class="btn">Default</a></td>
-        <td><code>.btn</code></td>
+        <td><a href="#" class="x-button">Default</a></td>
+        <td><code>.x-button</code></td>
         <td>Standard gray button with gradient</td>
       </tr>
       <tr>
-        <td><a href="#" class="btn btn-primary">Primary</a></td>
-        <td><code>.btn-primary</code></td>
+        <td><a href="#" class="x-button x-button-primary">Primary</a></td>
+        <td><code>.x-button-primary</code></td>
         <td>Provides extra visual weight and identifies the primary action in a set of buttons</td>
       </tr>
       <tr>
-        <td><a href="#" class="btn btn-info">Info</a></td>
-        <td><code>.btn-info</code></td>
+        <td><a href="#" class="x-button x-button-info">Info</a></td>
+        <td><code>.x-button-info</code></td>
         <td>Used as an alternate to the default styles</td>
       </tr>
       <tr>
-        <td><a href="#" class="btn btn-success">Success</a></td>
-        <td><code>.btn-success</code></td>
+        <td><a href="#" class="x-button x-button-success">Success</a></td>
+        <td><code>.x-button-success</code></td>
         <td>Indicates a successful or positive action</td>
       </tr>
       <tr>
-        <td><a href="#" class="btn btn-warning">Warning</a></td>
-        <td><code>.btn-warning</code></td>
+        <td><a href="#" class="x-button x-button-warning">Warning</a></td>
+        <td><code>.x-button-warning</code></td>
         <td>Indicates caution should be taken with this action</td>
       </tr>
       <tr>
-        <td><a href="#" class="btn btn-danger">Danger</a></td>
-        <td><code>.btn-danger</code></td>
+        <td><a href="#" class="x-button x-button-danger">Danger</a></td>
+        <td><code>.x-button-danger</code></td>
         <td>Indicates a dangerous or potentially negative action</td>
       </tr>
     </tbody>
@@ -72,10 +71,10 @@
     </div>
     <div class="span4">
       <h3>For anchors and forms</h3>
-      <p>Button styles can be applied to anything with the <code>.btn</code> applied. However, typically you'll want to apply these to only <code>&lt;a&gt;</code> and <code>&lt;button&gt;</code> elements.</p>
+      <p>Button styles can be applied to anything with the <code>.x-button</code> applied. However, typically you'll want to apply these to only <code>&lt;a&gt;</code> and <code>&lt;button&gt;</code> elements.</p>
     </div>
     <div class="span4">
-      <p><strong>Note:</strong> All buttons must include the <code>.btn</code> class. Button styles should be applied to <code>&lt;button&gt;</code> and <code>&lt;a&gt;</code> elements for consistency.</p>
+      <p><strong>Note:</strong> All buttons must include the <code>.x-button</code> class. Button styles should be applied to <code>&lt;button&gt;</code> and <code>&lt;a&gt;</code> elements for consistency.</p>
     </div>
   </div>
 
@@ -84,24 +83,24 @@
       <h3>Multiple sizes</h3>
       <p>Fancy larger or smaller buttons? Have at it!</p>
       <p>
-        <a class="btn btn-large btn-primary" href="#">Primary action</a>
-        <a class="btn btn-large" href="#">Action</a>
+        <a class="x-button x-button-large x-button-primary" href="#">Primary action</a>
+        <a class="x-button x-button-large" href="#">Action</a>
       </p>
       <p>
-        <a class="btn btn-small btn-primary" href="#">Primary action</a>
-        <a class="btn btn-small" href="#">Action</a>
+        <a class="x-button x-button-small x-button-primary" href="#">Primary action</a>
+        <a class="x-button x-button-small" href="#">Action</a>
       </p>
     </div>
     <div class="span4">
       <h3>Disabled state</h3>
-      <p>For disabled buttons, use <code>.btn-disabled</code> for links and <code>:disabled</code> for <code>&lt;button&gt;</code> elements.</p>
+      <p>For disabled buttons, use <code>.x-button-disabled</code> for links and <code>:disabled</code> for <code>&lt;button&gt;</code> elements.</p>
       <p>
-        <a class="btn btn-large btn-primary disabled" href="#">Primary action</a>
-        <a class="btn btn-large disabled" href="#">Action</a>
+        <a class="x-button x-button-large x-button-primary disabled" href="#">Primary action</a>
+        <a class="x-button x-button-large disabled" href="#">Action</a>
       </p>
       <p>
-        <button disabled="disabled" class="btn btn-large btn-primary disabled">Primary action</button>
-        <button disabled="" class="btn btn-large">Action</button>
+        <button disabled="disabled" class="x-button x-button-large x-button-primary disabled">Primary action</button>
+        <button disabled="" class="x-button x-button-large">Action</button>
       </p>
     </div>
     <div class="span4">

@@ -13,3 +13,16 @@ var menus = {
 };
 
 
+
+
+
+var menus = {
+	Core: 'Reset',
+	Page: 'Scaffolding Grid Typography NavBar TopBar Footer Breadcrumbs Pagination Pager',
+	Display: 'Marquee Code Image ScrollSpy Icon List Label Tip TipBox ProcessBar Bubble Tooltip BalloonTip Carousel',
+	Form: 'Form TextBox Select ComboBox CheckBox RadioButton Suggest',
+	Button: 'Button MenuButton SplitButton ButtonGroup Menu CloseButton ToolBar',
+	Container: 'Stackable Tabbable TabControls Dialog MessageBox Accordion Panel',
+	DataView: 'Table TreeView'
+};
+
