@@ -143,6 +143,9 @@
 // GRID SYSTEM
 // --------------------------------------------------
 
+
+
+
 // Site container
 // -------------------------
 .container-fixed() {
@@ -161,6 +164,16 @@
   } 
   // Take these values and mixins, and make 'em do their thang
   .generate(@gridColumns, @gridColumnWidth, @gridGutterWidth) {
+  	
+  	.x-grid {
+	  margin-top: 10px;
+	  .clearfix();
+  	}
+
+	.x-grid-plain {
+	  margin-top: 0;
+	}
+	  
     // Default columns
     .x-col       { float: left; margin-left: @gridGutterWidth; }
     .x-col-1     { #gridSystem > .columns(@gridGutterWidth, @gridColumnWidth, @gridRowWidth, 1); }
@@ -175,7 +188,7 @@
     .x-col-10    { #gridSystem > .columns(@gridGutterWidth, @gridColumnWidth, @gridRowWidth, 10); }
     .x-col-11    { #gridSystem > .columns(@gridGutterWidth, @gridColumnWidth, @gridRowWidth, 11); }
     .x-col-12    { #gridSystem > .columns(@gridGutterWidth, @gridColumnWidth, @gridRowWidth, 12); }
-    .x-container { margin-left: auto; margin-right: auto; #gridSystem > .columns(@gridGutterWidth, @gridColumnWidth, @gridRowWidth, 12); }
+    .x-container { .container-fixed();     }
     .x-col-first,   .x-col:first-child {
       margin-left: 0;
     }
@@ -190,38 +203,27 @@
   // Setup the mixins to be used
   .columns(@fluidGridGutterWidth, @fluidGridColumnWidth, @columns) {
     width: 1% * (@fluidGridColumnWidth * @columns) + (@fluidGridGutterWidth * (@columns - 1));
-  } 
-  .gridColumn(@fluidGridGutterWidth) {
-    float: left;
-    margin-left: @fluidGridGutterWidth;
   }
   // Take these values and mixins, and make 'em do their thang
   .generate(@gridColumns, @fluidGridColumnWidth, @fluidGridGutterWidth) {      
     // Row surrounds the columns
-    .row-fluid {
+    .x-grid-fluid {
       width: 100%;
-      .clearfix();
 
-      // Find all .span# classes within .row and give them the necessary properties for grid columns (supported by all browsers back to IE7, thanks @dhg)
-      > [class*="span"] {
-        #fluidGridSystem > .gridColumn(@fluidGridGutterWidth);
-      }
-      > [class*="span"]:first-child {
-        margin-left: 0;
-      }
       // Default columns
-      .span1     { #fluidGridSystem > .columns(@fluidGridGutterWidth, @fluidGridColumnWidth, 1); }
-      .span2     { #fluidGridSystem > .columns(@fluidGridGutterWidth, @fluidGridColumnWidth, 2); }
-      .span3     { #fluidGridSystem > .columns(@fluidGridGutterWidth, @fluidGridColumnWidth, 3); }
-      .span4     { #fluidGridSystem > .columns(@fluidGridGutterWidth, @fluidGridColumnWidth, 4); }
-      .span5     { #fluidGridSystem > .columns(@fluidGridGutterWidth, @fluidGridColumnWidth, 5); }
-      .span6     { #fluidGridSystem > .columns(@fluidGridGutterWidth, @fluidGridColumnWidth, 6); }
-      .span7     { #fluidGridSystem > .columns(@fluidGridGutterWidth, @fluidGridColumnWidth, 7); }
-      .span8     { #fluidGridSystem > .columns(@fluidGridGutterWidth, @fluidGridColumnWidth, 8); }
-      .span9     { #fluidGridSystem > .columns(@fluidGridGutterWidth, @fluidGridColumnWidth, 9); }
-      .span10    { #fluidGridSystem > .columns(@fluidGridGutterWidth, @fluidGridColumnWidth, 10); }
-      .span11    { #fluidGridSystem > .columns(@fluidGridGutterWidth, @fluidGridColumnWidth, 11); }
-      .span12    { #fluidGridSystem > .columns(@fluidGridGutterWidth, @fluidGridColumnWidth, 12); }
+      .x-col-1     { #fluidGridSystem > .columns(@fluidGridGutterWidth, @fluidGridColumnWidth, 1); }
+      .x-col-2     { #fluidGridSystem > .columns(@fluidGridGutterWidth, @fluidGridColumnWidth, 2); }
+      .x-col-3     { #fluidGridSystem > .columns(@fluidGridGutterWidth, @fluidGridColumnWidth, 3); }
+      .x-col-4     { #fluidGridSystem > .columns(@fluidGridGutterWidth, @fluidGridColumnWidth, 4); }
+      .x-col-5     { #fluidGridSystem > .columns(@fluidGridGutterWidth, @fluidGridColumnWidth, 5); }
+      .x-col-6     { #fluidGridSystem > .columns(@fluidGridGutterWidth, @fluidGridColumnWidth, 6); }
+      .x-col-7     { #fluidGridSystem > .columns(@fluidGridGutterWidth, @fluidGridColumnWidth, 7); }
+      .x-col-8     { #fluidGridSystem > .columns(@fluidGridGutterWidth, @fluidGridColumnWidth, 8); }
+      .x-col-9     { #fluidGridSystem > .columns(@fluidGridGutterWidth, @fluidGridColumnWidth, 9); }
+      .x-col-10    { #fluidGridSystem > .columns(@fluidGridGutterWidth, @fluidGridColumnWidth, 10); }
+      .x-col-11    { #fluidGridSystem > .columns(@fluidGridGutterWidth, @fluidGridColumnWidth, 11); }
+      .x-col-12    { #fluidGridSystem > .columns(@fluidGridGutterWidth, @fluidGridColumnWidth, 12); }
+   	
     }
   }
 }

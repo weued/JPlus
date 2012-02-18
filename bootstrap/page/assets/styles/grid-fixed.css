@@ -1,0 +1,23 @@
+.x-grid {
+  margin-top: 10px;
+  *zoom: 1;
+}
+.x-grid:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+.x-grid-plain {
+  margin-top: 0;
+}
+.x-col {
+  float: left;
+  margin-left: 20px;
+}
+.x-container {
+  margin-left: auto;
+  margin-right: auto;
+  width: 940px;
+}
