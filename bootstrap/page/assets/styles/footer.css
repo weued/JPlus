@@ -5,6 +5,13 @@
 
 
 #footer {
+    color: #6F6F6F;
+    font-size: 11px;
+    line-height: 65px;
+}
+
+/*
+#footer {
     background: none repeat scroll 0 0 #252525;
     border-top: 0 none;
 }
@@ -63,4 +70,4 @@
     display: inline;
     float: left;
     margin-left: 20px;
-}
+}*/

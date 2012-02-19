@@ -1,26 +1,133 @@
-/**
- * @author 
- */
 
 
-
-
-.lead {
-  margin-bottom: @baseLineHeight;
-  font-size: 20px;
-  font-weight: 200;
-  line-height: @baseLineHeight * 1.5;
+// clear
+.x-clear {
+	.clearfix();
 }
 
-// Page header
-.page-header {
-  padding-bottom: @baseLineHeight - 1;
-  margin: @baseLineHeight 0;
-  border-bottom: 1px solid @grayLighter;
+// align
+.x-left {
+	float: left;
 }
-.page-header h1 {
-  line-height: 1;
+
+.x-right {
+	float: right;
 }
-.muted {
-  color: @grayLight;
+
+.x-center {
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+}
+
+.x-middle {
+	vertical-align: middle;	
+}
+
+// fix double margin bug fix for IE6
+.x-left, .x-right {
+	_display: inline;
+}
+
+// position
+.x-relative {
+	position: relative;	
+}
+
+.x-absolute {
+	position: absolute;	
+}
+
+// display
+html .x-inline {
+	display: inline;	
+}
+
+html .x-block {
+	display: block;	
+}
+
+html .x-inline-block {
+	display: inline-block;
+	
+	// fix for IE6 & IE7
+	*display: inline;
+	*zoom: 1;	
+}
+
+html .x-hide  {
+	display: none;
+}
+
+// text
+.x-break-word {
+	word-wrap: break-word;
+	word-break: break-all;
+}
+
+/* plain */
+.x-plain {
+  margin: 0;
+  padding: 0;
+}
+
+.x-plain li, li.x-plain {
+  list-style: none;
+}
+
+.x-plain td, .x-plain th {
+  border: none;
+}
+
+// misc
+.x-blank {
+	height: 10px;
+	display: block;
+	visibility: hidden;
+	color: @white;
+}
+
+.x-debug {
+	border: 1px solid #C03;
+}
+
+
+// colors
+.x-alt {
+	color: #70A3CD;
+}
+
+.x-hint, a.x-hint, .x-hint a {
+	color: #999999;
+}
+
+a.x-hint:hover, .x-hint a:hover {
+	color: #245C99;
+}
+
+.x-error {
+	color: #B02221!important;
+}
+
+.x-success {
+	color: #6B8E27!important;
+}
+
+.x-highlight {
+	color: #FF6600!important;
+}
+
+.x-content {
+	text-align: left;
+	line-height: 18px;
+}
+
+p.x-content {
+	text-indent: 2em;
+}
+
+:focus {
+	outline-color: -moz-use-text-color;
+	outline-style: none;
+	outline-width: 0;
 }

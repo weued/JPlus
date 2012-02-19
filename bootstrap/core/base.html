@@ -4,23 +4,59 @@
 		<meta charset="UTF-8">
 		<title>J+ Control Library</title>
 		
-		<link rel="stylesheet" type="text/css" href="../core/assets/styles/reset.css">
-		<link rel="stylesheet" type="text/css" href="assets/styles/typography.css">
+		<link rel="stylesheet" type="text/css" href="../core/assets/styles/base.css">
 		
 		<script type="text/javascript" src="../../src/system.js"></script>
 		<script type="text/javascript" src="../../src/system/dom/element.js"></script>
-		<script type="text/javascript" src="../core/assets/scripts/reset.js"></script>
-		<script type="text/javascript" src="assets/scripts/typography.js"></script>
+		<script type="text/javascript" src="../core/assets/scripts/base.js"></script>
 		
 		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
 	</head>
 	<body>
 		
-		typography 定义了一些标签的默认样式。
+		<h1>Base</h1>
+		 Base 包括了最基础的 CSS 和 JS 代码。所有的界面组件都依赖于 Base。
 		
-		<br>
+		<hr>
+		<h2>css reset</h2>
+		<p>css reset 用于重置标签的默认样式。包括：</p>
+		<ul>
+			<li>删除了 html, body, form, object, iframe, img, pre 的默认边距</li>
+			<li>删除了 html, body, 含链接的 img 的默认边框</li>
+			<li>让 table 默认显示一条边框</li>
+			<li>让 hr 默认显示无阴影直线</li>
+			<li>修正 legend, sub, sup, textarea, q 标签的兼容问题。</li>
+		</ul>
 		
-		<a href="javascript:;">Author</a>
+		<hr>
+		
+		<h2>css reset - html5</h2>
+		<p>重置了来自  HTML5 新标签的默认样式。包括：</p>
+		<ul>
+			<li>令 article, aside, details, figcaption, figure, footer, header, hgroup, nav, section 默认显示块级。</li>
+			<li>令 audio, canvas, video 默认显示内联块。</li>
+			<li>隐藏不含 controls 的 audio 标签</li>
+		</ul>
+		
+		<hr>
+		
+		<h2>typography</h2>
+		<p>定义了一些标签用于的默认样式。</p>
+		
+		<hr>
+		
+		<h2>js base</h2>
+		<p>定义了全站公共的函数。</p>
+		
+		<hr>
+		
+		
+		<a href="javascript:;">Link</a>
+		
+		<hr>
+		
+		
+		text <sub>sub</sub> <sup>sup</sup> text
 		
 		<hr>
 		
@@ -78,6 +114,10 @@
 		<strong>strong</strong>
 		<em>em</em>
 		<abbr>abbr</abbr>
+		<b>b</b>
+		<i>i</i>
+		<u>u</u>
+		<del>del</del>
 		<address>address</address>
 		<small>small</small>
 		<cite>cite</cite>
@@ -85,43 +125,37 @@
 		<hr>
 		
 		<blockquote>
-	        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante venenatis.</p>
-	        <small>Someone famous in <cite title="">Body of work</cite></small>
+	        <p>blockquote</p>
+	        <small>blockquote small <cite title="">blockquote small cite</cite></small>
 	      </blockquote>
 	      
 	     <hr>
-	     <pre class="prettyprint linenums"><ol class="linenums"><li class="L0"><span class="typ">For</span><span class="pln"> example</span><span class="pun">,</span><span class="pln"> </span><span class="str">&lt;code&gt;</span><span class="pln">section</span><span class="pun">&lt;/</span><span class="pln">code</span><span class="pun">&gt;</span><span class="pln"> should be wrapped </span><span class="kwd">as</span><span class="pln"> </span><span class="kwd">inline</span><span class="pun">.</span></li></ol></pre>
-		
+	     <pre class="prettyprint linenums"><ol class="linenums"><li class="L0">pre</li></ol></pre>
+
 		<pre style="margin-bottom: 9px;" class="prettyprint linenums"><ol class="linenums"><li class="L0"><span class="tag">&lt;pre</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"prettyprint</span></li><li class="L1"><span class="atv">     linenums"</span><span class="tag">&gt;</span></li><li class="L2"><span class="pln">  &amp;lt;p&amp;gt;Sample text here...&amp;lt;/p&amp;gt;</span></li><li class="L3"><span class="tag">&lt;/pre&gt;</span></li></ol></pre>
 		
 		<hr>
 		<table class="table table-striped">
         <thead>
           <tr>
-            <th>#</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Language</th>
+            <th>Table</th>
+            <th>Th 1</th>
+            <th>Th 2</th>
+            <th>Th 3</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>1</td>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>CSS</td>
+            <td>Td 1</td>
+            <td>Td 2</td>
+            <td>Td 3</td>
           </tr>
           <tr>
             <td>2</td>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>Javascript</td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td>Stu</td>
-            <td>Dent</td>
-            <td>HTML</td>
+            <td>Td 1</td>
+            <td>Td 2</td>
+            <td>Td 3</td>
           </tr>
         </tbody>
       </table>

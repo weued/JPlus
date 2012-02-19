@@ -17,8 +17,8 @@ var menus = {
 
 
 var menus = {
-	Core: 'Reset',
-	Page: '+Scaffolding +Grid# +Grid-Fluid# Grid-Fixed# +Typography NavBar TopBar Footer Breadcrumbs Pagination Pager',
+	Core: '+Base',
+	Page: '+Scaffolding +Grid# +Grid-Fluid# +Grid-Fixed# TopBar TopBar-White NavBar Footer Breadcrumbs Pagination Pager',
 	Display: 'Marquee Code Image ScrollSpy Icon List Label Tip TipBox ProcessBar Bubble Tooltip BalloonTip Carousel',
 	Form: 'Form TextBox Select ComboBox CheckBox RadioButton Suggest',
 	Button: 'Button MenuButton SplitButton ButtonGroup Menu CloseButton ToolBar',
