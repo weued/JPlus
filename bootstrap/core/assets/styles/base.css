@@ -23,8 +23,8 @@ table {
   empty-cells: show;
 }
 th, td {
-  border: 1px solid #dddddd;
-  padding: 5px;
+  padding: 0;
+  border: 0;
 }
 hr {
   clear: both;
@@ -106,7 +106,7 @@ h3,
 h4,
 h5,
 h6 {
-  margin: 5px 0;
+  margin: 10px 0;
   font-weight: bold;
   color: #333333;
   text-rendering: optimizelegibility;

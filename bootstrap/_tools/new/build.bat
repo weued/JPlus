@@ -1,6 +1,8 @@
 @echo off
 cd ../../_tools/dotless/
 
+dotless.Compiler.exe ../../display/assets/styles/icon.less 
+dotless.Compiler.exe ../../dataview/assets/styles/table.less 
 dotless.Compiler.exe ../../form/assets/styles/form.less 
 dotless.Compiler.exe ../../form/assets/styles/textbox.less 
 dotless.Compiler.exe ../../page/assets/styles/common.less 

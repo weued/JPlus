@@ -4,195 +4,168 @@
 		<meta charset="UTF-8">
 		<title>J+ Control Library</title>
 		
-		<link rel="stylesheet" type="text/css" href="../core/assets/styles/reset.css">
+		<link rel="stylesheet" type="text/css" href="../core/assets/styles/base.css">
 		<link rel="stylesheet" type="text/css" href="assets/styles/button.css">
 		
 		<script type="text/javascript" src="../../src/system.js"></script>
 		<script type="text/javascript" src="../../src/system/dom/element.js"></script>
-		<script type="text/javascript" src="../core/assets/scripts/reset.js"></script>
+		<script type="text/javascript" src="../core/assets/scripts/base.js"></script>
 		<script type="text/javascript" src="assets/scripts/button.js"></script>
 		
 		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
 	</head>
 	<body>
 		
-		普通按钮：
+		<h2>尺寸</h2>
 		
-		<a class="x-button">
-			.x-button
-		</a>
-
+		<table class="system">
+			<tr>
+				<th>按钮</th>
+				<th>正常</th>
+				<th>禁用</th>
+			</tr>
+			<tr>
+				<th>普通</th>
+				<td>
+					<a class="x-button">正常</a>
+				</td>
+				<td>
+					<a disabled="disabled" class="x-button x-button-disabled">禁用</a>
+				</td>
+			</tr>
+			<tr>
+				<th>小</th>
+				<td>
+					<a class="x-button x-button-small">正常</a>
+				</td>
+				<td>
+					<a disabled="disabled" class="x-button x-button-small x-button-disabled">禁用</a>
+				</td>
+			</tr>
+			<tr>
+				<th>大</th>
+				<td>
+					<a class="x-button x-button-large">正常</a>
+				</td>
+				<td>
+					<a disabled="disabled" class="x-button x-button-large x-button-disabled">禁用</a>
+				</td>
+			</tr>
+			<tr>
+				<th>最小</th>
+				<td>
+					<a class="x-button x-button-smallest">正常</a>
+				</td>
+				<td>
+					<a disabled="disabled" class="x-button x-button-smallest x-button-disabled">禁用</a>
+				</td>
+			</tr>
+		</table>
 		
-		<br>
-		<br>
+		<h2>标签</h2>
 		
-		普通按钮-小：
+		<table class="system">
+			<tr>
+				<th>按钮</th>
+				<th>a</th>
+				<th>button</th>
+				<th>input</th>
+			</tr>
+			<tr>
+				<th>普通</th>
+				<td>
+					<a class="x-button">按钮</a>
+				</td>
+				<td>
+					<button class="x-button">按钮</button>
+				</td>
+				<td>
+					<input type="button" class="x-button" value="按钮">
+				</td>
+			</tr>
+			<tr>
+				<th>禁用</th>
+				<td>
+					<a disabled="disabled" class="x-button x-button-disabled">按钮</a>
+				</td>
+				<td>
+					<button disabled="disabled" class="x-button x-button-disabled">按钮</button>
+				</td>
+				<td>
+					<input type="button" disabled="disabled" class="x-button x-button-disabled" value="按钮">
+				</td>
+			</tr>
+		</table>
 		
-		<a class="x-button x-button-small">
-			.x-button.x-button-small
-		</a>
+		<h2>颜色</h2>
 		
-		<br>
-		<br>
+		<table class="system">
+			<tr>
+				<th>普通</th>
+				<td>
+					<a class="x-button">正常</a>
+				</td>
+			</tr>
+			<tr>
+				<th>高亮</th>
+				<td>
+					<a class="x-button x-button-highlight">正常</a>
+				</td>
+			</tr>
+			<tr>
+				<th>成功</th>
+				<td>
+					<a class="x-button x-button-success">正常</a>
+				</td>
+			</tr>
+			<tr>
+				<th>警告</th>
+				<td>
+					<a class="x-button x-button-warning">正常</a>
+				</td>
+			</tr>
+			<tr>
+				<th>失败</th>
+				<td>
+					<a class="x-button x-button-error">正常</a>
+				</td>
+			</tr>
+			<tr>
+				<th>信息</th>
+				<td>
+					<a class="x-button x-button-info">正常</a>
+				</td>
+			</tr>
+			<tr>
+				<th>黑色</th>
+				<td>
+					<a class="x-button x-button-inverse">正常</a>
+				</td>
+			</tr>
+		</table>
 		
-		普通按钮-禁用：
+		<h2>杂项</h2>
 		
-		<a class="x-button x-button-disabled">
-			.x-button.x-button-disabled
-		</a>
-		
-		<br>
-		<br>
-		
-		普通按钮-禁用-小：
-		
-		<a class="x-button x-button-disabled x-button-small">
-			.x-button.x-button-disabled.x-button-small
-		</a>
-		
-		<br>
-		<br>
-		
-		次级按钮：
-		
-		<a class="x-button x-button-hint">
-			.x-button.x-button-hint
-		</a>
-		
-		<br>
-		<br>
-		
-		次级按钮-小：
-		
-		<a class="x-button x-button-hint x-button-hint-small">
-			.x-button.x-button-hint.x-button-hint-small
-		</a>
-		
-		<br>
-		<br>
-		
-		次级按钮-禁用：
-		
-		<a class="x-button x-button-hint x-button-disabled">
-
-			<span class="x-button-container">
-				<span class="x-button-content">
-					<button disabled="disabled" type="button">.x-button.x-button-hint.x-button-disabled</button>
-				</span>
-			</span>
-		</a>
-		
-		
-		<br>
-		<br>
-
-		
-		次级按钮-禁用-小：
-		
-		<a class="x-button x-button-hint x-button-hint-small x-button-disabled">
-			<span class="x-button-container">
-				<span class="x-button-content">
-					<button disabled="disabled" type="button">.x-button.x-button-hint.x-button-hint-small.x-button-disabled</button>
-				</span>
-			</span>
-		</a>
-		
-		<br>
-
-		<br>
-		
-		重要按钮：
-		
-		<a class="x-button x-button-hightlight">
-			<span class="x-button-container">
-				<span class="x-button-content">
-					<button type="button">x-button.x-button-hightlight</button>
-				</span>
-			</span>
-		</a>
-
-		
-		
-		<br>
-		<br>
-		
-		重要按钮-小：
-		
-		<a class="x-button x-button-hightlight x-button-hightlight-small">
-			<span class="x-button-container">
-				<span class="x-button-content">
-					<button type="button">x-button.x-button-hightlight.x-button-hightlight-small</button>
-				</span>
-			</span>
-
-		</a>
-		
-		<br>
-		<br>
-		
-		重要按钮-禁用：
-		
-		<a class="x-button x-button-hightlight x-button-disabled">
-			<span class="x-button-container">
-				<span class="x-button-content">
-					<button disabled="disabled" type="button">.x-button.x-button-hightlight.x-button-disabled</button>
-				</span>
-
-			</span>
-		</a>
-		
-		<br>
-		<br>
-		
-		重要按钮-禁用-小：
-		
-		<a class="x-button x-button-hightlight x-button-hightlight-small x-button-disabled">
-			<span class="x-button-container">
-				<span class="x-button-content">
-					<button disabled="disabled" type="button">.x-button.x-button-hightlight.x-button-hightlight-small.x-button-disabled</button>
-
-				</span>
-			</span>
-		</a>
-		
-		<br>
-		<br>
-		
-		平板按钮：
-		<a class="x-button x-button-plain">
-			<span class="x-button-container">
-				<span class="x-button-content">
-
-					<button type="button">.x-button.x-button-hightlight.x-button-hightlight-small.x-button-disabled</button>
-				</span>
-			</span>
-		</a>
-		
-		<br>
-		<br>
-		
-		平板按钮-禁用：
-		<a class="x-button x-button-plain x-button-disabled">
-			<span class="x-button-container">
-
-				<span class="x-button-content">
-					<button disabled="disabled" type="button">.x-button.x-button-hightlight.x-button-hightlight-small.x-button-disabled</button>
-				</span>
-			</span>
-		</a>
-		
-		<br>
-		<br>
-
-		内边距（20） .x-button.x-button-fixed：
-		<a class="x-button x-button-fixed">
-
-			<span class="x-button-container">
-				<span class="x-button-content">
-					<button type="button">完成</button>
-				</span>
-			</span>
-		</a>
+		<table class="system">
+			<tr>
+				<th>普通</th>
+				<td>
+					<a class="x-button">正常</a>
+				</td>
+			</tr>
+			<tr>
+				<th>平板</th>
+				<td>
+					<a class="x-button x-button-plain">正常</a>
+				</td>
+			</tr>
+			<tr>
+				<th>固定</th>
+				<td>
+					<a class="x-button x-button-fixed">正常</a>
+				</td>
+			</tr>
+		</table>
 		
 		
 	</body>

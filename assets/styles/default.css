@@ -59,7 +59,7 @@ body {
 }
 
 .system td, .system th {
-	border: 1px solid #777;	
+	border: 1px solid #ddd;	
 	padding: 5px;
 }
 
@@ -67,23 +67,7 @@ body {
 
 /*********************************** 布局 *******************************************/
 
-#system-topbar {
-	height: 30px;
-	line-height: 30px;
-	background-color: #E69A10;
-	padding: 0 10px;
-}
-
-#system-toolbar a, .toolbar {
-	font-size: 16px;
-	color: #FCEFD8;
-}
-
-#system-toolbar a:hover {
-	color: #FEFAF3;
-}
-
-#system-wrap{
+#system-main{
 	width: 950px;
 	margin: 0px auto;
 }
@@ -129,7 +113,7 @@ body {
 	border-right: none;
 }
 
-#system-main {
+#system-container {
 	width: 680px;
 	padding: 10px;
 	float: left;

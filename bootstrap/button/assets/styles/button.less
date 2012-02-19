@@ -63,7 +63,7 @@
 }
 
 // Disabled state
-.x-button.disabled,
+.x-button-disabled,
 .x-button[disabled] {
   cursor: default;
   background-image: none;
@@ -97,7 +97,7 @@
   margin-top: -1px;
 }
 
-// Mini
+// Smallest
 .x-button-smallest {
   padding: 2px 6px;
   font-size: @baseFontSize - 2px;
@@ -110,12 +110,12 @@
 
 // Set text color
 // -------------------------
-.x-button-primary,
-.x-button-primary:hover,
+.x-button-highlight,
+.x-button-highlight:hover,
 .x-button-warning,
 .x-button-warning:hover,
-.x-button-danger,
-.x-button-danger:hover,
+.x-button-error,
+.x-button-error:hover,
 .x-button-success,
 .x-button-success:hover,
 .x-button-info,
@@ -126,9 +126,9 @@
   color: @white;
 }
 // Provide *some* extra contrast for those who can get it
-.x-button-primary.active,
+.x-button-highlight.active,
 .x-button-warning.active,
-.x-button-danger.active,
+.x-button-error.active,
 .x-button-success.active,
 .x-button-info.active,
 .x-button-dark.active {
@@ -137,15 +137,15 @@
 
 // Set the backgrounds
 // -------------------------
-.x-button-primary {
-  .buttonBackground(@primaryButtonBackground, spin(@primaryButtonBackground, 20));
+.x-button-highlight {
+  .buttonBackground(@highlightButtonBackground, spin(@highlightButtonBackground, 20));
 }
 // Warning appears are orange
 .x-button-warning {
   .buttonBackground(lighten(@orange, 15%), @orange);
 }
-// Danger and error appear as red
-.x-button-danger {
+// error and error appear as red
+.x-button-error {
   .buttonBackground(#ee5f5b, #bd362f);
 }
 // Success appears as green
@@ -185,4 +185,14 @@ input[type="submit"].x-button {
     *padding-top: 3px;
     *padding-bottom: 3px;
   }
+}
+
+.x-button-plain {
+	background: none;
+	border: none;
+}
+
+.x-button-fixed {
+	padding-left: 20px;
+	padding-right: 20px;
 }
