@@ -67,7 +67,7 @@ html .x-hide {
   color: white;
 }
 .x-debug {
-  background: #C03;
+  background: #C03!important;
 }
 .x-alt {
   color: #70A3CD;
@@ -78,11 +78,14 @@ html .x-hide {
 a.x-hint:hover, .x-hint a:hover {
   color: #245C99;
 }
+.x-warning {
+  color: #c09853 !important;
+}
 .x-error {
-  color: #B02221!important;
+  color: #b94a48 !important;
 }
 .x-success {
-  color: #6B8E27!important;
+  color: #468847 !important;
 }
 .x-highlight {
   color: #FF6600!important;

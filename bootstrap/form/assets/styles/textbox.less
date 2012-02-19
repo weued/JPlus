@@ -1,0 +1,21 @@
+
+
+@import "../../../core/assets/styles/mixins.less";
+
+
+
+
+// Warning
+.x-textbox-warning {
+  .formFieldState(@warningText, @warningText, @warningBackground);
+}
+
+// Error
+.x-textbox-error {
+  .formFieldState(@errorText, @errorText, @errorBackground);
+}
+
+// Success
+.x-textbox-success {
+  .formFieldState(@successText, @successText, @successBackground);
+}

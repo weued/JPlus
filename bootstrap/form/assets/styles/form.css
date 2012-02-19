@@ -1,0 +1,37 @@
+/**
+ * @author 
+ */
+.x-formfield {
+  line-height: 28px;
+  margin-bottom: 10px;
+  *zoom: 1;
+}
+.x-formfield input, .x-formfield select, .x-formfield textarea {
+  margin-bottom: 2px;
+}
+.x-formfield:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+.x-formfield-label {
+  width: 80px;
+  display: block;
+  text-align: right;
+  margin-right: 10px;
+  float: left;
+}
+.x-formfield-container {
+  margin-left: 90px;
+}
+.x-form-vertical .x-formfield-label {
+  float: none;
+  width: auto;
+  text-align: left;
+  margin-right: 0;
+}
+.x-form-vertical .x-formfield-container {
+  margin-left: 0;
+}
