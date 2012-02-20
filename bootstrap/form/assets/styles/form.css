@@ -6,9 +6,6 @@
   margin-bottom: 10px;
   *zoom: 1;
 }
-.x-formfield input, .x-formfield select, .x-formfield textarea {
-  margin-bottom: 2px;
-}
 .x-formfield:after {
   content: ".";
   display: block;

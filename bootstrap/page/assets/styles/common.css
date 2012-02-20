@@ -57,9 +57,6 @@ html .x-hide {
 .x-plain li, li.x-plain {
   list-style: none;
 }
-.x-plain td, .x-plain th {
-  border: none;
-}
 .x-blank {
   height: 10px;
   display: block;

@@ -269,16 +269,6 @@ blockquote small {
 blockquote small:before {
   content: '\2014 \00A0';
 }
-blockquote.x-right {
-  float: right;
-  padding-left: 0;
-  padding-right: 15px;
-  border-left: 0;
-  border-right: 5px solid #eeeeee;
-}
-blockquote.x-right p, blockquote.x-right small {
-  text-align: right;
-}
 fieldset {
   padding: 0;
   margin: 0;
@@ -315,7 +305,7 @@ textarea {
 input, textarea, select {
   display: inline-block;
   padding: 4px;
-  font-size: 13px;
+  font-size: 12px;
   line-height: 18px;
   color: #555555;
   border: 1px solid #ccc;
