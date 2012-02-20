@@ -129,6 +129,7 @@ body {
 	border-radius: 4px;
 	-moz-border-radius: 4px;
 	float: right;
+	_margin: 13px 0;
 }
 
 #system-sidebar h2{
