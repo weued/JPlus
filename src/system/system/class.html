@@ -1,0 +1,117 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>J+ Core 测试</title>
+		<script type="text/javascript" src="../../src/system.js" ></script>
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+	</head>
+	<body>
+		<script>
+		
+			var SimpleClass = JPlus.Native(function(){
+				console.log("Simple");
+			});
+		
+			var MyClass1 = new Class({
+				xType: "MyClass1",
+				constructor: function MyClass1Ctr(args){
+					console.log("MyClass1->" + args);
+					assert.log("1");
+				}
+			});
+			
+			var MyClass2 = MyClass1.extend({
+				xType: "MyClass2",
+				constructor: function MyClass2Ctr(args){
+					this.base('constructor');
+					console.log("MyClass2->" + args);
+					assert.log("2");
+				}
+			});
+			
+			var MyClass3 = MyClass2.extend({
+				xType: "MyClass3",
+				constructor: function MyClass3Ctr(args){
+					this.base('constructor');
+					console.log("MyClass3->" + args);
+					assert.log("3");
+				}
+			});
+			
+			var MyClass4 = MyClass3.extend({
+				
+				xType: "MyClass4",
+				
+				a: function(a){
+					console.log("MyClass4.a->", a);
+					assert.log("4");
+				}
+			});
+			
+			var MyClass5 = MyClass4.extend({
+				
+				xType: "MyClass5",
+				
+				a: function(a){
+					this.base('a', a);
+					console.log("MyClass5.a->", a);
+					assert.log("5");
+				}
+				
+			});
+			
+			var MyClass6 = MyClass5.extend({
+				
+				xType: "MyClass6",
+				
+				a: function(a){
+					this.base('a');
+					console.log("MyClass6.a->", a);
+					assert.log("6");
+				}
+			});
+			
+			MyClass5.addEvents({
+				"click": {
+					add: function(){
+						console.log("绑定");
+						assert.log("bind");
+					},
+					remove: function(){
+						console.log("删除绑定");
+						assert.log("unbind");
+					}
+				}
+			});
+			
+			
+			var testcases = {
+				'类': '-',
+				'new MyClass1': {
+					name: '创建一个类',
+					tests: '"" => assert.logged("1")'
+				},
+				'new MyClass6': {
+					name: '继承',
+					tests: '"" => assert.logged("123333")'
+				},
+				'MyClass6.prototype.a': {
+					name: '重载',
+					tests: '@obj = new MyClass6(""); "" => assert.logged("456")'
+				},
+				'MyClass5.prototype.on': {
+					name: '事件',
+					tests: '@obj = new MyClass6(""); "click", function(){} => assert.logged("bind")'
+				},
+				'Data': '-',
+				'JPlus.data': '{}, "a"',
+				'JPlus.getData': '{}, "a"',
+				'JPlus.setData': '{}, "a", 5'
+			};
+			
+			System.initTestCases(testcases);
+			
+		</script>
+	</body>
+</html>

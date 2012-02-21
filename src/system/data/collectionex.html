@@ -1,0 +1,28 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Core</title>
+		<script src="../../py/system.js" type="text/javascript"></script>
+		<script src="../../py/system/data/collection.js" type="text/javascript"></script>
+		
+		<script src="../../common/project/project.js" type="text/javascript"></script>
+		<script src="../../common/assets/scripts/default.js" type="text/javascript"></script>
+		<script src="../../common/assets/scripts/debug.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<script>
+			
+			var list = new CollectionBase();
+			list.add(2);
+			list.insert(0, 2);
+			list.remove(2);
+			list.removeAt(0);
+			list.insert(0, 2);
+			list.insert(0, 8);
+			trace(list.length);
+			trace(list);
+		
+		</script>
+	</body>
+</html>

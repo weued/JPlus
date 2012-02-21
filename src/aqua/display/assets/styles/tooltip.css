@@ -1,0 +1,45 @@
+/**
+ * @author 
+ */
+
+
+
+.x-tooltip  {
+	position: absolute;
+	cursor: default;
+	
+	z-index: 100000;
+	padding-left: 4px;
+}
+
+.x-tooltip-container  {
+	padding-right:4px;
+}
+
+.x-tooltip-contetnt {
+	padding-top: 2px;
+	padding-bottom: 2px;
+	color: #555;
+	font-size: 12px;
+	font-family: System;
+	line-height:18px;
+	height: 18px;
+	display: inline-block;
+	_display: inline;
+	_zoom: 1;
+}
+
+
+.x-tooltip, .x-tooltip-container, .x-tooltip-contetnt{
+	background-image: url(../images/tooltip.gif);
+	background-repeat: no-repeat;
+}
+
+.x-tooltip-container {
+	background-position: 100% -50px;
+}
+
+.x-tooltip-contetnt {
+	background-position: 0 -25px;
+	background-repeat: repeat-x;
+}

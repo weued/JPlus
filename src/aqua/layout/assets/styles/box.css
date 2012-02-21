@@ -1,0 +1,53 @@
+
+.x-box{
+	border:1px solid #D5D5D5;
+	background-color:#FFFFFF;
+}
+
+.x-box-header, #doc  .x-box .box-hd{
+	height:35px;
+	line-height:35px;
+	border-top:1px solid #FFFFFF;
+	border-bottom:1px solid #C8C8C8;
+	background-color:#F2F2F2;
+	padding:0 10px 0 15px;
+}
+
+.x-box-header h1, .x-box-header h2, .x-box-header h3, .x-box-header h4, .x-box-header h5, .x-box-header h6{
+	margin: 0;
+}
+
+.x-box-body, #doc .x-box .box-bd{
+	border-top:1px solid #F4F4F4;
+	padding:0 10px 0 15px;
+}
+
+.x-box-body, #doc .box-bd{
+	zoom:1;
+}
+
+.x-box-body：after, #doc .box-bd:after {
+	content: ".";
+	display: block; 
+	height: 0; 
+	clear: both; 
+	visibility: hidden;
+}
+
+.x-box-body {
+	padding: 10px;	
+}
+
+
+
+/***************************** Compact Mode ***************************/
+
+
+
+
+#doc .x-box .box-hd h2 {
+    font-weight: bold;
+    color: #333333;
+    font-size: 14px;
+    margin: 0;
+}

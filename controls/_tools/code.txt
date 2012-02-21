@@ -1,3 +1,0 @@
-<script type="text/javascript" src="../../src/system/fx/base.js"></script>
-		<script type="text/javascript" src="../../src/system/fx/element.js"></script>
-		

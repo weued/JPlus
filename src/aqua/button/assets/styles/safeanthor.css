@@ -1,0 +1,42 @@
+/**
+ * @author 
+ */
+
+
+
+
+
+.x-safeauthor {
+
+	border: 1px solid #BABABA;
+	width: 274px; height: 117px;
+	position: absolute;
+	background: #ffffff;
+	z-index: 800;
+
+}
+
+
+.x-safeauthor-header {
+	height: 31px;
+	line-height: 31px;
+	padding: 5px;
+}
+
+.x-safeauthor-header  a {
+	margin:0 20px 0 7px;
+}
+
+.x-safeauthor-body {
+	border-top: 1px solid #BABABA;
+	height: 75px;
+	background: url(../images/bg.gif);
+	color: #666666;
+}
+
+.x-safeauthor-content {
+	background: url(../images/info.png) no-repeat 12px 15px;
+	padding: 10px 10px 10px 30px;
+	height: 52px;
+	overflow: hidden;
+}

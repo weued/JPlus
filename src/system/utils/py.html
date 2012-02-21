@@ -1,0 +1,28 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Core</title>
+		<script src="../../py/system.js" type="text/javascript"></script>
+		
+		<script src="../../common/project/project.js" type="text/javascript"></script>
+		<script src="../../common/assets/scripts/default.js" type="text/javascript"></script>
+		<script src="../../common/assets/scripts/debug.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<script>
+			var fns = [
+				["Py.eval", function(){ return Py.eval("alert('a')"); }],
+			  //	["Py.addCss", function(){ return Py.addCss("body{color: red}"); }],
+				["Py.data", function(){ return Py.data({},"s"); }, true],
+				["Py.getData", function(){ return Py.getData({},"s"); }, undefined],
+				["Py.setData", function(){ return Py.setData({},"s", 1); }, 1],
+				["Py.cloneData", function(){ return Py.cloneData({},{}); }],
+				["Py.rootPath", function(){ return Py.rootPath; }],
+				["Py.addEventListener", function(){Py.addEventListener.call(document, 'dblclick', log, false);}],
+				["Py.removeEventListener", function(){Py.removeEventListener.call(document, 'dblclick', log, false);}]
+			];
+		
+		</script>
+	</body>
+</html>

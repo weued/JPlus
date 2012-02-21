@@ -1,0 +1,28 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>J+ Core 测试</title>
+		<script type="text/javascript" src="../../src/system.js" ></script>
+		<script type="text/javascript" src="../../src/system/dom/element.js" ></script>
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+	</head>
+	<body>
+		<script>
+			
+			
+			Dom.ready(function(){    console.log("1/3: ready");   });
+			Dom.load(function(){    console.log("2/3: load");   });
+			onload = function(){  console.log('3/3: load')    };
+			
+			var testcases = {
+				'Dom.ready': 'function(){}',
+				'Dom.load': 'function(){}'
+			};
+			
+			System.initTestCases(testcases);
+			
+		</script>
+		<img src="http://404.com">
+	</body>
+</html>

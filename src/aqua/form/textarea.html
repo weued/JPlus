@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>J+ Control Libaray</title>
+		
+		<link rel="stylesheet" type="text/css" href="../core/assets/styles/reset.css">
+		<link rel="stylesheet" type="text/css" href="assets/styles/textarea.css">
+		
+		<script type="text/javascript" src="../../src/system.js"></script>
+		<script type="text/javascript" src="../../src/system/dom/element.js"></script>
+		<script type="text/javascript" src="../../src/controls.js"></script>
+		
+		<script type="text/javascript" src="../form/assets/scripts/iinputcontrol.js"></script>
+		<script type="text/javascript" src="assets/scripts/textarea.js"></script>
+		
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+	</head>
+	<body>
+		默认: <textarea class="x-textbox" value=".x-textbox"></textarea><br><br>
+		警告: <textarea class="x-textbox x-textbox-error" value=".x-textbox .x-textbox-error"></textarea><br><br>
+		只读: <textarea class="x-textbox" readonly="readonly" value=".x-textbox[readonly]"></textarea><br><br>
+		禁用: <textarea class="x-textbox" disabled="disabled" value=".x-textbox[disabled]"></textarea><br><br>
+		
+		<script>
+			var a = new TextArea().appendTo();
+			
+			var testcases = {
+				'TextArea.prototype.getText': '@a',
+				'TextArea.prototype.setDisabled': '@a',
+				'TextArea.prototype.setReadOnly': '@a',
+				'TextArea.prototype.setAttr': '@a; "error", true',
+				'TextArea.prototype.setText': '@a; "aaa"'
+			};
+            
+            System.initTestCases(testcases);
+		</script>
+	</body>
+</html>

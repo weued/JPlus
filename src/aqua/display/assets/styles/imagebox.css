@@ -1,0 +1,25 @@
+/**
+ * @author 
+ */
+
+
+
+.x-imagebox {
+	clear: left;
+}
+
+.x-imagebox .x-face {
+	float: left;
+	margin-right: 10px;
+	_margin-right: 5px;
+}
+
+.x-imagebox h5, .x-imagebox h4, .x-imagebox h3 {
+	margin: 0;	
+}
+
+.x-imagebox-body {
+	color: #999999;
+	display: block;
+	padding-left: 80px;
+}

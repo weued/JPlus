@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>J+ Control Libaray</title>
+		
+		<link rel="stylesheet" type="text/css" href="../core/assets/styles/reset.css">
+		<link rel="stylesheet" type="text/css" href="../core/assets/styles/listcontrol.css">
+		<link rel="stylesheet" type="text/css" href="assets/styles/listbox.css">
+		
+		<script type="text/javascript" src="../../src/system.js"></script>
+		<script type="text/javascript" src="../../src/system/dom/element.js"></script>
+		<script type="text/javascript" src="../../src/controls.js"></script>
+		<script type="text/javascript" src="../../src/system/data/collection.js"></script>
+		
+		<script type="text/javascript" src="../core/assets/scripts/icontainercontrol.js"></script>
+		<script type="text/javascript" src="../core/assets/scripts/listcontrol.js"></script>
+		<script type="text/javascript" src="../form/assets/scripts/iinputcontrol.js"></script>
+		<script type="text/javascript" src="assets/scripts/listbox.js"></script>
+		
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+	</head>
+	<body>
+		
+		<div class="x-listbox">
+			<ul class="x-listbox-container x-list-container">
+				<li class="x-listbox-content x-list-content x-listbox-selected">选项1</li>
+				<li class="x-listbox-content x-list-content">&nbsp;</li>
+				<li class="x-listbox-content x-list-content">选项3 - 你怎么可以这么长啊这么长这么长</li>
+				<li class="x-listbox-content x-list-content"></li>
+				<li class="x-listbox-content x-list-content">选项5</li>
+				<li class="x-listbox-content x-list-content">选项6</li>
+				<li class="x-listbox-content x-list-content">选项7</li>
+				<li class="x-listbox-content x-list-content">选项8</li>
+			</ul>
+		</div>
+		
+		 <select id="s" name="s">
+			<option value="1">选项1</option>
+
+			<option value="2" selected="selected">选项2</option>
+		</select>
+		
+		<script>
+			var a = new ListBox().appendTo();
+			a.items.add('列表1');
+			a.items.add('列表2');
+			a.items.add('列表3');
+			a.items.add('列表4');
+			a.on('change', function(){
+				trace(this.getText());
+			});
+			
+			var s = new ListBox('s');
+		</script>
+		
+	</body>
+</html>

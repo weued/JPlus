@@ -1,0 +1,26 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>System.Broswer  测试</title>
+		<link href="../assets/styles/default.css" rel="stylesheet"><link>
+		<script src="../../play/py.js" type="text/javascript"></script>
+		<script src="../../play/System/Broswer/Action.js" type="text/javascript"></script>
+		<script src="../../play/System/Broswer/ClipBoard.js" type="text/javascript"></script>
+		<script src="../../play/System/Broswer/Cookies.js" type="text/javascript"></script>
+		<script src="../../play/System/Broswer/Navigator.js" type="text/javascript"></script>
+		<script src="../../play/System/Broswer/Png.js" type="text/javascript"></script>
+		<script src="../../play/System/Broswer/QueryString.js" type="text/javascript"></script>
+		<script src="../assets/scripts/debug.js" type="text/javascript"></script>
+		<script src="../assets/scripts/test.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<script>
+			var fns = [
+				["添加收藏夹", function(){ return addFavorite(); }],
+				["设为主页", function(){ return setHomepage(); }],
+				["复制", function(){ return copyContent("复制"); }]
+			];
+		</script>
+	</body>
+</html>

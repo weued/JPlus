@@ -1,0 +1,211 @@
+/**
+ * @author 
+ */
+
+
+
+
+
+
+.x-tabcontrols-header {
+	position: relative;
+}
+
+/*  tabControls */
+.x-tabcontrols-header-container {
+	height: 28px;
+	margin: 0;
+	padding: 0;
+}
+
+.x-tabcontrols-header-content {
+	float: left;
+	display: block;
+	height: 28px;
+	margin-right: 2px;
+	cursor: pointer;
+	margin:0 2px 0 0;
+	padding: 0;
+} 
+
+.x-tabcontrols-header-content div {
+	float: left;
+	display: block;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
+.x-tabcontrols-header-content h3 {
+	float: left;
+	display: block;
+	overflow: hidden;
+	line-height: 25px;
+	padding: 2px 0;
+	font-size: 14px;
+	margin: 0;
+}
+
+.x-tabcontrols-container{
+	width: 100%;
+	height: 100%;
+}
+
+.x-tabcontrols-content {
+	padding: 5px 5px 1px 5px;
+}
+
+
+
+/* Tabs */
+
+.x-tabcontrols-header,.x-tabcontrols-header .x-header-container, .x-tabcontrols-header-container, .x-tabcontrols-header-content, .x-tabcontrols-header-content div, .x-tabcontrols-header-content h3, .x-tabcontrols-footer, .x-tabcontrols-footer .x-footer-container,  .x-tabcontrols-footer .x-footer-content{
+    background-image: url(../images/tabs.gif);
+}
+
+.x-tabcontrols-header .x-header-container{
+	background-position: 100% -30px;
+}
+
+.x-tabcontrols-header-content{
+    background-position: 0 -100px;
+	background-repeat: no-repeat;
+}
+
+.x-tabcontrols-header-content div {
+    color: #03408b;
+    background-position: 100% -130px;
+	background-repeat: no-repeat;
+}
+
+.x-tabcontrols-header-content h3 {
+    background-position: 0 -160px;
+	background-repeat: repeat-x;
+	font-weight:300;
+}
+
+.x-tabcontrols-header-container{
+    background-position: 0 -60px;
+}
+
+.x-tabcontrols-header-content:hover {
+    background-position: 0 -200px;
+}
+
+.x-tabcontrols-header-content:hover div {
+    background-position: 100% -230px;
+}
+
+.x-tabcontrols-header-content:hover h3 {
+    background-position: 0 -260px;
+}
+
+.x-tabcontrols-header-content.x-selected {
+     background-position: 0 -290px;
+}
+
+.x-tabcontrols-header-content.x-selected div {
+    background-position: 100% -320px;
+}
+
+.x-tabcontrols-header-content.x-selected h3 {
+    font-weight: bold;
+    background-position: 0 -350px;
+}
+
+
+.x-tabcontrols-body {
+	border-color: #b8d0d6;
+	border-width: 0 1px;
+	border-style: solid;
+}
+
+
+.x-tabcontrols-footer {
+    background-position: 0 -400px;
+}
+
+.x-tabcontrols-footer .x-footer-container {
+    background-position: 100% -410px;
+}
+
+
+.x-tabcontrols-footer .x-footer-content{
+	background-position: 0 -420px;
+}
+
+
+
+
+
+.x-tabcontrols-plain .x-tabcontrols-header{
+	background-position: 0 -430px;
+}
+	
+.x-tabcontrols-plain .x-header-container {
+	background-position: 100% -460px;
+}
+
+
+.x-tabcontrols-plain .x-tabcontrols-header-container {
+	background-position: 0 -490px;
+}
+
+.x-tabcontrols-plain .x-tabcontrols-footer, .x-tabcontrols-plain .x-tabcontrols-footer .x-footer-container, .x-tabcontrols-plain .x-tabcontrols-footer .x-footer-content  {
+	background: none;	
+}
+
+.x-tabcontrols-plain .x-tabcontrols-header{
+	padding: 0px;
+}
+
+
+
+.x-tabcontrols .x-tabcontrols-header-menubutton {
+	position: absolute;
+	top: 3px;
+	height: 22px;
+	width: 17px;
+	background-image: url(../images/tabs-trigger.gif);
+	background-repeat:  no-repeat;
+	border: none;
+}
+
+
+.x-tabcontrols .x-tabcontrols-header-menubutton-left {
+	left: 1px;
+	background-position: 0 0;
+}
+
+.x-tabcontrols .x-tabcontrols-header-menubutton-left:hover {
+	background-position: 0 -50px;
+}
+
+.x-tabcontrols .x-tabcontrols-header-menubutton-left.x-disabled {
+	background-position: 0 -100px;
+}
+
+
+.x-tabcontrols .x-tabcontrols-header-menubutton-right {
+	right: 18px;
+	background-position: 0 -150px;
+}
+
+.x-tabcontrols .x-tabcontrols-header-menubutton-right:hover {
+	background-position: 0 -200px;
+}
+
+.x-tabcontrols .x-tabcontrols-header-menubutton-right.x-disabled {
+	background-position: 0 -250px;
+}
+
+
+
+
+.x-tabcontrols .x-tabcontrols-header-menubutton-all {
+	right: 1px;
+	background-position: 0 -300px;
+}
+
+.x-tabcontrols .x-tabcontrols-header-menubutton-all:hover {
+	background-position: 0 -350px;
+}

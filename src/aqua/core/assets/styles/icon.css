@@ -1,0 +1,30 @@
+/**
+ * @author 
+ */
+
+
+
+
+.x-icon {
+	width: 20px;
+	height: 20px;
+	vertical-align: top;
+	display: inline-block;
+	overflow: hidden;
+    color: transparent;
+	background-repeat: no-repeat;
+	text-decoration: none;
+	background-image: url(../images/icons.gif);
+}
+
+.x-icon-home {
+	background-position: -50px -100px;
+}
+
+.x-icon-layout {
+	background-position: -25px -100px;
+}
+
+.x-icon-debug {
+	background-color: #999;	
+}

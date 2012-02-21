@@ -1,0 +1,43 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>J+ Core 测试</title>
+		<script type="text/javascript" src="../../src/system.js" ></script>
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+	</head>
+	<body>
+		<script>
+			
+			var testcases = {
+				'trace': '-',
+				'trace.clear': '',
+				'trace.api': '',
+				'trace.dir': '[]',
+				'trace.inspect': '[2,2,3,4] => "[2, 2, 3, 4]"; {a:"2"}; new Class({xType: "Book"}) ; null => "null"; undefined => "undefined"; true => "true"',
+				'trace.log': '"log"',
+				'trace.error': '"error"',
+				'trace.warn': '"warn"',
+				'trace.info': '"info"',
+				'trace.execute': 'function(){ console.log("debug") }',
+				'trace.count': '',
+				'trace.time': 'function(){}',
+				'assert': '-',
+				'assert.between': '1,-2,5,"sss"',
+				//'assert.instanceOf': '5, "number"',
+				'assert.isArray': '[]',
+				'assert.isDate': 'new Date()',
+				'assert.isElement': 'document.body',
+				'assert.isFunction': 'function(){}',
+				'assert.isNode': 'document',
+				'assert.isNumber': '1',
+				'assert.isObject': '{}',
+				'assert.isRegExp': '/z/',
+				'assert.isString': '"bhnb"'
+			};
+			
+			System.initTestCases(testcases);
+			
+		</script>
+	</body>
+</html>

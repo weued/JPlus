@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>J+ Control Library</title>
+		
+		<link rel="stylesheet" type="text/css" href="../core/assets/styles/base.css">
+		<link rel="stylesheet" type="text/css" href="../page/assets/styles/common.css">
+		<link rel="stylesheet" type="text/css" href="../form/assets/styles/textbox.css">
+		<link rel="stylesheet" type="text/css" href="../button/assets/styles/button.css">
+		<link rel="stylesheet" type="text/css" href="../display/assets/styles/tipbox.css">
+		<link rel="stylesheet" type="text/css" href="../layout/assets/styles/title.css">
+		<link rel="stylesheet" type="text/css" href="assets/styles/form.css">
+		
+		<script type="text/javascript" src="../../src/system.js"></script>
+		<script type="text/javascript" src="../../src/system/dom/element.js"></script>
+		<script type="text/javascript" src="../core/assets/scripts/base.js"></script>
+		<script type="text/javascript" src="assets/scripts/form.js"></script>
+		
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+	</head>
+	<body>
+		<h2>Horizontal forms</h2>
+		<form class="x-form">
+			<div class="x-formfield">
+				<label class="x-formfield-label">名字:</label>
+				<div class="x-formfield-container">
+					<input type="text" class="x-textbox"> <span class="x-tipbox x-tipbox-error">AAA</span> 
+				</div>
+			</div>
+			<div class="x-formfield">
+				<label class="x-formfield-label">内容:</label>
+				<div class="x-formfield-container">
+					<input type="text" class="x-textbox"> <span class="x-tipbox x-tipbox-success x-tipbox-plain">&nbsp;</span> 
+				</div>
+			</div>
+			<div class="x-formfield">
+				<label class="x-formfield-label">(选填)最后:</label>
+				<div class="x-formfield-container">
+					<input type="text" class="x-textbox"> &nbsp; <span class="x-hint">如：hello world</span> 
+				</div>
+			</div>
+			<div class="x-formfield">
+				<label class="x-formfield-label">内容:</label> 
+				<div class="x-formfield-container">
+					<input type="text" class="x-textbox"> <label><input type="radio" name="wtype" checked="checked"> value </label>  <label><input type="radio" name="wtype"> value </label>  &nbsp;
+				</div>
+			</div>
+			<div class="x-formfield">
+				<label class="x-formfield-label">内容:</label> 
+				<div class="x-formfield-container">
+					<input type="text" class="x-textbox"> <br>
+					<input type="text" class="x-textbox">
+				</div>
+			</div>
+			<div class="x-formfield">
+				<label class="x-formfield-label">内容:</label> 
+				<textarea class="x-textbox"></textarea>
+			</div>
+			<div class="x-formfield">
+				<div class="x-formfield-container">
+					<button type="submit" class="x-button">确定</button>
+				</div>
+			</div>
+		</form>
+		
+		<h2>Vertical forms</h2>
+		<form class="x-form x-form-vertical">
+			<div class="x-formfield">
+				<label class="x-formfield-label">名字:</label>
+				<div class="x-formfield-container">
+					<input type="text" class="x-textbox"> <span class="x-tipbox x-tipbox-error">AAA</span> 
+				</div>
+			</div>
+			<div class="x-formfield">
+				<label class="x-formfield-label">内容:</label>
+				<div class="x-formfield-container">
+					<input type="text" class="x-textbox"> <span class="x-tipbox x-tipbox-success x-tipbox-plain">&nbsp;</span> 
+				</div>
+			</div>
+			<div class="x-formfield">
+				<label class="x-formfield-label">(选填)最后:</label>
+				<div class="x-formfield-container">
+					<input type="text" class="x-textbox"> &nbsp; <span class="x-hint">如：hello world</span> 
+				</div>
+			</div>
+			<div class="x-formfield">
+				<label class="x-formfield-label">内容:</label> 
+				<div class="x-formfield-container">
+					<input type="text" class="x-textbox"> <label><input type="radio" name="wtype" checked="checked"> value </label>  <label><input type="radio" name="wtype"> value </label>  &nbsp;
+				</div>
+			</div>
+			<div class="x-formfield">
+				<label class="x-formfield-label">内容:</label> 
+				<div class="x-formfield-container">
+					<input type="text" class="x-textbox"> <br>
+					<input type="text" class="x-textbox">
+				</div>
+			</div>
+			<div class="x-formfield">
+				<label class="x-formfield-label">内容:</label> 
+				<textarea></textarea>
+			</div>
+			<div class="x-formfield">
+				<div class="x-formfield-container">
+					<button type="submit" class="x-button">确定</button>
+				</div>
+			</div>
+		</form>
+		
+		
+		<h2>Inline forms</h2>
+	    <form class="x-form x-form-inline">
+		    <input type="text" class="input-small" placeholder="Email">
+		    <input type="password" class="input-small" placeholder="Password">
+		    <label class="checkbox">
+	          <input type="checkbox"> Remember?
+	        </label>
+		    <button type="submit" class="btn">Go</button>
+	    </form>
+	    
+	    
+	</body>
+</html>

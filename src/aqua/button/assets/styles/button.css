@@ -1,0 +1,139 @@
+
+
+/*  按钮            */
+.x-button{
+	cursor: default;
+	overflow: hidden;
+	padding-left: 4px;
+	outline:none;
+	vertical-align: middle;
+}
+
+.x-button-container {
+	padding-right: 4px;
+}
+
+.x-button button {
+	margin: 0 -4px;
+	height: 23px;
+	background: none;
+	border: none;
+	font-size: 12px;
+	color: #183152;
+	font-weight: bold;
+	padding-bottom: 3px;
+	*padding-bottom: 0;
+}
+
+.x-button, .x-button-container, .x-button-content{
+	display: inline-block;
+	background-image: url(../images/button.gif);
+	background-repeat: no-repeat;
+}
+
+.x-button-container{
+	background-position: 100% -50px;
+}
+
+.x-button-content {
+	background-position: 0 -25px;
+	background-repeat: repeat-x;
+}
+
+/* 状态  */
+
+.x-button:hover{
+	background-position: 0 -75px;
+}
+
+.x-button:hover .x-button-container{
+	background-position: 100% -125px;
+}
+
+.x-button:hover .x-button-content{
+	background-position: 0 -100px;
+}
+
+/* IE6-9 和  Opera   不会处理   .x-button:active  (因为存在  <button>)  但我们忽略它。        */
+
+.x-button:active {
+	background-position: 0 -150px;
+}
+
+.x-button:active .x-button-container{
+	background-position: 100% -200px;
+}
+
+.x-button:active .x-button-content{
+	background-position: 0 -175px;
+}
+
+.x-button button:active{
+	position:relative;
+	top:1px;
+	left:1px;
+}
+
+
+/* 选中 */
+
+.x-button-actived {
+    background-position: 0 -225px;
+} 
+
+.x-button-actived .x-button-container {
+    background-position: 100% -275px;
+}
+
+.x-button-actived .x-button-content {
+    background-position: 0 -250px;
+}
+
+
+.x-button-actived:hover {
+    background-position: 0 -300px;
+} 
+
+.x-button-actived:hover .x-button-container {
+    background-position: 100% -350px;
+}
+
+.x-button-actived:hover .x-button-content {
+    background-position: 0 -325px;
+} 
+
+/* 禁用  */
+
+.x-button-disabled {
+    background-position: 0 -375px!important;
+} 
+
+.x-button-disabled .x-button-container {
+    background-position: 100% -425px!important;
+}
+
+.x-button-disabled .x-button-content {
+    background-position: 0 -400px!important;
+} 
+
+.x-button-disabled:active button{
+	position: static!important;
+}
+
+.x-button-disabled button{
+	color: gray;	
+}
+
+
+
+/* 平板    */
+
+.x-button-plain, .x-button-plain .x-button-container, .x-button-plain .x-button-content{
+	background: none!important;
+}
+
+.x-button-fixed button {
+	padding-left: 20px;	
+	padding-right: 20px;	
+}
+

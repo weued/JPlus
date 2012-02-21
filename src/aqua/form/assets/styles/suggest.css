@@ -1,0 +1,30 @@
+/**
+ * @author 
+ */
+
+
+
+
+.x-suggest {
+	position: absolute;
+	width: 233px;
+	background: #ffffff;
+	display: none;
+	border: 1px solid #ABC9E1;
+	max-height: 400px;
+	overflow: auto;
+	z-index: 11000;
+	_height: expression(this.scrollHeight    < 400 ? 'auto' : '400px');
+}
+
+.x-suggest-content{
+	line-height: 26px; 
+	text-indent: 10px;
+	cursor: default;
+	color: #999999;
+}
+
+.x-suggest-selected {
+	background: #CCE9F1;
+	color: black;
+}

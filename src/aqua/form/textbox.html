@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>J+ Control Libaray</title>
+		
+		<link rel="stylesheet" type="text/css" href="../core/assets/styles/reset.css">
+		<link rel="stylesheet" type="text/css" href="../form/assets/styles/textbox.css">
+			
+		<script type="text/javascript" src="../../src/system.js"></script>
+		<script type="text/javascript" src="../../src/system/dom/element.js"></script>
+		<script type="text/javascript" src="../../src/controls.js"></script>
+		
+		<script type="text/javascript" src="../form/assets/scripts/iinputcontrol.js"></script>
+		<script type="text/javascript" src="../form/assets/scripts/textbox.js"></script>
+		
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+		
+	</head>
+	<body>
+		默认: <input type="text" class="x-textbox" value=".x-textbox" /><br><br>
+		警告: <input type="text" class="x-textbox x-textbox-error" value=".x-textbox .x-textbox-error" /><br><br>
+		只读: <input type="text" class="x-textbox" readonly="readonly" value=".x-textbox[readonly]" /><br><br>
+		禁用: <input type="text" class="x-textbox" disabled="disabled" value=".x-textbox[disabled]" /><br><br>
+		
+		<script>
+			var a = new TextBox().appendTo();
+			
+			var testcases = {
+				'TextBox.prototype.getText': '@a',
+				'TextBox.prototype.setDisabled': '@a',
+				'TextBox.prototype.setReadOnly': '@a',
+				'TextBox.prototype.setAttr': '@a; "error", true',
+				'TextBox.prototype.setText': '@a; "aaa"'
+			};
+            
+            System.initTestCases(testcases);
+		</script>
+	</body>
+</html>

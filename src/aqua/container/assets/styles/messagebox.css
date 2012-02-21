@@ -1,0 +1,58 @@
+/**
+ * @author 
+ */
+
+
+
+
+
+
+.x-messagebox {
+	width: 260px;
+	height: 139px;
+	left: 50%;
+	margin-left: -130px;
+    top: 50%;
+	margin-top: -60px;
+}
+
+
+
+.x-messagebox .x-window-container{
+	height: 68px;
+	overflow: hidden;
+	padding-bottom: 38px;
+}
+
+
+
+.x-messagebox   .x-messagebox-buttons{
+	background: #eef4f5;
+	height: 25px;
+	border-top: 1px solid #bcd3d8;
+	width: 100%;
+	text-align: right;
+	padding: 6px 0;
+}
+
+
+.x-messagebox-content {
+	padding: 10px 16px;
+}
+
+.x-messagebox-buttons .x-button{
+	margin-right: 20px;
+}
+
+
+.x-messagebox-content .x-icon {
+	width: 44px;
+	height: 100px;
+	background-repeat:  no-repeat;
+}
+
+
+
+.x-icon-error{
+	background: url(../images/icon-error.gif);
+}

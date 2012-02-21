@@ -1,0 +1,54 @@
+/**
+ * @author 
+ */
+
+.x-listbox {
+	position: absolute;
+	border: 1px solid #cccccc;
+	cursor: default;
+	background: white;
+	z-index:99999;
+	width: 200px;
+	max-height: 200px;
+	_height: expression(Math.min(this.offsetHeight, 200));
+	overflow: auto;
+}
+
+.x-listbox-plain {
+	border: none;	
+}
+
+.x-listbox-container {
+	padding: 0;
+	margin: 0;
+	background: #fff;
+}
+
+.x-listbox-content {
+	color: #585858;
+	padding: 2px;
+	line-height:22px;
+	font-size: 12px;
+    display: block;
+    border: 1px dotted #fff;
+}
+
+
+.x-listbox-content:hover{
+	background-color:#DFE8F6;
+	border: 1px dotted #8EABE4;
+}
+
+.x-listbox-selected{
+	background-color: #CBDAF0;
+	border: 1px dotted #8EABE4;
+}
+
+.x-listbox-disabled {
+	color: gray;
+}
+
+.x-listbox-disabled .x-listbox-selected, .x-listbox-disabled .x-listbox-content:hover{
+	background-color: #eeeeee;
+	border-color: #999999;
+}

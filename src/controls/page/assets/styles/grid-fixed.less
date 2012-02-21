@@ -1,0 +1,58 @@
+// GRID SYSTEM
+// -----------
+
+@import "../../../core/assets/styles/mixins.less";
+
+@sideWidth:   230px;
+@extraWidth:   190px;
+
+.x-grid {
+  margin-top: 10px;
+  .clearfix();
+}
+
+.x-grid-plain {
+  margin-top: 0;
+}
+
+.x-col       { 
+	float: left; 
+	margin-left: @gridGutterWidth; 
+}
+    
+.x-container { 
+	margin-left: auto; 
+	margin-right: auto; 
+	#gridSystem > .columns(@gridGutterWidth, @gridColumnWidth, @gridRowWidth, 12); 
+}
+
+.x-grid-1 .x-col-main {
+  width: @gridRowWidth;
+  margin-left: 0;
+}
+
+.x-grid-2 .x-col-side, .x-grid-3 .x-col-side {
+  width: @sideWidth;
+  margin-left: 0;
+}
+
+.x-grid-2 .x-col-main {
+  width: @gridRowWidth - @sideWidth - @gridGutterWidth;
+}
+
+.x-grid-2x .x-col-extra {
+  width: @sideWidth;
+}
+
+.x-grid-2x .x-col-main {
+  width: @gridRowWidth - @sideWidth - @gridGutterWidth;
+  margin-left: 0;
+}
+
+.x-grid-3 .x-col-extra {
+  width: @extraWidth;
+}
+
+.x-grid-3 .x-col-main {
+  width: @gridRowWidth - @sideWidth - @extraWidth - @gridGutterWidth - @gridGutterWidth;
+}

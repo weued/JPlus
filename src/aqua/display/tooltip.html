@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>J+ Control Libaray</title>
+		
+		<link rel="stylesheet" type="text/css" href="../core/assets/styles/reset.css">
+		<link rel="stylesheet" type="text/css" href="assets/styles/tooltip.css">
+		
+		<script type="text/javascript" src="../../src/system.js"></script>
+		<script type="text/javascript" src="../../src/system/dom/element.js"></script>
+		<script type="text/javascript" src="../../src/controls.js"></script>
+		
+		<script type="text/javascript" src="assets/scripts/itooltip.js"></script>
+		<script type="text/javascript" src="assets/scripts/tooltip.js"></script>
+		
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+		<style>
+			 .x-tooltip {
+				position: relative!important;
+				 display: inline-block;
+				 margin: 0 10px;
+				 vertical-align: middle;
+				 *display: block;
+				 *zoom: 1;
+				 _width: 60px;
+			}
+		</style>
+	</head>
+	<body>
+		
+		
+		
+		<div class="x-tooltip">
+			<div class="x-tooltip-container">
+				<div class="x-tooltip-contetnt">
+					内容
+				</div>
+			</div>
+		</div>
+		
+		<div style="border: 1px solid red; width: 300px; height: 300px;" id="a"></div>
+		
+		<script>
+			
+			
+			var a = ToolTip.show('a', 'aaa');
+			
+			
+		</script>
+		
+	</body>
+</html>

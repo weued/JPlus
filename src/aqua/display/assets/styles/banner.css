@@ -1,0 +1,21 @@
+/**
+ * @author 
+ */
+
+
+
+.x-banner {
+	width: 100%;	
+}
+
+.x-banner-small {
+	height: 40px;	
+}
+
+.x-banner-normal {
+	height: 75px;	
+}
+
+.x-banner-large {
+	height: 135px;	
+}

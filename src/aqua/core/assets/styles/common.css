@@ -1,0 +1,178 @@
+
+
+
+
+
+/********************************* Tools *********************************/
+
+/* clear */
+
+.x-clear:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+/* ensure .clear works fine in IE6 & IE7 */
+.x-clear {
+	display: block;
+	zoom: 1;
+}
+
+/* float */
+
+.x-left {
+	float: left;
+}
+
+.x-right {
+	float: right;
+}
+
+.x-center {
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+}
+
+/*fix double margin bug fix for IE6 */
+.x-left, .x-right {
+	_display: inline;
+}
+
+/* position */
+.x-relative {
+	position: relative;	
+}
+
+.x-absolute {
+	position: absolute;	
+}
+
+/* display */
+
+html .x-inline {
+	display: inline;	
+}
+
+html .x-block {
+	display: block;	
+}
+
+html .x-inline-block {
+	display: inline-block;
+	
+	/* fix for IE6 & IE7 */
+	*display: inline;
+	*zoom: 1;	
+}
+
+html .x-hide {
+	display: none;	
+}
+
+/* text */
+
+.x-break-word {
+	word-wrap: break-word;
+	word-break: break-all;
+}
+
+/* other tools */
+
+.x-menu, .x-menu li, .x-menu ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+/* clear default margin & paddings*/
+.x-plain {
+	margin: 0;
+	padding: 0;
+}
+
+/* provides a 10px blank line */
+.x-blank {
+	height: 10px;
+	display: block;
+	visibility: hidden;
+	background: #fff;
+	color: #fff;
+	clear: both;
+}
+
+.x-debug {
+	border: 1px solid #C03;
+}
+
+/********************************* Style ********************************/
+
+body {
+	color: #666666;
+	background-color: #F7F7F7;
+	background-position: center top;
+	background-repeat: repeat-x;
+	font: 12px/1.5 Tahoma, Arial, "\5b8b\4f53", sans-serif;
+}
+
+a {
+	color: #0464BB;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #1C417C;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	color: #333333;	
+}
+
+h2 {
+	font-size: 14px;
+	font-weight: bold;
+}
+
+h3 {
+	font-size: 16px;
+	font-weight: bold;
+}
+
+hr {
+	background: #ddd;
+	color: #ddd;
+}
+
+/* other tools */
+
+.x-alt {
+	color: #70A3CD;
+}
+
+.x-hint, a.x-hint, .x-hint a {
+	color: #999999;
+}
+
+.x-error {
+	color: #B02221!important;
+}
+
+.x-success {
+	color: #6B8E27!important;
+}
+
+.x-highlight {
+	color: #FF6600!important;
+}
+
+.x-content {
+	text-align: left;
+	line-height: 18px;
+}
+
+p.x-content {
+	text-indent: 2em;
+}

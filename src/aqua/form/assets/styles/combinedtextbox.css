@@ -1,0 +1,92 @@
+
+.x-combinedtextbox-menu {
+	height: 22px;
+	width: 16px;
+	padding: 0;
+	border: 0;
+	vertical-align: bottom;
+	background: none;
+	overflow: hidden;
+	cursor: pointer;
+	border: 0;
+    text-indent: -1000px;
+	display: inline-block;
+	background-repeat: no-repeat;
+    background-image: url(../images/menubuttons.gif);
+	*margin-top: -23px;
+}
+
+.x-combinedtextbox-menu-search:hover, .x-combinedtextbox:focus + .x-combinedtextbox-menu-search {
+    background-position: 0 -22px;
+}
+
+.x-combinedtextbox-menu-search:active {
+    background-position: 0 -44px;
+}
+
+.x-combinedtextbox-menu-search[disabled] {
+	background-position: 0 0px;
+}
+
+.x-combinedtextbox-menu-right:hover, .x-combinedtextbox:focus + .x-combinedtextbox-menu-right {
+    background-position: -16px -22px;
+}
+
+.x-combinedtextbox-menu-right:active {
+    background-position: -16px -44px;
+}
+
+.x-combinedtextbox-menu-right[disabled] {
+	background-position: -16px 0px;
+}
+
+.x-combinedtextbox-menu-down:hover, .x-combinedtextbox:focus + .x-combinedtextbox-menu-down {
+    background-position: -32px -22px;
+}
+
+.x-combinedtextbox-menu-down:active {
+    background-position: -32px -44px;
+}
+
+.x-combinedtextbox-menu-down, .x-combinedtextbox-menu-down[disabled] {
+	background-position: -32px 0px;
+}
+
+.x-combinedtextbox-menu-date:hover, .x-combinedtextbox:focus + .x-combinedtextbox-menu-date {
+    background-position: -48px -22px;
+}
+
+.x-combinedtextbox-menu-date:active {
+    background-position: -48px -44px;
+}
+
+.x-combinedtextbox-menu-date, .x-combinedtextbox-menu-date[disabled] {
+	background-position: -48px 0px;
+}
+
+.x-combinedtextbox-menu-ellipsis:hover, .x-combinedtextbox:focus + .x-combinedtextbox-menu-ellipsis {
+    background-position: -64px -22px;
+}
+
+.x-combinedtextbox-menu-ellipsis:active {
+    background-position: -64px -44px;
+}
+
+.x-combinedtextbox-menu-ellipsis, .x-combinedtextbox-menu-ellipsis[disabled] {
+	background-position: -64px 0px;
+}
+
+.x-combinedtextbox-menu-clear:hover, .x-combinedtextbox:focus + .x-combinedtextbox-menu-clear {
+    background-position: -80px -22px;
+}
+
+.x-combinedtextbox-menu-clear:active {
+    background-position: -80px -44px;
+}
+
+.x-combinedtextbox-menu-clear, .x-combinedtextbox-menu-clear[disabled] {
+	background-position: -80px 0px;
+}
+
+
+

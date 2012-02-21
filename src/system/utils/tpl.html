@@ -1,0 +1,47 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>J+ Core 测试</title>
+		<script type="text/javascript" src="../../src/system.js" ></script>
+		<script type="text/javascript" src="../../src/system/utils/tpl.js" ></script>
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+	</head>
+	<body>
+		<script>
+			
+			
+			var testcases = {
+				'Tpl.parse': '"{for p in path}{p}{end}", {path: [1,2,3]} => "123"; "{if a}abc{else if b.c}def{end}", {a:0 , b: {c: 4}} => "def"'
+			};
+			
+			System.initTestCases(testcases);
+			
+			
+			//trace(  Tpl.compile("abc{\\{}")  .toString()   );
+			//trace(  Tpl.compile("'\"\r\n\tabc{abc}")  .toString()   );
+			//trace(  Tpl.compile("abc{abc.def}")  .toString()   );
+			//trace(  Tpl.compile("abc{if abc}abc{else}def{end}")  .toString()   );
+			//trace(  Tpl.compile("abc{for p in path}abc{end}")  .toString()   );
+			
+			function $(id) {
+				return document.getElementById(id);
+			}
+			
+		</script>
+		
+		<textarea id="from">遍历 dataA 对象: 
+{for a in dataA}
+	判断当前遍历的数据      {a} : 
+	{if a}
+		不空
+	{else}
+		空的
+	{end}
+{end}		
+		</textarea><br>
+		输入: <input type="text" value="{dataA: [3,2,1,0]}" id="data">&nbsp;
+		<input onclick="$('to').value =  Tpl.parse($('from').value, eval('(' + $('data').value + ')'))" type="button" value="解析模板"><br>
+		<textarea id="to"></textarea>
+	</body>
+</html>

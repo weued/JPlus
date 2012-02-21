@@ -1,0 +1,26 @@
+/**
+ * @author 
+ */
+
+
+
+
+.x-ad-small {
+	width: 190px;
+	height: 80px;
+}
+
+.x-ad-normal {
+	width: 230px;
+	height: 78px;
+}
+
+.x-ad-large {
+	width: 240px;
+	height: 78px;
+}
+
+.x-ad-largest {
+	width: 270px;
+	height: 88px;
+}

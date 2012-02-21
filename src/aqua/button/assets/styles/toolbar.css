@@ -1,0 +1,44 @@
+/**
+ * @author 
+ */
+
+
+
+
+
+.x-toolbar {
+	height: 22px;
+	padding: 2px;
+	background: url(../images/toolbar.gif);
+}
+
+.x-toolbar-container {
+	margin: 0;
+	padding: 0;
+}
+
+
+.x-toolbar-content {
+	float: left;
+	list-style: none;
+}
+
+.x-toolbar-content .x-label{
+	color: #183152;
+	cursor: default;
+	line-height: 24px;
+	margin: 0 5px;
+}
+
+
+
+.x-toolbar-split{
+	display: inline-block;
+	width:1px;
+	border-right: 1px solid white;
+	
+	_height: 22px;
+	_font-size: 1px;
+	background-color: #9ac6ff;
+	margin: 2px 0 0 0;
+}

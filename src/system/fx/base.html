@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>J+ Core 测试</title>
+		<script src="../../src/system.js" type="text/javascript"></script>
+		<script src="../../src/system/dom/element.js" type="text/javascript"></script>
+		<script src="../../src/system/fx/base.js" type="text/javascript"></script>
+		
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+	</head>
+	<body>
+		<script>
+			
+			var testcases = {
+				
+				// 简单创建一个特效。
+				'createAnimate': function () {
+					var Animate = Fx.Base.extend({
+						set: function(now){
+							console.log(Fx.compute(this.from, this.to, now));
+						},
+						link: 'wait',
+						onStart: function(e){
+							console.log("START   ");
+						},
+						onComplete: function(){
+							console.log("COMPLETE");
+						}
+					});
+					
+					new Animate()
+						.start(1,2)
+						.start(10, 20);
+				}
+			};
+			
+			
+			
+			System.initTestCases(testcases, {times: 8});
+			
+		</script>
+	</body>
+</html>
