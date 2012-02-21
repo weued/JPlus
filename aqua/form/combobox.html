@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>J+ Control Libaray</title>
+		
+		<link rel="stylesheet" type="text/css" href="../core/assets/styles/reset.css">
+		<link rel="stylesheet" type="text/css" href="../core/assets/styles/listcontrol.css">
+		<link rel="stylesheet" type="text/css" href="../form/assets/styles/textbox.css">
+		<link rel="stylesheet" type="text/css" href="../form/assets/styles/combinedtextbox.css">
+		<link rel="stylesheet" type="text/css" href="../form/assets/styles/listbox.css">
+		
+		<script type="text/javascript" src="../../system/core/assets/scripts/system.js"></script>
+		<script type="text/javascript" src="../../system/dom/assets/scripts/element.js"></script>
+		<script type="text/javascript" src="../../src/controls.js"></script>
+		<script type="text/javascript" src="../../src/system/data/collection.js"></script>
+		
+		<script type="text/javascript" src="../core/assets/scripts/idropdownmenucontainer.js"></script>
+		<script type="text/javascript" src="../core/assets/scripts/icontainercontrol.js"></script>
+		<script type="text/javascript" src="../core/assets/scripts/listcontrol.js"></script>
+		<script type="text/javascript" src="assets/scripts/iinputcontrol.js"></script>
+		<script type="text/javascript" src="assets/scripts/textbox.js"></script>
+		<script type="text/javascript" src="assets/scripts/combinedtextbox.js"></script>
+		<script type="text/javascript" src="assets/scripts/listbox.js"></script>
+		<script type="text/javascript" src="assets/scripts/combobox.js"></script>
+		
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+		
+	</head>
+	<body>
+		
+		
+		<input class="x-textbox x-combinedtextbox" type="text" value="选项2" id="id"/><input type="button" value="▼" class="x-combinedtextbox-arrow x-combinedtextbox-arrow-down" />
+		
+		
+		
+		<div class="x-listbox">
+				<ul class="x-listbox-container x-list-container">
+					<li class="x-listbox-content x-list-content">选项1</li>
+					<li class="x-listbox-content x-list-content">&nbsp;</li>
+					<li class="x-listbox-content x-list-content">选项3 - 你怎么可以这么长啊这么长</li>
+					<li class="x-listbox-content x-list-content"></li>
+					<li class="x-listbox-content x-list-content">选项5</li>
+				</ul>
+			</div>
+
+		选择框： <select id="b" name="a">
+			<option value="1">选项1</option>
+
+			<option value="2" selected="selected">选项2</option>
+		</select>
+			
+		<script>
+		
+		var a = new ComboBox().appendTo();
+		
+		a.items.add('选项1');
+		a.items.add('选项2');
+		a.items.add('选项3');
+		a.items.add('选项4');
+		
+		a.on('change', function(){
+			trace(this.getText());
+		});
+		
+		var b = new ComboBox('b');
+		
+		
+		var testcases = {
+			'ComboBox.prototype.getText': '@a',
+			'ComboBox.prototype.setDisabled': '@a',
+			'CombinedTextBox.prototype.setReadOnly': '@a',
+			'CombinedTextBox.prototype.setAttr': '@a; "error", !0  ',
+			'CombinedTextBox.prototype.setText': '@a; "aaa"'
+		};
+        
+        System.initTestCases(testcases);
+		</script>
+	</body>
+</html>

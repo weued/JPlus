@@ -1,0 +1,70 @@
+﻿﻿<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>J+ Core Library</title>
+		<script type="text/javascript" src="../core/assets/scripts/system.js" ></script>
+		<script type="text/javascript" src="../dom/assets/scripts/element.js" ></script>
+		<script type="text/javascript" src="../fx/assets/scripts/base.js" ></script>
+		<script type="text/javascript" src="../fx/assets/scripts/animate.js" ></script>
+		<script type="text/javascript" src="../dom/assets/scripts/drag.js" ></script>
+		<script type="text/javascript" src="../dom/assets/scripts/dragex.js" ></script>
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+		<style>
+			#drag div {
+				cursor: move;
+			}
+			
+			
+		</style>
+	</head>
+	<body>
+		<div id="drag">
+			<div id="d1" class="box blue">普通拖动</div>
+			<div id="d2" class="box purple">返回原地</div>
+			<div id="d3" class="box green"><button>拖动句柄</button></div>
+			<div id="d4" class="box purple">多像素拖动</div>
+			<div id="d5" class="box indigo">限制位置</div>
+			<div id="d6" class="box blue">自动刷屏</div>
+		</div>
+		<script>
+			
+		
+		
+		
+			
+			var d1 = $$('d1').setDraggable(true).on('dragstart', function(e){
+				this.text = this.getHtml();
+			}).on('drag', function(e){
+			   	this.setHtml(e.draggable.to.x + "," + e.draggable.to.y);
+			}).on('dragend', function(e){
+				this.setHtml(this.text);
+			});
+			
+			var d2 = $$('d2').setDraggable(true).on('dragend', function (e) {
+				e.draggable.revert();
+			});
+			
+			var d3 = $$('d3').setDraggable($$('d3').find('button'));
+			
+			var d4 = $$('d4').setDraggable(true).on('drag', function(e){
+				
+				var STHREH = 60;
+				e.draggable.setStep('x', STHREH);
+				e.draggable.setStep('y', STHREH);
+			});
+			
+			var d5 = $$('d5').setDraggable(true).on('drag', function(e){
+				var container = this.getParent(1);
+				e.draggable.limit(container.getPosition(), container.getSize()) ;
+			});
+			
+			var d6 = $$('d6').setDraggable(true).on('drag', function(e){
+				e.draggable.autoScroll(document);
+
+			});
+			
+			
+		</script>
+	</body>
+</html>

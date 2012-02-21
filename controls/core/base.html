@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>J+ Control Library</title>
+		
+		<link rel="stylesheet" type="text/css" href="../core/assets/styles/base.css">
+		
+		<script type="text/javascript" src="../../system/core/assets/scripts/system.js"></script>
+		<script type="text/javascript" src="../../system/dom/assets/scripts/element.js"></script>
+		<script type="text/javascript" src="../core/assets/scripts/base.js"></script>
+		
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+	</head>
+	<body>
+		
+		<h1>Base</h1>
+		 Base 包括了最基础的 CSS 和 JS 代码。所有的界面组件都依赖于 Base。
+		
+		<hr>
+		<h2>css reset</h2>
+		<p>css reset 用于重置标签的默认样式。包括：</p>
+		<ul>
+			<li>删除了 html, body, form, object, iframe, img, pre 的默认边距</li>
+			<li>删除了 html, body, 含链接的 img 的默认边框</li>
+			<li>让 table 去边框</li>
+			<li>让 hr 默认显示无阴影直线</li>
+			<li>修正 legend, sub, sup, textarea, q 标签的兼容问题。</li>
+		</ul>
+		
+		<hr>
+		
+		<h2>css reset - html5</h2>
+		<p>重置了来自  HTML5 新标签的默认样式。包括：</p>
+		<ul>
+			<li>令 article, aside, details, figcaption, figure, footer, header, hgroup, nav, section 默认显示块级。</li>
+			<li>令 audio, canvas, video 默认显示内联块。</li>
+			<li>隐藏不含 controls 的 audio 标签</li>
+		</ul>
+		
+		<hr>
+		
+		<h2>typography</h2>
+		<p>定义了一些标签用于的默认样式。</p>
+		
+		<hr>
+		
+		<h2>js base</h2>
+		<p>定义了全站公共的函数。</p>
+		
+		<hr>
+		
+		
+		<a href="javascript:;">Link</a>
+		
+		<hr>
+		
+		
+		text <sub>sub</sub> <sup>sup</sup> text
+		
+		<hr>
+		
+		
+        <h1>h1. Heading 1 <small>Hint</small></h1>
+        <h2>h2. Heading 2 <small>Hint</small></h2>
+        <h3>h3. Heading 3 <small>Hint</small></h3>
+        <h4>h4. Heading 4 <small>Hint</small></h4>
+        <h5>h5. Heading 5 <small>Hint</small></h5>
+        <h6>h6. Heading 6 <small>Hint</small></h6>
+		
+		<hr>
+		
+		<h1>Heading 1</h1>
+		<p>Paragragh</p>
+		
+		<h2>Heading 2</h2>
+		<h3>Heading 3</h3>
+		<p>Paragragh</p>
+		
+		<h3>Heading 3</h3>
+		<h4>Heading 4</h4>
+		<p>Paragragh</p>
+		
+		<h2>Heading 2</h2>
+		<div>Div</div>
+		
+		<hr>
+		
+		<ul>
+			<li>list</li>
+			<li>list
+				<ul>
+					<li>list</li>
+					<li>list</li>
+				</ul>	
+			</li>
+		</ul>
+		
+		<ol>
+			<li>list</li>
+			<li>list</li>
+		</ol>
+		
+		<dl>
+			<dt>items1</dt>
+			<dd>dd</dd>
+			<dd>dd</dd>
+			<dt>items2</dt>
+			<dd>dd</dd>
+		</dl>
+		
+		<hr>
+		
+		<strong>strong</strong>
+		<em>em</em>
+		<abbr>abbr</abbr>
+		<b>b</b>
+		<i>i</i>
+		<u>u</u>
+		<del>del</del>
+		<address>address</address>
+		<small>small</small>
+		<cite>cite</cite>
+		
+		<hr>
+		
+		<blockquote>
+	        <p>blockquote</p>
+	        <small>blockquote small <cite title="">blockquote small cite</cite></small>
+	      </blockquote>
+	      
+	     <hr>
+	     <pre class="prettyprint linenums"><ol class="linenums"><li class="L0">pre</li></ol></pre>
+
+		<pre style="margin-bottom: 9px;" class="prettyprint linenums"><ol class="linenums"><li class="L0"><span class="tag">&lt;pre</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"prettyprint</span></li><li class="L1"><span class="atv">     linenums"</span><span class="tag">&gt;</span></li><li class="L2"><span class="pln">  &amp;lt;p&amp;gt;Sample text here...&amp;lt;/p&amp;gt;</span></li><li class="L3"><span class="tag">&lt;/pre&gt;</span></li></ol></pre>
+		
+		<hr>
+		<table>
+        <thead>
+          <tr>
+            <th>Table</th>
+            <th>Th 1</th>
+            <th>Th 2</th>
+            <th>Th 3</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Td 1</td>
+            <td>Td 2</td>
+            <td>Td 3</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Td 1</td>
+            <td>Td 2</td>
+            <td>Td 3</td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <hr>
+      
+      <fieldset>
+      	<legend>Legend<small>Hint</small></legend>
+      	FieldSet
+      </fieldset>
+      
+      <hr>
+      
+      text: <input type="text" /> <br><br>
+      password: <input type="password" /> <br><br>
+      file: <input type="file" /> <br><br>
+      checkbox: <label><input type="checkbox" /> T</label> <br><br>
+      radio: <label><input type="radio" /> T</label> <br><br>
+      select: <select>
+      	<option>AA</option>
+      	<option>BB</option>
+      	<optgroup label="CC">
+      		<option>DD</option>
+      	</optgroup>
+      </select> <br><br>
+       select: <select multiple="multiple">
+      	<option>AA</option>
+      	<option>BB</option>
+      	<optgroup label="CC">
+      		<option>DD</option>
+      	</optgroup>
+      </select> <br><br>
+       button: <input type="button" value="button" /> <br><br>
+       textarea: <textarea></textarea> <br><br>
+		
+	</body>
+</html>

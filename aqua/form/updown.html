@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>J+ Control Libaray</title>
+		
+		<link rel="stylesheet" type="text/css" href="../core/assets/styles/reset.css">
+		<link rel="stylesheet" type="text/css" href="assets/styles/updown.css">
+		
+		<script type="text/javascript" src="../../system/core/assets/scripts/system.js"></script>
+		<script type="text/javascript" src="../../system/dom/assets/scripts/element.js"></script>
+		<script type="text/javascript" src="../../src/controls.js"></script>
+		
+		<script type="text/javascript" src="../form/assets/scripts/iinputcontrol.js"></script>
+		<script type="text/javascript" src="../form/assets/scripts/textbox.js"></script>
+		<script type="text/javascript" src="../form/assets/scripts/combinedtextbox.js"></script>
+		<script type="text/javascript" src="assets/scripts/updown.js"></script>
+		
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+	</head>
+	<body>
+		
+		默认: <input type="text" class="x-textbox x-combinedtextbox"><span class="x-combinedtextbox-menu x-combinedtextbox-menu-updown"><a href="javascript://上;" class="x-combinedtextbox-menu-updown-up"></a><a href="javascript://下;" class="x-combinedtextbox-menu-updown-down"></a></span><br><br>
+		警告: <input type="text" class="x-textbox x-textbox-error x-combinedtextbox" value=".x-textbox.x-combinedtextbox.x-textbox-error" /><span class="x-combinedtextbox-menu x-combinedtextbox-menu-updown"><a href="javascript://上;" class="x-combinedtextbox-menu-updown-up"></a><a href="javascript://下;" class="x-combinedtextbox-menu-updown-down"></a></span><br><br>
+		只读: <input type="text" class="x-textbox x-combinedtextbox" readonly="readonly" value=".x-textbox.x-combinedtextbox[readonly]" /><span class="x-combinedtextbox-menu x-combinedtextbox-menu-updown"><a href="javascript://上;" class="x-combinedtextbox-menu-updown-up"></a><a href="javascript://下;" class="x-combinedtextbox-menu-updown-down"></a></span><br><br>
+		禁用: <input type="text" class="x-textbox x-combinedtextbox" disabled="disabled" value=".x-textbox.x-combinedtextbox[disabled]" /><span class="x-combinedtextbox-menu x-combinedtextbox-menu-updown x-combinedtextbox-menu-updown-disabled"><a href="javascript://上;" class="x-combinedtextbox-menu-updown-up"></a><a href="javascript://下;" class="x-combinedtextbox-menu-updown-down"></a></span><br><br>
+		
+		
+		<script>
+			 var a = new UpDown().appendTo();
+			
+			var testcases = {
+				'UpDown.prototype.getText': '@a',
+				'UpDown.prototype.setDisabled': '@a',
+				'UpDown.prototype.setReadOnly': '@a',
+				'UpDown.prototype.setAttr': '@a; "error", true',
+				'UpDown.prototype.setText': '@a; "aaa"'
+			};
+            
+            System.initTestCases(testcases);
+		</script>
+		
+		
+	</body>
+</html>

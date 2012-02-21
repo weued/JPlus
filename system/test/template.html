@@ -1,0 +1,29 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>J+ Core Library</title>
+		<script type="text/javascript" src="../core/assets/scripts/system.js" ></script>
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+	</head>
+	<body>
+		<script>
+			
+			var testcases = {
+				'testcase': '-',
+				'add': '1=>3',
+				'sample': {  				 // 测试的函数名
+					name: 'name',       	 // 名字
+					summary: 'summary',  	 //  功能的说明
+					init: 'var a = 1;', 	 // 初始化的时候执行
+					tests: '@me = this; 1 => 2; 2, a => 3',  // 重载的参数列表
+					uninit: 'a = null;', // 执行结束后执行
+					time: 1000  // 测试速度时执行才次数
+				}
+			};
+			
+			System.initTestCases(testcases);
+			
+		</script>
+	</body>
+</html>

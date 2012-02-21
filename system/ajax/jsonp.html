@@ -1,0 +1,42 @@
+﻿<html>
+	<head>
+		<meta charset="utf-8">
+		<title>J+ Core Library</title>
+		<script type="text/javascript" src="../core/assets/scripts/system.js" ></script>
+		<script type="text/javascript" src="../ajax/assets/scripts/request.js" ></script>
+		<script type="text/javascript" src="../ajax/assets/scripts/jsonp.js" ></script>
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+	</head>
+	<body>
+        <script>
+            var url = 'data/jsonp.html';
+            var jsonp = new Ajax.JSONP({
+                data: {
+                    "d1": "内容"
+                },
+                callback: 'jsonp14245322344',
+                url: url,
+                onSuccess: function(m){
+                    trace.log("成功 =>", m);
+                },
+                onComplete: function(m){
+                    trace.info("完成 => " + m);
+                },
+                onError: function(m){
+                    trace.error("错误 => " + m);
+                },
+                onTimeout: function(m){
+                    trace.error("超时 => " + m);
+                }
+            });
+            
+            var testcases = {
+            	'Ajax.JSONP.prototype.send': '@jsonp;',
+            	'Ajax.getJSONP': 'url + "??=?", {p1:"v1", callback: "jsonp14245322344"}, trace'
+            };
+            
+            System.initTestCases(testcases, {times: 8});
+            
+        </script>
+	</body>
+</html>

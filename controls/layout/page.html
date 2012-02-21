@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>J+ Control Library</title>
+		
+		<link rel="stylesheet" type="text/css" href="../core/assets/styles/bootstrap.css">
+		<link rel="stylesheet" type="text/css" href="assets/styles/page.css">
+		
+		<script type="text/javascript" src="../../system/core/assets/scripts/system.js"></script>
+		<script type="text/javascript" src="../../system/dom/assets/scripts/element.js"></script>
+		<script type="text/javascript" src="../../src/bootstrap.js"></script>
+		
+		<script type="text/javascript" src="assets/scripts/page.js"></script>
+		
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+		
+		<style>
+			#header,  #footer, .demo {
+				/*border: 1px solid #DDDDDD;*/
+				background: #EEEEEE;	
+				height: 99px;
+				text-align: center;
+				line-height: 99px;
+				color: #555555;
+				font-family: '微软雅黑';
+				font-weight: 700;
+			}
+		</style>
+	
+	</head>
+	<body>
+		
+		<div id="topbar">顶部条 #topbar</div>
+		<div id="main">
+		 	<div id="header">顶部 #header</div>
+		 	<div id="body">正文 #body</div>
+		 	<div id="footer">底部 #footer</div>
+		</div>
+		
+		
+			    		
+				<div>
+					解读：DIV 层次：
+					<ul>
+						<li>
+							#wrap - <span class="x-hint">全部内容都在这个DIV下</span>
+							<ul>
+								<li>#topbar - <span class="x-hint">顶部工具条</span></li>
+
+								<li>#main - <span class="x-hint">主体部分</span>
+									<ul>
+										<li>#header - <span class="x-hint">顶部</span></li>
+										<li>#body - 正文：所有内容都在这个div中</li>
+										<li>#footer - <span class="x-hint">底部</span></li>
+
+									</ul>
+								</li>
+							</ul>
+						</li>
+					</ul>
+							
+				</div>
+
+	    	</div>
+			
+	</body>
+</html>

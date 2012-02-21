@@ -13,8 +13,8 @@
 		     '0, 0', 'null, null', '[], []', '{}, {}',
 		     '1, "1", true, {}'
 		];
-
-	moduleName = moduleName.substr(0, moduleName.indexOf('/'));
+		
+	moduleName = moduleName.substring(0, moduleName.indexOf('/'));
 	
 	document.write('<link type="text/css" rel="stylesheet" href="' + root + 'assets/styles/default.css" />');
 	if(!window.console || !window.console.groupEnd)

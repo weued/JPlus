@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>J+ Core Library</title>
+		<script src="../../py/system.js" type="text/javascript"></script>
+		<script src="../../py/system/core/enum.js" type="text/javascript"></script>
+		
+		<script src="../../common/project/project.js" type="text/javascript"></script>
+		<script src="../../common/assets/scripts/default.js" type="text/javascript"></script>
+		<script src="../../common/assets/scripts/debug.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<script>
+			
+			var enumValue = new Enum("Enum1", "Enum2");
+			
+			// enumValue == {
+			//	Enum1: 0,
+			//  Enum2: 1
+			// }
+			
+			trace(Enum.getName(enumValue, enumValue.Enum2));
+			
+		</script>
+	</body>
+</html>

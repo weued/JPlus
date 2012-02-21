@@ -22,8 +22,8 @@ var framewroks = {
 	},
 	'jplus': {
 		js: [
-			'../../../../src/system.js',
-			'../../../../src/system/dom/element.js'
+			'../../../../system/core/assets/scripts/system.js',
+			'../../../../system/dom/assets/scripts/element.js'
 		],
 		init:  function(window){
 			window.el = window.$$("header");

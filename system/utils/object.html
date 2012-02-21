@@ -1,0 +1,77 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>J+ Core Library</title>
+		<script src="../../py/system.js" type="text/javascript"></script>
+		
+	 	<script src="../../common/project/project.js" type="text/javascript"></script>
+		<script src="../../common/assets/scripts/default.js" type="text/javascript"></script>
+		<script src="../../common/assets/scripts/debug.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<script>
+			var fns = [
+				'Object',
+				["Object.type", function(){  return Object.type(1); }, 'number'],
+				["Object.clone", function(){ return Object.clone([5]);  }, function(r){assert(r[0] === 5);}],
+				["Object.extendIf", function(){ return Object.extendIf({"a":"g"}, []);  }, function(r){assert(r['a'] === 'g');}],
+				["Object.extend", function(){ return Object.extend({"a":"g"}, []);  }, function(r){assert(r['a'] === 'g');}],
+				["Object.isObject", function(){ return Object.isObject({"a":"g"});  }, true],
+				["Object.isArray", function(){ return Object.isArray({"a":"g"});  }, false],
+				["Object.isFunction", function(){ return Object.isFunction({"a":"g"}, false);  }],
+				["Object.each", function(){ return Object.each({"a":"g"}, log);  }, true],
+				["Object.update", function(){return Object.update({"a":"g"}, "length");   }, function(r){assert(r['a'] === 1)}],
+				["Object.set", function(){ 
+					var MYCLASS = new Class({
+						types : [],
+						setA: log,
+						constructor: function(args){
+							Object.set(this, args);
+							log(this.types);
+							assert(this.types.length == 1);
+						}
+					});
+					
+					var instance = new MYCLASS({a: 's', types:[2]});
+				}],
+				["Object.addCallback", function(){ 
+					var a = {click: function(){log(1);}}, flag = false;
+					Object.addCallback(a, 'click',function(){flag = true, log(2);} );
+					a.click();
+					assert(flag);
+				}],
+				'String',
+				["String.map", function(){ return String.map("a b c", function(a){return a + '.';}, {}); }, function(r){assert(r['a'] === 'a.')}],
+				["String.format", function(){ return String.format("{0}", 3); }, '3'],
+				["String.param", function(){ return String.param({f: 2, w: 4}); }, 'f=2&w=4'],
+				["String.ellipsis", function(){ return String.ellipsis("saasasdasd", 4); }, 'saas...'],
+				'Array',
+				["Array.create", function(){ return Array.create(["a","a",null,"a"]); }, function(r){assert(r.length === 4);}],
+				["Array.plain", function(){return Array.plain([3,5], [6]);}, function(r){assert(r.length === 3);}],
+				["Array.copyIf", function(){a = [6, 5, 2]; Array.copyIf([3,5], a);   return a;}, [6, 5, 2, 3]],
+				'Function',
+				["Function.empty", function(){ return Function.empty(); }, undefined],
+				["Function.from", function(){ return Function.from("a")(); }, 'a'],
+				["Function.bind", function(){ return Function.bind(function(args){trace(this, 'args')})('a'); }],
+				'Array.prototype',
+				["Array.prototype.indexOf", function(){ return [5,4].indexOf(4); }, 1],
+		    //	["Array.prototype.contains", function(){ return [].contains(); }, false],
+				["Array.prototype.filter", function(){ return [2, 5].filter(function(v){return v > 2;}); }, function(r){assert(r.length === 1 && r[0] === 5)}],
+				["Array.prototype.each", function(){ return [2, 5].each(log); }, true],
+				["Array.prototype.select", function(){ return [2, 5].select(function(v){return v > 2;}); }, function(r){assert(r.length === 1 && r[0] === 5)}],
+				["Array.prototype.include", function(){ return [2, 5].include(4); }, false],
+				["Array.prototype.invoke", function(){ return [2, 5].invoke('toString', []).toString(); }, '2,5'],
+				["Array.prototype.unique", function(){ return [2, 5, 7, 5].unique().toString(); }, '2,5,7'],
+				["Array.prototype.remove", function(){ return [2, 5].remove(2); }, 0],
+				'String.prototype',
+				["String.prototype.trim", function(){ return "sdsd   ".trim(); }, "sdsd"],
+				["String.prototype.toCamelCase", function(){ return "font-size".toCamelCase(); }, "fontSize"],
+				["String.prototype.capitalize", function(){ return "sdsd".capitalize(); }, 'Sdsd'],
+				'XMLHttpRequest',
+				["XMLHttpRequest.isOk", function(){return XMLHttpRequest.isOk({open: 5});}, false]
+			];
+		
+		</script>
+	</body>
+</html>

@@ -1,0 +1,30 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>J+ Core Library</title>
+		<script type="text/javascript" src="../core/assets/scripts/system.js" ></script>
+		<script type="text/javascript" src="../data/assets/scripts/collection.js" ></script>
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+	</head>
+	<body>
+		<script>
+		
+			var list = new Collection();
+			list.add(2);  // [2]
+			list.insert(0, 1);   //  [1, 2]
+			list.remove(2);  // [1]
+			list.removeAt(0);  // []
+			list.insert(0, 2);   // [2]
+			list.insert(0, 8);   // [8, 2]
+			
+			var testcases = {
+				'Collection.prototype.length': {method: false, tests:  '@list; => 2' },
+				'Collection.prototype.item': '@list; 0=>8; 1=>2; -1=>2;2=>undefined'
+			};
+			
+			System.initTestCases(testcases);
+			
+		</script>
+	</body>
+</html>

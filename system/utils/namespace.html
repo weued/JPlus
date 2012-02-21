@@ -1,0 +1,21 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>J+ Core Library</title>
+		<script src="../../py/system.js" type="text/javascript"></script>
+		
+		<script src="../../common/project/project.js" type="text/javascript"></script>
+		<script src="../../common/assets/scripts/default.js" type="text/javascript"></script>
+		<script src="../../common/assets/scripts/debug.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<script>
+			var fns = [
+				["namespace", function(){return namespace("MyName.MyClass", {a:1});}, function(){assert(MyName.MyClass);}],
+				["using", function(){using("System.Ajax.Ajax"); assert(window.Ajax);}]
+			];
+		
+		</script>
+	</body>
+</html>
