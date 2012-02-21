@@ -270,7 +270,7 @@ namespace Xuld.Tools.DplBuilder {
             return null;
         }
 
-        static Regex _lastP = new Regex(@"(\.[^.]+)$");
+        static Regex _lastP = new Regex(@"^([^.]+\.[^.]+)\.");
 
         void ResolveNamespace(string nameOrPath, bool isJs, out string path, out string name) {
             if(String.IsNullOrEmpty(nameOrPath)) {
@@ -288,11 +288,11 @@ namespace Xuld.Tools.DplBuilder {
 
             path = nameOrPath.ToLowerInvariant();
 
-            if(path.StartsWith("controls.")) {
-                path = _lastP.Replace(path, isJs ? ".assets.scripts$1" : ".assets.styles$1");
-            } else {
-                path = "src." + path;
+            if(path.IndexOf('.') == -1){
+                path = "system.core." + path;
             }
+            
+            path = _lastP.Replace(path, isJs ? "$1.assets.scripts." : "$1.assets.styles.");
 
             path = path.Replace('.', '/') + (isJs ? ".js" : ".css");
 
@@ -417,6 +417,10 @@ namespace Xuld.Tools.DplBuilder {
         }
 
         StreamWriter CreateWriter(string path) {
+
+            if(path.Contains("~")) {
+                return StreamWriter.Null;
+            }
 
             EnsureDirectory(path);
 

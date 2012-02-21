@@ -11,7 +11,7 @@ namespace Xuld.Tools.DplBuilder {
 
         static void Main(string[] args) {
 
-            Console.Title = "DPL 合成工具 v4";
+            Console.Title = "DPL 合成工具 v6";
             Console.Write("项目文件夹: ");
             _builder.WorkingDirectory = ReadOrArgs(args, 0) + "\\";
             Console.Write("目标 css 文件: ");

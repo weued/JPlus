@@ -1,0 +1,5 @@
+*.vshost.exe
+*.vshost.exe.manifest
+*.pdb
+src/obj
+*.csproj.user
