@@ -1,0 +1,154 @@
+// Typography.less
+// Headings, body text, links, lists, code, and more for a versatile and durable typography system
+// ----------------------------------------------------------------------------------------
+
+
+@import "mixins.less";
+
+body {
+  font-family: @baseFontFamily;
+  font-size: @baseFontSize;
+  line-height: @baseLineHeight;
+  color: @textColor;
+  background-color: @white;
+}
+
+
+// LINKS
+// -----
+
+a {
+  color: @linkColor;
+  text-decoration: none;
+}
+a:hover {
+  color: @linkColorHover;
+  text-decoration: underline;
+}
+
+// HEADINGS
+// --------
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 10px 0;
+  font-weight: bold;
+  color: @grayDark;
+  text-rendering: optimizelegibility; // Fix the character spacing for headings
+  small {
+    font-weight: normal;
+    color: @grayLight;
+  }
+}
+
+h1 {
+  font-size: 30px;
+  line-height: 30px;
+  small {
+    font-size: 18px;
+  }
+}
+
+h2 {
+  font-size: 24px;
+  line-height: 24px;
+  small {
+    font-size: 18px;
+  }
+}
+
+h3 {
+  line-height: 18px;
+  font-size: 18px;
+  small {
+    font-size: 14px;
+  }
+}
+
+h4 {
+  font-size: 14px;
+  small {
+    font-size: 12px;
+  }
+}
+
+h5 {
+  font-size: 12px;
+}
+
+h6 {
+  font-size: 10px;
+}
+
+
+// BODY TEXT
+// ---------
+
+p {
+  margin: 8px 0 12px;
+  small {
+    color: @grayLight;
+  }
+}
+
+// Lists
+
+ul{
+	list-style: disc outside none;
+}
+
+ul, ol {
+    margin: 0 0 @baseLineHeight / 2 25px;
+    padding: 0;
+}
+
+ul ul,
+ul ol,
+ol ol,
+ol ul {
+  margin-bottom: 0;
+}
+ul {
+  list-style: disc;
+}
+ol {
+  list-style: decimal;
+}
+
+// Description Lists
+dl {
+  margin-bottom: @baseLineHeight;
+}
+dt {
+  font-weight: bold;
+  margin-top: @baseLineHeight / 2;
+}
+dd {
+  margin-left: @baseLineHeight;
+}
+
+// MISC
+// ----
+
+// Abbreviations and acronyms
+abbr {
+  font-size: 90%;
+  text-transform: uppercase;
+  border-bottom: 1px dotted #ddd;
+  cursor: help;
+}
+
+// Addresses
+address, cite {
+  font-style: normal;
+}
+
+//  :focus {
+//   outline-color: -moz-use-text-color;
+//   outline-style: none;
+//   outline-width: 0;
+// }
+
+
+@import "code.less";
+@import "blockquote.less";
+@import "forms.less";

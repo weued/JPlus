@@ -1,0 +1,63 @@
+// DROPDOWN MENUS
+// --------------
+
+@import "../../../core/assets/styles/mixins.less";
+
+// Use the .menu class on any <li> element within the topbar or ul.tabs and you'll get some superfancy dropdowns
+.dropdown {
+  position: relative;
+}
+
+.x-menubutton {
+  // The x-button-menu makes the toggle a bit too tall in IE7
+  *margin-bottom: -3px;
+}
+
+.x-menubutton:active, .x-button-open .x-menubutton {
+  outline: 0;
+}
+
+// Dropdown arrow/x-button-menu
+.x-button-menu {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  text-indent: -99999px;
+  // IE7 won't do the border trick if there's a text indent, but it doesn't
+  // do the content that text-indent is hiding, either, so we're ok.
+  *text-indent: 0;
+  vertical-align: top;
+  border-left:  4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top:   4px solid @black;
+  .opacity(30);
+  content: "\2193";
+}
+
+.x-button .x-button-menu {
+  margin-top: 8px;
+  margin-left: 2px;
+}
+
+.x-button:hover .x-button-menu,
+.x-button-open .x-button-menu {
+  .opacity(100);
+}
+
+
+// Open state for the dropdown
+.x-button-open {
+  // IE7's z-index only goes to the nearest positioned ancestor, which would
+  // make the menu appear below buttons that appeared later on the page
+  *z-index: @zindexDropdown;
+
+  color: @white;
+  background: #ccc;
+  background: rgba(0,0,0,.3);
+}
+
+// Typeahead
+.typeahead {
+  margin-top: 2px; // give it some space to breathe
+  .border-radius(4px);
+}

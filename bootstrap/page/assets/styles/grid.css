@@ -1,0 +1,70 @@
+.x-grid {
+  margin-top: 10px;
+  *zoom: 1;
+}
+.x-grid:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+.x-grid-plain {
+  margin-top: 0;
+}
+.x-col {
+  float: left;
+  margin-left: 20px;
+}
+.x-col-1 {
+  width: 60px;
+}
+.x-col-2 {
+  width: 140px;
+}
+.x-col-3 {
+  width: 220px;
+}
+.x-col-4 {
+  width: 300px;
+}
+.x-col-5 {
+  width: 380px;
+}
+.x-col-6 {
+  width: 460px;
+}
+.x-col-7 {
+  width: 540px;
+}
+.x-col-8 {
+  width: 620px;
+}
+.x-col-9 {
+  width: 700px;
+}
+.x-col-10 {
+  width: 780px;
+}
+.x-col-11 {
+  width: 860px;
+}
+.x-col-12 {
+  width: 940px;
+}
+.x-container {
+  width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+  *zoom: 1;
+}
+.x-container:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+.x-col-first, .x-col:first-child {
+  margin-left: 0;
+}

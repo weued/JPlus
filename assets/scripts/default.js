@@ -47,8 +47,7 @@
 			navs =  result.join('\r\n');
 			
 			document.write('\
-				<div id="system-wrap" style="visibility: visible">\
-					<div id="system-toolbar" class="system"></div>\
+				<div id="system-main" style="visibility: visible">\
 					<div id="system-header" class="system">\
 						<h1>' + System.title + '</h1>\
 						<em>' + System.subtitle + '</em>\
@@ -57,7 +56,7 @@
 						'</div>\
 					</div>\
 					<div id="system-body">\
-						<div id="system-main">\
+						<div id="system-container">\
 						正在载入...\
 						</div>\
 					</div>\
@@ -75,7 +74,7 @@
 			}
 			
 			addEvent(window, 'load', function(){
-				var main = document.getElementById('system-main'), last, next = document.getElementById('system-wrap').nextSibling;
+				var main = document.getElementById('system-container'), last, next = document.getElementById('system-main').nextSibling;
 				
 				while(main.firstChild)
 					main.removeChild(main.firstChild);
