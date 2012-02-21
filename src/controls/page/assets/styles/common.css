@@ -49,13 +49,15 @@ html .x-hide {
   word-wrap: break-word;
   word-break: break-all;
 }
-/* plain */
 .x-plain {
   margin: 0;
   padding: 0;
 }
 .x-plain li, li.x-plain {
   list-style: none;
+}
+.x-control {
+  margin-bottom: 10px;
 }
 .x-blank {
   height: 10px;

@@ -4,9 +4,9 @@
 
 var navs = {
 	//'首页': 'index.html',
-	'核心': 'core/index.html',
-	'控件': 'controls/index.html',
-	'wplus':'wplus/index.html',
+	'核心': 'src/system/index.html',
+	'控件': 'src/controls/index.html',
+	'wplus':'src/wplus/index.html',
 	'资源': 'resources/index.html'
 };
 

@@ -4,115 +4,168 @@
 		<meta charset="UTF-8">
 		<title>J+ Control Library</title>
 		
-		<link rel="stylesheet" type="text/css" href="../core/assets/styles/reset.css">
+		<link rel="stylesheet" type="text/css" href="../core/assets/styles/base.css">
 		<link rel="stylesheet" type="text/css" href="assets/styles/button.css">
 		
 		<script type="text/javascript" src="../../src/system.js"></script>
 		<script type="text/javascript" src="../../src/system/dom/element.js"></script>
-		<script type="text/javascript" src="../core/assets/scripts/reset.js"></script>
+		<script type="text/javascript" src="../core/assets/scripts/base.js"></script>
 		<script type="text/javascript" src="assets/scripts/button.js"></script>
 		
 		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
 	</head>
 	<body>
 		
+		<h2>尺寸</h2>
 		
+		<table class="system">
+			<tr>
+				<th>按钮</th>
+				<th>正常</th>
+				<th>禁用</th>
+			</tr>
+			<tr>
+				<th>普通</th>
+				<td>
+					<a class="x-button">正常</a>
+				</td>
+				<td>
+					<a disabled="disabled" class="x-button x-button-disabled">禁用</a>
+				</td>
+			</tr>
+			<tr>
+				<th>小</th>
+				<td>
+					<a class="x-button x-button-small">正常</a>
+				</td>
+				<td>
+					<a disabled="disabled" class="x-button x-button-small x-button-disabled">禁用</a>
+				</td>
+			</tr>
+			<tr>
+				<th>大</th>
+				<td>
+					<a class="x-button x-button-large">正常</a>
+				</td>
+				<td>
+					<a disabled="disabled" class="x-button x-button-large x-button-disabled">禁用</a>
+				</td>
+			</tr>
+			<tr>
+				<th>最小</th>
+				<td>
+					<a class="x-button x-button-smallest">正常</a>
+				</td>
+				<td>
+					<a disabled="disabled" class="x-button x-button-smallest x-button-disabled">禁用</a>
+				</td>
+			</tr>
+		</table>
 		
-		<section id="buttons">
-  <div class="page-header">
-    <h1>Buttons</h1>
-  </div>
-  <table class="table table-bordered table-striped">
-    <thead>
-      <tr>
-        <th>Button</th>
-        <th>Class</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a href="#" class="x-button">Default</a></td>
-        <td><code>.x-button</code></td>
-        <td>Standard gray button with gradient</td>
-      </tr>
-      <tr>
-        <td><a href="#" class="x-button x-button-primary">Primary</a></td>
-        <td><code>.x-button-primary</code></td>
-        <td>Provides extra visual weight and identifies the primary action in a set of buttons</td>
-      </tr>
-      <tr>
-        <td><a href="#" class="x-button x-button-info">Info</a></td>
-        <td><code>.x-button-info</code></td>
-        <td>Used as an alternate to the default styles</td>
-      </tr>
-      <tr>
-        <td><a href="#" class="x-button x-button-success">Success</a></td>
-        <td><code>.x-button-success</code></td>
-        <td>Indicates a successful or positive action</td>
-      </tr>
-      <tr>
-        <td><a href="#" class="x-button x-button-warning">Warning</a></td>
-        <td><code>.x-button-warning</code></td>
-        <td>Indicates caution should be taken with this action</td>
-      </tr>
-      <tr>
-        <td><a href="#" class="x-button x-button-danger">Danger</a></td>
-        <td><code>.x-button-danger</code></td>
-        <td>Indicates a dangerous or potentially negative action</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <div class="row">
-    <div class="span4">
-      <h3>Buttons for actions</h3>
-      <p>As a convention, buttons should only be used for actions while hyperlinks are to be used for objects. For instance, "Download" should be a button while "recent activity" should be a link.</p>
-    </div>
-    <div class="span4">
-      <h3>For anchors and forms</h3>
-      <p>Button styles can be applied to anything with the <code>.x-button</code> applied. However, typically you'll want to apply these to only <code>&lt;a&gt;</code> and <code>&lt;button&gt;</code> elements.</p>
-    </div>
-    <div class="span4">
-      <p><strong>Note:</strong> All buttons must include the <code>.x-button</code> class. Button styles should be applied to <code>&lt;button&gt;</code> and <code>&lt;a&gt;</code> elements for consistency.</p>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="span4">
-      <h3>Multiple sizes</h3>
-      <p>Fancy larger or smaller buttons? Have at it!</p>
-      <p>
-        <a class="x-button x-button-large x-button-primary" href="#">Primary action</a>
-        <a class="x-button x-button-large" href="#">Action</a>
-      </p>
-      <p>
-        <a class="x-button x-button-small x-button-primary" href="#">Primary action</a>
-        <a class="x-button x-button-small" href="#">Action</a>
-      </p>
-    </div>
-    <div class="span4">
-      <h3>Disabled state</h3>
-      <p>For disabled buttons, use <code>.x-button-disabled</code> for links and <code>:disabled</code> for <code>&lt;button&gt;</code> elements.</p>
-      <p>
-        <a class="x-button x-button-large x-button-primary disabled" href="#">Primary action</a>
-        <a class="x-button x-button-large disabled" href="#">Action</a>
-      </p>
-      <p>
-        <button disabled="disabled" class="x-button x-button-large x-button-primary disabled">Primary action</button>
-        <button disabled="" class="x-button x-button-large">Action</button>
-      </p>
-    </div>
-    <div class="span4">
-      <h3>Cross browser compatibility</h3>
-      <p>In IE9, we drop the gradient on all buttons in favor of rounded corners as IE9 doesn't crop background gradients to the corners.</p>
-      <p>Related, IE9 jankifies disabled <code>button</code> elements, rendering text gray with a nasty text-shadow&mdash;unfortunately we can't fix this.</p>
-    </div>
-  </div>
-
-  <br>
-
-</section>
+		<h2>标签</h2>
+		
+		<table class="system">
+			<tr>
+				<th>按钮</th>
+				<th>a</th>
+				<th>button</th>
+				<th>input</th>
+			</tr>
+			<tr>
+				<th>普通</th>
+				<td>
+					<a class="x-button">按钮</a>
+				</td>
+				<td>
+					<button class="x-button">按钮</button>
+				</td>
+				<td>
+					<input type="button" class="x-button" value="按钮">
+				</td>
+			</tr>
+			<tr>
+				<th>禁用</th>
+				<td>
+					<a disabled="disabled" class="x-button x-button-disabled">按钮</a>
+				</td>
+				<td>
+					<button disabled="disabled" class="x-button x-button-disabled">按钮</button>
+				</td>
+				<td>
+					<input type="button" disabled="disabled" class="x-button x-button-disabled" value="按钮">
+				</td>
+			</tr>
+		</table>
+		
+		<h2>颜色</h2>
+		
+		<table class="system">
+			<tr>
+				<th>普通</th>
+				<td>
+					<a class="x-button">正常</a>
+				</td>
+			</tr>
+			<tr>
+				<th>高亮</th>
+				<td>
+					<a class="x-button x-button-highlight">正常</a>
+				</td>
+			</tr>
+			<tr>
+				<th>成功</th>
+				<td>
+					<a class="x-button x-button-success">正常</a>
+				</td>
+			</tr>
+			<tr>
+				<th>警告</th>
+				<td>
+					<a class="x-button x-button-warning">正常</a>
+				</td>
+			</tr>
+			<tr>
+				<th>失败</th>
+				<td>
+					<a class="x-button x-button-error">正常</a>
+				</td>
+			</tr>
+			<tr>
+				<th>信息</th>
+				<td>
+					<a class="x-button x-button-info">正常</a>
+				</td>
+			</tr>
+			<tr>
+				<th>黑色</th>
+				<td>
+					<a class="x-button x-button-inverse">正常</a>
+				</td>
+			</tr>
+		</table>
+		
+		<h2>杂项</h2>
+		
+		<table class="system">
+			<tr>
+				<th>普通</th>
+				<td>
+					<a class="x-button">正常</a>
+				</td>
+			</tr>
+			<tr>
+				<th>平板</th>
+				<td>
+					<a class="x-button x-button-plain">正常</a>
+				</td>
+			</tr>
+			<tr>
+				<th>固定</th>
+				<td>
+					<a class="x-button x-button-fixed">正常</a>
+				</td>
+			</tr>
+		</table>
 		
 		
 	</body>

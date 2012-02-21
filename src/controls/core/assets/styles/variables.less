@@ -1,5 +1,5 @@
 // Variables.less
-// Variables to customize the look and feel of Bootstrap
+// Variables to customize the look and feel of global ui.
 // -----------------------------------------------------
 
 
@@ -18,6 +18,8 @@
 @gray:                  #555;
 @grayLight:             #999;
 @grayLighter:           #eee;
+@grayBorder:            #ddd;
+@grayBorderLight:       #e5e5e5;
 @white:                 #fff;
 
 // Accent colors
@@ -47,20 +49,28 @@
 // Z-index master list
 // Used for a bird's eye view of components dependent on the z-axis
 // Try to avoid customizing these :)
-@zindexDropdown:        1000;
-@zindexPopover:         1010;
-@zindexTooltip:         1020;
-@zindexFixedNavbar:     1030;
-@zindexModalBackdrop:   1040;
-@zindexModal:           1050;
+@zindexDropdown:          1000;
+@zindexPopover:           1010;
+@zindexTooltip:           1020;
+@zindexFixedNavbar:       1030;
+@zindexModalBackdrop:     1040;
+@zindexModal:             1050;
+
+// Sprite icons path
+@iconSpritePath:          "../images/glyphicons-halflings.png";
+@iconWhiteSpritePath:     "../images/glyphicons-halflings-white.png";
 
 // Input placeholder text color
-@placeholderText:       @grayLight;
+@placeholderText:         @grayLight;
+
+// Hr border color
+@hrBorder:                @grayLighter;
 
 // Navbar
 @navbarHeight:                    40px;
 @navbarBackground:                @grayDarker;
 @navbarBackgroundHighlight:       @grayDark;
+@navbarLinkBackgroundHover:       transparent;
 
 @navbarText:                      @grayLight;
 @navbarLinkColor:                 @grayLight;
@@ -91,7 +101,7 @@
 // Default 940px grid
 @gridColumns:             12;
 @gridColumnWidth:         60px;
-@gridGutterWidth:         10px;
+@gridGutterWidth:         20px;
 @gridRowWidth:            (@gridColumns * @gridColumnWidth) + (@gridGutterWidth * (@gridColumns - 1));
 
 // Fluid grid

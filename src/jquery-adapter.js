@@ -3448,6 +3448,10 @@ JPlus.scripts.push('System.Dom.Element');
 		 * @static
 		 */
 		zIndex: 10000,
+		
+		isHidden: function(elem){
+			return (elem.style.display || getStyle(elem, 'display')) === 'none';
+		},
 
 		/**
 		 * 清空元素的 display 属性。
