@@ -2793,8 +2793,6 @@ function assert(bValue, msg) {
 
 })(JPlus, Object.extend);
 
-/// #endif
-
 
 /// #if !Publish
 
@@ -2803,6 +2801,9 @@ JPlus.rootPath = JPlus.rootPath.substr(0, JPlus.rootPath.length - "system/core/a
 JPlus.resolveNamespace = function(ns, isStyle){
 	return ns.replace(/^([^.]+\.[^.]+)\./, isStyle ? '$1.assets.styles.' : '$1.assets.scripts.').replace(/\./g, '/');
 };
+
+
+/// #endif
 
 
 /// #endif

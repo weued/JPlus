@@ -1,0 +1,2 @@
+@"../../assets/tools/DplBuilder/DplBuilder" ../.. ../../../dota/ucenter/assets/styles/share.css ../../../dota/ucenter/assets/scripts/share.js ../images Controls.Core.SimpleMarquee Controls.Container.SimplePanel Controls.Page.SideBar Controls.Display.AnnouncementBoard Controls.Button.FallowMe Controls.Display.StepInfo Controls.Display.InnerBoard Controls.Display.StepGuider Controls.Button.PayButton Controls.Form.ImageZoom
+@pause

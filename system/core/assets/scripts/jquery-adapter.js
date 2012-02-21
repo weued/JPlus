@@ -2751,7 +2751,20 @@ function assert(bValue, msg) {
 
 /// #endif
 
+
+/// #if !Publish
+
+JPlus.rootPath = JPlus.rootPath.substr(0, JPlus.rootPath.length - "system/core/assets/scripts/".length);
+
+JPlus.resolveNamespace = function(ns, isStyle){
+	return ns.replace(/^([^.]+\.[^.]+)\./, isStyle ? '$1.assets.styles.' : '$1.assets.scripts.').replace(/\./g, '/');
+};
+
+
 /// #endif
+
+/// #endif
+
 
 // Core - 核心部分
 // Parse - 节点解析部分

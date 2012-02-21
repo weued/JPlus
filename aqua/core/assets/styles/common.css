@@ -108,42 +108,8 @@ html .x-hide {
 	border: 1px solid #C03;
 }
 
-/********************************* Style ********************************/
-
-body {
-	color: #666666;
-	background-color: #F7F7F7;
-	background-position: center top;
-	background-repeat: repeat-x;
-	font: 12px/1.5 Tahoma, Arial, "\5b8b\4f53", sans-serif;
-}
-
-a {
-	color: #0464BB;
-	text-decoration: none;
-}
-
-a:hover {
-	color: #1C417C;
-}
-
-h1, h2, h3, h4, h5, h6 {
-	color: #333333;	
-}
-
-h2 {
-	font-size: 14px;
-	font-weight: bold;
-}
-
-h3 {
-	font-size: 16px;
-	font-weight: bold;
-}
-
-hr {
-	background: #ddd;
-	color: #ddd;
+.x-control {
+  margin-bottom: 10px;
 }
 
 /* other tools */

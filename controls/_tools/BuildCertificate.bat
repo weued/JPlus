@@ -1,0 +1,2 @@
+@"../../assets/tools/DplBuilder/DplBuilder" ../.. ../../../dota/certificate/assets/styles/share.css ../../../dota/certificate/assets/scripts/share.js ../images Controls.Page.CertificatePage Controls.Form.CertificateQueryBox Controls.Display.StepInfo Controls.Display.StepGuider Controls.Button.PayButton Controls.Form.ImageCroper Controls.Core.SwfUpload Controls.Form.CertificatePhotoCroper
+@pause
