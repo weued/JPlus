@@ -4,13 +4,16 @@
 @import "../../../core/assets/styles/mixins.less";
 
 // Use the .menu class on any <li> element within the topbar or ul.tabs and you'll get some superfancy dropdowns
-.dropdown {
-  position: relative;
-}
+//.dropdown {
+//  position: relative;
+//}
 
 .x-menubutton {
   // The x-button-menu makes the toggle a bit too tall in IE7
   *margin-bottom: -3px;
+  
+  position: relative;
+  display: inline-block;
 }
 
 .x-menubutton:active, .x-button-open .x-menubutton {
@@ -57,7 +60,7 @@
 }
 
 // Typeahead
-.typeahead {
-  margin-top: 2px; // give it some space to breathe
-  .border-radius(4px);
-}
+//.typeahead {
+//  margin-top: 2px; // give it some space to breathe
+//  .border-radius(4px);
+//}
