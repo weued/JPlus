@@ -29,12 +29,13 @@
   color: white;
   background-color: #0088cc;
 }
-.x-listbox-content a {
-  color: #333333;
-}
-.x-listbox-content a:hover {
+.x-listbox-content:hover a {
   color: white;
   text-decoration: none;
+  cursor: default;
+}
+.x-listbox-content a {
+  color: #333333;
 }
 .x-listbox-selected {
   color: white;

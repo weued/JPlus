@@ -1,2 +1,0 @@
-@"../../assets/tools/DplBuilder/DplBuilder" ../.. ../../../lib/css/widget.css ../../../lib/js/widget.js ../images System.Ajax.Request System.Ajax.Ajax System.Ajax.Submit System.Fx.Base System.Fx.Animate Controls.Display.TimeCounter Controls.Core.Marquee Controls.Display.WangWang Controls.Core.SwfUpload Controls.Form.ImageCroper
-@pause
