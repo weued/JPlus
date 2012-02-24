@@ -7,6 +7,7 @@ var navs = {
 	'核心': 'system/index.html',
 	'Aqua': 'aqua/index.html',
 	'控件': 'controls/index.html',
+	'hust': 'hust/index.html',
 	'wplus':'wplus/index.html',
 	'资源': 'resources/index.html'
 };
