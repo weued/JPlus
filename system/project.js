@@ -17,3 +17,6 @@ var menus = {
 	'Utils': 'Array Check Date DateEx Function Json Number Object RegExp +SimpleJson String Class DateDiff Delegate Encoding Enum Check ChineseCheck ChineseId +Tpl DalayedTask IDataStore IOptions TaskRunner Uri',
 	'Dom': '+Drag +Drop Tab Selector Align BorderRadius Color ContextMenu Css Delegate ElementEx Event GetElementsByClassName Hover IFrame Image Keys Mask Measure Menu Pin PlaceHolder Query ScrollTo ScrollInView Select Selection Submit Swiff Tab Table Validate Window Within LazyLoad Marquee'
 };
+
+
+// BUG:   display-inline-block : show/hide   

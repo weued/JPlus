@@ -324,7 +324,7 @@
 			current.answers = [''];
 			for(var question in questions) {
 				var answers = questions[question];
-				document.write('<div class="system-testcase" id="system-qd');
+				document.write('<div class="system system-testcase" id="system-qd');
 				document.write(i);
 				document.write('">\r\n');
 				document.write('<div class="system-questions">\r\n');
@@ -372,9 +372,9 @@
 					continue;
 				if(!document.getElementById('system-q' + i + current.answers[i]).checked){
 					errorCount++;
-					document.getElementById('system-qd' + i).className = 'error';
+					document.getElementById('system-qd' + i).className = 'system system-error';
 				} else {
-					document.getElementById('system-qd' + i).className = 'testcase';
+					document.getElementById('system-qd' + i).className = 'system system-testcase';
 				}
 			}
 			
@@ -382,13 +382,13 @@
 			for(var key in current.result){
 				if(parseFloat(key) <= r){
 					document.getElementById('system-info').innerHTML = '答对 ' + (total - errorCount) + '/' + total + ' &nbsp;' +  current.result[key];
-					document.getElementById('system-info').className = 'success';
+					document.getElementById('system-info').className = 'system system-success';
 					return;
 				}
 			}
 			
 			document.getElementById('system-info').innerHTML = '要认真哦';
-			document.getElementById('system-info').className = 'error';
+			document.getElementById('system-info').className = 'system system-error';
 					
 		},
 		

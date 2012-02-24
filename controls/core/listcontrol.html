@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>J+ Control Library</title>
+		
+		<link rel="stylesheet" type="text/css" href="../core/assets/styles/base.css">
+		<link rel="stylesheet" type="text/css" href="assets/styles/listcontrol.css">
+		
+		<script type="text/javascript" src="../../system/core/assets/scripts/system.js"></script>
+		<script type="text/javascript" src="../../system/dom/assets/scripts/element.js"></script>
+		<script type="text/javascript" src="../core/assets/scripts/base.js"></script>
+		<script type="text/javascript" src="assets/scripts/scrollablecontrol.js"></script>
+		<script type="text/javascript" src="assets/scripts/listcontrol.js"></script>
+		
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+	</head>
+	<body>
+		
+		<div id="ct">
+			<ul>
+				
+			</ul>
+		</div>
+		<div id="a">#a</div>
+		<div id="b">#b</div>
+		
+		
+		<script>
+		
+			
+			var c = new ListControl('ct');
+			var a = Dom.get('a');
+			var b = Dom.get('b');
+			
+			var testcases = {
+				'ListControl.prototype.items.add': "@c; 'a'",
+				'ListControl.prototype.items.insert': "@c; 2, 'r'",
+				'ListControl.prototype.items.removeAt': "@c; 0",
+				'ListControl.prototype.items.length': {
+					tests: "@c;",
+					method: false
+				},
+				'ListControl.prototype.append': "@c; a; b",
+				'ListControl.prototype.remove': "@c; b"
+			};
+			
+			System.initTestCases(testcases);
+			
+			
+			
+		</script>
+		
+	</body>
+</html>
