@@ -4,9 +4,10 @@
 
 System.title = '蓝色骑士';
 System.subtitle = 'blue knight';
-System.copyright = '';
+System.copyright = 'basecss';
 
 var menus = {
 	Core: 'Base',
-	Page: 'Common Scaffolding'
+	Page: 'Common Scaffolding',
+    Container: '+Panel -Dialog'
 };

@@ -1,0 +1,34 @@
+/**
+ * @author : basecss
+ * @date   : 2012/2/26
+ */
+
+
+
+
+.x-panel {
+	background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #8594a3;
+    border-radius: 3px;
+}
+
+
+.x-panel-header {
+	background-color: #c8e3fd;
+    background-image: -moz-linear-gradient(center top , #cae5ff, #b7d2ea);
+    border-bottom: 1px solid #8594a3;
+    padding: 10px 10px;
+    border-radius: 3px 3px 0 0;
+}
+
+.x-panel-header h2 {
+    font-size: 14px;
+    line-height: 14px;
+    color: #4E6072;
+    margin: 0;
+}
+
+.x-panel-body {
+    overflow: hidden;
+    padding: 10px;
+}
