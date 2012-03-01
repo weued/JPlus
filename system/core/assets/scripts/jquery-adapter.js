@@ -689,21 +689,32 @@
 		 */
 	    set: function(obj, options) {
 
+			assert.notNull(obj, "Object.set(obj, options): {obj}~");
+
 		    for ( var key in options) {
 
 			    // 检查 setValue 。
 			    var setter = 'set' + key.capitalize(), val = options[key];
 
-			    if (Function.isFunction(obj[setter]))
+			    if (Function.isFunction(obj[setter])) {
 				    obj[setter](val);
+					
+				} else if(key in obj) {
+				
+					setter = obj[key];
+					
+					// 是否存在函数。
+					if (Function.isFunction(setter))
+						obj[key](val);
 
-			    // 是否存在函数。
-			    else if (Function.isFunction(obj[key]))
-				    obj[key](val);
-
-			    // 检查 value.set 。
-			    else if (obj[key] && obj[key].set)
-				    obj[key].set(val);
+					// 检查 value.set 。
+					else if (setter && setter.set)
+						setter.set(val);
+					
+					// 最后，就直接赋予。
+					else
+						obj[key] = val;
+				}
 
 			    // 检查 set 。
 			    else if (obj.set)
