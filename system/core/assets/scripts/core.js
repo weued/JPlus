@@ -1,5 +1,5 @@
 ﻿/*
- * This file is created by a tool at 2012/02/21 12:24:05
+ * This file is created by a tool at 2012/02/28 22:51:56
  */
 
 
@@ -2789,8 +2789,6 @@ function assert(bValue, msg) {
 
 })(JPlus, Object.extend);
 
-/// #endif
-
 
 /// #if !Publish
 
@@ -2799,6 +2797,9 @@ JPlus.rootPath = JPlus.rootPath.substr(0, JPlus.rootPath.length - "system/core/a
 JPlus.resolveNamespace = function(ns, isStyle){
 	return ns.replace(/^([^.]+\.[^.]+)\./, isStyle ? '$1.assets.styles.' : '$1.assets.scripts.').replace(/\./g, '/');
 };
+
+
+/// #endif
 
 
 /// #endif
@@ -6091,6 +6092,640 @@ JPlus.resolveNamespace = function(ns, isStyle){
 	/// #endregion
 	
 })(this);
+/************************************
+ * System.Ajax.Request
+ ************************************/
+var Request = Class({
+	
+	/**
+	 * 返回变量的地址形式。
+	 * @param { Base} obj 变量。
+	 * @return {String} 字符串。
+	 * @example <code>
+	 * String.param({a: 4, g: 7}); //  a=4&g=7
+	 * </code>
+	 */
+	toParam: function (obj) {
+		if (!obj)
+	        return "";
+	    var s = [], e = encodeURIComponent;
+	    Object.each(obj, function(value, key) {
+	        s.push(e(key) + '=' + e(value));
+	    });
+	
+	    // %20 -> + 。
+	    return s.join('&').replace(/%20/g, '+');
+	},
+	
+	combineUrl: function (url, param) {
+		return url + (url.indexOf('?') >= 0 ? '&' : '?') + param;
+	},
+	
+	onStart: function(data){
+		this.trigger("start", data);
+	},
+	
+	onSuccess: function(response){
+		this.trigger("success", response);
+	},
+	
+	onTimeout: function(){
+		this.trigger("timeout");
+	},
+	
+	onComplete: function(status){
+		this.trigger("complete", status);
+	},
+
+	onAbort: function(){
+		this.trigger("abort");
+	},
+	
+	/**
+	 * 多个请求同时发生后的处理方法。 wait - 等待上个请求。 cancel - 中断上个请求。 ignore - 忽略新请求。
+	 */
+	link: 'wait',
+
+	/**
+	 * 初始化当前请求。
+	 * @param {Object} obj 配置对象。
+	 * @constructor Ajax
+	 */
+	constructor: function(obj) {
+		Object.extend(this, obj);
+	},
+	
+	/**
+	 * 发送请求前检查。
+	 * @param {Object} data 数据。
+	 * @return {Boolean} 是否可发。
+	 * @protected virtual
+	 */
+	delay: function(data) {
+		var me = this;
+		
+		switch (me.link) {
+			case 'wait':
+			
+				// 在 complete 事件中处理下一个请求。
+				me.one('complete', function() {
+					this.send(data, true);
+					return false;
+				});
+				return false;
+			case 'cancel':
+			
+				// 中止请求。
+				me.abort();
+				return true;
+			default:
+				assert(!link || link == 'ignore', "Ajax.prototype.send(data): 成员 {link} 必须是 wait、cancel、ignore 之一。", me.link);
+				return false;
+		}
+		return true;
+	},
+	
+	/**
+	 * 超时的时间大小。 (单位: 毫秒)
+	 * @property timeouts
+	 * @type Number
+	 */
+	 
+	 /**
+	  * 是否允许缓存。
+	  * @property enableCache
+	  * @type Boolean
+	  */
+	
+	/**
+	 * 发送请求。
+	 * @param {Object} [data] 发送的数据。
+	 * @method send
+	 * @abstract
+	 */
+	
+	/**
+	 * 停止当前的请求。
+	 * @return this
+	 * @method abort
+	 * @abstract
+	 */
+	
+	/**
+	 * xType。
+	 */
+	xType: "request"
+	
+});
+
+
+/************************************
+ * System.Ajax.Ajax
+ ************************************/
+var Ajax = Request.extend({
+	
+	onError: function(errorMessage){
+		this.trigger("error", errorMessage);
+	},
+
+	onReadyStateChange: function(exception){
+		var me = this, xhr = me.xhr;
+			
+		if(xhr && (exception || xhr.readyState === 4)) {
+			
+			// 删除 readystatechange  。
+			xhr.onreadystatechange = Function.empty;
+			
+			try{
+				
+				if(exception) {
+					if(exception === true) {
+						xhr.abort();
+						me.onTimeout(xhr);
+						exception = 'Request Timeout';
+					}
+				} else {
+					exception = !JPlus.checkStatusCode(xhr.status) && xhr.statusText;
+				}
+					
+				if (exception)
+					me.onError(exception, xhr);
+				else
+					// xhr[/xml/.test(xhr.getResponseHeader('content-type')) ? 'responseXML' : 'responseText']
+					me.onSuccess(xhr.responseText, xhr);
+				
+				me.onComplete(exception, xhr);
+					
+			} finally {
+		
+				xhr = me.xhr = null;
+			
+			}
+		}
+	},
+	
+	/**
+	 * 获取或设置请求类型。
+	 */
+	type: 'GET',
+	
+	/**
+	 * 获取或设置是否为异步请求。
+	 */
+	async: true,
+	
+	/**
+	 * 获取请求头。
+	 */
+	headers: {
+		'X-Requested-With': 'XMLHttpRequest',
+		'Accept': 'text/javascript, text/html, application/xml, text/xml, */*'
+	},
+	
+	/**
+	 * 获取或设置是否忽略缓存。
+	 * @property disableCache=false
+	 */
+	
+	/**
+	 * 超时的时间大小。 (单位: 毫秒)
+	 * @property timeouts
+	 * @type Number
+	 */
+	 
+	 /**
+	  * 是否允许缓存。
+	  * @property enableCache
+	  * @type Boolean
+	  */
+	
+	/**
+	 * 发送请求。
+	 */
+	send: function(data) {
+	
+		assert.notNull(this.url, "Ajax.prototype.send(data, chain): {this.url} ~。", this.url);
+		assert(/^(GET|POST|PUT)$/.test(this.type), "{this.type} 必须是 GET、PUT 或 POST (注意大小写) 。",this.type);
+		
+		
+		/**
+		 * 当前实例。
+		 * @type Ajax
+		 * @ignore
+		 */
+		var me = this,  
+			
+			/**
+			 * 类型。
+			 * @type String
+			 */
+			type = me.type,  
+			
+			/**
+			 * 当前请求。
+			 * @type String
+			 */
+			url = me.url,  
+			
+			/**
+			 * 是否异步请求。
+			 * @type Boolean
+			 */
+			async = me.async;
+			
+		assert(url != undefined, "Ajax.prototype.send(data): 当前请求不存在 url 属性，无法提交请求。");
+		assert(["GET", "POST", "PUT", "DELETE"].indexOf(type) > -1, "Ajax.prototype.send(data): 当前请求的 {type} 不合法， type 应该是 GET POST PUT DELETE 之一(注意全大写)。", type);
+		
+		if (me.xhr && !me.delay(data)) {
+			return me;
+		}
+		
+		me.onStart(data);
+		
+		/// #region 数据
+			
+		// 改成字符串。
+		if(typeof data !== 'string')
+			data = me.toParam(data);
+		
+		// get  请求
+		if (data && type == 'GET') {
+			url = me.combineUrl(url, data);
+			data = null;
+		}
+		
+		// 禁止缓存，为地址加上随机数。@AKI 禁止缓存的话，点击几次就是几个ajax请求，这个可以根据需要考虑
+		if(me.disableCache){
+			url = me.combineUrl(url, JPlus.id++);
+		}
+		
+		/// #endregion
+		
+		/// #region 打开
+		
+		/**
+		 * 请求对象。
+		 * @type XMLHttpRequest
+		 * @ignore
+		 */
+		var xhr = me.xhr = new XMLHttpRequest();
+		
+		try {
+		
+			if ('username' in me) 
+				xhr.open(type, url, async, me.username, me.password);
+			else xhr.open(type, url, async);
+				
+				
+		} catch (e) {
+		
+			//  出现错误地址时  ie 在此产生异常
+			me.onReadyStateChange(e.message);
+			return me;
+		}
+		
+		/// #endregion
+		
+		/// #region 设置文件头
+		
+		for(var key in me.headers)
+			try {
+				xhr.setRequestHeader(key, me.headers[key]);
+			} catch (e){
+				trace.error(e);
+			}
+		
+		/// #endregion
+		
+		/// #region 发送
+		
+		// 监视 提交是否完成
+		xhr.onreadystatechange = function(){
+			me.onReadyStateChange();
+		};
+		
+		
+		try {
+			xhr.send(data);
+		} catch (e) {
+			me.onReadyStateChange(e.message);
+			return me;
+		}
+		
+		// 不是同步时，火狐不会自动调用 onreadystatechange
+		if (!async)
+			me.onReadyStateChange();
+		else if (me.timeouts > 0) {
+			setTimeout(function() {
+				me.onReadyStateChange(true);
+			}, me.timeouts);
+		}
+		
+		
+		/// #endregion
+		
+		return me;
+		
+	},
+	
+	/**
+	 * 设置地址的编码。
+	 * @param {String} [value] 字符集。
+	 * @return this
+	 */
+	setEncoding: function(value){
+		
+		if(value)
+			this.setHeader("Accept-Charset", value);
+		return this.setHeader('contentType', 'application/x-www-form-urlencoded' + (value ? '; charset=' + value : ''));
+
+	},
+	
+	/**
+	 * 设置请求头。
+	 * @param {String} key 键。
+	 * @param {String} text 值。
+	 * @return this
+	 */
+	setHeader: function(key, text){
+		if(!this.hasOwnProperty("header"))
+			this.header = Object.clone(this.header);
+		
+		this.header[key] = text;
+		
+		return this;
+	},
+	
+	/**
+	 * 停止当前的请求。
+	 * @return this
+	 */
+	abort: function() {
+		if (this.xhr) {
+			this.xhr.abort();
+			this.onAbort();
+			this.xhr = null;
+		}
+		
+		return this;
+	},
+	
+	/**
+	 * xType。
+	 */
+	xType: "ajax"
+	
+});
+
+String.map("get post", function(k) {
+	
+	var emptyFn = Function.empty;
+
+	/**
+	 * 快速请求一个地址。
+	 * @param {String} url 地址。
+	 * @param {String/Object} data 数据。
+	 * @param {Function} [onsuccess] 成功回调函数。
+	 * @param {Function} [onerror] 错误回调函数。
+	 * @param {Object} timeouts=-1 超时时间， -1 表示不限。
+	 * @param {Function} [ontimeout] 超时回调函数。
+	 * @method Ajax.get
+	 */
+	
+	/**
+	 * 快速请求一个地址。
+	 * @param {String} url 地址。
+	 * @param {String/Object} data 数据。
+	 * @param {Function} [onsuccess] 成功回调函数。
+	 * @param {Function} [onerror] 错误回调函数。
+	 * @param {Object} timeouts=-1 超时时间， -1 表示不限。
+	 * @param {Function} [ontimeout] 超时回调函数。
+	 * @method Ajax.post
+	 */
+	
+	k = k.toUpperCase();
+	
+	return function(url, data, onsuccess, onerror, timeouts, ontimeout, oncomplete) {
+		assert.isString(url, "Ajax." + k.toLowerCase() + "(url, data, onsuccess, onerror, timeouts, ontimeout, oncomplete): 参数{url} 必须是一个地址。如果需要提交至本页，使用 location.href。");
+		new Ajax({
+			url: url,
+			onSuccess: onsuccess || emptyFn,
+			onError: onerror || emptyFn,
+			timeouts: timeouts,
+			onTimeout: ontimeout || emptyFn,
+			onComplete: oncomplete || emptyFn,
+			type: k
+		}).send(data);
+	};
+}, Ajax);
+
+
+/************************************
+ * System.Ajax.JSON
+ ************************************/
+JPlus.namespace("Ajax").JSON = Ajax.extend({
+	
+	/**
+	 * 获取请求头。
+	 */
+	headers: Object.extendIf({
+		'Accept': 'application/json'
+	}, Ajax.prototype.headers),
+	
+	parseJSON: function(response){
+		return eval("(" + response + ")");
+	},
+	
+	onSuccess: function(response){
+		this.trigger("success", this.parseJSON(response));
+	}
+
+});
+
+
+
+String.map("get post", function(k) {
+	
+	Ajax[k + 'JSON'] = function(url, data, onsuccess, onerror, timeouts, ontimeout, oncomplete){
+		var emptyFn = Function.empty;
+		new Ajax.JSON({
+			url: url,
+			onSuccess: function(response){
+				try{
+					var json = this.parseJSON(response);
+				} catch(e) {
+					this.onError(e.message);
+					return null;
+				}
+				return onsuccess && onsuccess.call(this,  json);
+			},
+			onError: onerror || emptyFn,
+			timeouts: timeouts,
+			onTimeout: ontimeout || emptyFn,
+			onComplete: oncomplete || emptyFn,
+			type: k.toUpperCase()
+		}).send(data);
+	};
+
+
+});
+
+
+
+/************************************
+ * System.Ajax.JSONP
+ ************************************/
+JPlus.namespace("Ajax", {
+	
+	JSONP: Request.extend({
+	
+	    onReadyStateChange: function(exception){
+	        var me = this, script = me.script;
+	        if (script && (exception || !script.readyState || /loaded|complete/.test(script.readyState))) {
+	        
+	            // 删除全部绑定的函数。
+	            script.onload = script.onreadystatechange = null;
+	            
+	            // 删除当前脚本。
+	            script.parentNode.removeChild(script);
+	            
+	            // 删除回调。
+	            delete window[me.callback];
+	            
+	            try {
+	            
+	                if (exception === true) {
+	                    me.onTimeout(script);
+	                    exception = 'Request Timeout';
+	                }
+	                
+	                me.onComplete(script);
+	                
+	            }
+	            finally {
+	            
+	                script = me.script = null;
+	                
+	            }
+	        }
+	    },
+	    
+	    jsonp: 'callback',
+	    
+	    send: function(data){
+	        var me = this, url = me.url, script, t;
+	        
+	        if (me.script && !me.delay(data)) 
+	            return me;
+	        
+	        me.onStart(data);
+	        
+	        // 改成字符串。
+	        if (typeof data !== 'string') {
+	        
+	            if (data && data[me.jsonp]) {
+	                me.callback = data[me.jsonp];
+	                delete data[me.jsonp];
+	            }
+	            
+	            data = me.toParam(data);
+	        }
+	        
+	        url = me.combineUrl(url, data).replace(/(.)=(\?)(&|$)/, function(match, group1, group2, group3){
+	            return (group1 === '?' ? me.jsonp : group1) + '=' + (me.callback || (me.callback = 'jsonp' + JPlus.id++)) + group3;
+	        });
+	        
+	        script = me.script = document.createElement("script");
+	        t = document.getElementsByTagName("script")[0];
+	        
+	        window[me.callback] = function(){
+	            me.onSuccess.apply(me, arguments);
+	        };
+	        
+	        script.src = url;
+	        script.type = "text/javascript";
+	        
+	        t.parentNode.insertBefore(script, t);
+	        
+	        if (me.timeouts > 0) {
+	            setTimeout(function(){
+	                me.onReadyStateChange(true);
+	            }, me.timeouts);
+	        }
+	        
+	        script.onload = script.onreadystatechange = function(){
+	            me.onReadyStateChange();
+	        };
+	    },
+	    
+	    abort: function(){
+	        this.onAbort();
+	        this.onReadyStateChange('Aborted');
+	    }
+	})
+	
+});
+
+Ajax.getJSONP = function(url, data, onsuccess, timeouts, ontimeout, oncomplete){
+    assert.isString(url, "Ajax.getJSONP(url, data, onsuccess, timeouts, ontimeout): 参数{url} 必须是一个地址。如果需要提交至本页，使用 location.href。");
+    var emptyFn = Function.empty;
+    new Ajax.JSONP({
+        url: url,
+        onSuccess: onsuccess || emptyFn,
+        timeouts: timeouts,
+        onTimeout: ontimeout || emptyFn,
+        onComplete: oncomplete || emptyFn
+    }).send(data);
+};
+
+/************************************
+ * System.Ajax.Submit
+ ************************************/
+Ajax.submit = function(form, onsuccess, onerror, timeouts, ontimeout, oncomplete) {
+	assert.isNode(form, "Ajax.submit(form, onsuccess, onerror, timeouts, ontimeout): 参数 {form} 必须是一个节点，如果已知节点的 ID， 使用 document.getElementById 函数转换为相应节点。");
+	return Ajax[/^post$/i.test(form.method) ? "post" : "get"](form.action || location.href, HTMLFormElement.param(form), onsuccess, onerror, timeouts, ontimeout, oncomplete);
+};
+
+/**
+ * 返回一个表单的参数表示形式。
+ * @param {HTMLFormElement} formElem 表单元素。
+ * @return {String} 参数形式。
+ */
+JPlus.namespace("HTMLFormElement").param = function(formElem) {
+	assert(formElem && formElem.tagName == "FORM", "HTMLFormElement.param(formElem): 参数 {formElem} 不是合法的 表单 元素", formElem);
+	var s = [], input, e = encodeURIComponent, value, name;
+	for (var i = 0, len = formElem.length; i < len; i++) {
+		input = formElem[i];
+		
+		// 如果存在名字。
+		if (!input.disabled && (name = input.name)) {
+		
+			// 增加多行列表。
+			if (input.type == "select-multiple") {
+				
+				// 多行列表  selectedIndex 返回第一个被选中的索引。
+				// 遍历列表，如果 selected 是 true， 表示选中。
+			
+				var j = input.selectedIndex;
+				if (j != -1) {
+					input = input.options;
+					for (var l = input.length; j < l; j++) {
+						if (input[j].selected) {
+							s.push(e(name) + "=" + e(input[j].value));
+						}
+					}
+				}
+				
+			} else if (!/checkbox|radio/.test(input.type) || input.checked !== false){
+				s.push(e(name) + "=" + e(input.value));
+			}
+		}
+	}
+	
+	return s.join('&');
+
+};
+
 /************************************
  * System.Fx.Base
  ************************************/
