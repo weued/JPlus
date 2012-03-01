@@ -107,6 +107,8 @@
 			}
 			var result = [];
 			
+			var allTotal = 0, allFinished = 0, allSkipped = 0;
+			
 			for(var group in menus) {
 				
 				result.push('<h2>' + encodeHTML(group) + '</h2>');
@@ -126,6 +128,7 @@
 							case '-':
 								clazz = ' class="system-removed"';
 								value = value.substring(1);
+								allSkipped++;
 								break;
 							case '#':
 								clazz = ' class="system-strong"';
@@ -138,10 +141,6 @@
 								value = value.substring(1);
 								total++;
 								break;
-							case '|':
-								value = value.substring(1) || "|";
-								result.push('<li>' + value + '</li>');
-								return;
 							default:
 								clazz = ' class="system-disabled"';
 								total++;
@@ -149,23 +148,38 @@
 						}
 						
 						var mp = value.indexOf('#');
+						var at = value.indexOf('@');
 						
 						if(mp < 0){
-							result.push('<li><a href="' + root + moduleName  + '/' + group.toLowerCase() + '/' + value.toLowerCase() +'.html"' + clazz + '>' + encodeHTML(value) + '</a></li>');	
+							var summary = value.substr(at + 1);
+							if(at > 0)
+								value = value.substr(0, at);
+							result.push('<li><a href="' + root + moduleName  + '/' + group.toLowerCase() + '/' + value.toLowerCase() +'.html"' + clazz + ' title="' + summary +'">' + encodeHTML(value) + '</a></li>');	
 							return;
 						}
 						
 						if(mp == value.length - 1){
 							value = value.substr(0, mp);
-							result.push('<li><a target="_blank" href="' + root + moduleName  + '/' + group.toLowerCase() + '/' + value.toLowerCase() +'.html"' + clazz + '>' + encodeHTML(value) + '</a></li>');	
+							var summary = value.substr(at + 1);
+							if(at > 0)
+								value = value.substr(0, at);
+							result.push('<li><a target="_blank" href="' + root + moduleName  + '/' + group.toLowerCase() + '/' + value.toLowerCase() +'.html"' + clazz + ' title="' + summary +'">' + encodeHTML(value) + '</a></li>');	
 							return;
 						}
 						
-						result.push('<li><a target="_blank" href="' +  value.substring(mp + 1) +'"' + clazz + '>' + encodeHTML(value.substr(0, mp)) + '</a></li>');
+						var target = value.substring(mp + 1);
+						value = value.substr(0, mp);
+						var summary = value.substr(at + 1);
+						if(at > 0)
+							value = value.substr(0, at);
+						result.push('<li><a target="_blank" href="' +  target +'"' + clazz + ' title="' + summary +'">' + encodeHTML(value) + '</a></li>');
 
 						
 					});
 					
+					
+					allTotal += total;
+					allFinished += finished;
 					
 					result[currenHeader] = '<h2>' + encodeHTML(group) + ' <span class="system-small">(' + finished + '/' + total + ')</span></h2>';
 					
@@ -182,6 +196,8 @@
 				result.push('</ul>');
 				
 			}
+			
+			result.push('<div class="system-clear system-right">' + allFinished + '/' + allTotal + '+<del>' + allSkipped + '</del></div>')
 			
 			sidebar.innerHTML = result.join('\r\n');
 			
