@@ -37,12 +37,7 @@ hr {
   font-size: 0px;
   line-height: 0px;
   margin: 12px 0;
-  *margin: 15px auto -8px;
-  *float: left;
-}
-legend {
-  _margin: 0px -8px 16px 0;
-  _padding: 0;
+  *margin: 4px 0;
 }
 sub,
 sup {
@@ -59,7 +54,7 @@ sub {
 }
 textarea {
   overflow: auto;
-  vertical-align: top;
+  vertical-align: 0px;
 }
 q:before,
 q:after,
@@ -84,6 +79,7 @@ canvas,
 video {
   display: inline-block;
   *display: inline;
+  /* IE7 inline-block hack */
   *zoom: 1;
 }
 audio:not([controls]) {

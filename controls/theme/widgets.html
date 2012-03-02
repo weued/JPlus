@@ -10,11 +10,313 @@
 		<link rel="stylesheet" type="text/css" href="../core/assets/styles/base.css">
 		<link rel="stylesheet" type="text/css" href="../page/assets/styles/common.css">
 		
-		<h1>Form</h1>
-		<h2>TextBox</h2>
+		<h1>DataView/Table</h1>
 		
-		默认: <input class="x-textbox" value=".x-textbox" type="text">
+		<link href="../dataview/assets/styles/table.less" rel="stylesheet/less" type="text/css" />
 		
-		<script src="http://lesscss.googlecode.com/files/less-1.2.2.min.js"></script>
+		
+		<h2>Default</h2>
+		
+		<table class="x-table">
+          <tr>
+            <td>1</td>
+            <td>Td 1</td>
+            <td>Td 2</td>
+            <td>Td 3</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Td 1</td>
+            <td>Td 2</td>
+            <td>Td 3</td>
+          </tr>
+	      </table>
+	    
+		<hr>
+		
+		<h2>Striped</h2>
+		
+		<table class="x-table x-table-striped">
+	        <thead>
+	          <tr>
+	            <th>Table</th>
+	            <th>Th 1</th>
+	            <th>Th 2</th>
+	            <th>Th 3</th>
+	          </tr>
+	        </thead>
+	        <tbody>
+	          <tr>
+	            <td>1</td>
+	            <td>Td 1</td>
+	            <td>Td 2</td>
+	            <td>Td 3</td>
+	          </tr>
+	          <tr>
+	            <td>2</td>
+	            <td>Td 1</td>
+	            <td>Td 2</td>
+	            <td>Td 3</td>
+	          </tr>
+	        </tbody>
+	      </table>
+	    
+		<hr>
+		
+		<h2>BaseLine</h2>
+		
+		<table class="x-table x-table-baseline">
+	        <thead>
+	          <tr>
+	            <th>Table</th>
+	            <th>Th 1</th>
+	            <th>Th 2</th>
+	            <th>Th 3</th>
+	          </tr>
+	        </thead>
+	        <tbody>
+	          <tr>
+	            <td>1</td>
+	            <td>Td 1</td>
+	            <td>Td 2</td>
+	            <td>Td 3</td>
+	          </tr>
+	          <tr>
+	            <td>2</td>
+	            <td>Td 1</td>
+	            <td>Td 2</td>
+	            <td>Td 3</td>
+	          </tr>
+	        </tbody>
+	      </table>
+		
+		<h1>Form/TextBox</h1>
+		
+		<link href="../form/assets/styles/textbox.less" rel="stylesheet/less" type="text/css" />
+		
+		默认: <input class="x-textbox" value=".x-textbox" type="text"><br><br>
+		警告: <input class="x-textbox x-textbox-warning" value=".x-textbox .x-textbox-warning" type="text"><br><br>
+		错误: <input class="x-textbox x-textbox-error" value=".x-textbox .x-textbox-error" type="text"><br><br>
+		成功: <input class="x-textbox x-textbox-success" value=".x-textbox .x-textbox-success" type="text"><br><br>
+		只读: <input class="x-textbox" readonly="readonly" value=".x-textbox[readonly]" type="text"><br><br>
+		禁用: <input class="x-textbox" disabled="disabled" value=".x-textbox[disabled]" type="text"><br><br>
+		
+		<h1>Form/CheckBox</h1>
+		
+		<link href="../form/assets/styles/checkbox.less" rel="stylesheet/less" type="text/css" />
+		
+		
+		<input type="checkbox" class="x-checkbox">文字
+		
+		<input type="checkbox" class="x-checkbox" readonly="readonly">文字
+		
+		<input type="checkbox" class="x-checkbox" disabled="disabled">文字
+		
+		
+		<h1>Form/RadioButton</h1>
+		
+		<link href="../form/assets/styles/radiobutton.less" rel="stylesheet/less" type="text/css" />
+		
+		
+		<input type="radio" class="x-radiobutton">文字
+		
+		<input type="radio" class="x-radiobutton" readonly="readonly">文字
+		
+		<input type="radio" class="x-radiobutton" disabled="disabled">文字
+		
+		
+		<h1>Form/Select</h1>
+		
+		<link href="../form/assets/styles/select.less" rel="stylesheet/less" type="text/css" />
+		
+		<select class="x-select">
+			<option>A</option>
+			<option>B</option>
+			<option>C</option>
+			<option>D</option>
+		</select>
+		
+		<select class="x-select x-select-warning">
+			<option>A</option>
+			<option>B</option>
+			<option>C</option>
+			<option>D</option>
+		</select>
+		
+		<select class="x-select x-select-error">
+			<option>A</option>
+			<option>B</option>
+			<option>C</option>
+			<option>D</option>
+		</select>
+		
+		<select class="x-select x-select-success">
+			<option>A</option>
+			<option>B</option>
+			<option>C</option>
+			<option>D</option>
+		</select>
+		
+		<select class="x-textbox">
+			<option>A</option>
+			<option>B</option>
+			<option>C</option>
+			<option>D</option>
+		</select>
+		
+		<select class="x-textbox x-textbox-warning">
+			<option>A</option>
+			<option>B</option>
+			<option>C</option>
+			<option>D</option>
+		</select>
+		
+		<select class="x-textbox x-textbox-error">
+			<option>A</option>
+			<option>B</option>
+			<option>C</option>
+			<option>D</option>
+		</select>
+		
+		<select class="x-textbox x-textbox-success">
+			<option>A</option>
+			<option>B</option>
+			<option>C</option>
+			<option>D</option>
+		</select>
+		
+		<h1>Form/ListBox</h1>
+		
+		<link href="../form/assets/styles/listbox.less" rel="stylesheet/less" type="text/css" />
+		
+		<div class="x-listbox">
+	 	  <ul class="x-listbox-container">
+            <li class="x-listbox-content">内容 tmp</li>
+            <li class="x-listbox-content x-listbox-selected"><a href="#">内容  tmp</a></li>
+            <li class="x-listbox-content"><a href="#">内容   tmp</a></li>
+            <li class="x-listbox-content"><a href="#">内容  tmp</a></li>
+          </ul>
+         </div>
+		
+		<h1>Form/Form</h1>
+		
+		<link href="../form/assets/styles/form.less" rel="stylesheet/less" type="text/css" />
+		
+		<h2>Horizontal forms</h2>
+		<form class="x-form">
+			<div class="x-formfield">
+				<label class="x-formfield-label">名字:</label>
+
+				<div class="x-formfield-container">
+					<input type="text" class="x-textbox"> <span class="x-tipbox x-tipbox-error">AAA</span> 
+				</div>
+			</div>
+			<div class="x-formfield">
+				<label class="x-formfield-label">内容:</label>
+				<div class="x-formfield-container">
+					<input type="text" class="x-textbox"> <span class="x-tipbox x-tipbox-success x-tipbox-plain">&nbsp;</span> 
+				</div>
+
+			</div>
+			<div class="x-formfield">
+				<label class="x-formfield-label">(选填)最后:</label>
+				<div class="x-formfield-container">
+					<input type="text" class="x-textbox"> &nbsp; <span class="x-hint">如：hello world</span> 
+				</div>
+			</div>
+
+			<div class="x-formfield">
+				<label class="x-formfield-label">内容:</label> 
+				<div class="x-formfield-container">
+					<input type="text" class="x-textbox"> <label><input type="radio" name="wtype" checked="checked"> value </label>  <label><input type="radio" name="wtype"> value </label>  &nbsp;
+				</div>
+
+			</div>
+			<div class="x-formfield">
+				<label class="x-formfield-label">内容:</label> 
+				<div class="x-formfield-container">
+					<input type="text" class="x-textbox"> <br>
+					<input type="text" class="x-textbox">
+				</div>
+			</div>
+
+			<div class="x-formfield">
+				<label class="x-formfield-label">内容:</label> 
+				<textarea class="x-textbox"></textarea>
+			</div>
+			<div class="x-formfield">
+				<div class="x-formfield-container">
+					<button type="submit" class="x-button">确定</button>
+				</div>
+
+			</div>
+		</form>
+		
+		<h2>Vertical forms</h2>
+		<form class="x-form x-form-vertical">
+			<div class="x-formfield">
+				<label class="x-formfield-label">名字:</label>
+				<div class="x-formfield-container">
+					<input type="text" class="x-textbox"> <span class="x-tipbox x-tipbox-error">AAA</span> 
+				</div>
+
+			</div>
+			<div class="x-formfield">
+				<label class="x-formfield-label">内容:</label>
+				<div class="x-formfield-container">
+					<input type="text" class="x-textbox"> <span class="x-tipbox x-tipbox-success x-tipbox-plain">&nbsp;</span> 
+				</div>
+			</div>
+			<div class="x-formfield">
+
+				<label class="x-formfield-label">(选填)最后:</label>
+				<div class="x-formfield-container">
+					<input type="text" class="x-textbox"> &nbsp; <span class="x-hint">如：hello world</span> 
+				</div>
+			</div>
+			<div class="x-formfield">
+				<label class="x-formfield-label">内容:</label> 
+				<div class="x-formfield-container">
+
+					<input type="text" class="x-textbox"> <label><input type="radio" name="wtype" checked="checked"> value </label>  <label><input type="radio" name="wtype"> value </label>  &nbsp;
+				</div>
+			</div>
+			<div class="x-formfield">
+				<label class="x-formfield-label">内容:</label> 
+				<div class="x-formfield-container">
+
+					<input type="text" class="x-textbox"> <br>
+					<input type="text" class="x-textbox">
+				</div>
+			</div>
+			<div class="x-formfield">
+				<label class="x-formfield-label">内容:</label> 
+				<textarea class="x-textbox"></textarea>
+			</div>
+
+			<div class="x-formfield">
+				<div class="x-formfield-container">
+					<button type="submit" class="x-button">确定</button>
+				</div>
+			</div>
+		</form>
+		
+		
+		<h2>Inline forms</h2>
+	    <form class="x-form x-form-inline">ssss
+
+		    <input type="text" class="x-textbox" placeholder="Email">
+		    <input type="password" class="x-textbox" placeholder="Password">
+		    <label>
+	          <input class="x-checkbox"type="checkbox">Remember?
+	        </label>
+		    <button type="submit" class="x-button">Go</button>
+	    </form>
+	    
+	    <h1>Button/Button</h1>
+		
+		<link href="../button/assets/styles/button.less" rel="stylesheet/less" type="text/css" />
+		
+		<script src="../../assets/libs/less/less-1.2.2.min.js"></script>
 	</body>
 </html>

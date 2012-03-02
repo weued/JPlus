@@ -1,5 +1,6 @@
 @echo off
 
+"../../assets/tools/dotless/dotless.Compiler.exe" ../page/assets/styles/grid-fluid.less 
 "../../assets/tools/dotless/dotless.Compiler.exe" ../core/assets/styles/base.less
 "../../assets/tools/dotless/dotless.Compiler.exe" ../button/assets/styles/splitbutton.less 
 "../../assets/tools/dotless/dotless.Compiler.exe" ../form/assets/styles/listbox.less 
@@ -16,7 +17,6 @@
 "../../assets/tools/dotless/dotless.Compiler.exe" ../page/assets/styles/common.less 
 
 "../../assets/tools/dotless/dotless.Compiler.exe" ../page/assets/styles/grid.less 
-"../../assets/tools/dotless/dotless.Compiler.exe" ../page/assets/styles/grid-fluid.less 
 "../../assets/tools/dotless/dotless.Compiler.exe" ../page/assets/styles/grid-fixed.less 
 "../../assets/tools/dotless/dotless.Compiler.exe" ../button/assets/styles/button.less 
 

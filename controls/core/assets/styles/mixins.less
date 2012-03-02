@@ -113,7 +113,7 @@
       font-family: @baseFontFamily;
     }
     .sans-serif() {
-      font-family: "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     }
     .monospace() {
       font-family: "Courier New", Menlo, Monaco, monospace;
@@ -493,7 +493,6 @@
 // Mixin for form field states
 .formFieldState(@textColor: #555, @borderColor: #ccc, @backgroundColor: #f5f5f5) {
  
-  color: @textColor;
   border-color: @borderColor;
   &:focus {
     border-color: darken(@borderColor, 10%);
@@ -543,5 +542,36 @@
     border-top: @arrowWidth solid transparent;
     border-bottom: @arrowWidth solid transparent;
     border-right: @arrowWidth solid @black;
+  }
+}
+
+
+// FORM CONTROL
+// ---------------------
+
+.x-inputcontrol() {
+  #font > #family > .sans-serif();
+  padding: 4px;
+  font-size: @baseFontSize + 2;
+  line-height: @baseLineHeight;
+  color: @gray;
+  border: 1px solid #ccc;
+  .border-radius(3px); 
+  .box-shadow(inset 0 1px 1px rgba(0,0,0,.075));
+  @transition: border linear .2s, box-shadow linear .2s;
+  .transition(@transition);
+  
+  
+  &:focus {
+    border-color: rgba(82,168,236,.8);
+    @shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(82,168,236,.6);
+    .box-shadow(@shadow);
+    outline: 0;
+    //    outline: thin dotted \9; /* IE6-9 */
+  }
+  
+  &[disabled], &[readonly] {
+    border-color: #ddd;
+    background-color: #eee; 
   }
 }
