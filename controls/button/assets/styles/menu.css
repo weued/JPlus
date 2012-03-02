@@ -2,7 +2,7 @@
   position: absolute;
   z-index: 1000;
   background-color: white;
-  border-color: #ccc;
+  border-color: #cccccc;
   border-color: rgba(0, 0, 0, 0.2);
   border-style: solid;
   border-width: 1px;
@@ -18,7 +18,8 @@
   *border-right-width: 2px;
   *border-bottom-width: 2px;
 }
-.x-menu .x-menuitem, .x-menu a {
+.x-menu .x-menuitem,
+.x-menu a {
   display: block;
   padding: 3px 15px;
   clear: both;

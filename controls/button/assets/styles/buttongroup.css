@@ -1,30 +1,12 @@
 .x-buttongroup {
-  position: relative;
-  *zoom: 1;
+  display: inline-block;
   *margin-left: .3em;
-}
-.x-buttongroup:after {
-  content: ".";
-  display: block;
-  height: 0;
-  clear: both;
-  visibility: hidden;
 }
 .x-buttongroup:first-child {
   *margin-left: 0;
 }
 .x-buttongroup + .x-buttongroup {
   margin-left: 5px;
-}
-.btn-toolbar {
-  margin-top: 9px;
-  margin-bottom: 9px;
-}
-.btn-toolbar .x-buttongroup {
-  display: inline-block;
-  *display: inline;
-  /* IE7 inline-block hack */
-  *zoom: 1;
 }
 .x-buttongroup .x-button {
   position: relative;
@@ -43,7 +25,8 @@
   -moz-border-radius-bottomleft: 4px;
   border-bottom-left-radius: 4px;
 }
-.x-buttongroup .x-button:last-child, .x-buttongroup .dropdown-toggle {
+.x-buttongroup .x-button:last-child,
+.x-buttongroup .dropdown-toggle {
   -webkit-border-top-right-radius: 4px;
   -moz-border-radius-topright: 4px;
   border-top-right-radius: 4px;
@@ -60,7 +43,8 @@
   -moz-border-radius-bottomleft: 6px;
   border-bottom-left-radius: 6px;
 }
-.x-buttongroup .x-button-large:last-child, .x-buttongroup .large.dropdown-toggle {
+.x-buttongroup .x-button-large:last-child,
+.x-buttongroup .large.dropdown-toggle {
   -webkit-border-top-right-radius: 6px;
   -moz-border-radius-topright: 6px;
   border-top-right-radius: 6px;
@@ -74,7 +58,8 @@
 .x-buttongroup .x-button-actived {
   z-index: 2;
 }
-.x-buttongroup .dropdown-toggle:active, .x-buttongroup.open .dropdown-toggle {
+.x-buttongroup .dropdown-toggle:active,
+.x-buttongroup.open .dropdown-toggle {
   outline: 0;
 }
 .x-buttongroup .dropdown-toggle {
@@ -106,7 +91,8 @@
   margin-top: 7px;
   margin-left: 0;
 }
-.x-button:hover .caret, .open.x-buttongroup .caret {
+.x-button:hover .caret,
+.open.x-buttongroup .caret {
   opacity: 1;
   filter: alpha(opacity=100);
 }

@@ -45,7 +45,7 @@ var Tpl = {
 				case 'if':
 					this._blockStatck.push('if');
 					assert(command, "Tpl.processCommand(command): 无法处理命令{if " + command + " } (if 命名的格式为 {if condition}");
-					return "if(" + command + ") {";
+					return "try{$tpl_tmp=" + command + ";if(Array.isArray($tpl_tmp))$tpl_tmp=$tpl_tmp.length}catch(e){$tpl_tmp=''}if($tpl_tmp) {";
 				case 'eval':
 					return command;
 				case 'else':
@@ -54,11 +54,11 @@ var Tpl = {
 					this._blockStatck.push('for');
 					command = command.split(/\s*in\s*/);
 					assert(command.length === 2 && command[0] && command[1], "Tpl.processCommand(command): 无法处理命令{for " + c[2] + " } (for 命名的格式为 {for var_name in obj}");
-					return 'Object.each(' + command[1] + ', function(' + command[0] + ', $index, $value){';
+					return 'try{$tpl_tmp=' + command[1] + '}catch(e){$tpl_tmp=null};Object.each($tpl_tmp, function(' + command[0].replace('var ', '') + ', $index, $value){';
 				case 'var':
 					return 'var ' + c[0] + ';';
 				case '$':
-					return '$tpl+="' + c[0] + '";';
+					break;
 				default:
 					return '$tpl+="' + this.encodeJs(c[0]) + '";';
 			}
@@ -74,7 +74,7 @@ var Tpl = {
 	 */
 	compile: function(tpl){
 		
-		var output = 'var $tpl="";with($data){',
+		var output = 'var $tpl="",$tpl_tmp;with($data){',
 			
 			// 块的开始位置。
 			blockStart = -1,

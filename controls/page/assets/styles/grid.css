@@ -65,6 +65,7 @@
   clear: both;
   visibility: hidden;
 }
-.x-col-first, .x-col:first-child {
+.x-col-first,
+.x-col:first-child {
   margin-left: 0;
 }

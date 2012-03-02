@@ -53,12 +53,11 @@ html .x-block {
 html .x-inline-block {
 	display: inline-block;
 	
-	// fix for IE6 & IE7
-	*display: inline;
-	*zoom: 1;	
+  // fix for IE6 & IE7
+	.ie7-inline-block();
 }
 
-html .x-hide  {
+html .x-hide, *.x-hide{
 	display: none;
 }
 
@@ -78,34 +77,17 @@ html .x-hide  {
   list-style: none;
 }
 
-// misc
-.x-control {
-	margin-bottom: 10px;
-}
-
-.x-blank {
-	height: 10px;
-	display: block;
-	visibility: hidden;
-	color: @white;
-}
-
-.x-debug {
-	background: #C03!important;
-}
-
-
 // colors
 .x-alt {
-	color: #70A3CD;
+	color: @blueLight;
 }
 
-.x-hint, a.x-hint, .x-hint a {
-	color: #999999;
+.x-hint {
+	color: @grayLight;
 }
 
-a.x-hint:hover, .x-hint a:hover {
-	color: #245C99;
+.x-highlight {
+  color: @highlight!important;
 }
 
 .x-warning {
@@ -120,6 +102,30 @@ a.x-hint:hover, .x-hint a:hover {
 	color: @successText!important;
 }
 
-.x-highlight {
-	color: #FF6600!important;
+// misc
+.x-control {
+  margin-bottom: 10px;
+}
+
+.x-blank {
+  height: 10px;
+  display: block;
+  visibility: hidden;
+  color: @white;
+}
+
+.x-debug {
+  background: #C03!important;
+  color: #fff;
+}
+
+// Float right with text-align: right
+blockquote.x-right {
+  padding-left: 0;
+  padding-right: 15px;
+  border-left: 0;
+  border-right: 5px solid @grayLighter;
+  p, small {
+    text-align: right;
+  }
 }

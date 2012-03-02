@@ -25,7 +25,8 @@
   width: 940px;
   margin-left: 0;
 }
-.x-grid-2 .x-col-side, .x-grid-3 .x-col-side {
+.x-grid-2 .x-col-side,
+.x-grid-3 .x-col-side {
   width: 230px;
   margin-left: 0;
 }

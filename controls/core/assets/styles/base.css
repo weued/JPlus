@@ -1,8 +1,6 @@
 /**
+ * 最底层的 CSS 样式。
  * @author xuld
- */
-/**
- * 整个系统的 CSS 最公共部分
  */
 html,
 body,
@@ -14,7 +12,9 @@ pre {
   margin: 0;
   padding: 0;
 }
-html, body, a img {
+html,
+body,
+a img {
   border: 0;
 }
 table {
@@ -22,7 +22,8 @@ table {
   border-spacing: 0;
   empty-cells: show;
 }
-th, td {
+th,
+td {
   padding: 0;
   border: 0;
 }
@@ -43,7 +44,8 @@ legend {
   _margin: 0px -8px 16px 0;
   _padding: 0;
 }
-sub, sup {
+sub,
+sup {
   position: relative;
   font-size: 75%;
   line-height: 0;
@@ -77,7 +79,9 @@ nav,
 section {
   display: block;
 }
-audio, canvas, video {
+audio,
+canvas,
+video {
   display: inline-block;
   *display: inline;
   *zoom: 1;
@@ -86,9 +90,9 @@ audio:not([controls]) {
   display: none;
 }
 body {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 13px;
-  line-height: 18px;
+  font-family: Tahoma, Arial, "宋体";
+  font-size: 12px;
+  line-height: 1.5em;
   color: #333333;
   background-color: white;
 }
@@ -138,23 +142,24 @@ h3 {
   line-height: 18px;
   font-size: 18px;
 }
+h4,
+h5,
+h6 {
+  margin: 0;
+}
+h4,
 h3 small {
   font-size: 14px;
 }
-h4 {
-  font-size: 14px;
-}
+h5,
 h4 small {
-  font-size: 12px;
-}
-h5 {
   font-size: 12px;
 }
 h6 {
   font-size: 10px;
 }
 p {
-  margin: 8px 0 12px;
+  margin: 8px 0 16px;
 }
 p small {
   color: #999999;
@@ -162,7 +167,8 @@ p small {
 ul {
   list-style: disc outside none;
 }
-ul, ol {
+ul,
+ol {
   margin: 0 0 9px 25px;
   padding: 0;
 }
@@ -191,28 +197,25 @@ dd {
 abbr {
   font-size: 90%;
   text-transform: uppercase;
-  border-bottom: 1px dotted #ddd;
+  border-bottom: 1px dotted #dddddd;
   cursor: help;
 }
-address, cite {
+address,
+cite {
   font-style: normal;
 }
-code, pre {
+code,
+pre {
   padding: 0 3px 2px;
-  font-family: Menlo, Monaco, "Courier New", monospace;
-  font-family: Menlo, Monaco, "Courier New", monospace;
-  font-size: 12px;
+  font-family: "Courier New", Menlo, Monaco, monospace;
   color: #333333;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
 }
 code {
   padding: 3px 4px;
-  color: #d14;
+  color: #1e347b;
   background-color: #f7f7f9;
   border: 1px solid #e1e1e8;
 }
@@ -220,22 +223,17 @@ pre {
   display: block;
   padding: 8.5px;
   margin: 9px 0;
-  font-size: 12px;
-  line-height: 18px;
-  background-color: #f5f5f5;
-  border: 1px solid #ccc;
+  background-color: whitesmoke;
+  border: 1px solid #cccccc;
   border: 1px solid rgba(0, 0, 0, 0.15);
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  border-radius: 4px;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
   white-space: pre;
   white-space: pre-wrap;
   word-break: break-all;
-  box-shadow: 40px 0 0 #FBFBFC inset, 41px 0 0 #ECECF0 inset;
-  -moz-box-shadow: 40px 0 0 #FBFBFC inset, 41px 0 0 #ECECF0 inset;
+  box-shadow: 40px 0 0 #fbfbfc inset, 41px 0 0 #ececf0 inset;
+  -moz-box-shadow: 40px 0 0 #fbfbfc inset, 41px 0 0 #ececf0 inset;
 }
 pre ol {
   margin: 0 0 0 33px;
@@ -257,9 +255,6 @@ blockquote p {
   font-size: 16px;
   font-weight: 300;
   line-height: 22.5px;
-  font-size: 16px;
-  font-weight: 300;
-  line-height: 22.5px;
 }
 blockquote small {
   display: block;
@@ -268,6 +263,16 @@ blockquote small {
 }
 blockquote small:before {
   content: '\2014 \00A0';
+}
+abbr {
+  font-size: 90%;
+  text-transform: uppercase;
+  border-bottom: 1px dotted #dddddd;
+  cursor: help;
+}
+address,
+cite {
+  font-style: normal;
 }
 fieldset {
   padding: 0;
@@ -278,138 +283,17 @@ legend {
   display: block;
   width: 100%;
   padding: 0;
-  margin-bottom: 27px;
-  font-size: 19.5px;
+  margin-bottom: 9px;
+  font-size: 18px;
   line-height: 36px;
   color: #333333;
   border: 0;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #eeeeee;
 }
 legend small {
   font-size: 13.5px;
   color: #999999;
 }
-input,
-button,
-select,
-textarea {
-  font-size: 13px;
-  font-weight: normal;
-  line-height: 18px;
-  font-size: 13px;
-  font-weight: normal;
-  line-height: 18px;
-  font-family: "Helvetica Neue", "Microsoft YaHei", Helvetica, Arial, sans-serif;
-  font-family: "Helvetica Neue", "Microsoft YaHei", Helvetica, Arial, sans-serif;
-}
-input, textarea, select {
-  display: inline-block;
-  padding: 4px;
-  font-size: 12px;
-  line-height: 18px;
-  color: #555555;
-  border: 1px solid #ccc;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-}
-select, input[type="file"] {
-  *margin-top: 4px;
-  /* For IE7, add top margin to align select with labels */
-  line-height: 28px;
-}
-input[type="image"], input[type="checkbox"], input[type="radio"] {
-  padding: 0;
-  *margin-top: 0;
-  /* IE7 */
-  line-height: normal;
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
-  border-radius: 0;
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
-  border-radius: 0;
-  border: 0 \9;
-  /* IE9 and down */
-
-}
-input[type="image"] {
-  border: 0;
-}
-input[type="file"] {
-  width: auto;
-  padding: initial;
-  line-height: initial;
-  border: initial;
-  background-color: white;
-  background-color: initial;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-}
-input[type="file"] {
-  line-height: 18px \9;
-}
 select {
   background-color: white;
-}
-input, textarea, select {
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-  -webkit-transition: border linear 0.2s, box-shadow linear 0.2s;
-  -moz-transition: border linear 0.2s, box-shadow linear 0.2s;
-  -ms-transition: border linear 0.2s, box-shadow linear 0.2s;
-  -o-transition: border linear 0.2s, box-shadow linear 0.2s;
-  transition: border linear 0.2s, box-shadow linear 0.2s;
-  -webkit-transition: border linear 0.2s, box-shadow linear 0.2s;
-  -moz-transition: border linear 0.2s, box-shadow linear 0.2s;
-  -ms-transition: border linear 0.2s, box-shadow linear 0.2s;
-  -o-transition: border linear 0.2s, box-shadow linear 0.2s;
-  transition: border linear 0.2s, box-shadow linear 0.2s;
-}
-input:focus, textarea:focus, select:focus {
-  border-color: rgba(82, 168, 236, 0.8);
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
-  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
-  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
-  outline: 0;
-  outline: thin dotted \9;
-  /* IE6-9 */
-
-}
-input[type="file"]:focus, input[type="radio"]:focus, input[type="checkbox"]:focus {
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-  outline: thin dotted;
-  outline: 5px auto -webkit-focus-ring-color;
-  outline-offset: -2px;
-  outline: thin dotted;
-  outline: 5px auto -webkit-focus-ring-color;
-  outline-offset: -2px;
-}
-input[disabled],
-select[disabled],
-textarea[disabled],
-input[readonly],
-select[readonly],
-textarea[readonly] {
-  border-color: #ddd;
-  background-color: #eee;
 }

@@ -1,10 +1,10 @@
-.dropdown {
-  position: relative;
-}
 .x-menubutton {
   *margin-bottom: -3px;
+  position: relative;
+  display: inline-block;
 }
-.x-menubutton:active, .x-button-open .x-menubutton {
+.x-menubutton:active,
+.x-button-open .x-menubutton {
   outline: 0;
 }
 .x-button-menu {
@@ -25,19 +25,14 @@
   margin-top: 8px;
   margin-left: 2px;
 }
-.x-button:hover .x-button-menu, .x-button-open .x-button-menu {
+.x-button:hover .x-button-menu,
+.x-button-open .x-button-menu {
   opacity: 1;
   filter: alpha(opacity=100);
 }
 .x-button-open {
   *z-index: 1000;
   color: white;
-  background: #ccc;
+  background: #cccccc;
   background: rgba(0, 0, 0, 0.3);
-}
-.typeahead {
-  margin-top: 2px;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  border-radius: 4px;
 }

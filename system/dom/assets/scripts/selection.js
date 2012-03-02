@@ -10,12 +10,12 @@
 		return textBox.tagName == "TEXTAREA" ? textBox.createTextRange() : document.selection.createRange();
 	}
 	
-	Element.implement({
+	Control.implement({
 		
 		/**
 		 * 选中一个文本框从 start 到 end 的内容。
 		 */
-		selectRange: 'selection' in document ? function(start, end) {
+		setSelectionRange: 'selection' in document ? function(start, end) {
 			var me = this.dom || this;
 			me.select();
 			var r =  document.selection.createRange() ; //   getSelection(textBox);
@@ -39,7 +39,7 @@
 	
 	/*
 	
-		selectRange: function(start, end){
+		setSelectionRange: function(start, end){
 			if (this.setSelectionRange){
 				this.focus();
 				this.setSelectionRange(start, end);
@@ -61,26 +61,32 @@
 		/**
 		 * 设置文本框的光标的位置。
 		 */
-		setCaretPosition: function(pos){
-			if (pos == 'end') pos = this.get('value').length;
-			this.selectRange(pos, pos);
+		setSelectionStart: function(pos){
+			if (pos === -1) pos = this.getText().length;
+			this.setSelectionRange(pos, pos);
 			return this;
 		},
 	
-	
+		/**
+		 * 获取选中的文本。
+		 */
+		setSelectedText: function(value, select){
+			var pos = this.getSelectionRange();
+			var text = this.getText();
+			this.setText(text.substring(0, pos.start) + value + text.substring(pos.end, text.length));
+			if (select !== false) this.setSelectionRange(pos.start, pos.start + value.length);
+			else this.setSelectionStart(pos.start + value.length);
+			return this;
+		},
+		
 		/**
 		 * 在光标位置插入一段内容。
 		 * @param {String} value 内容
 		 * @param {Boolean} select=true 是否选中。
 		 */
-		insertAtCursor: function(value, select){
-			var pos = this.getSelectedRange();
-			var text = this.get('value');
-			this.set('value', text.substring(0, pos.start) + value + text.substring(pos.end, text.length));
-			if (select !== false) this.selectRange(pos.start, pos.start + value.length);
-			else this.setCaretPosition(pos.start + value.length);
-			return this;
-		},
+		insertAtCursor: function(value){
+			return this.setSelectedText(value, false);
+		}
 	
 		/**
 		 * 在光标后面插入文字，并选中指定的位置。
@@ -88,7 +94,7 @@
 		 * @param {Boolean} replace=true 是否删除光标末尾的内容。
 		 * @param {Boolean} select=true 是否选中。
 		 */
-		insertAfterCursor: function(value, replace, select){
+	/* 	insertAfterCursor: function(value, replace, select){
 			options = Object.append({
 				before: '',
 				defaultMiddle: '',
@@ -96,18 +102,18 @@
 			}, options);
 	
 			var value = this.getSelectedText() || options.defaultMiddle;
-			var pos = this.getSelectedRange();
+			var pos = this.getSelectionRange();
 			var text = this.get('value');
 	
 			if (pos.start == pos.end){
 				this.set('value', text.substring(0, pos.start) + options.before + value + options.after + text.substring(pos.end, text.length));
-				this.selectRange(pos.start + options.before.length, pos.end + options.before.length + value.length);
+				this.setSelectionRange(pos.start + options.before.length, pos.end + options.before.length + value.length);
 			} else {
 				var current = text.substring(pos.start, pos.end);
 				this.set('value', text.substring(0, pos.start) + options.before + current + options.after + text.substring(pos.end, text.length));
 				var selStart = pos.start + options.before.length;
-				if (select !== false) this.selectRange(selStart, selStart + current.length);
-				else this.setCaretPosition(selStart + text.length);
+				if (select !== false) this.setSelectionRange(selStart, selStart + current.length);
+				else this.setSelectionStart(selStart + text.length);
 			}
 			return this;
 		},
@@ -115,18 +121,18 @@
 		deselect: function (argument) {
 			
 		}
-		
-	}, 2)
+		 */
+	})
 	
 	.implement({
 	
 		/**
 		 * 获取文本框的光标位置。
 		 */
-		getCaretPosition: function(){
-			return this.getSelectedRange().start;
+		getSelectionStart: function(){
+			return this.getSelectionRange().start;
 		},
-	
+		
 		/*
 		
 		
@@ -140,7 +146,7 @@
 		},
 		
 		
-		setCaretPosition: function(textBox, position) {
+		setSelectionStart: function(textBox, position) {
 			Element.select(textBox, position, position);
 		},
 		
@@ -152,8 +158,6 @@
 		
 		
 		*/
-		
-		
 	
 		/**
 		 * 获取选中的文本。
@@ -162,12 +166,16 @@
 			if (this.setSelectionRange) return this.getTextInRange(this.getSelectionStart(), this.getSelectionEnd());
 			return document.selection.createRange().text;
 		},
-	
-		getSelectedRange: function(){
-			if (this.selectionStart != null){
+		
+		/**
+		 * @return {Object} 返回 {start: 0, end: 3}  对象。
+		 */
+		getSelectionRange: function(){
+			var me = this.dom;
+			if (me.selectionStart != null){
 				return {
-					start: this.selectionStart,
-					end: this.selectionEnd
+					start: me.selectionStart,
+					end: me.selectionEnd
 				};
 			}
 	
@@ -175,17 +183,17 @@
 				start: 0,
 				end: 0
 			};
-			var range = this.getDocument().selection.createRange();
-			if (!range || range.parentElement() != this) return pos;
+			var range = Dom.getDocument(me).selection.createRange();
+			if (!range || range.parentElement() != me) return pos;
 			var duplicate = range.duplicate();
 	
-			if (this.type == 'text'){
+			if (me.type == 'text'){
 				pos.start = 0 - duplicate.moveStart('character', -100000);
 				pos.end = pos.start + range.text.length;
 			} else {
-				var value = this.get('value');
+				var value = me.getText();
 				var offset = value.length;
-				duplicate.moveToElementText(this);
+				duplicate.moveToElementText(me);
 				duplicate.setEndPoint('StartToEnd', range);
 				if (duplicate.text.length) offset -= value.match(/[\n\r]*$/)[0].length;
 				pos.end = offset - duplicate.text.length;
@@ -195,6 +203,6 @@
 			return pos;
 		}
 		
-	});
+	}, 2);
 
 })();

@@ -197,7 +197,8 @@
 				
 			}
 			
-			result.push('<div class="system-clear system-right">' + allFinished + '/' + allTotal + '+<del>' + allSkipped + '</del></div>')
+			if(allTotal)
+				result.push('<div class="system-clear system-right">' + allFinished + '/' + allTotal + '+<del>' + allSkipped + '</del></div>')
 			
 			sidebar.innerHTML = result.join('\r\n');
 			

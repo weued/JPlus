@@ -2593,9 +2593,10 @@
 		initUIEvent = function(e) {
 			if(!e.stop) {
 				e.target = e.srcElement;
-				for(var prop in pep) {
-					e[prop] = pep[prop];
-				}
+				e.stop = pep.stop;
+				e.getTarget = pep.getTarget;
+				e.stopPropagation = pep.stopPropagation;
+				e.preventDefault = pep.preventDefault;
 			}
 		};
 		

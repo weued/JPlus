@@ -40,6 +40,8 @@ var Validator = Class({
 						return this.createValidator('pattern', /^([a-zA-Z0-9]|[._-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/, errorMsg || Validator.messages.email);
 					case 'id': 
 						return this.createValidator('pattern', /^\d{15}$|^\d{17}(?:\d|x|X)$/, errorMsg || Validator.messages.id);
+					case 'pinyin':
+						return this.createValidator('pattern', /^[a-zA-Z]+$/, errorMsg || Validator.messages.pinyin);
 					case 'letter':
 						return this.createValidator('pattern', /^\w*$/, errorMsg || Validator.messages.letter);
 					case 'number':
@@ -91,6 +93,8 @@ var Validator = Class({
 						return; */
 					case 'phone':
 						return this.createValidator('pattern',/((\d{11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)/, errorMsg || Validator.messages.phone);
+					case 'mobile':
+						return this.createValidator('pattern',/^\d{11}$/, errorMsg || Validator.messages.phone);
 					case 'url':
 						return this.createValidator('pattern',/^http:\/\//i, errorMsg || Validator.messages.url);
 				}
@@ -145,7 +149,7 @@ var Validator = Class({
 			
 			if(async) {
 				this.onAsync();
-				return false;
+				return null;
 			} else
 				this.validated('');
 		
@@ -200,9 +204,11 @@ Validator.messages = {
 	
 	required: '此项为必填项',
 	
-	maxLength: '最多只能有 {0} 个字',
+	maxLength: '最多只能有 {0} 个字符',
 	
-	minLength: '至少需要 {0} 个字',
+	minLength: '至少需要 {0} 个字符',
+	
+	pinyin: '拼音应该为字母，不能含空格',
 	
 	pattern: '格式不正确',
 	

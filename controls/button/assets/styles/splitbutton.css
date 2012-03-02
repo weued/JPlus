@@ -1,0 +1,12 @@
+/**
+ * @author 
+ */
+.x-splitbutton {
+  *margin-bottom: -3px;
+  position: relative;
+  display: inline-block;
+}
+.x-splitbutton:active,
+.x-button-open .x-splitbutton {
+  outline: 0;
+}

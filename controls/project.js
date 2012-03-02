@@ -12,6 +12,7 @@ var menus = {
 	Form: '+Form -IFormControl +TextBox +Select +CheckBox +RadioButton +ListBox *Suggest',
 	Button: '+Button +MenuButton SplitButton ButtonGroup +Menu +CloseButton ToolBar',
 	Container: 'Stackable Tabbable TabControls Dialog MessageBox Accordion +Panel',
-	DataView: '+Table TreeView'
+	DataView: '+Table TreeView',
+	Theme: 'Base Widgets -Container -Layout'
 };
 

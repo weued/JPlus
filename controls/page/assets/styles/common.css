@@ -22,7 +22,8 @@
 .x-middle {
   vertical-align: middle;
 }
-.x-left, .x-right {
+.x-left,
+.x-right {
   _display: inline;
 }
 .x-relative {
@@ -40,9 +41,11 @@ html .x-block {
 html .x-inline-block {
   display: inline-block;
   *display: inline;
+  /* IE7 inline-block hack */
   *zoom: 1;
 }
-html .x-hide {
+html .x-hide,
+*.x-hide {
   display: none;
 }
 .x-break-word {
@@ -53,8 +56,27 @@ html .x-hide {
   margin: 0;
   padding: 0;
 }
-.x-plain li, li.x-plain {
+.x-plain li,
+li.x-plain {
   list-style: none;
+}
+.x-alt {
+  color: #70a3cd;
+}
+.x-hint {
+  color: #999999;
+}
+.x-highlight {
+  color: #ff6600 !important;
+}
+.x-warning {
+  color: #c09853 !important;
+}
+.x-error {
+  color: #b94a48 !important;
+}
+.x-success {
+  color: #468847 !important;
 }
 .x-control {
   margin-bottom: 10px;
@@ -66,26 +88,16 @@ html .x-hide {
   color: white;
 }
 .x-debug {
-  background: #C03!important;
+  background: #cc0033 !important;
+  color: white;
 }
-.x-alt {
-  color: #70A3CD;
+blockquote.x-right {
+  padding-left: 0;
+  padding-right: 15px;
+  border-left: 0;
+  border-right: 5px solid #eeeeee;
 }
-.x-hint, a.x-hint, .x-hint a {
-  color: #999999;
-}
-a.x-hint:hover, .x-hint a:hover {
-  color: #245C99;
-}
-.x-warning {
-  color: #c09853 !important;
-}
-.x-error {
-  color: #b94a48 !important;
-}
-.x-success {
-  color: #468847 !important;
-}
-.x-highlight {
-  color: #FF6600!important;
+blockquote.x-right p,
+blockquote.x-right small {
+  text-align: right;
 }

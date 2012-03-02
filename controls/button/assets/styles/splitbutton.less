@@ -4,3 +4,15 @@
 
 
 
+.x-splitbutton {
+  // The x-button-menu makes the toggle a bit too tall in IE7
+  *margin-bottom: -3px;
+  
+  position: relative;
+  display: inline-block;
+}
+
+.x-splitbutton:active, .x-button-open .x-splitbutton {
+  outline: 0;
+}
+

@@ -110,13 +110,13 @@
 #font {
   #family {
     .serif() {
-      font-family: Georgia, "Times New Roman", Times, serif;
+      font-family: @baseFontFamily;
     }
     .sans-serif() {
-      font-family: "Helvetica Neue", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+      font-family: "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
     }
     .monospace() {
-      font-family: Menlo, Monaco, "Courier New", monospace;
+      font-family: "Courier New", Menlo, Monaco, monospace;
     }
   }
   .shorthand(@size: @baseFontSize, @weight: normal, @lineHeight: @baseLineHeight) {

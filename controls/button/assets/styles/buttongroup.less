@@ -6,8 +6,7 @@
 
 // Make the div behave like a button
 .x-buttongroup {
-  position: relative;
-  .clearfix(); // clears the floated buttons
+  display: inline-block;
   .ie7-restore-left-whitespace();
 }
 
@@ -16,15 +15,15 @@
   margin-left: 5px;
 }
 
-// Optional: Group multiple button groups together for a toolbar
-.btn-toolbar {
-  margin-top: @baseLineHeight / 2;
-  margin-bottom: @baseLineHeight / 2;
-  .x-buttongroup {
-    display: inline-block;
-    .ie7-inline-block();
-  }
-}
+// // Optional: Group multiple button groups together for a toolbar
+// .btn-toolbar {
+  // margin-top: @baseLineHeight / 2;
+  // margin-bottom: @baseLineHeight / 2;
+  // .x-buttongroup {
+    // display: inline-block;
+    // .ie7-inline-block();
+  // }
+// }
 
 // Float them, remove border radius, then re-add to first and last elements
 .x-buttongroup .x-button {
