@@ -122,8 +122,7 @@
 			 * 当被子类重写时，渲染控件。
 			 * @method
 			 * @param {Object} options 配置。
-			 * @protected
-			 * @virtual
+			 * @protected virtual
 			 */
 			init: Function.empty,
 		
@@ -131,7 +130,7 @@
 			 * 将当前控件插入到指定父节点，并显示在指定节点之前。
 			 * @param {Node} parentNode 渲染的目标。
 			 * @param {Node} refNode=null 渲染的位置。
-			 * @protected
+			 * @protected virtual
 			 */
 			attach: function(parentNode, refNode) {
 				assert(parentNode && parentNode.nodeType, 'Control.prototype.attach(parentNode, refNode): {parentNode} 必须是 DOM 节点。', parentNode);
@@ -142,6 +141,7 @@
 			/**
 			 * 移除节点本身。
 			 * @param {Node} parentNode 渲染的目标。
+			 * @protected virtual
 			 */
 			detach: function(parentNode) {
 				assert(parentNode && parentNode.removeChild, 'Control.prototype.detach(parentNode): {parentNode} 必须是 DOM 节点或控件。', parent);
@@ -338,7 +338,7 @@
 			 * 初始化 Point 的实例。
 			 * @param {Number} x X 坐标。
 			 * @param {Number} y Y 坐标。
-			 * @constructor Point
+			 * @constructor
 			 */
 			constructor: function(x, y) {
 				this.x = x;
@@ -546,7 +546,7 @@
 		
 		/**
 		 * 根据一个 id 获取元素。如果传入的id不是字符串，则直接返回参数。
-		 * @param {String/Element} id 要获取元素的 id 或元素。
+		 * @param {String/Node/Control} id 要获取元素的 id 或元素本身。
 	 	 * @return {Control} 元素。
 		 */
 		get: function(id) {
@@ -556,8 +556,8 @@
 		},
 		
 		/**
-		 * 执行一个选择器，返回一个新的 DomList。
-		 * @param {String} selecter 选择器。 如 h2 .cls attr=value 。
+		 * 执行一个选择器，返回一个新的 {DomList} 对象。
+		 * @param {String} selecter 选择器。 如 "h2" ".cls" "[attr=value]" 。
 		 * @return {Element/undefined} 节点。
 		 */
 		query: function(selector) {
@@ -565,10 +565,10 @@
 		},
 
 		/**
-		 * 解析一个 html 字符串返回相应的控件。
+		 * 解析一个 html 字符串，返回相应的控件。
 		 * @param {String/Element} html 字符。
 		 * @param {Element} context=document 生成节点使用的文档中的任何节点。
-		 * @param {Boolean} cachable=true 是否缓存。
+		 * @param {Boolean} cachable=true 指示是否缓存节点。
 		 * @return {Control} 控件。
 		 */
 		parse: function(html, context, cachable) {
@@ -580,8 +580,8 @@
 		
 		/**
 		 * 创建一个节点。
-		 * @param {Object} tagName
-		 * @param {Object} className
+		 * @param {String} tagName 创建的节点的标签名。
+		 * @param {String} className 创建的节点的类名。
 		 */
 		create: function(tagName, className) {
 			assert.isString(tagName, 'Dom.create(tagName, className): {tagName} ~');
@@ -591,12 +591,11 @@
 		},
 
 		/**
-		 * 转换一个HTML字符串到节点。
+		 * 解析一个 html 字符串，返回相应的原生节点。
 		 * @param {String/Element} html 字符。
 		 * @param {Element} context=document 生成节点使用的文档中的任何节点。
-		 * @param {Boolean} cachable=true 是否缓存。
+		 * @param {Boolean} cachable=true 指示是否缓存节点。
 		 * @return {Element/TextNode/DocumentFragment} 元素。
-		 * @static
 		 */
 		parseNode: function(html, context, cachable) {
 
@@ -710,6 +709,10 @@
 		 */
 		attributes: attributes,
 		
+		/**
+		 * 选择器中关系选择符的处理函数列表。
+		 * @private
+		 */
 		combinators: {
 			' ': 'getAll',
 			'>': 'getChildren',
@@ -718,9 +721,16 @@
 			'<': 'getAllParent'
 		},
 		
+		/**
+		 * 获取文本时应使用的属性值。
+		 * @private
+		 */
 		textField: textField,
 	
-		// 用于查找所有支持的伪类的函数。
+		/**
+		 * 用于查找所有支持的伪类的函数集合。
+		 * @private
+		 */
 		pseudos: {
 			
 			target : function (elem) {
@@ -794,8 +804,9 @@
 		},
 		
 		/**
-		 * 获取值。
-		 * @return {Object/String} 值。对普通节点返回 text 属性。
+		 * 获取一个元素对应的文本。
+		 * @param {Element} elem 元素。
+		 * @return {String} 值。对普通节点返回 text 属性。
 		 */
 		getText: function(elem) {
 
@@ -805,7 +816,6 @@
 
 		/**
 		 * 获取一个节点属性。
-		 * @static
 		 * @param {Element} elem 元素。
 		 * @param {String} name 名字。
 		 * @return {String} 属性。
@@ -845,6 +855,7 @@
 		
 		/**
 		 * 判断一个节点是否隐藏。
+		 * @method isHidden
 		 * @return {Boolean} 隐藏返回 true 。
 		 */
 		
@@ -1061,7 +1072,6 @@
 		/**
 		 * 设置一个元素可拖动。
 		 * @param {Element} elem 要设置的节点。
-		 * @static
 		 */
 		setMovable: function(elem) {
 			assert.isElement(elem, "Dom.setMovable(elem): 参数 elem ~");
@@ -1155,7 +1165,8 @@
 		 * @param {Object} obj 要附加的对象。
 		 * @param {Number} listType = 1 说明如何复制到 DomList 实例。
 		 * @return {Element} this
-		 * @static 对 Element 扩展，内部对 Element DomList document 皆扩展。
+		 * @static
+		 * 对 Element 扩展，内部对 Element DomList document 皆扩展。
 		 *         这是由于不同的函数需用不同的方法扩展，必须指明扩展类型。 所谓的扩展，即一个类所需要的函数。 DOM 方法
 		 *         有 以下种 1, 其它 setText - 执行结果返回 this， 返回 this 。(默认) 2
 		 *         getText - 执行结果是数据，返回结果数组。 3 getElementById - 执行结果是DOM
@@ -1236,9 +1247,10 @@
 	
 		/**
 		 * 定义事件。
-		 * @param {String} 事件名。
-		 * @param {Function} trigger 触发器。
-		 * @return {Function} 函数本身
+		 * @param {String} events 事件名。
+		 * @param {String} baseEvent 基础事件。
+		 * @param {Function} initEvent 触发器。
+		 * @return {Function} 函数本身。
 		 * @static
 		 * @memberOf Element 原则 Control.addEvents 可以解决问题。 但由于 DOM
 		 *           的特殊性，额外提供 defineEvents 方便定义适合 DOM 的事件。 defineEvents
@@ -1322,6 +1334,7 @@
 		 * @param {String} delegate 委托变量。
 		 * @param {String} methods 所有成员名。
 		 *            因此经常需要将一个函数转换为对节点的调用。
+		 * @static
 		 */
 		delegate: function(control, target, setters, getters) {
 			assert(control && control.prototype, "Control.delegate(control, target, setters, getters): {control} 必须是一个类", control);
@@ -1348,9 +1361,8 @@
 		/**
 		 * 将当前节点添加到其它节点。
 		 * @param {Element/String} elem=document.body 节点、控件或节点的 id 字符串。
-		 * @return {Element} this this.appendTo(parent) 相当于
-		 *         elem.appendChild(this) 。 appendTo 同时执行 render(parent,
-		 *         null) 通知当前控件正在执行渲染。
+		 * @return this 
+		 * this.appendTo(parent) 相当于 parent.append(this) 。 
 		 */
 		appendTo: function(parent) {
 		
@@ -1404,11 +1416,10 @@
 		},
 	
 		/**
-		 * 设置内容样式。
+		 * 设置一个样式属性的值。
 		 * @param {String} name CSS 属性名或 CSS 字符串。
-		 * @param {String/Number} [value] CSS属性值， 数字如果不加单位，则自动转为像素。
-		 * @return {Element} this setStyle('cssText') 不被支持，需要使用 name，
-		 *         value 来设置样式。
+		 * @param {String/Number} [value] CSS属性值， 数字如果不加单位，则函数会自动追为像素。
+		 * @return {Element} this
 		 */
 		setStyle: function(name, value) {
 		
@@ -1418,8 +1429,12 @@
 			assert.isString(name, "Control.prototype.setStyle(name, value): {name} ~");
 			assert.isElement(me.dom, "Control.prototype.setStyle(name, value): 当前 dom 不支持样式");
 		
-			// 没有键 返回 cssText
-			if( name in styles) {
+			// 设置通用的属性。
+			if(arguments.length == 1){
+				me.dom.style.cssText = name;
+				
+			// 特殊的属性值。
+			} else if( name in styles) {
 		
 				// setHeight setWidth setOpacity
 				return me[styles[name]](value);
