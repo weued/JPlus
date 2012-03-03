@@ -7,7 +7,7 @@ using("System.Controls.Control");
  * IFrame
  * @class IFrame
  */
-namespace(".IFrame", Py.Control.extend({
+var IFrame = JPlus.Control.extend({
 	
 	xType: 'iframe',
 	
@@ -44,9 +44,9 @@ namespace(".IFrame", Py.Control.extend({
 	
 	update: function(){
 		var me = this;
-		Py.setupWindow(me.window = me.dom.contentWindow);
+		JPlus.setupWindow(me.window = me.dom.contentWindow);
 		
-		if(!navigator.isStd){
+		if(eval("!-[1,]")){
 			me.window.document.getDom = function(){
 				return this.body;
 			};
@@ -54,6 +54,6 @@ namespace(".IFrame", Py.Control.extend({
 		return me;
 	}
 
-}));
+});
 	
 	

@@ -14,7 +14,7 @@
  * @fileOverview Peppy - A lightning fast CSS 3 Compliant Selector Engine.
  * @see http://www.w3.org/TR/css3-selectors/#selectors
  */
-document.queryDom = (function(){
+var Peppy = (function(){
 
 	var doc = document,
 	    cache = {},
@@ -189,7 +189,13 @@ document.queryDom = (function(){
 		return result;
 	};
 	
-	var css3 = {
+	String.map("DOMAttrModified DOMNodeInserted DOMNodeRemoved", function(value){
+		doc.addEventListener(value, clearCache, false);
+	} );
+	
+	function clearCache(){ cache = {}; }
+	
+	return {
 		
 		
 		query: function( selectorGroups, root, includeRoot, recursed, flat ){
@@ -551,12 +557,4 @@ document.queryDom = (function(){
 		}
 	};
 	
-	String.map("DOMAttrModified DOMNodeInserted DOMNodeRemoved", function(value){
-		doc.addEventListener(value, clearCache, false);
-	} );
-	
-	function clearCache(){ cache = {}; }
-	
-	return css3.query;
-
 })();

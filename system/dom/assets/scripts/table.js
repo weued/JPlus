@@ -7,7 +7,7 @@ using("System.Controls.Control");
  * IFrame
  * @class IFrame
  */
-namespace(".HtmlTable", Py.Control.extend({
+namespace(".HtmlTable", JPlus.Control.extend({
 	
 	
 	build: function(){

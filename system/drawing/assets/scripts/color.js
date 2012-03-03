@@ -118,7 +118,7 @@ Object.extend(Array,  {
 });
 
 
-Object.extend(Py.Color, {
+Object.extend(JPlus.Color, {
 	
 	rgb: function(r, g, b){
 		return new Color([r, g, b], 'rgb');

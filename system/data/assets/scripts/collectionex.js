@@ -2,7 +2,7 @@
 //  集合的扩展   collection.js         A
 //===========================================
 
-Py.CollectionBase.implement({
+JPlus.CollectionBase.implement({
 	
 	/**
 	 * 返回当前集合的副本。

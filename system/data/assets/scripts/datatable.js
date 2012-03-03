@@ -38,7 +38,7 @@
 //       playjs.DataSet::table    全部表格的集合
 //                              当您添加一个表格后,要使用table集合获得该表格     playjs.DataSet.table[索引]  或 playjs.DataSet.table[名]
 //       playjs.DataSet::count    表格数
-//       playjs.DataSet::xType    Py对象对自身的说明
+//       playjs.DataSet::xType    JPlus对象对自身的说明
 //       playjs.DataTable::addTitle    增加表格的标题,参数可以是数组,或逗号隔开的字符串。
 //       playjs.DataTable::addTitleAt    增加表格的标题到一个位置,第一个参数为位置(数字),第二个为标题
 //       playjs.DataTable::render    渲染到一个DIV元素
@@ -60,7 +60,7 @@ namespace("System.Data");
 ///	表格行
 ///	</summary>
 /// <class extend="Array" name="DataRow" />
-Py.Data.DataRow = Array.extend({
+JPlus.Data.DataRow = Array.extend({
     
     ///	<summary>
 	///	当前行所在的表格。
@@ -134,7 +134,7 @@ Py.Data.DataRow = Array.extend({
 ///	表格结构
 ///	</summary>
 /// <class extend="Array" name="DataTable" />
-Py.Data.DataTable = Array.extend({
+JPlus.Data.DataTable = Array.extend({
     
     ///	<summary>
 	///	名字。
@@ -248,5 +248,5 @@ Py.Data.DataTable = Array.extend({
 });
 
 
-var DataRow = Py.Data.DataRow;
-var DataTable = Py.Data.DataTable;
+var DataRow = JPlus.Data.DataRow;
+var DataTable = JPlus.Data.DataTable;

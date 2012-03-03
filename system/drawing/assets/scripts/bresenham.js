@@ -33,15 +33,15 @@
 	// return ret.slice(0);
 // };
 // /*画椭圆*/
-// var ellipse = function(px,py,rx,ry){/*起点坐标px,py,x轴半径rx,y轴半径ry*/
-	// px = px+rx,py = py+ry;
+// var ellipse = function(px,JPlus,rx,ry){/*起点坐标px,JPlus,x轴半径rx,y轴半径ry*/
+	// px = px+rx,JPlus = JPlus+ry;
 	// var x = 0,y = ry,rx2 = rx*rx,ry2 = ry*ry,ret = [];
 	// var dx = ry2/Math.sqrt(ry2+rx2),p = ry2-rx2*ry;
 	// while(dx<=y){
-		// ret.push([px+x,py+y]);
-		// ret.push([px+x,py-y]);
-		// ret.push([px-x,py+y]);
-		// ret.push([px-x,py-y]);
+		// ret.push([px+x,JPlus+y]);
+		// ret.push([px+x,JPlus-y]);
+		// ret.push([px-x,JPlus+y]);
+		// ret.push([px-x,JPlus-y]);
 		// if(p<=0){
 			// ++x;
 		// }else{
@@ -51,18 +51,18 @@
 	// }
 	// p = ry2*(x*x+x)+rx2*(y*y-y)-rx2*ry2;
 	// while(y>0){
-		// ret.push([px+x,py+y]);
-		// ret.push([px+x,py-y]);
-		// ret.push([px-x,py+y]);
-		// ret.push([px-x,py-y]);
+		// ret.push([px+x,JPlus+y]);
+		// ret.push([px+x,JPlus-y]);
+		// ret.push([px-x,JPlus+y]);
+		// ret.push([px-x,JPlus-y]);
 		// if(p>=0){
 			// --y,p = p-2*rx2*y-rx2;
 		// }else{
 			// --y,++x,p = p-2*rx2*y-rx2+2*ry2*x+2*ry2;
 		// }
 	// }
-	// ret.push([px+x,py]);
-	// ret.push([px-x,py]);
+	// ret.push([px+x,JPlus]);
+	// ret.push([px-x,JPlus]);
 	// return ret.slice(0);
 // };
 // /*画直线*/

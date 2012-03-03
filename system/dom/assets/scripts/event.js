@@ -2,7 +2,7 @@
 //  事件对象   event.js  A
 //===========================================
 
-namespace(".DomEvent", Py.Class({
+var DomEvent = Class({
 	
 	constructor: function(event) {
 		var doc = window.document;
@@ -105,14 +105,16 @@ namespace(".DomEvent", Py.Class({
 		this.stopPropagation();
 	}
 	
-})).getCurrentEvent = navigator.isIE || navigator.isOpera ? function(){
+});
+
+DomEvent.getCurrentEvent = navigator.isIE || navigator.isOpera ? function(){
 	return window.event;
 } : function(){
 	var fn = arguments.callee.caller;
 	while(fn){
 		var arg0 = f.arguments[0];
 		if(arg0 && args0.preventDefault && args0.stopPropagation){
-			return new Py.DomEvent(arg0);
+			return new JPlus.DomEvent(arg0);
 		}
 		fn = fn.caller;
 	}

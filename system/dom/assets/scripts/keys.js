@@ -191,7 +191,7 @@ Event.Keys = {
 /// 所有键
 ///	</summary>
 /// <class name="Keys" type="Enum" />
-var Keys = Py.Keys = ['none',
+var Keys = JPlus.Keys = ['none',
 			'lButton', 'rButton', 0, 0, 0,
 			0, 0, 'backspace', '\t', '\r',
 			' ', 'clear', '\n', 0, 0,
@@ -280,7 +280,7 @@ var Keys = Py.Keys = ['none',
 			return null;
 	 	if(event.shiftKey)
 			k += 127;
-		return Py.Keys[k];
+		return JPlus.Keys[k];
 	 };
 	 
     ///	<summary>
@@ -290,7 +290,7 @@ var Keys = Py.Keys = ['none',
     /// <returns type="Function">函数。参数：键名， 是否ctrl，是否alt</returns>
     s.createHandler = function(fn){
 		return function(eventArgs){
-			var v = Py.Keys.getName(eventArgs);
+			var v = JPlus.Keys.getName(eventArgs);
         	if(v == "shift" || v == "alt" || v == "ctrl")
            		return false;
         	return fn(v, eventArgs.ctrlKey,  eventArgs.altKey);
@@ -298,7 +298,7 @@ var Keys = Py.Keys = ['none',
         
     };
 	 
-})(Py.Keys);
+})(JPlus.Keys);
 
 
 

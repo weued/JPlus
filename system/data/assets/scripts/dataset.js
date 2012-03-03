@@ -1,5 +1,5 @@
 //===========================================
-//  数据集对象   dataset.js     
+//  数据集对�?  dataset.js     
 //===========================================
 
 
@@ -7,57 +7,48 @@
 // //==========================================
 // // PyObject  by xuld
 // //
-// //   ����ݵ���
+// //   ����ݵ���?// //
 // //
-// //
-// //����˵��: ����Ҫ���ڴ洢������ݿ�ṹ�ı��
-// //              ȫ�ֱ���  DataSet :  ȫ����ݵļ���
-// //              һ��DataSet���ж��DataTable  ÿ��DataTable ����һ��DataTitle�Ͷ��DataRow
-// //              ���ṩUI���档ֻ����Ϊһ�����(XML,��ݿ�,JSON)�ӿڡ�
-// //���ʾ��:
+// //����˵��: ����Ҫ���ڴ洢������ݿ�ṹ�ı��?// //              ȫ�ֱ���  DataSet :  ȫ����ݵļ���?// //              һ��DataSet���ж��DataTable  ÿ��DataTable ����һ��DataTitle�Ͷ��DataRow
+// //              ���ṩUI���档ֻ����Ϊһ�����?XML,��ݿ�?JSON)�ӿڡ�
+// //���ʾ��?
 // //     /*  js code 
-// //		* * PyObject ���ʾ��
-// //		* * ����һ����񲢴���һ����
-// //      */
-// //          var Table = DataSet.add("�������",["����1","����2","����3"]);    //����һ�����,������������Щ����
+// //		* * PyObject ���ʾ��?// //		* * ����һ����񲢴���һ����?// //      */
+// //          var Table = DataSet.add("�������?,["����1","����2","����3"]);    //����һ�����?������������Щ����
 // //			Table.add("����1",["��һ�е�1��","��һ�е�2��","��һ�е�3��"]);           //����һ��
 // //          Table.add("����2",["�ڶ��е�1��","�ڶ��е�2��","�ڶ��е�3��"]);           //����һ��
-// //			Table["����1"]["����1"] = 3;             // �����������Ϊ����1���еĵ�һ�С�
+// //			Table["����1"]["����1"] = 3;             // �����������Ϊ����?���еĵ�һ�С�
 // //			Table[0][3] = 6                          // Ҳ����ʹ������
-// //			Table.create()                           // ����һ�� <TABLE> ��ǩ,�������һ�����ڵ���,�۲����еı�����
+// //			Table.create()                           // ����һ�� <TABLE> ��ǩ,�������һ�����ڵ���?�۲����еı�����
 // //
 // //��ʾ��:
 // //       ���÷���˵��: 
 // //          add   ����һ��
 // //          del   ɾ��һ��
-// //          indexOf   ����ָ�����������
-// //          find   ����ָ����������,����Ҳ����й�����,���� -1
+// //          indexOf   ����ָ�����������?// //          find   ����ָ����������,����Ҳ����й�����?���� -1
 // //          insert   �ڵ�ǰλ��ĩβ����һ������
 // //          insertAt   ��һ��λ�ò���һ������
 // //          remove   ��������ɾ��,���Դ���һ������
 // //          removeAt   ��������ɾ��
 // //          search   ���ص�ǰ����ָ������
-// //          getAt   ����ָ������λ��,�������Խ��,����һ�� NULL
+// //          getAt   ����ָ������λ��,�������Խ��?����һ�� NULL
 // //          length  ����
 // //          key     ����
 // //
-// //       DataSet::add()    ����һ����,����:�����1������ʾ������,���2��,ǰ������Ϊ�����,����Ǳ��⡣
-// //       DataSet::del()    ɾ��һ����,����:������֡�
-// //       DataSet::table    ȫ�����ļ���
-// //                              �������һ������,Ҫʹ��table���ϻ�øñ��     DataSet.table[����]  �� DataSet.table[��]
-// //       DataSet::count    �����
-// //       DataSet::xType    Py����������˵��
-// //       DataTable::addTitle    ���ӱ��ı���,�������������,�򶺺Ÿ������ַ�
+// //       DataSet::add()    ����һ����,����:�����?������ʾ������,���?��,ǰ������Ϊ�����?����Ǳ���?// //       DataSet::del()    ɾ��һ����,����:������֡�?// //       DataSet::table    ȫ�����ļ���
+// //                              �������һ������?Ҫʹ��table���ϻ�øñ��     DataSet.table[����]  �� DataSet.table[��]
+// //       DataSet::count    �����?// //       DataSet::xType    JPlus����������˵��
+// //       DataTable::addTitle    ���ӱ��ı���,�������������?�򶺺Ÿ������ַ�
 // //       DataTable::addTitleAt    ���ӱ��ı��⵽һ��λ��,��һ������Ϊλ��(����),�ڶ���Ϊ����
 // //       DataTable::render    ��Ⱦ��һ��DIVԪ��
 // //       DataTable::container    ��ȡһ��<TABLE>
 // //       DataTable::sort(��,�ȽϺ���,˳��/����,��ʼλ��,����λ��)    ����
-// //                                 ������ʹ�ý϶�Ĺ���,ʹ�õĲ���ȫ��ѡ,
+// //                                 ������ʹ�ý϶�Ĺ���?ʹ�õĲ���ȫ��ѡ,
 // //                                 ��û����ʱ,��ʹ�����С�
 // //                                 �ȽϺ���,Ĭ���Ƿ�����С����
 // //                                       �Ƚк���  2   ������,  ��ʾ 2���С� ����һ������ �� function(x,y){return x<y};  ����  x<y  ����
 // //                                 ˳��,����:����,ʼ�������෴(Ĭ��true)��   
-// //                                 ��ʼλ��,��ʼ�����λ�á�  
+// //                                 ��ʼλ��,��ʼ�����λ�á�? 
 // //       
 // //==========================================
 // 
@@ -75,17 +66,14 @@
 	// dataSet = function(name){
 		// var playDataSet = {
 // 			
-			// //ȫ�����
-			// table:new Array(),
+			// //ȫ�����?			// table:new Array(),
 // 			
-			// //�����
-			// count:0,
+			// //�����?			// count:0,
 // 			
 			// //�汾
 			// version:0.1,
 // 			
-			// //��񳤶�
-			// length:function(){
+			// //��񳤶�?			// length:function(){
 				// return this.table.length;
 			// },
 // 
@@ -174,8 +162,7 @@
 			// //ɾ��
 			// //����:
 			// //  table : ����
-			// //  ���ر�ɾ��ĸ���
-			// _removeAt:function(t,table){
+			// //  ���ر�ɾ��ĸ���?			// _removeAt:function(t,table){
 				// if(isArray(table)){
 					// var count = 0;
 					// for(var v=0;v<table.length;v++)
@@ -232,8 +219,7 @@
 			// },
 // 			
 // 			
-			// //����һ��ֵ�����Ƿ����
-			// //����:
+			// //����һ��ֵ�����Ƿ����?			// //����:
 			// //  table : ����
 			// _search:function(t,table){
 				// if(isArray(table)){
@@ -247,13 +233,11 @@
 // 				
 			// },  
 // 			
-			// //��ݴ�������ݷ���һ�����
-			// getAt:function(x){
+			// //��ݴ�������ݷ���һ�����?			// getAt:function(x){
 				// return this._getAt(this.table,x);
 			// },
 // 			
-			// //����һ�����ĩβ
-			// //����:
+			// //����һ�����ĩ�?			// //����:
 			// //  tableName : ����
 			// insert:function(tableName,value){
 				// this.count++;
@@ -291,8 +275,7 @@
 				// this.count -= this._removeAt(this.table,x);
 			// },
 // 			
-			// //����һ�������Ƿ����
-			// //����:
+			// //����һ�������Ƿ����?			// //����:
 			// //  table : ����
 			// search:function(tableName){
 				// return this._search(this.table,tableName);
@@ -303,7 +286,7 @@
 			// key:0
 		// };
 // 		
-		// //���һ����  ����:λ�ñ���
+		// //���һ����? ����:λ�ñ���
 		// // add λ�� ���� ����
 		// playDataSet.table.add =playDataSet.add =  function(table,TableName,C){
 			// if(C && typeof table!="Object")
@@ -421,8 +404,7 @@
 			// dataSet._removeAt(this,row);
 		// };
 // 			
-		// //����һ�������Ƿ����
-		// //����:
+		// //����һ�������Ƿ����?		// //����:
 		// //  table : ����
 		// DataTable.search = function(row){
 			// return !!this[row];
@@ -452,7 +434,7 @@
 // 		
 		// }
 // 		
-		// //�������һ��,û�� null
+		// //�������һ��?û�� null
 		// DataTable.getAt = function(x){
 			// return dataSet._getAt(x);
 		// }
@@ -597,8 +579,7 @@
 		// DataColumn.loadData = function(vals){
 			// dataSet._load(this,vals);
 		// }
-		// //�������Ƿ����
-		// //����:
+		// //�������Ƿ����?		// //����:
 		// //  table : ����
 		// DataColumn.search = function(row){
 			// return !!this[row];
@@ -614,8 +595,7 @@
 		// return typeof a == "object" && (a.constructor ==Array || typeof a.sort=="function" && !isNaN(a.length)) && !a.xType;
 // 		
 	// }
-	// //���һ��
-   // playDataRow = function(name,vals,parent){
+	// //���һ��?   // playDataRow = function(name,vals,parent){
 // 	  
 	    // var DataRow = new Array();
 // 		
@@ -651,8 +631,7 @@
 			// dataSet._load(this,value);
 		// };
 // 		
-		// //��ϱ���
-		// DataRow.bind = function(v){
+		// //��ϱ���?		// DataRow.bind = function(v){
 			// for(var i=0;i<v.length;i++)
 				// this[v[i]] = this[i];
 // 			
@@ -689,8 +668,7 @@
 			// dataSet.removeAt(this,row);
 		// };
 // 			
-		// //�������Ƿ����
-		// //����:
+		// //�������Ƿ����?		// //����:
 		// //  table : ����
 		// DataRow.search = function(row){
 			// return !!this[row];

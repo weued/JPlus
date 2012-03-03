@@ -6,7 +6,7 @@
 	
 	
 	
-namespace(".DelayedTask", Py.Class({
+namespace(".DelayedTask", JPlus.Class({
 	
 	constructor: function(fn, scope, args) {
 		var id = null, d, t;

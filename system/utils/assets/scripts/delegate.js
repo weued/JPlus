@@ -10,7 +10,7 @@
  * 委托。
  * @class Delegate
  */
-namespace(".Delegate", Py.Class({
+var Delegate = Class({
 	
 	/**
 	 * 初始化一个委托。
@@ -90,4 +90,4 @@ namespace(".Delegate", Py.Class({
 		return this.apply(bind, Array.create(arguments, 1));
 	}
 							   
-}));
+});

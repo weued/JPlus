@@ -2,7 +2,7 @@
 //  表示地址   uri.js    A
 //===========================================
 
-namespace(".Uri", Py.Class({
+namespace(".Uri", JPlus.Class({
 	
 	originalString: null,
 	

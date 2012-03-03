@@ -1,0 +1,28 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Dom</title>
+		<script src="../core/assets/scripts/system.js" type="text/javascript"></script>
+		<script src="../dom/assets/scripts/element.js" type="text/javascript"></script>
+		<script src="../dom/assets/scripts/ctrlenter.js" type="text/javascript"></script>
+		
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+	</head>
+	<body> 
+		<input type="text" value="msg" id="name">
+			<hr>
+		<textarea id="res" ondblclick="this.value = ''"></textarea>
+		<script>
+			
+			Dom.enableSubmitOnCtrlEnter('name', function(){
+				alert('提交');
+			});
+			
+			Dom.enableSubmitOnCtrlEnter('res', function(){
+				alert('提交');
+			});
+		
+		</script>
+	</body>  
+</html>

@@ -5,9 +5,9 @@
 
 /**
  * 使类具有存储的方法。
- * @interface Py.IDataStore
+ * @interface JPlus.IDataStore
  */
-namespace('.IDataStore', {
+var IDataStore = {
 	
 	/**
 	 * 获取属于一个元素的数据。
@@ -15,8 +15,8 @@ namespace('.IDataStore', {
 	 * @param {String} type 类型。
 	 * @return {Object} 值。
 	 */
-	getData: function(type){
-		return Py.data(this, type);
+	data: function(type){
+		return JPlus.data(this, type);
 	},
 	
 	/**
@@ -25,8 +25,8 @@ namespace('.IDataStore', {
 	 * @param {String} type 类型。
 	 * @return {Object} 值。
 	 */
-	getgetData: function(type){
-		return Py.getData(this, type);
+	getData: function(type){
+		return JPlus.getData(this, type);
 	},
 	
 	/**
@@ -37,7 +37,7 @@ namespace('.IDataStore', {
 	 * @param {mixed} data 内容。
 	 */
 	setData: function(type, data){
-		return Py.setData(this, type, data);
+		return JPlus.setData(this, type, data);
 	},
 	
 	/**
@@ -45,15 +45,7 @@ namespace('.IDataStore', {
 	 * @param {String} [type] 类型。
 	 */
 	removeData: function(type) {
-		if(this.data) {
-			if(type)
-				delete this.data[type];
-			else
-				delete this.data;
-		}
-	},
-	
-	cloneDataTo: function(dest){
-		return Py.cloneData(dest, this);
+		JPlus.removeData(this, type);
+		return this;
 	}
-});
+};

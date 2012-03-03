@@ -6,7 +6,7 @@ using("System.Controls.Control");
 
 
 
-namespace(".Swiff", Py.Control.extend({
+namespace(".Swiff", JPlus.Control.extend({
 
 	options: {
 		id: null,

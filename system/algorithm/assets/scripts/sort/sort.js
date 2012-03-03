@@ -8,7 +8,7 @@
 /**
  * 提供排序算法。
  */
-namespace(".Sorter.", {
+JPlus.namespace("Sorter", {
 	
 	/**
 	 * 默认比较的函数。
@@ -49,7 +49,7 @@ namespace(".Sorter.", {
 	 */
     sort : function(iterater){
     
-		var args = JPlus.Sorter._setup(arguments),
+		var args = Sorter._setup(arguments),
 			start = args[1],
 			end = args[2],
 			fn = args[3];

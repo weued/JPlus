@@ -3,7 +3,7 @@
 //===========================================
 
 
-namespace(".Template", Py.Class({
+namespace(".Template", JPlus.Class({
 	
 	parse: function(self){
 	       var temp;

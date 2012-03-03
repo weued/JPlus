@@ -237,7 +237,7 @@
 			if (name in styles) {
 				switch (name) {
 					case 'height':
-						return elem.offsetHeight === 0 ? 'auto' : elem.offsetHeight - e.getSize(elem, 'by+py') + 'px';
+						return elem.offsetHeight === 0 ? 'auto' : elem.offsetHeight - e.getSize(elem, 'by+JPlus') + 'px';
 					case 'width':
 						return elem.offsetWidth === 0 ? 'auto' : elem.offsetWidth - e.getSize(elem, 'bx+px') + 'px';
 					case 'opacity':
@@ -1980,7 +1980,7 @@
 	            me.setWidth(p.x - e.getSize(me.dom || me, 'bx+px'));
 
             if (p.y != null)
-	            me.setHeight(p.y - e.getSize(me.dom || me, 'by+py'));
+	            me.setHeight(p.y - e.getSize(me.dom || me, 'by+JPlus'));
 
             return me;
         },

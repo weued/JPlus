@@ -3,7 +3,7 @@
 //===========================================
 
 
-/// #ifdef SupportIE8
+/// #if CompactMode
 
 
 
@@ -157,7 +157,7 @@ redistribute.
 
 
 
-namespace("JSON.", (function () {
+JPlus.namespace("JSON", (function () {
 
     function f(n) {
         // Format integers to have at least two digits.
