@@ -483,7 +483,7 @@ using("System.Fx.Base");
 	 * 获取变换。
 	 */
 	function getAnimate(type){
-		return Object.extend({}, maps[type || 'all']);
+		return Object.extend({}, maps[type || 'opacity']);
 	}
 	
 	/**
