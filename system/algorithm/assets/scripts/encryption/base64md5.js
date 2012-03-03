@@ -9,7 +9,9 @@ using("System.Algorithm.Encryption.Md5");
  * @param {String} s 字符串。
  * @return {String} md5 字符串。 
  */
-(function(base64pad){
+(function(){
+	
+	var base64pad = "";
 	
 	/**
 	 * @param {String} base64pad 对齐 base-64 字符。
@@ -25,7 +27,7 @@ using("System.Algorithm.Encryption.Md5");
      * @return {String} md5 字符串。 
      */
     function b64_md5(s){
-        return binl2b64(e.md5c(e.str2binl(s), s.length * Py.charSize));
+        return binl2b64(e.md5c(e.str2binl(s), s.length * Encryption.charSize));
     }
     
     /**
@@ -50,5 +52,5 @@ using("System.Algorithm.Encryption.Md5");
     e.base64Md5 = b64_md5;
 	e.binl2b64 = binl2b64;
     
-})(Py.base64pad || "");
+})();
 

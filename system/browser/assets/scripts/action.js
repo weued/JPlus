@@ -4,7 +4,7 @@
 
 
 
-namespace(".Broswer.", {
+JPlus.namespace("Broswer", {
 
 	/**
 	 * 打开添加收藏夹对话框。

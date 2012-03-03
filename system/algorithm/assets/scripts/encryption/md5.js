@@ -8,7 +8,10 @@
  * @param {String} s 字符串。
  * @return {String} md5 字符串。 
  */
-JPlus.namespace("Encryption", (function(hexcase){
+JPlus.namespace("Encryption", (function(){
+	
+	var hexcase = false;
+	var charSize = 8;
 	
 	/**
 	 * @param {Boolean} hexcase 输出格式， false - 小写，  true - 大写。
@@ -40,16 +43,14 @@ JPlus.namespace("Encryption", (function(hexcase){
 			[6, 10, 15, 21],
 		];
 	
-	Encryption.charSize = Encryption.charSize || 8;
-	
     /**
      * 计算一个字符串的 MD5值。
      * @param {String} s 字符串。
      * @return {String} md5 字符串。 
      */
     function hex_md5(s){
-		assert(s, "参数空");
-        return binl2hex(core_md5(str2binl(s), s.length * Py.charSize));
+		assert.isString(s, "Encryption.md5(s): {s}~");
+        return binl2hex(core_md5(str2binl(s), s.length * charSize));
     }
     
     /**
@@ -137,7 +138,7 @@ JPlus.namespace("Encryption", (function(hexcase){
      * 如果字符大于 255 ， 高位被截掉。
      */
     function str2binl(str){
-        var bin = Array(), chrsz = Py.charSize;
+        var bin = Array(), chrsz = charSize;
         var mask = (1 << chrsz) - 1;
         for (var i = 0; i < str.length * chrsz; i += chrsz) 
             bin[i >> 5] |= (str.charCodeAt(i / chrsz) & mask) << (i % 32);
@@ -162,8 +163,9 @@ JPlus.namespace("Encryption", (function(hexcase){
 		str2binl: str2binl,
 		md5: hex_md5,
 		md5c: core_md5,
-		binl2hex: binl2hex
+		binl2hex: binl2hex,
+		charSize: 8
 	};
     
-})(Encryption.hexCase));
+})());
 

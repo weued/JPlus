@@ -2532,18 +2532,19 @@
 	
 			/**
 			 * 创建当前事件可用的参数。
-			 * @param {Object} elem 对象。
+			 * @param {Control} ctrl 事件所有者。
 			 * @param {Event} e 事件参数。
 			 * @param {Object} target 事件目标。
 			 * @return {Event} e 事件参数。
 			 */
-			trigger: function(elem, type, fn, e) {
-				return fn( e = new Dom.Event(elem, type, e)) && (!elem[ type = 'on' + type] || elem[type](e) !== false);
+			trigger: function(ctrl, type, fn, e) {
+				ctrl = ctrl.dom;
+				return fn( e = new Dom.Event(ctrl, type, e)) && (!elem[ type = 'on' + type] || elem[type](e) !== false);
 			},
 			
 			/**
 			 * 添加绑定事件。
-			 * @param {Object} elem 对象。
+			 * @param {Control} ctrl 事件所有者。
 			 * @param {String} type 类型。
 			 * @param {Function} fn 函数。
 			 */
@@ -2830,6 +2831,8 @@
 	} else {
 		setTimeout(Dom.load, 1);
 	}
+	
+	div = null;
 
 	apply(window, {
 
@@ -2847,8 +2850,6 @@
 		$$: Dom.get,
 		$: Dom.query
 	});
-	
-	div = null;
 	
 	/**
 	 * @class

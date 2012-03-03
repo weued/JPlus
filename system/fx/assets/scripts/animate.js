@@ -141,7 +141,7 @@ using("System.Fx.Base");
 			 * @type Control
 			 * @protected
 			 */
-			dom: null,
+			target: null,
 			
 			/**
 			 * 当前的状态存储。
@@ -162,8 +162,8 @@ using("System.Fx.Base");
 			 * @param {Object} key 键。
 			 * @param {Number} duration 变化时间。
 			 */
-			constructor: function(dom){
-				this.dom = dom;
+			constructor: function(target){
+				this.target = target;
 				
 				this._competeListeners = [];
 			},
@@ -176,7 +176,7 @@ using("System.Fx.Base");
 			set: function(delta){
 				var me = this,
 					key,
-					target = me.dom,
+					target = me.target,
 					value;
 				for(key in me.current){
 					value = me.current[key];
@@ -235,7 +235,7 @@ using("System.Fx.Base");
 					// 找到合适转换器
 					if (parser) {
 						me.current[key] = {
-							from: parser.parse((fromValue ? fromValue === 'auto' : fromValue !== 0) ? parser.get(me.dom, key) : fromValue),
+							from: parser.parse((fromValue ? fromValue === 'auto' : fromValue !== 0) ? parser.get(me.target, key) : fromValue),
 							to: parsed === undefined ? parser.parse(toValue, key) : parsed,
 							parser: parser
 						};

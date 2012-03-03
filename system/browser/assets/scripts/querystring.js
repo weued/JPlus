@@ -3,20 +3,25 @@
 //===========================================
 
 
-
-(function(q){
-        var search = location.search,
-        	dc = decodeURIComponent;
-		if(!search) return;
-		search.substring(1).split('&').each(function(value){
+JPlus.namespace("JSON").fromQueryString = function (value) {
+	var r = {};
+	if(value){
+		if(value.charAt(0) == '?') value = value.substr(1);
+		value.split('&').each(function(value, key){
+			key = decodeURIComponent(value[0]);
 		    value = value.split('=');
 		    try{
-		    	q[dc(value[0])] = value.length > 1 ? dc(value[1]) : null;
+		    	r[key] = decodeURIComponent(value[1]);
 		    }catch(e){
-		    	
+		    	r[key] = value[1];
 		    }
-		    
-		    
-		    
 		});
-})(location.queryString = {});
+	}
+	
+	
+	return r;
+};
+
+location.queryString = JSON.fromQueryString(location.search);
+
+

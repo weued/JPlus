@@ -4,10 +4,10 @@
 
 
 
-namespace(".BigNumber", {
+JPlus.namespace("BigInteger", {
 	
 	/**
-	 * 使  HTML 代码更标准，比如添加注释。
+	 * 计算大数的乘积。
 	 */
 	multiple: function (a, b) {
 		var p = a.match(/\d{1,4}/g).reverse(),
@@ -20,7 +20,7 @@ namespace(".BigNumber", {
 			for(var j = 0; j < q.length; j++){
 				var t = (p[i]|0)*(q[j]|0);
 				t += new Array(f1+f2+1).join("0");
-				result = bigNumAdd(result, t);
+				result = BigInteger.add(result, t);
 				f2 += q[j].length;
 			}
 			f1 += p[i].length;
@@ -50,7 +50,7 @@ namespace(".BigNumber", {
 	power: function(a,    b){
 		var ret = "1";
 		for(var i = 0; i < b; i++){
-			ret = this.multiple(ret, a);
+			ret = BigInteger.multiple(ret, a);
 		}
 		return ret;
 	}

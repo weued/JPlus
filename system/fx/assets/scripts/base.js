@@ -102,18 +102,25 @@
 			},
 			
 			/**
+			 * @event step 当进度改变时触发。
+			 * @param {Number} value 当前进度值。
+			 */
+			
+			/**
 			 * 根据指定变化量设置值。
 			 * @param {Number} delta 变化量。 0 - 1 。
 			 * @abstract
 			 */
-			set: Function.empty,
+			set: function(value){
+				this.trigger('step', Fx.compute(this.from, this.to, value));
+			},
 			
 			/**
 			 * 增加完成后的回调工具。
 			 * @param {Function} fn 回调函数。
 			 */
-			onReady: function(fn){
-				assert.isFunction(fn, "Fx.Base.prototype.onReady(fn): 参数 {fn} ~。    ");
+			ready: function(fn){
+				assert.isFunction(fn, "Fx.Base.prototype.ready(fn): 参数 {fn} ~。    ");
 				this._competeListeners.unshift(fn);	
 				return this;
 			},
@@ -195,13 +202,15 @@
 					
 					// 如果 duration > 0  更新。
 					if (args[2] > 0) this.duration = args[2];
+					else if(args[2] < -1) this.duration /= -args[2];
 					
-					// 如果有回调， 加入回调。
+					// 存储 onStop
 					if (args[3]) {
 						assert.isFunction(args[3], "Fx.Base.prototype.start(from, to, duration, onStop, onStart, link): 参数 {callback} ~。      ");
 						me._competeListeners.push(args[3]);
 					}
 					
+					// 执行 onStart
 					if (args[4] && args[4].apply(me, args) === false) {
 						return me.complete();
 					}

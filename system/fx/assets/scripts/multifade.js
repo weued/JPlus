@@ -9,7 +9,7 @@
 
 
 
-using("System.Fx.Element");
+using("System.Fx.Animate");
 
 DomList.implement({
 	

@@ -435,7 +435,7 @@
 			}
 		},
 		
-		createFunction: function (v) {
+		getValueOf: function (v) {
 		   return function(){
 		   		return v;
 		   }
@@ -524,7 +524,7 @@
 		}
 		
 		if(this.method === false) {
-			this.member = 'System.createFunction(' + this.member + ')';
+			this.member = 'System.getValueOf(' + this.member + ')';
 		}
 		
 		if(!this.memberName){
