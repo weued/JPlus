@@ -1604,7 +1604,7 @@
 		/**
 		 * 初始化一个 XMLHttpRequest 对象。
 		 * @constructor
-		 * @class window.XMLHttpRequest
+		 * @class XMLHttpRequest
 		 * @return {XMLHttpRequest} 请求的对象。
 		 */
 		window.XMLHttpRequest = function() {
@@ -1878,7 +1878,7 @@ function assert(bValue, msg) {
         // 错误源
         val = arguments.callee.caller;
 
-        if (JPlus.stackTrace !== false) {
+        if (JPlus.stackTrace) {
 
             while (val.debugStepThrough)
                 val = val.caller;
@@ -1994,7 +1994,7 @@ function assert(bValue, msg) {
          * JPlus 安装的根目录, 可以为相对目录。
          * @config {String}
          */
-        rootPath: p.rootPath || (function(){
+        rootPath: (function(){
             try {
                 var scripts = document.getElementsByTagName("script");
 
@@ -2044,17 +2044,6 @@ function assert(bValue, msg) {
     /// #endregion
 
     /// #region Trace
-
-    /**
-     * 是否打开调试。启用调试后，将支持assert检查。
-     * @config {Boolean}
-     */
-    p.debug = true;
-
-    /**
-     * 是否在 assert 失败时显示函数调用堆栈。
-     * @config {Boolean} stackTrace
-     */
 
     /**
      * @namespace String
@@ -2665,14 +2654,6 @@ function assert(bValue, msg) {
 
     /// #region Assert
 
-    function assertInternal(asserts, msg, value, dftMsg) {
-        return assert(asserts, msg ? msg.replace('~', dftMsg) : dftMsg, value);
-    }
-
-    function assertInternal2(fn, dftMsg, args) {
-        return assertInternal(fn(args[0]), args[1], args[0], dftMsg);
-    }
-
     /**
      * @namespace assert
      */
@@ -2804,6 +2785,16 @@ function assert(bValue, msg) {
         }
 
     });
+	
+    function assertInternal(asserts, msg, value, dftMsg) {
+        return assert(asserts, msg ? msg.replace('~', dftMsg) : dftMsg, value);
+    }
+
+    function assertInternal2(fn, dftMsg, args) {
+        return assertInternal(fn(args[0]), args[1], args[0], dftMsg);
+    }
+
+	// 追加 debugStepThrough 防止被认为是 assert 错误源堆栈。
 
     assertInternal.debugStepThrough = assertInternal2.debugStepThrough = assert.debugStepThrough = true;
 
@@ -2820,6 +2811,18 @@ function assert(bValue, msg) {
 
 
 /// #if !Publish
+
+/**
+ * 是否打开调试。启用调试后，将支持assert检查。
+ * @config {Boolean}
+ */
+JPlus.debug = true;
+
+/**
+ * 是否在 assert 失败时显示函数调用堆栈。
+ * @config {Boolean} stackTrace
+ */
+JPlus.stackTrace = true;
 
 JPlus.rootPath = JPlus.rootPath.substr(0, JPlus.rootPath.length - "system/core/assets/scripts/".length);
 

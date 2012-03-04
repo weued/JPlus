@@ -3,7 +3,7 @@
 J+ is a libaray of javascript in purpose of:
 
 
-1. Provids common functions.
+1. Provides common functions.
 2. Works as a ui library.
 3. Makes code more meaningful and lifes easier.
 
@@ -23,7 +23,7 @@ The dom helper looks like:
 	
 	$$('id').setStyle('margin', 4); 
 
-in which $ is an alternative name of Dom.get  .
+in which $$ is an alternative name of Dom.get  .
 
 
 ## What's the main difference with other frameworks?
