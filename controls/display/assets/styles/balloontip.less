@@ -19,11 +19,6 @@
   &.bottom { margin-top:   5px; }
   &.left   { margin-left: -5px; }
 }
-.x-balloontip-arrow {
-  position: absolute;
-  width: 0;
-  height: 0;
-}
 .x-balloontip-container {
   padding: 3px;
   width: 280px;
@@ -42,11 +37,15 @@
   margin: 0;
 }
 .x-balloontip-content {
-  padding: 14px;
+  padding: 10px 14px 14px;
   background-color: @white;
   .border-radius(0 0 3px 3px);
   .background-clip(padding-box);
   p, ul, ol {
-    margin-bottom: 0;
+    margin: 0;
   }
+}
+
+.x-balloontip .x-arrow {
+  color: rgba(0, 0, 0, 0.8); 
 }
