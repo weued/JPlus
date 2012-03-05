@@ -10,11 +10,329 @@
 		<link rel="stylesheet" type="text/css" href="../core/assets/styles/base.css">
 		<link rel="stylesheet" type="text/css" href="../page/assets/styles/common.css">
 		
-		<h1>Form</h1>
-		<h2>TextBox</h2>
+		<link href="../form/assets/styles/textbox.less" rel="stylesheet/less" type="text/css" />
 		
-		默认: <input class="x-textbox" value=".x-textbox" type="text">
+		<h1>Page/Breadcrumbs</h1>
 		
-		<script src="http://lesscss.googlecode.com/files/less-1.2.2.min.js"></script>
+		<link href="../page/assets/styles/breadcrumbs.less" rel="stylesheet/less" type="text/css" />
+		
+		<ul class="x-breadcrumb">
+	        <li class="active">Home</li>
+	      </ul>
+	      
+	      <ul class="x-breadcrumb">
+	        <li><a href="#">Home</a> <span class="divider">/</span></li>
+	        <li class="active">Library</li>
+	      </ul>
+	      
+	      <ul class="x-breadcrumb">
+        <li><a href="#">Home</a> <span class="divider">/</span></li>
+        <li><a href="#">Library</a> <span class="divider">/</span></li>
+        <li class="active">Data</li>
+      </ul>
+      	
+		<h1>Page/Pagination</h1>
+		
+		<link href="../page/assets/styles/pagination.less" rel="stylesheet/less" type="text/css" />
+		
+		
+		<div class="x-pagination">
+        <ul>
+          <li class="x-pagination-disabled"><a href="#">«</a></li>
+          <li class="x-pagination-actived"><a href="#">1</a></li>
+          <li><a href="#">2</a></li>
+          <li><a href="#">3</a></li>
+          <li><a href="#">4</a></li>
+          <li><a href="#">»</a></li>
+        </ul>
+      </div>
+			
+      	
+		<h1>Page/Pager</h1>
+		
+		<link href="../page/assets/styles/pager.less" rel="stylesheet/less" type="text/css" />
+		
+		
+		    <ul class="x-pager">
+    <li>
+    <a href="#">Previous</a>
+    </li>
+    <li>
+    <a href="#">Next</a>
+    </li>
+    </ul>
+    
+        <ul class="x-pager">
+    <li class="x-pager-previous">
+    <a href="#">&larr; Older</a>
+    </li>
+    <li class="x-pager-next">
+    <a href="#">Newer &rarr;</a>
+    </li>
+    </ul>
+    
+    <h1>Display/Tip</h1>
+		
+		<link href="../display/assets/styles/tip.less" rel="stylesheet/less" type="text/css" />
+		
+		
+		<table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th>Labels</th>
+        <th>Markup</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <span class="x-tip">Default</span>
+        </td>
+        <td>
+          <code>&lt;span class="x-tip"&gt;Default&lt;/span&gt;</code>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <span class="x-tip x-tip-success">Success</span>
+        </td>
+        <td>
+          <code>&lt;span class="x-tip x-tip-success"&gt;Success&lt;/span&gt;</code>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <span class="x-tip x-tip-warning">Warning</span>
+        </td>
+        <td>
+          <code>&lt;span class="x-tip x-tip-warning"&gt;Warning&lt;/span&gt;</code>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <span class="x-tip x-tip-error">Important</span>
+        </td>
+        <td>
+          <code>&lt;span class="x-tip x-tip-error"&gt;Important&lt;/span&gt;</code>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <span class="x-tip x-tip-info">Info</span>
+        </td>
+        <td>
+          <code>&lt;span class="x-tip x-tip-info"&gt;Info&lt;/span&gt;</code>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  
+    
+    <h1>Display/Thumbnail</h1>
+		
+		<link href="../display/assets/styles/thumbnail.less" rel="stylesheet/less" type="text/css" />
+		
+		
+		
+		<a class="x-thumbnail" href="#">
+            <img alt="" src="../../assets/images/260x180.gif">
+          </a>
+		
+    
+    <h1>Display/TipBox</h1>
+		
+		<link href="../display/assets/styles/tipbox.less" rel="stylesheet/less" type="text/css" />
+		
+			<h2>inline-block</h2>
+
+		成功: <span class="x-tipbox x-tipbox-success">span.x-tipbox.x-tipbox-success</span><br><br>
+		信息: <span class="x-tipbox x-tipbox-info">span.x-tipbox.x-tipbox-info</span><br><br>
+		错误: <span class="x-tipbox x-tipbox-error">span.x-tipbox.x-tipbox-error</span><br><br>
+		警告: <span class="x-tipbox x-tipbox-warning">span.x-tipbox.x-tipbox-warning</span><br><br>
+		消息: <span class="x-tipbox x-tipbox-message">span.x-tipbox.x-tipbox-error</span><br><br>
+		
+		<h2>block</h2>
+
+		成功: <div class="x-tipbox x-tipbox-success">div.x-tipbox.x-tipbox-success</div><br>
+		信息: <div class="x-tipbox x-tipbox-info">div.x-tipbox.x-tipbox-info</div><br>
+		错误: <div class="x-tipbox x-tipbox-error">div.x-tipbox.x-tipbox-error</div><br>
+		警告: <div class="x-tipbox x-tipbox-warning">span.x-tipbox.x-tipbox-warning</div><br>
+		消息: <div class="x-tipbox x-tipbox-message">div.x-tipbox.x-tipbox-message</div><br>
+		
+		<h2>inline-block plain</h2>
+
+		成功: <span class="x-tipbox x-tipbox-success x-tipbox-plain">span.x-tipbox.x-tipbox-success.x-tipbox-plain</span><br>
+		信息: <span class="x-tipbox x-tipbox-info x-tipbox-plain">span.x-tipbox.x-tipbox-info</span><br>
+		错误: <span class="x-tipbox x-tipbox-error x-tipbox-plain">span.x-tipbox.x-tipbox-error</span><br>
+		警告: <span class="x-tipbox x-tipbox-warning x-tipbox-plain">span.x-tipbox.x-tipbox-warning</span><br>
+		消息: <span class="x-tipbox x-tipbox-message x-tipbox-plain">span.x-tipbox.x-tipbox-message</span><br>
+		
+		<h2>success only</h2>
+
+		文字： <input type="text" class="x-textbox" />
+			<span class="x-tipbox x-tipbox-success x-tipbox-plain">&nbsp;</span>
+    
+    <h1>Display/ProgressBar</h1>
+		
+		<link href="../display/assets/styles/progressbar.less" rel="stylesheet/less" type="text/css" />
+		
+		<div class="x-progressbar">
+        <div style="width: 60%;" class="x-progressbar-back"></div>
+      </div>
+      
+      
+          <div class="x-progressbar x-progressbar-info
+    x-progressbar-striped">
+    <div class="x-progressbar-back"
+    style="width: 20%;"></div>
+    </div>
+    
+    
+        <div class="x-progressbar x-progressbar-error
+    x-progressbar-striped x-progressbar-actived">
+    <div class="x-progressbar-back"
+    style="width: 40%;"></div>
+    </div>
+    
+    
+    <h1>Display/Arrow</h1>
+		
+		<link href="../display/assets/styles/arrow.less" rel="stylesheet/less" type="text/css" />
+		
+		<div style="position:absolute ;height:30px; width: 234px;  ">
+		
+		<span class="x-arrow x-arrow-top">
+			<span class="x-arrow-fore">◆</span>
+			<span class="x-arrow-back">◆</span>
+		</span>
+		
+		<br>
+		
+		<span class="x-arrow x-arrow-bottom">
+			<span class="x-arrow-fore">◆</span>
+			<span class="x-arrow-back">◆</span>
+		</span>
+		
+		<br>
+		
+		<span class="x-arrow x-arrow-left">
+			<span class="x-arrow-fore">◆</span>
+			<span class="x-arrow-back">◆</span>
+		</span>
+		
+		<br>
+		
+		<span class="x-arrow x-arrow-right">
+			<span class="x-arrow-fore">◆</span>
+			<span class="x-arrow-back">◆</span>
+		</span>
+		
+		</div>
+		
+		<br>
+		
+		<br>
+		
+		<br>
+    
+    <h1>Display/ToolTip</h1>
+		
+		<link href="../display/assets/styles/tooltip.less" rel="stylesheet/less" type="text/css" />
+		
+		
+		<div class="x-tooltip">
+			<span class="x-arrow x-arrow-bottom">
+				<span class="x-arrow-fore">◆</span>
+			</span>
+			<div class="x-tooltip-container">first x-tooltip</div>
+		</div>
+		
+		<br>
+		
+		<br>
+		
+		<br>
+		
+		
+		<div class="x-tooltip">
+			<span class="x-arrow x-arrow-top">
+				<span class="x-arrow-fore">◆</span>
+			</span>
+			<div class="x-tooltip-container">first x-tooltip</div>
+		</div>
+		
+		<br>
+		
+		<br>
+		
+		<br>
+		
+		
+		<div class="x-tooltip">
+			<span class="x-arrow x-arrow-left">
+				<span class="x-arrow-fore">◆</span>
+			</span>
+			<div class="x-tooltip-container">first x-tooltip</div>
+		</div>
+		
+		<br>
+		
+		<br>
+		
+		<br>
+		
+		
+		<div class="x-tooltip">
+			<span class="x-arrow x-arrow-right">
+				<span class="x-arrow-fore">◆</span>
+			</span>
+			<div class="x-tooltip-container">first x-tooltip</div>
+		</div>
+		
+		<br>
+		
+		<br>
+		
+		<br>
+    
+    
+    <h1>Display/BalloonTip</h1>
+		
+		<link href="../display/assets/styles/balloontip.less" rel="stylesheet/less" type="text/css" />
+		
+    <div class="x-balloontip">
+    	<span class="x-arrow x-arrow-bottom">
+			<span class="x-arrow-fore">◆</span>
+		</span>
+    	<div class="x-balloontip-container">
+    		<h3 class="x-balloontip-title">A Title</h3>
+    		<div class="x-balloontip-content">
+    			<p>And here's some amazing content. It's very engaging. right?</p>
+    		</div>
+    	</div>
+    </div>
+		
+		<br>
+		
+		<br>
+		
+		<br>
+		
+		<br>
+		
+		<br>
+		
+		<br>
+		
+		<br>
+		
+		<br>
+		
+		<br>
+    
+    
+		<script src="../../assets/libs/less/less-1.2.2.min.js"></script>
 	</body>
 </html>

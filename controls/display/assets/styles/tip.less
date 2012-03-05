@@ -1,0 +1,42 @@
+/**
+ * @author 
+ */
+
+
+
+
+@import "../../../core/assets/styles/mixins.less";
+
+
+// LABELS
+// ------
+
+// Base
+.x-tip {
+  padding: 2px 4px 3px;
+  font-size: @baseFontSize * .85;
+  font-weight: bold;
+  color: @white;
+  text-shadow: 0 -1px 0 rgba(0,0,0,.25);
+  background-color: @grayLight;
+  .border-radius(3px);
+}
+
+// Hover state
+.x-tip:hover {
+  color: @white;
+  text-decoration: none;
+}
+
+// Colors
+.x-tip-error        { background-color: @errorText; }
+.x-tip-error:hover  { background-color: darken(@errorText, 10%); }
+
+.x-tip-warning          { background-color: @orange; }
+.x-tip-warning:hover    { background-color: darken(@orange, 10%); }
+
+.x-tip-success          { background-color: @successText; }
+.x-tip-success:hover    { background-color: darken(@successText, 10%); }
+
+.x-tip-info             { background-color: @infoText; }
+.x-tip-info:hover       { background-color: darken(@infoText, 10%); }

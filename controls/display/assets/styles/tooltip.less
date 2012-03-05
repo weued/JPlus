@@ -1,0 +1,29 @@
+/**
+ * @author 
+ */
+
+
+
+
+@import "../../../core/assets/styles/mixins.less";
+
+// TOOLTIP
+// ------=
+
+.x-tooltip {
+  position: absolute;
+  z-index: @zindexTooltip;
+  display: block;
+  padding: 5px;
+  font-size: 11px;
+  .opacity(80);
+}
+.x-tooltip-container {
+  max-width: 200px;
+  padding: 3px 8px;
+  color: @white;
+  text-align: center;
+  text-decoration: none;
+  background-color: @black;
+  .border-radius(4px);
+}
