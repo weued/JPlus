@@ -10,20 +10,22 @@
 		<link rel="stylesheet" type="text/css" href="../core/assets/styles/base.css">
 		<link rel="stylesheet" type="text/css" href="../page/assets/styles/common.css">
 		
+		<link href="../form/assets/styles/textbox.less" rel="stylesheet/less" type="text/css" />
+		
 		<h1>Page/Breadcrumbs</h1>
 		
 		<link href="../page/assets/styles/breadcrumbs.less" rel="stylesheet/less" type="text/css" />
 		
-		<ul class="breadcrumb">
+		<ul class="x-breadcrumb">
 	        <li class="active">Home</li>
 	      </ul>
 	      
-	      <ul class="breadcrumb">
+	      <ul class="x-breadcrumb">
 	        <li><a href="#">Home</a> <span class="divider">/</span></li>
 	        <li class="active">Library</li>
 	      </ul>
 	      
-	      <ul class="breadcrumb">
+	      <ul class="x-breadcrumb">
         <li><a href="#">Home</a> <span class="divider">/</span></li>
         <li><a href="#">Library</a> <span class="divider">/</span></li>
         <li class="active">Data</li>
@@ -34,10 +36,10 @@
 		<link href="../page/assets/styles/pagination.less" rel="stylesheet/less" type="text/css" />
 		
 		
-		<div class="pagination">
+		<div class="x-pagination">
         <ul>
-          <li class="disabled"><a href="#">«</a></li>
-          <li class="active"><a href="#">1</a></li>
+          <li class="x-pagination-disabled"><a href="#">«</a></li>
+          <li class="x-pagination-actived"><a href="#">1</a></li>
           <li><a href="#">2</a></li>
           <li><a href="#">3</a></li>
           <li><a href="#">4</a></li>
@@ -51,7 +53,7 @@
 		<link href="../page/assets/styles/pager.less" rel="stylesheet/less" type="text/css" />
 		
 		
-		    <ul class="pager">
+		    <ul class="x-pager">
     <li>
     <a href="#">Previous</a>
     </li>
@@ -60,11 +62,11 @@
     </li>
     </ul>
     
-        <ul class="pager">
-    <li class="previous">
+        <ul class="x-pager">
+    <li class="x-pager-previous">
     <a href="#">&larr; Older</a>
     </li>
-    <li class="next">
+    <li class="x-pager-next">
     <a href="#">Newer &rarr;</a>
     </li>
     </ul>
@@ -84,42 +86,42 @@
     <tbody>
       <tr>
         <td>
-          <span class="label">Default</span>
+          <span class="x-tip">Default</span>
         </td>
         <td>
-          <code>&lt;span class="label"&gt;Default&lt;/span&gt;</code>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <span class="label label-success">Success</span>
-        </td>
-        <td>
-          <code>&lt;span class="label label-success"&gt;Success&lt;/span&gt;</code>
+          <code>&lt;span class="x-tip"&gt;Default&lt;/span&gt;</code>
         </td>
       </tr>
       <tr>
         <td>
-          <span class="label label-warning">Warning</span>
+          <span class="x-tip x-tip-success">Success</span>
         </td>
         <td>
-          <code>&lt;span class="label label-warning"&gt;Warning&lt;/span&gt;</code>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <span class="label label-important">Important</span>
-        </td>
-        <td>
-          <code>&lt;span class="label label-important"&gt;Important&lt;/span&gt;</code>
+          <code>&lt;span class="x-tip x-tip-success"&gt;Success&lt;/span&gt;</code>
         </td>
       </tr>
       <tr>
         <td>
-          <span class="label label-info">Info</span>
+          <span class="x-tip x-tip-warning">Warning</span>
         </td>
         <td>
-          <code>&lt;span class="label label-info"&gt;Info&lt;/span&gt;</code>
+          <code>&lt;span class="x-tip x-tip-warning"&gt;Warning&lt;/span&gt;</code>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <span class="x-tip x-tip-error">Important</span>
+        </td>
+        <td>
+          <code>&lt;span class="x-tip x-tip-error"&gt;Important&lt;/span&gt;</code>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <span class="x-tip x-tip-info">Info</span>
+        </td>
+        <td>
+          <code>&lt;span class="x-tip x-tip-info"&gt;Info&lt;/span&gt;</code>
         </td>
       </tr>
     </tbody>
@@ -176,37 +178,87 @@
 		
 		<link href="../display/assets/styles/progressbar.less" rel="stylesheet/less" type="text/css" />
 		
-		<div class="progress">
-        <div style="width: 60%;" class="bar"></div>
+		<div class="x-progressbar">
+        <div style="width: 60%;" class="x-progressbar-back"></div>
       </div>
       
       
-          <div class="progress progress-info
-    progress-striped">
-    <div class="bar"
+          <div class="x-progressbar x-progressbar-info
+    x-progressbar-striped">
+    <div class="x-progressbar-back"
     style="width: 20%;"></div>
     </div>
     
     
-        <div class="progress progress-danger
-    progress-striped active">
-    <div class="bar"
+        <div class="x-progressbar x-progressbar-error
+    x-progressbar-striped x-progressbar-actived">
+    <div class="x-progressbar-back"
     style="width: 40%;"></div>
     </div>
+    
+    
+    <h1>Display/Arrow</h1>
+		
+		<link href="../display/assets/styles/arrow.less" rel="stylesheet/less" type="text/css" />
+		
+		<span class="x-arrow x-arrow-top">
+			<span class="x-arrow-fore">◆</span>
+			<span class="x-arrow-back">◆</span>
+		</span>
+		
+		<br>
+		
+		<span class="x-arrow x-arrow-bottom">
+			<span class="x-arrow-fore">◆</span>
+			<span class="x-arrow-back">◆</span>
+		</span>
+		
+		<br>
+		
+		<span class="x-arrow x-arrow-left">
+			<span class="x-arrow-fore">◆</span>
+			<span class="x-arrow-back">◆</span>
+		</span>
+		
+		<br>
+		
+		<span class="x-arrow x-arrow-right">
+			<span class="x-arrow-fore">◆</span>
+			<span class="x-arrow-back">◆</span>
+		</span>
+		
+		
     
     <h1>Display/ToolTip</h1>
 		
 		<link href="../display/assets/styles/tooltip.less" rel="stylesheet/less" type="text/css" />
 		
 		
-		<div class="tooltip fade top in" style="top: 6494.35px; left: 526.367px; display: block;"><div class="tooltip-arrow"></div><div class="tooltip-inner">first tooltip</div></div>
+		<div class="x-tooltip fade top in">
+			<span class="x-arrow x-arrow-bottom">
+				<span class="x-arrow-fore">◆</span>
+				<span class="x-arrow-back">◆</span>
+			</span>
+			<div class="x-tooltip-container">first x-tooltip</div>
+		</div>
+		<br>
+		<br>
+		<br>
+    
     
     <h1>Display/BalloonTip</h1>
 		
 		<link href="../display/assets/styles/balloontip.less" rel="stylesheet/less" type="text/css" />
 		
-    
-    <div class="popover fade right in" style="top: 7884.5px; left: 527.5px; display: block;"><div class="arrow"></div><div class="popover-inner"><h3 class="popover-title">A Title</h3><div class="popover-content"><p>And here's some amazing content. It's very engaging. right?</p></div></div></div>
+    <div class="x-balloontip">
+    	<div class="x-tooltip-arrow"></div>
+    	<div class="x-balloontip-container">
+    		<h3 class="x-balloontip-title">A Title</h3>
+    		<div class="x-balloontip-content">
+    			<p>And here's some amazing content. It's very engaging. right?</p>
+    		</div>
+    	</div>
+    </div>
     
     
 		<script src="../../assets/libs/less/less-1.2.2.min.js"></script>

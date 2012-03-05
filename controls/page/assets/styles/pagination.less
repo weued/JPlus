@@ -11,11 +11,11 @@
 // PAGINATION
 // ----------
 
-.pagination {
+.x-pagination {
   height: @baseLineHeight * 2;
   margin: @baseLineHeight 0;
  }
-.pagination ul {
+.x-pagination ul {
   display: inline-block;
   .ie7-inline-block();
   margin-left: 0;
@@ -23,10 +23,10 @@
   .border-radius(3px);
   .box-shadow(0 1px 2px rgba(0,0,0,.05));
 }
-.pagination li {
+.x-pagination li {
     display: inline;
   }
-.pagination a {
+.x-pagination a {
   float: left;
   padding: 0 14px;
   line-height: (@baseLineHeight * 2) - 2;
@@ -34,32 +34,32 @@
   border: 1px solid #ddd;
   border-left-width: 0;
 }
-.pagination a:hover,
-.pagination .active a {
+.x-pagination a:hover,
+.x-pagination .x-pagination-actived a {
   background-color: #f5f5f5;
 }
-.pagination .active a {
+.x-pagination .x-pagination-actived a {
   color: @grayLight;
   cursor: default;
 }
-.pagination .disabled a,
-.pagination .disabled a:hover {
+.x-pagination .x-pagination-disabled a,
+.x-pagination .x-pagination-disabled a:hover {
   color: @grayLight;
   background-color: transparent;
   cursor: default;
 }
-.pagination li:first-child a {
+.x-pagination li:first-child a {
   border-left-width: 1px;
   .border-radius(3px 0 0 3px);
 }
-.pagination li:last-child a {
+.x-pagination li:last-child a {
   .border-radius(0 3px 3px 0);
 }
 
 // Centered
-.pagination-centered {
+.x-pagination-centered {
   text-align: center;
 }
-.pagination-right {
+.x-pagination-right {
   text-align: right;
 }

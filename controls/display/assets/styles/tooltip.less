@@ -10,25 +10,15 @@
 // TOOLTIP
 // ------=
 
-.tooltip {
+.x-tooltip {
   position: absolute;
   z-index: @zindexTooltip;
   display: block;
-  visibility: visible;
   padding: 5px;
   font-size: 11px;
-  .opacity(0);
-  &.in     { .opacity(80); }
-  &.top    { margin-top:  -2px; }
-  &.right  { margin-left:  2px; }
-  &.bottom { margin-top:   2px; }
-  &.left   { margin-left: -2px; }
-  &.top .tooltip-arrow    { #popoverArrow > .top(); }
-  &.left .tooltip-arrow   { #popoverArrow > .left(); }
-  &.bottom .tooltip-arrow { #popoverArrow > .bottom(); }
-  &.right .tooltip-arrow  { #popoverArrow > .right(); }
+  .opacity(80);
 }
-.tooltip-inner {
+.x-tooltip-container {
   max-width: 200px;
   padding: 3px 8px;
   color: @white;
@@ -37,8 +27,22 @@
   background-color: @black;
   .border-radius(4px);
 }
-.tooltip-arrow {
-  position: absolute;
-  width: 0;
-  height: 0;
+
+.x-tooltip .x-arrow {
+  color: #333333; 
 }
+
+.x-tooltip .x-arrow-bottom{
+    bottom: -5px;
+    left: 50%;
+}
+
+.x-tooltip .x-arrow-top{
+    top: -5px;
+    left: 50%;
+}
+
+&.top .x-tooltip-arrow    { #popoverArrow > .top(); }
+&.left .x-tooltip-arrow   { #popoverArrow > .left(); }
+&.bottom .x-tooltip-arrow { #popoverArrow > .bottom(); }
+&.right .x-tooltip-arrow  { #popoverArrow > .right(); }

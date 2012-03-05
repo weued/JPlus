@@ -10,28 +10,21 @@
 // POPOVERS
 // --------
 
-.popover {
+.x-balloontip {
   position: absolute;
-  top: 0;
-  left: 0;
   z-index: @zindexPopover;
-  display: none;
   padding: 5px;
   &.top    { margin-top:  -5px; }
   &.right  { margin-left:  5px; }
   &.bottom { margin-top:   5px; }
   &.left   { margin-left: -5px; }
-  &.top .arrow    { #popoverArrow > .top(); }
-  &.right .arrow  { #popoverArrow > .right(); }
-  &.bottom .arrow { #popoverArrow > .bottom(); }
-  &.left .arrow   { #popoverArrow > .left();  }
-  .arrow {
-    position: absolute;
-    width: 0;
-    height: 0;
-  }
 }
-.popover-inner {
+.x-balloontip-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+.x-balloontip-container {
   padding: 3px;
   width: 280px;
   overflow: hidden;
@@ -40,14 +33,15 @@
   .border-radius(6px);
   .box-shadow(0 3px 7px rgba(0,0,0,0.3));
 }
-.popover-title {
+.x-balloontip-title {
   padding: 9px 15px;
   line-height: 1;
   background-color: #f5f5f5;
   border-bottom:1px solid #eee;
   .border-radius(3px 3px 0 0);
+  margin: 0;
 }
-.popover-content {
+.x-balloontip-content {
   padding: 14px;
   background-color: @white;
   .border-radius(0 0 3px 3px);
