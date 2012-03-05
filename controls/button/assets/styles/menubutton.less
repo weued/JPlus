@@ -8,17 +8,17 @@
 //  position: relative;
 //}
 
-.x-menubutton {
-  // The x-button-menu makes the toggle a bit too tall in IE7
-  *margin-bottom: -3px;
-  
-  position: relative;
-  display: inline-block;
-}
-
-.x-menubutton:active, .x-button-open .x-menubutton {
-  outline: 0;
-}
+// .x-menubutton {
+  // // The x-button-menu makes the toggle a bit too tall in IE7
+  // *margin-bottom: -3px;
+//   
+  // position: relative;
+  // display: inline-block;
+// }
+// 
+// .x-menubutton:active, .x-button-open .x-menubutton {
+  // outline: 0;
+// }
 
 // Dropdown arrow/x-button-menu
 .x-button-menu {
@@ -29,7 +29,7 @@
   // IE7 won't do the border trick if there's a text indent, but it doesn't
   // do the content that text-indent is hiding, either, so we're ok.
   *text-indent: 0;
-  vertical-align: top;
+  vertical-align: middle;
   border-left:  4px solid transparent;
   border-right: 4px solid transparent;
   border-top:   4px solid @black;
@@ -38,26 +38,30 @@
 }
 
 .x-button .x-button-menu {
-  margin-top: 8px;
-  margin-left: 2px;
+  // margin-top: 8px;
+  margin-left: 5px;
 }
+// 
+// .x-button-small .x-button-menu {
+  // margin-top: 4px;
+// }
 
 .x-button:hover .x-button-menu,
-.x-button-open .x-button-menu {
+.x-button-actived .x-button-menu {
   .opacity(100);
 }
 
 
-// Open state for the dropdown
-.x-button-open {
-  // IE7's z-index only goes to the nearest positioned ancestor, which would
-  // make the menu appear below buttons that appeared later on the page
-  *z-index: @zindexDropdown;
-
-  color: @white;
-  background: #ccc;
-  background: rgba(0,0,0,.3);
-}
+// // Open state for the dropdown
+// .x-button-open {
+  // // IE7's z-index only goes to the nearest positioned ancestor, which would
+  // // make the menu appear below buttons that appeared later on the page
+  // *z-index: @zindexDropdown;
+// 
+  // color: @white;
+  // background: #ccc;
+  // background: rgba(0,0,0,.3);
+// }
 
 // Typeahead
 //.typeahead {

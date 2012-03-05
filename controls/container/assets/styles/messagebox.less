@@ -1,13 +1,17 @@
-// x-tipbox STYLES
-// ------------
+/**
+ * @author 
+ */
 
 
 
 
 @import "../../../core/assets/styles/mixins.less";
 
-// Base x-tipbox styles
-.x-tipbox {
+// ALERT STYLES
+// ------------
+
+// Base alert styles
+.alert {
   padding: 8px 35px 8px 14px;
   margin-bottom: @baseLineHeight;
   text-shadow: 0 1px 0 rgba(255,255,255,.5);
@@ -15,13 +19,13 @@
   border: 1px solid @warningBorder;
   .border-radius(4px);
 }
-.x-tipbox,
-.x-tipbox-heading {
+.alert,
+.alert-heading {
   color: @warningText;
 }
 
 // Adjust close link position
-.x-tipbox .close {
+.alert .close {
   position: relative;
   top: -2px;
   right: -21px;
@@ -31,45 +35,45 @@
 // Alternate styles
 // ----------------
 
-.x-tipbox-success {
+.alert-success {
   background-color: @successBackground;
   border-color: @successBorder;  
 }
-.x-tipbox-success,
-.x-tipbox-success .x-tipbox-heading {
+.alert-success,
+.alert-success .alert-heading {
   color: @successText;
 }
-.x-tipbox-danger,
-.x-tipbox-error {
+.alert-danger,
+.alert-error {
   background-color: @errorBackground;
   border-color: @errorBorder;
 }
-.x-tipbox-danger,
-.x-tipbox-error,
-.x-tipbox-danger .x-tipbox-heading,
-.x-tipbox-error .x-tipbox-heading {
+.alert-danger,
+.alert-error,
+.alert-danger .alert-heading,
+.alert-error .alert-heading {
   color: @errorText;
 }
-.x-tipbox-info {
+.alert-info {
   background-color: @infoBackground;
   border-color: @infoBorder;
 }
-.x-tipbox-info,
-.x-tipbox-info .x-tipbox-heading {
+.alert-info,
+.alert-info .alert-heading {
   color: @infoText;
 }
 
 
-// Block x-tipboxs
+// Block alerts
 // ------------------------
-.x-tipbox-block {
+.alert-block {
   padding-top: 14px;
   padding-bottom: 14px;
 }
-.x-tipbox-block > p,
-.x-tipbox-block > ul {
+.alert-block > p,
+.alert-block > ul {
   margin-bottom: 0;
 }
-.x-tipbox-block p + p {
+.alert-block p + p {
   margin-top: 5px;
 }

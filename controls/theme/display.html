@@ -10,11 +10,205 @@
 		<link rel="stylesheet" type="text/css" href="../core/assets/styles/base.css">
 		<link rel="stylesheet" type="text/css" href="../page/assets/styles/common.css">
 		
-		<h1>Form</h1>
-		<h2>TextBox</h2>
+		<h1>Page/Breadcrumbs</h1>
 		
-		默认: <input class="x-textbox" value=".x-textbox" type="text">
+		<link href="../page/assets/styles/breadcrumbs.less" rel="stylesheet/less" type="text/css" />
 		
-		<script src="http://lesscss.googlecode.com/files/less-1.2.2.min.js"></script>
+		<ul class="breadcrumb">
+	        <li class="active">Home</li>
+	      </ul>
+	      
+	      <ul class="breadcrumb">
+	        <li><a href="#">Home</a> <span class="divider">/</span></li>
+	        <li class="active">Library</li>
+	      </ul>
+	      
+	      <ul class="breadcrumb">
+        <li><a href="#">Home</a> <span class="divider">/</span></li>
+        <li><a href="#">Library</a> <span class="divider">/</span></li>
+        <li class="active">Data</li>
+      </ul>
+      	
+		<h1>Page/Pagination</h1>
+		
+		<link href="../page/assets/styles/pagination.less" rel="stylesheet/less" type="text/css" />
+		
+		
+		<div class="pagination">
+        <ul>
+          <li class="disabled"><a href="#">«</a></li>
+          <li class="active"><a href="#">1</a></li>
+          <li><a href="#">2</a></li>
+          <li><a href="#">3</a></li>
+          <li><a href="#">4</a></li>
+          <li><a href="#">»</a></li>
+        </ul>
+      </div>
+			
+      	
+		<h1>Page/Pager</h1>
+		
+		<link href="../page/assets/styles/pager.less" rel="stylesheet/less" type="text/css" />
+		
+		
+		    <ul class="pager">
+    <li>
+    <a href="#">Previous</a>
+    </li>
+    <li>
+    <a href="#">Next</a>
+    </li>
+    </ul>
+    
+        <ul class="pager">
+    <li class="previous">
+    <a href="#">&larr; Older</a>
+    </li>
+    <li class="next">
+    <a href="#">Newer &rarr;</a>
+    </li>
+    </ul>
+    
+    <h1>Display/Tip</h1>
+		
+		<link href="../display/assets/styles/tip.less" rel="stylesheet/less" type="text/css" />
+		
+		
+		<table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th>Labels</th>
+        <th>Markup</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <span class="label">Default</span>
+        </td>
+        <td>
+          <code>&lt;span class="label"&gt;Default&lt;/span&gt;</code>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <span class="label label-success">Success</span>
+        </td>
+        <td>
+          <code>&lt;span class="label label-success"&gt;Success&lt;/span&gt;</code>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <span class="label label-warning">Warning</span>
+        </td>
+        <td>
+          <code>&lt;span class="label label-warning"&gt;Warning&lt;/span&gt;</code>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <span class="label label-important">Important</span>
+        </td>
+        <td>
+          <code>&lt;span class="label label-important"&gt;Important&lt;/span&gt;</code>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <span class="label label-info">Info</span>
+        </td>
+        <td>
+          <code>&lt;span class="label label-info"&gt;Info&lt;/span&gt;</code>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  
+    
+    <h1>Display/Thumbnail</h1>
+		
+		<link href="../display/assets/styles/thumbnail.less" rel="stylesheet/less" type="text/css" />
+		
+		
+		
+		<a class="x-thumbnail" href="#">
+            <img alt="" src="../../assets/images/260x180.gif">
+          </a>
+		
+    
+    <h1>Display/TipBox</h1>
+		
+		<link href="../display/assets/styles/tipbox.less" rel="stylesheet/less" type="text/css" />
+		
+			<h2>inline-block</h2>
+
+		成功: <span class="x-tipbox x-tipbox-success">span.x-tipbox.x-tipbox-success</span><br><br>
+		信息: <span class="x-tipbox x-tipbox-info">span.x-tipbox.x-tipbox-info</span><br><br>
+		错误: <span class="x-tipbox x-tipbox-error">span.x-tipbox.x-tipbox-error</span><br><br>
+		警告: <span class="x-tipbox x-tipbox-warning">span.x-tipbox.x-tipbox-warning</span><br><br>
+		消息: <span class="x-tipbox x-tipbox-message">span.x-tipbox.x-tipbox-error</span><br><br>
+		
+		<h2>block</h2>
+
+		成功: <div class="x-tipbox x-tipbox-success">div.x-tipbox.x-tipbox-success</div><br>
+		信息: <div class="x-tipbox x-tipbox-info">div.x-tipbox.x-tipbox-info</div><br>
+		错误: <div class="x-tipbox x-tipbox-error">div.x-tipbox.x-tipbox-error</div><br>
+		警告: <div class="x-tipbox x-tipbox-warning">span.x-tipbox.x-tipbox-warning</div><br>
+		消息: <div class="x-tipbox x-tipbox-message">div.x-tipbox.x-tipbox-message</div><br>
+		
+		<h2>inline-block plain</h2>
+
+		成功: <span class="x-tipbox x-tipbox-success x-tipbox-plain">span.x-tipbox.x-tipbox-success.x-tipbox-plain</span><br>
+		信息: <span class="x-tipbox x-tipbox-info x-tipbox-plain">span.x-tipbox.x-tipbox-info</span><br>
+		错误: <span class="x-tipbox x-tipbox-error x-tipbox-plain">span.x-tipbox.x-tipbox-error</span><br>
+		警告: <span class="x-tipbox x-tipbox-warning x-tipbox-plain">span.x-tipbox.x-tipbox-warning</span><br>
+		消息: <span class="x-tipbox x-tipbox-message x-tipbox-plain">span.x-tipbox.x-tipbox-message</span><br>
+		
+		<h2>success only</h2>
+
+		文字： <input type="text" class="x-textbox" />
+			<span class="x-tipbox x-tipbox-success x-tipbox-plain">&nbsp;</span>
+    
+    <h1>Display/ProgressBar</h1>
+		
+		<link href="../display/assets/styles/progressbar.less" rel="stylesheet/less" type="text/css" />
+		
+		<div class="progress">
+        <div style="width: 60%;" class="bar"></div>
+      </div>
+      
+      
+          <div class="progress progress-info
+    progress-striped">
+    <div class="bar"
+    style="width: 20%;"></div>
+    </div>
+    
+    
+        <div class="progress progress-danger
+    progress-striped active">
+    <div class="bar"
+    style="width: 40%;"></div>
+    </div>
+    
+    <h1>Display/ToolTip</h1>
+		
+		<link href="../display/assets/styles/tooltip.less" rel="stylesheet/less" type="text/css" />
+		
+		
+		<div class="tooltip fade top in" style="top: 6494.35px; left: 526.367px; display: block;"><div class="tooltip-arrow"></div><div class="tooltip-inner">first tooltip</div></div>
+    
+    <h1>Display/BalloonTip</h1>
+		
+		<link href="../display/assets/styles/balloontip.less" rel="stylesheet/less" type="text/css" />
+		
+    
+    <div class="popover fade right in" style="top: 7884.5px; left: 527.5px; display: block;"><div class="arrow"></div><div class="popover-inner"><h3 class="popover-title">A Title</h3><div class="popover-content"><p>And here's some amazing content. It's very engaging. right?</p></div></div></div>
+    
+    
+		<script src="../../assets/libs/less/less-1.2.2.min.js"></script>
 	</body>
 </html>
