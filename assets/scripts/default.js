@@ -20,6 +20,9 @@
 	if(!window.console || !window.console.groupEnd)
 		document.write('<script type="text/javascript" src="' + root + 'assets/libs/firebug-lite/build/firebug-lite.js"></script>');
 	
+	document.write('<link type="text/css" rel="stylesheet" href="' + root + 'assets/libs/google-code-prettify/prettify.css" />');
+	document.write('<script type="text/javascript" src="' + root + 'assets/libs/google-code-prettify/prettify.js"></script>');
+	
 	if(moduleName.indexOf('.') == -1)
 		document.write('<script type="text/javascript" src="' + root + moduleName + '/project.js"></script>');
 	document.write('<script type="text/javascript" src="' + root + 'assets/scripts/project.js"></script>');
@@ -86,6 +89,8 @@
 				
 				document.body.style.visibility = '';
 				
+			    // make code pretty
+			    window.prettyPrint && prettyPrint()
 			});
 
 			
