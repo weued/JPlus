@@ -7,31 +7,36 @@
 @import "../../../core/assets/styles/mixins.less";
 
 
-// ACCORDION
+// x-accordion
 // ---------
 
 
 // Parent container
-.accordion {
+.x-accordion {
   margin-bottom: @baseLineHeight;
 }
 
 // Group == heading + body
-.accordion-group {
+.x-accordion-panel {
   margin-bottom: 2px;
   border: 1px solid #e5e5e5;
   .border-radius(4px);
 }
-.accordion-heading {
+.x-accordion-header {
   border-bottom: 0;
-}
-.accordion-heading .accordion-toggle {
-  display: block;
   padding: 8px 15px;
 }
 
+.x-accordion-body {
+  overflow: hidden;
+}
+
 // Inner needs the styles because you can't animate properly with any styles on the element
-.accordion-inner {
+.x-accordion-container {
   padding: 9px 15px;
   border-top: 1px solid #e5e5e5;
+}
+
+.x-accordion-panel-collapsed .x-accordion-body {
+  height: 0; 
 }

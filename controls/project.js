@@ -13,6 +13,6 @@ var menus = {
 	Button: '+Button +MenuButton SplitButton ButtonGroup +Menu +CloseButton ToolBar',
 	Container: 'Stackable Tabbable TabControls Dialog MessageBox Accordion +Panel',
 	DataView: '+Table TreeView',
-	Theme: '+Base Widgets Container Display -Layout'
+	Theme: '+Base +Widgets +Container +Display +Layout'
 };
 

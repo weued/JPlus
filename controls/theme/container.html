@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>Base CSS - J+ Control Library</title>
+		<title>Container - J+ Control Library</title>
 		
 		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
 	</head>
@@ -15,50 +15,66 @@
 		<link href="../container/assets/styles/tabbable.less" rel="stylesheet/less" type="text/css" />
 		
 		
-		<div class="x-tabbable">
+			
+		<div class="x-tabs">
 		
-		<ul class="nav nav-tabs">
-	        <li class="active"><a href="#">Home</a></li>
-	        <li><a href="#">Profile</a></li>
-	        <li><a href="#">Messages</a></li>
-	      </ul>
+			
+			<ul class="x-tabs-container">
+		        <li class="x-tabs-content x-tabs-actived"><a href="#">Home</a></li>
+		        <li class="x-tabs-content"><a href="#">Profile</a></li>
+		        <li class="x-tabs-content"><a href="#">Messages</a></li>
+		      </ul>
+				
+		</div>
+			
+		<div class="x-tabs x-tabs-plain">
+		
+			
+			<ul class="x-tabs-container">
+		        <li class="x-tabs-content x-tabs-actived"><a href="#">Home</a></li>
+		        <li class="x-tabs-content"><a href="#">Profile</a></li>
+		        <li class="x-tabs-content"><a href="#">Messages</a></li>
+		      </ul>
+				
+		</div>
+		
+		
+		<div class="x-tabbable">
+			<div class="x-tabs">
+				<ul class="x-tabs-container">
+			        <li class="x-tabs-content x-tabs-actived"><a href="#">Home</a></li>
+			        <li class="x-tabs-content"><a href="#">Profile</a></li>
+			        <li class="x-tabs-content"><a href="#">Messages</a></li>
+			      </ul>
+			</div>
+			
+			<div class="x-tabbable-container">
+				
+			</div>
 	      
 	     </div>
-	     
-	     <ul class="nav nav-pills">
-        <li class="active"><a href="#">Home</a></li>
-        <li><a href="#">Profile</a></li>
-        <li><a href="#">Messages</a></li>
-      </ul>
 	      
 	      
 		<h1>Container/Stackable</h1>
 		
 		<link href="../container/assets/styles/stackable.less" rel="stylesheet/less" type="text/css" />
 		
-		<ul class="nav nav-tabs nav-stacked">
-	        <li class="active"><a href="#">Home</a></li>
-	        <li><a href="#">Profile</a></li>
-	        <li><a href="#">Messages</a></li>
-	      </ul>
-		
-		<ul class="nav nav-pills nav-stacked">
-        <li class="active"><a href="#">Home</a></li>
-        <li><a href="#">Profile</a></li>
-        <li><a href="#">Messages</a></li>
-      </ul>
-      
-      
-      <ul class="nav nav-list">
-          <li class="nav-header">List header</li>
-          <li class="active"><a href="#">Home</a></li>
-          <li><a href="#">Library</a></li>
-          <li><a href="#">Applications</a></li>
-          <li class="nav-header">Another list header</li>
-          <li><a href="#">Profile</a></li>
-          <li><a href="#">Settings</a></li>
-          <li><a href="#">Help</a></li>
-        </ul>
+		<div class="x-tabs x-tabs-stacked">
+				<ul class="x-tabs-container">
+			        <li class="x-tabs-content x-tabs-actived"><a href="#">Home</a></li>
+			        <li class="x-tabs-content"><a href="#">Profile</a></li>
+			        <li class="x-tabs-content"><a href="#">Messages</a></li>
+			      </ul>
+			</div>
+		<div class="x-tabs x-tabs-plain x-tabs-plain-stacked">
+				<ul class="x-tabs-container">
+			        <li class="x-tabs-content x-tabs-actived"><a href="#">Home</a></li>
+			        <li class="x-tabs-content"><a href="#">Profile</a></li>
+			        <li class="x-tabs-content"><a href="#">Messages</a></li>
+			      </ul>
+			</div>
+			
+			
         
         
      <div class="tabbable tabs-below">
@@ -73,19 +89,37 @@
             <p>What up girl, this is Section C.</p>
           </div>
         </div>
-        <ul class="nav nav-tabs">
-          <li class="active"><a data-toggle="tab" href="#A">Section 1</a></li>
-          <li><a data-toggle="tab" href="#B">Section 2</a></li>
-          <li><a data-toggle="tab" href="#C">Section 3</a></li>
-        </ul>
+       
+        
+		<div class="x-tabs x-tabs-bottom">
+		
+			
+			<ul class="x-tabs-container">
+		        <li class="x-tabs-content x-tabs-actived"><a href="#">Home</a></li>
+		        <li class="x-tabs-content"><a href="#">Profile</a></li>
+		        <li class="x-tabs-content"><a href="#">Messages</a></li>
+		      </ul>
+				
+		</div>
+        
       </div>
       
       <div class="tabbable tabs-left">
-        <ul class="nav nav-tabs">
-          <li class="active"><a data-toggle="tab" href="#lA">Section 1</a></li>
-          <li><a data-toggle="tab" href="#lB">Section 2</a></li>
-          <li><a data-toggle="tab" href="#lC">Section 3</a></li>
-        </ul>
+       
+        
+		<div class="x-tabs x-tabs-left">
+		
+			
+			<ul class="x-tabs-container">
+		        <li class="x-tabs-content x-tabs-actived"><a href="#">Home</a></li>
+		        <li class="x-tabs-content"><a href="#">Profile</a></li>
+		        <li class="x-tabs-content"><a href="#">Messages</a></li>
+		      </ul>
+				
+		</div>
+		
+		
+		
         <div class="tab-content">
           <div id="lA" class="tab-pane active">
             <p>I'm in Section A.</p>
@@ -101,11 +135,21 @@
       
       
       <div class="tabbable tabs-right">
-        <ul class="nav nav-tabs">
-          <li class="active"><a data-toggle="tab" href="#rA">Section 1</a></li>
-          <li><a data-toggle="tab" href="#rB">Section 2</a></li>
-          <li><a data-toggle="tab" href="#rC">Section 3</a></li>
-        </ul>
+      
+        
+		<div class="x-tabs x-tabs-right">
+		
+			
+			<ul class="x-tabs-container">
+		        <li class="x-tabs-content x-tabs-actived"><a href="#">Home</a></li>
+		        <li class="x-tabs-content"><a href="#">Profile</a></li>
+		        <li class="x-tabs-content"><a href="#">Messages</a></li>
+		      </ul>
+				
+		</div>
+		
+		
+		
         <div class="tab-content">
           <div id="rA" class="tab-pane active">
             <p>I'm in Section A.</p>
@@ -125,6 +169,20 @@
 		
 		<link href="../container/assets/styles/messagebox.less" rel="stylesheet/less" type="text/css" />
 		
+		
+		<div style="position: relative; top: auto; left: auto; margin: 0 auto; z-index: 1;  display: none;" class="modal">
+              <div class="modal-header">
+                <a data-dismiss="modal" class="close" href="#">×</a>
+                <h3>Modal header</h3>
+              </div>
+              <div class="modal-body">
+                <p>One fine body…</p>
+              </div>
+              <div class="modal-footer">
+                <a class="btn btn-primary" href="#">Save changes</a>
+                <a class="btn" href="#">Close</a>
+              </div>
+            </div>
             
 		<h1>Container/Panel</h1>
 		
@@ -141,6 +199,23 @@
 			</div>
 		</div>
 		
+		
+		<br>
+		
+		<div class="x-panel x-panel-collapsed">
+			<div class="x-panel-header">
+				<h2>顶部 .x-panel-header h2</h2>
+			</div>
+		</div>
+		<br>
+		
+		<div class="x-panel">
+			<div class="x-panel-body">
+				内容 .x-panel-body
+			</div>
+		</div>
+		
+		<br>
       
             
 		<h1>Container/Accordion</h1>
@@ -148,39 +223,39 @@
 		<link href="../container/assets/styles/accordion.less" rel="stylesheet/less" type="text/css" />
 		
 		
-		<div id="accordion2" class="accordion">
-            <div class="accordion-group">
-              <div class="accordion-heading">
-                <a href="#collapseOne" data-parent="#accordion2" data-toggle="collapse" class="accordion-toggle">
+		<div class="x-accordion">
+            <div class="x-accordion-panel">
+              <div class="x-accordion-header">
+                <a href="#collapseOne">
                   Collapsible Group Item #1
                 </a>
               </div>
-              <div class="accordion-body in collapse" id="collapseOne" style="height: auto;">
-                <div class="accordion-inner">
+              <div class="x-accordion-body">
+                <div class="x-accordion-container">
                   Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
                 </div>
               </div>
             </div>
-            <div class="accordion-group">
-              <div class="accordion-heading">
-                <a href="#collapseTwo" data-parent="#accordion2" data-toggle="collapse" class="accordion-toggle">
+            <div class="x-accordion-panel x-accordion-panel-collapsed">
+              <div class="x-accordion-header">
+                <a href="#collapseTwo" class="x-accordion-toggle">
                   Collapsible Group Item #2
                 </a>
               </div>
-              <div class="accordion-body collapse" id="collapseTwo" style="height: 0px;">
-                <div class="accordion-inner">
+              <div class="x-accordion-body">
+                <div class="x-accordion-container">
                   Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
                 </div>
               </div>
             </div>
-            <div class="accordion-group">
-              <div class="accordion-heading">
-                <a href="#collapseThree" data-parent="#accordion2" data-toggle="collapse" class="accordion-toggle">
+            <div class="x-accordion-panel x-accordion-panel-collapsed">
+              <div class="x-accordion-header">
+                <a href="#collapseThree" class="x-accordion-toggle">
                   Collapsible Group Item #3
                 </a>
               </div>
-              <div class="accordion-body collapse" id="collapseThree" style="height: 0px;">
-                <div class="accordion-inner">
+              <div class="x-accordion-body collapse">
+                <div class="x-accordion-container">
                   Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
                 </div>
               </div>

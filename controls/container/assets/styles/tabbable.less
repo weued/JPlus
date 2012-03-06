@@ -9,25 +9,69 @@
 // NAVIGATIONS
 // -----------
 
+.x-tabs{
+  // Give the tabs something to sit on
+  border-bottom: 1px solid #ddd;
+  
+  
+  .clearfix();
+}
 
+.x-tabs-container {
+  margin: 0;
+    list-style: none;
+}
 
-// BASE CLASS
-// ----------
-
-.nav {
-  margin-left: 0;
-  margin-bottom: @baseLineHeight;
+// Make the list-items overlay the bottom border
+.x-tabs-content {
+  margin: 0 0 -1px;
   list-style: none;
+  float: left;
 }
 
 // Make links block level
-.nav > li > a {
+.x-tabs-content a {
   display: block;
-}
-.nav > li > a:hover {
+  border: 1px solid transparent;
+  .border-radius(4px 4px 0 0);
+    padding-top: 9px;
+    padding-bottom: 9px;
+  padding-right: 12px;
+  padding-left: 12px;
+  margin-right: 2px;
+  line-height: 14px; // keeps the overall height an even number
+  &:hover {
+    border-color: @grayLighter @grayLighter #ddd;
   text-decoration: none;
   background-color: @grayLighter;
+  }
 }
+
+
+// Active state, and it's :hover to override normal :hover
+.x-tabs-actived a,
+.x-tabs-actived a:hover {
+  color: @gray;
+  background-color: @white;
+  border: 1px solid #ddd;
+  border-bottom-color: transparent;
+  cursor: default;
+}
+
+.x-tabs-plain {
+  border-bottom: none; 
+  
+  .x-tabs-content a, .x-tabs-content a:hover {
+    border-color: transparent;
+  }
+}
+
+.x-tabbable-container {
+  padding: 10px; 
+}
+
+// BASE CLASS
+// ----------
 
 // Nav headers (for dropdowns and lists)
 .nav .nav-header {
@@ -75,64 +119,15 @@
 
 
 
-// TABS AND PILLS
-// -------------
-
-// Common styles
-.nav-tabs,
-.nav-pills {
-  .clearfix();
-}
-.nav-tabs > li,
-.nav-pills > li {
-  float: left;
-}
-.nav-tabs > li > a,
-.nav-pills > li > a {
-  padding-right: 12px;
-  padding-left: 12px;
-  margin-right: 2px;
-  line-height: 14px; // keeps the overall height an even number
-}
-
 // TABS
 // ----
 
-// Give the tabs something to sit on
-.nav-tabs {
-  border-bottom: 1px solid #ddd;
-}
-
-// Make the list-items overlay the bottom border
-.nav-tabs > li {
-  margin-bottom: -1px;
-}
-
-// Actual tabs (as links)
-.nav-tabs > li > a {
-  padding-top: 9px;
-  padding-bottom: 9px;
-  border: 1px solid transparent;
-  .border-radius(4px 4px 0 0);
-  &:hover {
-    border-color: @grayLighter @grayLighter #ddd;
-  }
-}
-// Active state, and it's :hover to override normal :hover
-.nav-tabs > .active > a,
-.nav-tabs > .active > a:hover {
-  color: @gray;
-  background-color: @white;
-  border: 1px solid #ddd;
-  border-bottom-color: transparent;
-  cursor: default;
-}
 
 // PILLS
 // -----
 
 // Links rendered as pills
-.nav-pills > li > a {
+.x-tabs-plain .x-tabs-content a {
   padding-top: 8px;
   padding-bottom: 8px;
   margin-top: 2px;
@@ -141,8 +136,8 @@
 }
 
 // Active state
-.nav-pills .active > a,
-.nav-pills .active > a:hover {
+.x-tabs-plain .x-tabs-actived a,
+.x-tabs-plain .x-tabs-actived a:hover {
   color: @white;
   background-color: @linkColor;
 }
@@ -153,37 +148,37 @@
 // -----------
 
 // Stacked tabs and pills
-.nav-stacked > li {
+.x-tabs-stacked .x-tabs-content, .x-tabs-plain-stacked .x-tabs-content {
   float: none;
 }
-.nav-stacked > li > a {
+.x-tabs-stacked .x-tabs-content a {
   margin-right: 0; // no need for the gap between nav items
 }
 
 // Tabs
-.nav-tabs.nav-stacked {
+.x-tabs-stacked {
   border-bottom: 0;
 }
-.nav-tabs.nav-stacked > li > a {
+.x-tabs-stacked .x-tabs-content a {
   border: 1px solid #ddd;
   .border-radius(0);
 }
-.nav-tabs.nav-stacked > li:first-child > a {
+.x-tabs-stacked .x-tabs-content:first-child a {
   .border-radius(4px 4px 0 0);
 }
-.nav-tabs.nav-stacked > li:last-child > a {
+.x-tabs-stacked .x-tabs-content:last-child a {
   .border-radius(0 0 4px 4px);
 }
-.nav-tabs.nav-stacked > li > a:hover {
+.x-tabs-stacked .x-tabs-content a:hover {
   border-color: #ddd;
   z-index: 2;
 }
 
 // Pills
-.nav-pills.nav-stacked > li > a {
+.x-tabs-plain-stacked .x-tabs-content {
   margin-bottom: 3px;
 }
-.nav-pills.nav-stacked > li:last-child > a {
+.x-tabs-plain-stacked .x-tabs-content li:last-child a {
   margin-bottom: 1px; // decrease margin to match sizing of stacked tabs
 }
 
@@ -193,32 +188,32 @@
 // ---------
 
 // Position the menu
-.nav-tabs .dropdown-menu,
-.nav-pills .dropdown-menu {
+.x-tabs .dropdown-menu,
+.x-tabs-plain .dropdown-menu {
   margin-top: 1px;
   border-width: 1px;
 }
-.nav-pills .dropdown-menu {
+.x-tabs-plain .dropdown-menu {
   .border-radius(4px);
 }
 
 // Default dropdown links
 // -------------------------
 // Make carets use linkColor to start
-.nav-tabs .dropdown-toggle .caret,
-.nav-pills .dropdown-toggle .caret {
+.x-tabs .dropdown-toggle .caret,
+.x-tabs-plain .dropdown-toggle .caret {
   border-top-color: @linkColor;
   margin-top: 6px;
 }
-.nav-tabs .dropdown-toggle:hover .caret,
-.nav-pills .dropdown-toggle:hover .caret {
+.x-tabs .dropdown-toggle:hover .caret,
+.x-tabs-plain .dropdown-toggle:hover .caret {
   border-top-color: @linkColorHover;
 }
 
 // Active dropdown links
 // -------------------------
-.nav-tabs .active .dropdown-toggle .caret,
-.nav-pills .active .dropdown-toggle .caret {
+.x-tabs .active .dropdown-toggle .caret,
+.x-tabs-plain .active .dropdown-toggle .caret {
   border-top-color: @grayDark;
 }
 
@@ -231,8 +226,8 @@
 
 // Open dropdowns
 // -------------------------
-.nav-tabs .open .dropdown-toggle,
-.nav-pills .open .dropdown-toggle,
+.x-tabs .open .dropdown-toggle,
+.x-tabs-plain .open .dropdown-toggle,
 .nav > .open.active > a:hover {
   color: @white;
   background-color: @grayLight;
@@ -268,9 +263,9 @@
 }
 
 // Remove border on bottom, left, right
-.tabs-below .nav-tabs,
-.tabs-right .nav-tabs,
-.tabs-left .nav-tabs {
+.x-tabs-bottom,
+.x-tabs-right,
+.x-tabs-left{
   border-bottom: 0;
 }
 
@@ -288,22 +283,22 @@
 // BOTTOM
 // ------
 
-.tabs-below .nav-tabs {
+.x-tabs-bottom {
   border-top: 1px solid #ddd;
 }
-.tabs-below .nav-tabs > li {
+.x-tabs-bottom .x-tabs-container {
   margin-top: -1px;
   margin-bottom: 0;
 }
-.tabs-below .nav-tabs > li > a {
+.x-tabs-bottom .x-tabs-content a {
   .border-radius(0 0 4px 4px);
   &:hover {
     border-bottom-color: transparent;
     border-top-color: #ddd;
   }
 }
-.tabs-below .nav-tabs .active > a,
-.tabs-below .nav-tabs .active > a:hover {
+.x-tabs-bottom .x-tabs-actived a,
+.x-tabs-bottom .x-tabs-actived a:hover {
   border-color: transparent #ddd #ddd #ddd;
 }
 
@@ -311,51 +306,50 @@
 // ------------
 
 // Common styles
-.tabs-left .nav-tabs > li,
-.tabs-right .nav-tabs > li {
+.x-tabs-left .x-tabs-content, .x-tabs-right .x-tabs-content  {
   float: none;
 }
-.tabs-left .nav-tabs > li > a,
-.tabs-right .nav-tabs > li > a {
+.x-tabs-left .x-tabs-content a,
+.x-tabs-right .x-tabs-content a {
   min-width: 74px;
   margin-right: 0;
   margin-bottom: 3px;
 }
 
 // Tabs on the left
-.tabs-left .nav-tabs {
+.x-tabs-left {
   float: left;
   margin-right: 19px;
   border-right: 1px solid #ddd;
 }
-.tabs-left .nav-tabs > li > a {
+.x-tabs-left .x-tabs-content  a {
   margin-right: -1px;
   .border-radius(4px 0 0 4px);
 }
-.tabs-left .nav-tabs > li > a:hover {
+.x-tabs-left .x-tabs-content a:hover {
   border-color: @grayLighter #ddd @grayLighter @grayLighter;
 }
-.tabs-left .nav-tabs .active > a,
-.tabs-left .nav-tabs .active > a:hover {
+.x-tabs-left .x-tabs-actived a,
+.x-tabs-left .x-tabs-actived a:hover {
   border-color: #ddd transparent #ddd #ddd;
   *border-right-color: @white;
 }
 
 // Tabs on the right
-.tabs-right .nav-tabs {
+.x-tabs-right {
   float: right;
   margin-left: 19px;
   border-left: 1px solid #ddd;
 }
-.tabs-right .nav-tabs > li > a {
+.x-tabs-right .x-tabs-content a {
   margin-left: -1px;
   .border-radius(0 4px 4px 0);
 }
-.tabs-right .nav-tabs > li > a:hover {
+.x-tabs-right .x-tabs-content a:hover {
   border-color: @grayLighter @grayLighter @grayLighter #ddd;
 }
-.tabs-right .nav-tabs .active > a,
-.tabs-right .nav-tabs .active > a:hover {
+.x-tabs-right .x-tabs-actived a,
+.x-tabs-right .x-tabs-actived a:hover {
   border-color: #ddd #ddd #ddd transparent;
   *border-left-color: @white;
 }
