@@ -1,0 +1,1 @@
+/** * @author  */JPlus.resolveNamespace = (function(resolveNamespace){	return function(ns){		return resolveNamespace(ns.replace('controls.', 'milk.'));	};})(JPlus.resolveNamespace);

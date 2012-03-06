@@ -29,4 +29,11 @@ if(System.IO.File.Exists(path)) {
 	System.IO.File.Copy(path, saveRoot + mainModuleName + "/assets/scripts/" + subModuleName + ".js");
 }
 
+
+path = root + "tpl/assets/styles/index.less";
+
+if(System.IO.File.Exists(path)) {
+	System.IO.File.Copy(path, saveRoot + mainModuleName + "/assets/styles/" + subModuleName + ".less");
+}
+
 Console.Write("完成");
