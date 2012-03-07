@@ -67,21 +67,31 @@ body {
 	padding: 5px;
 }
 
-section.system {
+.system-control {
 	clear: right;
 	margin-bottom: 6px;
+	*zoom: 1;
 }
 
-section.system .system-code{
+.system-control:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+.system-control .system-code{
 	margin-top: 0;
 	margin-bottom: 20px;
 	width: 400px;
 	float: right;
 }
 
-section.system-block .system-code{
+.system-block .system-code{
 	float: none;
 	width: auto;
+	margin-top: 10px;
 }
 
 /*********************************** 布局 *******************************************/

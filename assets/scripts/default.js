@@ -98,7 +98,7 @@
 				var tmp;
 				
 				for(var i = 0; sections[i]; i++){
-					if(sections[i].className.indexOf('system') >= 0) {
+					if(sections[i].className.indexOf('system-control') >= 0) {
 						tmp = sections[i];
 						var code = document.createElement('pre');
 						code.className = "system-code prettyprint linenums lang-html";
