@@ -1,6 +1,12 @@
-/**
- * @author 
- */
+// GRID SYSTEM
+// -----------
 
+@import "../../../core/assets/styles/mixins.less";
 
+.x-container-fluid {
+	padding-left: @gridGutterWidth;
+	padding-right: @gridGutterWidth;
+}
 
+// Fluid (940px)
+#fluidGridSystem > .generate(@gridColumns, @fluidGridColumnWidth, @fluidGridGutterWidth);

@@ -4,3 +4,352 @@
 
 
 
+@import "../../../core/assets/styles/mixins.less";
+
+// NAVIGATIONS
+// -----------
+
+.x-tabs{
+  // Give the tabs something to sit on
+  border-bottom: 1px solid #ddd;
+  
+  
+  .clearfix();
+}
+
+.x-tabs-container {
+  margin: 0;
+    list-style: none;
+}
+
+// Make the list-items overlay the bottom border
+.x-tabs-content {
+  margin: 0 0 -1px;
+  list-style: none;
+  float: left;
+}
+
+// Make links block level
+.x-tabs-content a {
+  display: block;
+  border: 1px solid transparent;
+  .border-radius(4px 4px 0 0);
+    padding-top: 9px;
+    padding-bottom: 9px;
+  padding-right: 12px;
+  padding-left: 12px;
+  margin-right: 2px;
+  line-height: 14px; // keeps the overall height an even number
+  &:hover {
+    border-color: @grayLighter @grayLighter #ddd;
+  text-decoration: none;
+  background-color: @grayLighter;
+  }
+}
+
+
+// Active state, and it's :hover to override normal :hover
+.x-tabs-actived a,
+.x-tabs-actived a:hover {
+  color: @gray;
+  background-color: @white;
+  border: 1px solid #ddd;
+  border-bottom-color: transparent;
+  cursor: default;
+}
+
+.x-tabs-plain {
+  border-bottom: none; 
+  
+  .x-tabs-content a, .x-tabs-content a:hover {
+    border-color: transparent;
+  }
+}
+
+.x-tabbable-container {
+  padding: 10px; 
+}
+
+// BASE CLASS
+// ----------
+
+// Nav headers (for dropdowns and lists)
+.nav .nav-header {
+  display: block;
+  padding: 3px 15px;
+  font-size: 11px;
+  font-weight: bold;
+  line-height: @baseLineHeight;
+  color: @grayLight;
+  text-shadow: 0 1px 0 rgba(255,255,255,.5);
+  text-transform: uppercase;
+}
+// Space them out when they follow another list item (link)
+.nav li + .nav-header {
+  margin-top: 9px;
+}
+
+
+// NAV LIST
+// --------
+
+.nav-list {
+  padding-left: 14px;
+  padding-right: 14px;
+  margin-bottom: 0;
+}
+.nav-list > li > a,
+.nav-list .nav-header {
+  margin-left:  -15px;
+  margin-right: -15px;
+  text-shadow: 0 1px 0 rgba(255,255,255,.5);
+}
+.nav-list > li > a {
+  padding: 3px 15px;
+}
+.nav-list .active > a,
+.nav-list .active > a:hover {
+  color: @white;
+  text-shadow: 0 -1px 0 rgba(0,0,0,.2);
+  background-color: @linkColor;
+}
+.nav-list [class^="icon-"] {
+  margin-right: 2px;
+}
+
+
+
+// TABS
+// ----
+
+
+// PILLS
+// -----
+
+// Links rendered as pills
+.x-tabs-plain .x-tabs-content a {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  .border-radius(5px);
+}
+
+// Active state
+.x-tabs-plain .x-tabs-actived a,
+.x-tabs-plain .x-tabs-actived a:hover {
+  color: @white;
+  background-color: @linkColor;
+}
+
+
+
+// STACKED NAV
+// -----------
+
+// Stacked tabs and pills
+.x-tabs-stacked .x-tabs-content, .x-tabs-plain-stacked .x-tabs-content {
+  float: none;
+}
+.x-tabs-stacked .x-tabs-content a {
+  margin-right: 0; // no need for the gap between nav items
+}
+
+// Tabs
+.x-tabs-stacked {
+  border-bottom: 0;
+}
+.x-tabs-stacked .x-tabs-content a {
+  border: 1px solid #ddd;
+  .border-radius(0);
+}
+.x-tabs-stacked .x-tabs-content:first-child a {
+  .border-radius(4px 4px 0 0);
+}
+.x-tabs-stacked .x-tabs-content:last-child a {
+  .border-radius(0 0 4px 4px);
+}
+.x-tabs-stacked .x-tabs-content a:hover {
+  border-color: #ddd;
+  z-index: 2;
+}
+
+// Pills
+.x-tabs-plain-stacked .x-tabs-content {
+  margin-bottom: 3px;
+}
+.x-tabs-plain-stacked .x-tabs-content li:last-child a {
+  margin-bottom: 1px; // decrease margin to match sizing of stacked tabs
+}
+
+
+
+// DROPDOWNS
+// ---------
+
+// Position the menu
+.x-tabs .dropdown-menu,
+.x-tabs-plain .dropdown-menu {
+  margin-top: 1px;
+  border-width: 1px;
+}
+.x-tabs-plain .dropdown-menu {
+  .border-radius(4px);
+}
+
+// Default dropdown links
+// -------------------------
+// Make carets use linkColor to start
+.x-tabs .dropdown-toggle .caret,
+.x-tabs-plain .dropdown-toggle .caret {
+  border-top-color: @linkColor;
+  margin-top: 6px;
+}
+.x-tabs .dropdown-toggle:hover .caret,
+.x-tabs-plain .dropdown-toggle:hover .caret {
+  border-top-color: @linkColorHover;
+}
+
+// Active dropdown links
+// -------------------------
+.x-tabs .active .dropdown-toggle .caret,
+.x-tabs-plain .active .dropdown-toggle .caret {
+  border-top-color: @grayDark;
+}
+
+// Active:hover dropdown links
+// -------------------------
+.nav > .dropdown.active > a:hover {
+  color: @black;
+  cursor: pointer;
+}
+
+// Open dropdowns
+// -------------------------
+.x-tabs .open .dropdown-toggle,
+.x-tabs-plain .open .dropdown-toggle,
+.nav > .open.active > a:hover {
+  color: @white;
+  background-color: @grayLight;
+  border-color: @grayLight;
+}
+.nav .open .caret,
+.nav .open.active .caret,
+.nav .open a:hover .caret {
+  border-top-color: @white;
+  .opacity(100);
+}
+
+// Dropdowns in stacked tabs
+.tabs-stacked .open > a:hover {
+  border-color: @grayLight;
+}
+
+
+
+// TABBABLE
+// --------
+
+
+// COMMON STYLES
+// -------------
+
+// Clear any floats
+.tabbable {
+  .clearfix();
+}
+.tab-content {
+  overflow: hidden; // prevent content from running below tabs
+}
+
+// Remove border on bottom, left, right
+.x-tabs-bottom,
+.x-tabs-right,
+.x-tabs-left{
+  border-bottom: 0;
+}
+
+// Show/hide tabbable areas
+.tab-content > .tab-pane,
+.pill-content > .pill-pane {
+  display: none;
+}
+.tab-content > .active,
+.pill-content > .active {
+  display: block;
+}
+
+
+// BOTTOM
+// ------
+
+.x-tabs-bottom {
+  border-top: 1px solid #ddd;
+}
+.x-tabs-bottom .x-tabs-container {
+  margin-top: -1px;
+  margin-bottom: 0;
+}
+.x-tabs-bottom .x-tabs-content a {
+  .border-radius(0 0 4px 4px);
+  &:hover {
+    border-bottom-color: transparent;
+    border-top-color: #ddd;
+  }
+}
+.x-tabs-bottom .x-tabs-actived a,
+.x-tabs-bottom .x-tabs-actived a:hover {
+  border-color: transparent #ddd #ddd #ddd;
+}
+
+// LEFT & RIGHT
+// ------------
+
+// Common styles
+.x-tabs-left .x-tabs-content, .x-tabs-right .x-tabs-content  {
+  float: none;
+}
+.x-tabs-left .x-tabs-content a,
+.x-tabs-right .x-tabs-content a {
+  min-width: 74px;
+  margin-right: 0;
+  margin-bottom: 3px;
+}
+
+// Tabs on the left
+.x-tabs-left {
+  float: left;
+  margin-right: 19px;
+  border-right: 1px solid #ddd;
+}
+.x-tabs-left .x-tabs-content  a {
+  margin-right: -1px;
+  .border-radius(4px 0 0 4px);
+}
+.x-tabs-left .x-tabs-content a:hover {
+  border-color: @grayLighter #ddd @grayLighter @grayLighter;
+}
+.x-tabs-left .x-tabs-actived a,
+.x-tabs-left .x-tabs-actived a:hover {
+  border-color: #ddd transparent #ddd #ddd;
+  *border-right-color: @white;
+}
+
+// Tabs on the right
+.x-tabs-right {
+  float: right;
+  margin-left: 19px;
+  border-left: 1px solid #ddd;
+}
+.x-tabs-right .x-tabs-content a {
+  margin-left: -1px;
+  .border-radius(0 4px 4px 0);
+}
+.x-tabs-right .x-tabs-content a:hover {
+  border-color: @grayLighter @grayLighter @grayLighter #ddd;
+}
+.x-tabs-right .x-tabs-actived a,
+.x-tabs-right .x-tabs-actived a:hover {
+  border-color: #ddd #ddd #ddd transparent;
+  *border-left-color: @white;
+}
