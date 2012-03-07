@@ -7,7 +7,6 @@ var navs = {
 	'核心': 'system/index.html',
 	'Aqua': 'aqua/index.html',
 	'蓝色骑士': 'blue knight/index.html',
-	'控件': 'controls/index.html',
 	'Milk': 'milk/index.html',
 	'hust': 'hust/index.html',
 	'wplus':'wplus/index.html',

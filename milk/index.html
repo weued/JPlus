@@ -2,14 +2,23 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>J+ Control Libaray</title>
+		<title>Milk - J+ Control Libaray</title>
 		<script type="text/javascript" src="../assets/scripts/default.js" ></script>
 	</head>
 	<body class="system">
-		<h2>J+ Control Libaray 项目规范</h2>
+		<h1>J+ Control Libaray</h1>
+		
+		<h2>如何使用</h2>
+		
 		<p>
-			在制作和使用 J+ Control Libaray 组件时，必须先读此文。
+			右边列表列出了全部可用的组件。其中灰色的表示未完成的组件。每个组件都有对应的 css 和 js 文件。
+			用户可以使用自动化的组件合成工具，将需要用到的组件合成一个 css 和 js 文件。
+			实际项目中只需引入这2个文件即可。
+			每个组件的具体用法可参考组件相关页面。
 		</p>
+		
+		<h2>项目规范</h2>
+		
 		<h3>一、名词</h3>
 		<ul>
 			<li>
@@ -157,11 +166,11 @@
 		</p>
 		<h3>三、文件夹格式</h3>
 		<p>
-			每个组件的结构以 _tpl 文件夹的结构为基准。
+			每个组件的结构以 _tools/tpl 文件夹的结构为基准。
 		</p>
 		<ul>
 			<li>
-				_tpl: 一个组件所必须的文件夹。
+				_tools/tpl: 一个组件所必须的文件夹。
 			</li>
 			<li>
 				<ul>
@@ -193,6 +202,14 @@
 			<li>button.html</li>
 			<li>assets/scripts/button.js</li>
 			<li>assets/styles/button.css</li>
+		</ul>
+		
+		如果项目中使用了 lesscss, 则结构为:
+		
+		<ul>
+			<li>button.html</li>
+			<li>assets/scripts/button.js</li>
+			<li>assets/styles/button.less</li>
 		</ul>
 
 		<p><strong>文件和文件夹名字必须为全小写。 </strong></p>
@@ -259,6 +276,20 @@
 			&lt;div class="x-grid-2"&gt;&lt;/div&gt;</code>
 		<code>
 			&lt;div class="x-grid x-2"&gt;&lt;/div&gt;</code>
+		<p>
+			以下列举了常见的 css 命名后缀。
+		</p>
+		<ul>
+			<li>-actived: 激活的、选中的、当前的。</li>
+			<li>-seleced: 选择的。</li>
+			<li>-highlight: 高亮的。</li>
+			<li>-plain: 简单版的、无边框的、删除背景的。</li>
+			<li>-collapsed: 折叠的、暂时关闭的。</li>
+			<li>-disabled: 禁用的。</li>
+			<li>-readonly: 只读的。</li>
+			<li>-alt: 可选的。</li>
+		</ul>
+		
 		<h3>五、 CSS 样式值规范</h3>
 		<h4>z-index 规范</h4>
 		 <ul>

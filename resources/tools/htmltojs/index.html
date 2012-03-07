@@ -1,0 +1,95 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<title>HTML 转 Javascript 字符串 - J+ 资源</title>
+		<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+		<script type="text/javascript">
+			function reparse(){
+				var content = document.getElementById('content').value;
+				
+				var firstChar = content.charAt(0);
+				
+				if(firstChar === '"' || firstChar === "'"){
+					document.getElementById('content').value = js2html(content);
+				} else {
+					document.getElementById('content').value = html2js(content);	
+				}
+			}
+			
+			function html2js(value) {
+				value = value.replace(/^\s+|\s+$/g, '').replace(/\n/g, "\\\n").replace(/'/g, "\\'");
+				return "'" + value + "'";
+			}
+			
+			function js2html(value) {
+				return value.replace(/\\\n/g, "\n").replace(/\\'/g, "'").replace(/^'|^"|'$|"$/g, "");
+			}
+			
+		</script>
+		<script type="text/javascript" src="../../../assets/scripts/default.js"></script>
+		<style type="text/css">
+			form {
+				MARGIN: 0px 10px
+			}
+			textarea {
+				BORDER-BOTTOM: #ccc 1px solid;
+				BORDER-LEFT: #ccc 1px solid;
+				PADDING-BOTTOM: 3px;
+				PADDING-LEFT: 3px;
+				WIDTH: 100%;
+				PADDING-RIGHT: 3px;
+				HEIGHT: 320px;
+				BORDER-TOP: #ccc 1px solid;
+				BORDER-RIGHT: #ccc 1px solid;
+				PADDING-TOP: 3px
+			}
+			select {
+				WIDTH: 19%
+			}
+			button {
+				WIDTH: 100px;
+				CURSOR: pointer
+			}
+			label {
+				FONT-FAMILY: arial, helvetica, sans-serif
+			}
+			textarea {
+				FONT-FAMILY: terminus, consolas, "lucida console", "courier new", courier, monospace;
+				FONT-SIZE: 12px
+			}
+			pre {
+				FONT-FAMILY: terminus, consolas, "lucida console", "courier new", courier, monospace;
+				FONT-SIZE: 12px
+			}
+			span.code {
+				FONT-FAMILY: terminus, consolas, "lucida console", "courier new", courier, monospace;
+				FONT-SIZE: 12px
+			}
+			pre {
+				MARGIN: 20px 0px;
+				COLOR: #777
+			}
+			div#bottom {
+				MARGIN: 20px;
+				FONT-FAMILY: arial, helvetica, sans-serif;
+				COLOR: #333;
+				FONT-SIZE: 90%;
+				BORDER-TOP: #ccc 1px solid
+			}
+		</style>
+	</head>
+	<body class="system">
+		<h1>HTML 转 Javascript 字符串</h1>
+		<p>
+			粘贴代码到这个文本框然后点击转换
+		</p>
+		<form method="post" action="?">
+			<textarea id="content" rows="30" cols="30" name="content"></textarea>
+			<br>
+			<br>
+			<button onClick="reparse()" type="button">
+				转换
+			</button>
+		</form>
+	</body>
+</html>

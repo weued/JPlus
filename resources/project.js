@@ -5,9 +5,10 @@
 var menus = {
 	
 	'工具': {
-		'Javascript 格式化': 'resources/tools/format/index.html',
+		'HTML/Javascript 格式化': 'resources/tools/format/index.html',
 		'Javascript 加密': 'resources/tools/pack/index.html',
 		'Javascript 压缩': 'resources/tools/compact/index.html',
+		'HTML 转 Javascript 字符串': 'resources/tools/htmltojs/index.html',
 		'正则工具': 'resources/tools/regex/index.html',
 		'速度测试': 'resources/tools/speedmatch/index.html'	
 	},
