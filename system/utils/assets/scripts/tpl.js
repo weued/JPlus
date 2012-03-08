@@ -58,6 +58,7 @@ var Tpl = {
 				case 'var':
 					return 'var ' + c[0] + ';';
 				case '$':
+					command = '$' + command;
 					break;
 				default:
 					return '$tpl+="' + this.encodeJs(c[0]) + '";';

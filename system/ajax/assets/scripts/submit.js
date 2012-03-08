@@ -28,7 +28,8 @@ Ajax.submit = function(form, onsuccess, onerror, timeouts, ontimeout, oncomplete
  * @return {String} 参数形式。
  */
 JPlus.namespace("HTMLFormElement").param = function(formElem) {
-	assert(formElem && formElem.tagName == "FORM", "HTMLFormElement.param(formElem): 参数 {formElem} 不是合法的 表单 元素", formElem);
+	//assert(formElem && formElem.tagName == "FORM", "HTMLFormElement.param(formElem): 参数 {formElem} 不是合法的 表单 元素", formElem);
+	formElem = Dom.get(formElem).dom;
 	var s = [], input, e = encodeURIComponent, value, name;
 	for (var i = 0, len = formElem.length; i < len; i++) {
 		input = formElem[i];
