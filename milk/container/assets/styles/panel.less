@@ -4,6 +4,8 @@
 
 
 
+@import "../../../core/assets/styles/mixins.less";
+
 
 .x-panel {
 	background: none repeat scroll 0 0 #FFFFFF;
@@ -30,6 +32,7 @@
 .x-panel-body {
     overflow: hidden;	
     padding: 10px;
+    .clearfix();
 }
 
 .x-panel-collapsed .x-panel-header {

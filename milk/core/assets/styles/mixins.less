@@ -230,34 +230,6 @@
 
 
 
-// Input grid system
-// -------------------------
-#inputGridSystem {
-  .inputColumns(@gridGutterWidth, @gridColumnWidth, @gridRowWidth, @columns) {
-    width: ((@gridColumnWidth) * @columns) + (@gridGutterWidth * (@columns - 1)) - 10;
-  }
-  .generate(@gridColumns, @gridColumnWidth, @gridGutterWidth) {
-    input,
-    textarea,
-    .uneditable-input {
-      &.span1     { #inputGridSystem > .inputColumns(@gridGutterWidth, @gridColumnWidth, @gridRowWidth, 1); }
-      &.span2     { #inputGridSystem > .inputColumns(@gridGutterWidth, @gridColumnWidth, @gridRowWidth, 2); }
-      &.span3     { #inputGridSystem > .inputColumns(@gridGutterWidth, @gridColumnWidth, @gridRowWidth, 3); }
-      &.span4     { #inputGridSystem > .inputColumns(@gridGutterWidth, @gridColumnWidth, @gridRowWidth, 4); }
-      &.span5     { #inputGridSystem > .inputColumns(@gridGutterWidth, @gridColumnWidth, @gridRowWidth, 5); }
-      &.span6     { #inputGridSystem > .inputColumns(@gridGutterWidth, @gridColumnWidth, @gridRowWidth, 6); }
-      &.span7     { #inputGridSystem > .inputColumns(@gridGutterWidth, @gridColumnWidth, @gridRowWidth, 7); }
-      &.span8     { #inputGridSystem > .inputColumns(@gridGutterWidth, @gridColumnWidth, @gridRowWidth, 8); }
-      &.span9     { #inputGridSystem > .inputColumns(@gridGutterWidth, @gridColumnWidth, @gridRowWidth, 9); }
-      &.span10    { #inputGridSystem > .inputColumns(@gridGutterWidth, @gridColumnWidth, @gridRowWidth, 10); }
-      &.span11    { #inputGridSystem > .inputColumns(@gridGutterWidth, @gridColumnWidth, @gridRowWidth, 11); }
-      &.span12    { #inputGridSystem > .inputColumns(@gridGutterWidth, @gridColumnWidth, @gridRowWidth, 12); }
-    }
-  }
-}
-
-
-
 // CSS3 PROPERTIES
 // --------------------------------------------------
 
