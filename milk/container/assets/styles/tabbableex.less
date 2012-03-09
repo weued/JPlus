@@ -1,0 +1,90 @@
+/**
+ * @author 
+ */
+
+
+
+
+@import "../../../core/assets/styles/mixins.less";
+
+
+// BOTTOM
+// ------
+
+// Remove border on bottom, left, right
+.x-tabbable-bottom,
+.x-tabbable-right,
+.x-tabbable-left{
+  border-bottom: 0;
+}
+
+.x-tabbable-bottom {
+  border-top: 1px solid #ddd;
+}
+.x-tabbable-bottom .x-tabbable-container {
+  margin-top: -1px;
+  margin-bottom: 0;
+}
+.x-tabbable-bottom .x-tabbable-content a {
+  .border-radius(0 0 4px 4px);
+  &:hover {
+    border-bottom-color: transparent;
+    border-top-color: #ddd;
+  }
+}
+.x-tabbable-bottom .x-tabbable-actived a,
+.x-tabbable-bottom .x-tabbable-actived a:hover {
+  border-color: transparent #ddd #ddd #ddd;
+}
+
+// LEFT & RIGHT
+// ------------
+
+// Common styles
+.x-tabbable-left .x-tabbable-content, .x-tabbable-right .x-tabbable-content  {
+  float: none;
+}
+.x-tabbable-left .x-tabbable-content a,
+.x-tabbable-right .x-tabbable-content a {
+  min-width: 74px;
+  margin-right: 0;
+  margin-bottom: 3px;
+}
+
+// tabbable on the left
+.x-tabbable-left {
+  float: left;
+  margin-right: 19px;
+  border-right: 1px solid #ddd;
+}
+.x-tabbable-left .x-tabbable-content  a {
+  margin-right: -1px;
+  .border-radius(4px 0 0 4px);
+}
+.x-tabbable-left .x-tabbable-content a:hover {
+  border-color: @grayLighter #ddd @grayLighter @grayLighter;
+}
+.x-tabbable-left .x-tabbable-actived a,
+.x-tabbable-left .x-tabbable-actived a:hover {
+  border-color: #ddd transparent #ddd #ddd;
+  *border-right-color: @white;
+}
+
+// tabbable on the right
+.x-tabbable-right {
+  float: right;
+  margin-left: 19px;
+  border-left: 1px solid #ddd;
+}
+.x-tabbable-right .x-tabbable-content a {
+  margin-left: -1px;
+  .border-radius(0 4px 4px 0);
+}
+.x-tabbable-right .x-tabbable-content a:hover {
+  border-color: @grayLighter @grayLighter @grayLighter #ddd;
+}
+.x-tabbable-right .x-tabbable-actived a,
+.x-tabbable-right .x-tabbable-actived a:hover {
+  border-color: #ddd #ddd #ddd transparent;
+  *border-left-color: @white;
+}

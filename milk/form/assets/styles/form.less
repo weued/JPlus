@@ -6,16 +6,16 @@
 @import "../../../core/assets/styles/mixins.less";
 
 
+@formFieldWidth:    100px;
+
 .x-formfield   {
 	line-height: 28px;
   margin-bottom: 10px;
-  
   .clearfix();
 }
 
-
 .x-formfield-label{
-	width: 80px;
+	width: @formFieldWidth;
 	display: block;
 	text-align: right;
 	margin-right: 10px;
@@ -23,7 +23,7 @@
 }
 
 .x-formfield-container {
-  margin-left: 90px; 
+  margin-left: @formFieldWidth + 10; 
 }
 
 .x-form-vertical {
@@ -31,7 +31,7 @@
     float: none;
     width: auto;
     text-align: left;
-   margin-right: 0;
+    margin-right: 0;
   }
   
   .x-formfield-container {

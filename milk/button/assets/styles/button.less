@@ -14,8 +14,7 @@
 // Core
 .x-button {
   display: inline-block;
-  padding: 4px 10px 4px;
-  margin-bottom: 0; // For input.x-button
+  padding: 4px 10px;
   font-size: @baseFontSize;
   line-height: @baseLineHeight;
   color: @grayDark;
@@ -27,7 +26,6 @@
   .border-radius(4px);
   @shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
   .box-shadow(@shadow);
-  cursor: default;
 
   // Give IE7 some love
   .reset-filter();
@@ -46,10 +44,14 @@
   .transition(background-position .1s linear);
 }
 
-// // Focus state for keyboard and accessibility
-// .x-button:focus {
-  // .tab-focus();
-// }
+a.x-button {
+  cursor: pointer;
+}
+
+// Focus state for keyboard and accessibility
+button.x-button:focus {
+  .tab-focus();
+}
 
 // Active state
 .x-button-actived, .x-button:active {
@@ -78,28 +80,19 @@
 .x-button-large {
   padding: 9px 14px;
   font-size: @baseFontSize + 2px;
-  line-height: normal;
   .border-radius(5px);
-}
-.x-button-large [class^="icon-"] {
-  margin-top: 1px;
 }
 
 // Small
 .x-button-small {
-  padding: 5px 9px;
+  padding: 2px 9px;
   font-size: @baseFontSize - 2px;
-  line-height: @baseLineHeight - 2px;
-}
-.x-button-small [class^="icon-"] {
-  margin-top: -1px;
 }
 
 // Smallest
 .x-button-smallest {
-  padding: 2px 6px;
+  padding: 0 6px;
   font-size: @baseFontSize - 2px;
-  line-height: @baseLineHeight - 4px;
 }
 
 
@@ -122,15 +115,6 @@
 .x-button-inverse:hover {
   text-shadow: 0 -1px 0 rgba(0,0,0,.25);
   color: @white;
-}
-// Provide *some* extra contrast for those who can get it
-.x-button-highlight.active,
-.x-button-warning.active,
-.x-button-error.active,
-.x-button-success.active,
-.x-button-info.active,
-.x-button-dark.active {
-  color: rgba(255,255,255,.75);
 }
 
 // Set the backgrounds
@@ -163,10 +147,9 @@
 // Cross-browser Jank
 // --------------------------------------------------
 
-button.x-button,
-input[type="submit"].x-button {
+button.x-button, input.x-button {
 
-  // Firefox 3.6 only I believe
+  // Firefox
   &::-moz-focus-inner {
     padding: 0;
     border: 0;
@@ -175,11 +158,11 @@ input[type="submit"].x-button {
   // IE7 has some default padding on button controls
   *padding-top: 2px;
   *padding-bottom: 2px;
-  &.large {
+  &.x-button-large {
     *padding-top: 7px;
     *padding-bottom: 7px;
   }
-  &.small {
+  &.x-button-small {
     *padding-top: 3px;
     *padding-bottom: 3px;
   }
@@ -188,6 +171,7 @@ input[type="submit"].x-button {
 .x-button-plain {
 	background: none;
 	border: none;
+	.box-shadow(none);
 }
 
 .x-button-fixed {

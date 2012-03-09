@@ -4,10 +4,9 @@
 @import "../../../core/assets/styles/mixins.less";
 
 .x-closebutton {
-  float: right;
   font-size: 20px;
   font-weight: bold;
-  line-height: @baseLineHeight;
+  .user-select(none);
   color: @black;
   text-shadow: 0 1px 0 rgba(255,255,255,1);
   .opacity(20);

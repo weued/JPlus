@@ -33,7 +33,7 @@ var Tpl = {
 		return input.replace(/[\r\n]/g, '\\n').replace(/"/g, '\\"');
 	},
 	
-	_blockStatck: [],
+	_blockStack: [],
 	
 	processCommand: function(command){
 		var c = command.match(/^(if|for|end|else|eval|var|\$|\W+)(\b[\s\S]*)?$/);
@@ -41,9 +41,9 @@ var Tpl = {
 			command = c[2];
 			switch(c[1]) {
 				case "end":
-					return this._blockStatck.pop() === "for" ? "});" : "}";
+					return this._blockStack.pop() === "foreach" ? "});" : "}";
 				case 'if':
-					this._blockStatck.push('if');
+					this._blockStack.push('if');
 					assert(command, "Tpl.processCommand(command): 无法处理命令{if " + command + " } (if 命名的格式为 {if condition}");
 					return "try{$tpl_tmp=" + command + ";if(Array.isArray($tpl_tmp))$tpl_tmp=$tpl_tmp.length}catch(e){$tpl_tmp=''}if($tpl_tmp) {";
 				case 'eval':
@@ -51,7 +51,17 @@ var Tpl = {
 				case 'else':
 					return /^\s*if ([\s\S]*)$/.exec(command) ? '} else if(' + RegExp.$1 + ') {' : '} else {';
 				case 'for':
-					this._blockStatck.push('for');
+					if(/^\s*\(/.test(command)) {
+						this._blockStack.push('for');
+						return "for " + command + "{";
+					}
+					
+					// if(command.indexOf(';') >= 0) {
+						// this._blockStack.push('for');
+						// return "for (" + command + "){";
+					// }
+					
+					this._blockStack.push('foreach');
 					command = command.split(/\s*in\s*/);
 					assert(command.length === 2 && command[0] && command[1], "Tpl.processCommand(command): 无法处理命令{for " + c[2] + " } (for 命名的格式为 {for var_name in obj}");
 					return 'try{$tpl_tmp=' + command[1] + '}catch(e){$tpl_tmp=null};Object.each($tpl_tmp, function(' + command[0].replace('var ', '') + ', $index, $value){';
@@ -65,7 +75,7 @@ var Tpl = {
 			}
 		}
 			
-		return command ? 'try{$tpl += ' + command + ' || "";}catch(e){}' : '';
+		return command ? 'try{$tpl_tmp=' + command + ';if($tpl_tmp!=undefined) $tpl += $tpl_tmp;}catch(e){}' : '';
 	},
 	
 	/**
@@ -94,11 +104,18 @@ var Tpl = {
 				blockEnd = tpl.indexOf('}', blockEnd + 1);
 			} while(tpl.charAt(blockEnd - 1) === '\\');
 			
-			output += this.processCommand(tpl.substring(blockStart + 1, blockStart = blockEnd).trim());
+			if(blockEnd == -1) {
+				blockEnd = blockStart++;
+				assert(false, "Tpl.compile(tpl): {tpl} 出现了未关闭的标签。");
+			} else {
+				output += this.processCommand(tpl.substring(blockStart + 1, blockStart = blockEnd).trim());
+			}
 		}
 		
 		output += '$tpl+="' + this.encodeJs(tpl.substring(blockEnd + 1, tpl.length)) + '";}return $tpl';
 
+		assert(this._blockStack.length === 0, "Tpl.compile(tpl): {tpl} 中 if/for 和 end 数量不匹配。");
+		
 		return new Function("$data", output);
 	},
 	

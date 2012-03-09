@@ -2,11 +2,9 @@
 
 @import "../../../core/assets/styles/mixins.less";
 
-
 .x-textbox {
-  .x-inputcontrol();
+  .x-formField();
 }
-
 
 // Warning
 .x-textbox-warning {
@@ -21,4 +19,16 @@
 // Success
 .x-textbox-success {
   .formFieldState(@successText, @successText, @successBackground);
+}
+
+.x-placeholder, {
+  color: @placeholderText;
+}
+
+:-moz-placeholder {
+   color: @placeholderText;
+}
+
+::-webkit-input-placeholder {
+   color: @placeholderText;
 }
