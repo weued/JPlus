@@ -8,8 +8,10 @@
 
 // Base x-tipbox styles
 .x-tipbox {
-  padding: 4px 14px;
+  padding: 5px 14px;
   text-shadow: 0 1px 0 rgba(255,255,255,.5);
+  border-width: 1px;
+  border-style: solid;
   .border-radius(4px);
 }
 
@@ -28,61 +30,43 @@
 // Alternate styles
 // ----------------
 
-.x-tipbox-success {
-  background-color: @successBackground;
-  border-color: @successBorder;  
-}
-.x-tipbox-success,
-.x-tipbox-success .x-tipbox-heading {
-  color: @successText;
+.x-tipbox-success, .x-tipbox-error, .x-tipbox-info {
+   background-repeat: no-repeat;
+   background-position: 8px 50%;
+   padding-left: 30px;
 }
 
+.x-tipbox-success {
+  background-color: @successBackground;
+  border-color: @successBorder; 
+  color: @successText;
+  background-image: url(../images/success.png);
+}
 
 .x-tipbox-warning {
   background-color: @warningBackground;
-  border-color: @warningBorder;  
-}
-.x-tipbox-warning,
-.x-tipbox-warning .x-tipbox-heading {
-  color: @warningText;
+  border-color: @warningBorder; 
+  color: @warningText; 
 }
 
 .x-tipbox-error {
   background-color: @errorBackground;
   border-color: @errorBorder;
-}
-.x-tipbox-error,
-.x-tipbox-danger .x-tipbox-heading,
-.x-tipbox-error .x-tipbox-heading {
   color: @errorText;
+  background-image: url(../images/error.png);
 }
+
 .x-tipbox-info {
   background-color: @infoBackground;
   border-color: @infoBorder;
-}
-.x-tipbox-info,
-.x-tipbox-info .x-tipbox-heading {
   color: @infoText;
+  background-image: url(../images/info.png);
 }
-
-
 
 
 .x-tipbox-plain {
   background-color: transparent;
   border-color: transparent; 
 }
-// 
-// // Block x-tipboxs
-// // ------------------------
-// .x-tipbox-block {
-  // padding-top: 14px;
-  // padding-bottom: 14px;
-// }
-// .x-tipbox-block > p,
-// .x-tipbox-block > ul {
-  // margin-bottom: 0;
-// }
-// .x-tipbox-block p + p {
-  // margin-top: 5px;
-// }
+
+
