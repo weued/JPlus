@@ -1798,7 +1798,7 @@ function using(ns, isStyle) {
         return;
 
     if (ns.indexOf('/') === -1)
-        ns = p.resolveNamespace(ns.toLowerCase(), isStyle) + (isStyle ? '.css' : '.js');
+        ns = p.resolveNamespace(ns.toLowerCase(), isStyle);
 
     var doms, callback, path = ns.replace(/^[\.\/\\]+/, "");
     if (isStyle) {
@@ -2034,9 +2034,9 @@ function assert(bValue, msg) {
          * @param {String} ns 名字空间。
          * @param {Boolean} isStyle=false 是否为样式表。
          */
-        resolveNamespace: function(ns) {
+        resolveNamespace: function(ns, isStyle) {
             // 如果名字空间本来就是一个地址，则不需要转换，否则，将 . 替换为 / ,并在末尾加上 文件后缀。
-            return ns.replace(/\./g, '/');
+            return ns.replace(/\./g, '/') + (isStyle ? '.css' : '.js');
         }
 
     });
@@ -2827,7 +2827,7 @@ JPlus.stackTrace = true;
 JPlus.rootPath = JPlus.rootPath.substr(0, JPlus.rootPath.length - "system/core/assets/scripts/".length);
 
 JPlus.resolveNamespace = function(ns, isStyle){
-	return ns.replace(/^([^.]+\.[^.]+)\./, isStyle ? '$1.assets.styles.' : '$1.assets.scripts.').replace(/\./g, '/');
+	return ns.replace(/^([^.]+\.[^.]+)\./, isStyle ? '$1.assets.styles.' : '$1.assets.scripts.').replace(/\./g, '/') + (isStyle ? '.css' : '.js');
 };
 
 

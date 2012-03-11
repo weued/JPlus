@@ -6,7 +6,7 @@
 
 
 var menus = {
-	Core: '+Base +Common -Mask -Splitter -Resizable -Wrapper -ICollapsable -IContainerControl -IDropDownMenuContainer -IAlignedControl -ContentControl -ScrollableControl -ContainerControl -ListControl',
+	Core: '+Base +Common +ScrollableControl -ContainerControl +ListControl -Mask -Splitter -Resizable -Wrapper -ICollapsable -IContainerControl -IDropDownMenuContainer -IAlignedControl -ContentControl',
 	Page: '+Scaffolding +Grid# +Grid-Fluid +Grid-Fixed# -TopBar -NavBar -Footer +Breadcrumb +Pagination +Pager',
 	Display: '-Marquee +Thumbnail +Icon -IcoMoon -List -Label +Arrow +Tip +TipBox +ProgressBar +Bubble +ToolTip+BalloonTip +Line',
 	Form: '+Form -IFormControl +TextBox +Select +CheckBox +RadioButton +SearchTextBox +ListBox -Suggest',
