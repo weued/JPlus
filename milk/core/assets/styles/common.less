@@ -3,62 +3,69 @@
 
 @import "../../../core/assets/styles/mixins.less";
 
-// clear
-.x-clear {
-	.clearfix();
-}
-
 // align
-.x-left {
-	float: left;
-}
+html {
+  
+  .x-left {
+  	float: left;
+  }
+  
+  .x-right {
+  	float: right;
+  }
+  
+  // fix double margin bug for IE6
+  .x-left, .x-right {
+    _display: inline;
+  }
+  
+  .x-middle {
+  	vertical-align: middle;	
+  }
 
-.x-right {
-	float: right;
 }
 
 .x-center {
-	margin-left: auto;
-	margin-right: auto;
-	text-align: center;
-}
-
-.x-middle {
-	vertical-align: middle;	
-}
-
-// fix double margin bug for IE6
-.x-left, .x-right {
-	_display: inline;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 // position
-.x-relative {
-	position: relative;	
-}
+html {
+    
+  .x-relative, div.x-relative {
+  	position: relative;	
+  }
+  
+  .x-absolute, div.x-absolute {
+  	position: absolute;	
+  }
 
-.x-absolute {
-	position: absolute;	
 }
 
 // display
-html .x-inline {
-	display: inline;	
-}
-
-html .x-block {
-	display: block;	
-}
-
-html .x-inline-block {
-	display: inline-block;
-	
-  // fix for IE6 & IE7
-	.ie7-inline-block();
-}
-
-html .x-hide, *.x-hide{
-	display: none;
+html {
+  
+  .x-inline {
+  	display: inline;	
+  }
+  
+  .x-block {
+  	display: block;	
+  }
+  
+  .x-inline-block {
+  	display: inline-block;
+  	
+    // fix for IE6 & IE7
+  	.ie7-inline-block();
+  }
+  
+  .x-hide, div.x-hide{
+  	display: none;
+  }
+  
 }
 
 // text
@@ -68,7 +75,7 @@ html .x-hide, *.x-hide{
 }
 
 // plain
-.x-plain {
+html .x-plain, html div.x-plain {
   margin: 0;
   padding: 0;
 }
@@ -79,13 +86,22 @@ ul.x-plain li, li.x-plain {
   padding: 0;
 }
 
-// colors
-.x-alt {
-	color: @blueLight;
+// clear
+.x-clear {
+  .clearfix();
 }
 
-.x-hint {
-	color: @grayLight;
+// colors
+html {
+  
+  .x-alt {
+  	color: @blueLight;
+  }
+  
+  .x-hint {
+  	color: @grayLight;
+  }
+
 }
 
 .x-highlight {
@@ -97,18 +113,20 @@ ul.x-plain li, li.x-plain {
 }
 
 .x-error {
-	color: @errorText!important;
+  color: @errorText!important;
 }
 
 .x-success {
-	color: @successText!important;
+  color: @successText!important;
 }
 
 // misc
-.x-control {
-  margin-bottom: 10px;
+html {
+  .x-control, div.x-control {
+    margin-bottom: 10px;
+  }
 }
-
+  
 .x-blank {
   height: 10px;
   display: block;
@@ -118,7 +136,7 @@ ul.x-plain li, li.x-plain {
 
 .x-debug {
   background: #C03!important;
-  color: #fff;
+  color: #fff!important;
 }
 
 // Float right with text-align: right

@@ -1,35 +1,27 @@
-.x-clear {
-  *zoom: 1;
-}
-.x-clear:after {
-  content: ".";
-  display: block;
-  height: 0;
-  clear: both;
-  visibility: hidden;
-}
-.x-left {
+html .x-left {
   float: left;
 }
-.x-right {
+html .x-right {
   float: right;
 }
-.x-center {
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
-}
-.x-middle {
-  vertical-align: middle;
-}
-.x-left,
-.x-right {
+html .x-left,
+html .x-right {
   _display: inline;
 }
-.x-relative {
+html .x-middle {
+  vertical-align: middle;
+}
+.x-center {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+html .x-relative,
+html div.x-relative {
   position: relative;
 }
-.x-absolute {
+html .x-absolute,
+html div.x-absolute {
   position: absolute;
 }
 html .x-inline {
@@ -45,27 +37,38 @@ html .x-inline-block {
   *zoom: 1;
 }
 html .x-hide,
-*.x-hide {
+html div.x-hide {
   display: none;
 }
 .x-break-word {
   word-wrap: break-word;
   word-break: break-all;
 }
-.x-plain {
+html .x-plain,
+html div.x-plain {
   margin: 0;
   padding: 0;
 }
-.x-plain li,
+ul.x-plain li,
 li.x-plain {
   list-style: none;
   margin: 0;
   padding: 0;
 }
-.x-alt {
+.x-clear {
+  *zoom: 1;
+}
+.x-clear:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+html .x-alt {
   color: #70a3cd;
 }
-.x-hint {
+html .x-hint {
   color: #999999;
 }
 .x-highlight {
@@ -80,7 +83,8 @@ li.x-plain {
 .x-success {
   color: #468847 !important;
 }
-.x-control {
+html .x-control,
+html div.x-control {
   margin-bottom: 10px;
 }
 .x-blank {
@@ -91,7 +95,7 @@ li.x-plain {
 }
 .x-debug {
   background: #cc0033 !important;
-  color: white;
+  color: white !important;
 }
 blockquote.x-right {
   padding-left: 0;
