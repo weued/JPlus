@@ -1,0 +1,9 @@
+/**
+ * @author 
+ */
+.x-radiobutton {
+  margin: 4px;
+  *margin-top: 0;
+  /* IE7 */
+  vertical-align: middle;
+}

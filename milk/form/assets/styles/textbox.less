@@ -6,6 +6,19 @@
   .x-formField();
 }
 
+input.x-textbox {
+  height: @baseLineHeight; 
+}
+
+textarea.x-textbox {
+  width: 60%;
+  height: 90px; 
+}
+
+select.x-textbox {
+   font-size: @baseFontSize + 2;
+}
+
 // Warning
 .x-textbox-warning {
   .formFieldState(@warningText, @warningText, @warningBackground);

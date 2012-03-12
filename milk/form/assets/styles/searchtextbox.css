@@ -1,0 +1,11 @@
+/**
+ * @author 
+ */
+.x-searchtextbox {
+  padding-left: 14px;
+  padding-right: 14px;
+  margin-bottom: 0;
+  -webkit-border-radius: 14px;
+  -moz-border-radius: 14px;
+  border-radius: 14px;
+}

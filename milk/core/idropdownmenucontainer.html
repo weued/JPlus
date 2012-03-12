@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Milk - J+ Control Library</title>
+		
+		<link href="../core/assets/styles/base.css" rel="stylesheet" type="text/css">
+		<link href="assets/styles/idropdownmenucontainer.less" rel="stylesheet/less" type="text/css" />
+		
+		<script src="../../system/core/assets/scripts/system.js" type="text/javascript"></script>
+		<script src="../../system/dom/assets/scripts/element.js" type="text/javascript"></script>
+		<script src="../core/assets/scripts/base.js" type="text/javascript"></script>
+		<script src="assets/scripts/idropdownmenucontainer.js" type="text/javascript"></script>
+		
+		<script src="../../assets/libs/less/less.min.js" type="text/javascript"></script>
+		<script src="../../assets/scripts/default.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<h1>Core/IDropDownMenuContainer</h1>
+		
+		<p>IDropDownMenuContainer 表示一个下拉菜单容器。
+			实现了 IDropDownMenuContainer 接口的控件将拥有显示与之关联的下拉菜单的功能。
+			下拉菜单可以是任何控件。容器也可以是任何控件。通过调用容器的 toggleDropDownMenu 可以显示/关闭下拉菜单。
+			一般地，容器需要在初始化的时候绑定 click 事件后调用 toggleDropDownMenu	。
+		</p>
+		
+		<input type="button" id="a" value="按钮 #a" />
+		
+		<div id="menu">
+			这是菜单
+		</div>
+		
+		<script class="system-control">
+		
+			// 按钮
+			var a = Dom.get('a');
+			
+			// 将 IDropDownMenuContainer 接口的所有方法直接拷贝给 a。
+			Object.extend(a, IDropDownMenuContainer);
+			
+			// 核心代码， 设置 a 的下拉菜单为 id=menu 的节点。
+			a.setDropDownMenu('menu');
+			
+			// 绑定 click 之后，调用 a.toggleDropDownMenu 切换菜单。
+			a.on('click', a.toggleDropDownMenu);
+		</script>
+		
+		
+	</body>
+</html>

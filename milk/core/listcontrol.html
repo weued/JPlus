@@ -40,11 +40,19 @@
 		<div id="a">#a</div>
 		<div id="b">#b</div>
 		
+		<script class="system-control">
+		
+			// 创建一个容器对象。
+			var c = new ListControl('ct');
+			
+			// 添加一项。
+			c.items.add('新建项');
+		</script>
 		
 		<script>
 		
-			
 			var c = new ListControl('ct');
+			
 			var a = Dom.get('a');
 			var b = Dom.get('b');
 			

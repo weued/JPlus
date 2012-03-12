@@ -105,12 +105,29 @@
 						code.innerText = code.textContent = System.formatHTML(tmp.innerHTML || '');
 						code.ondblclick = function(){
 							System.copyText(code.innerText || code.textContent);
+							return false;
 						};
 						if(tmp.className.indexOf('system-block') >= 0){
 							tmp.appendChild(code);
 						} else {
 							tmp.insertBefore(code, tmp.firstChild);
 						}
+					}
+				}
+				
+				sections  = document.body.getElementsByTagName('script');
+				
+				for(var i = 0; sections[i]; i++){
+					if(sections[i].className.indexOf('system-control') >= 0) {
+						tmp = sections[i];
+						var code = document.createElement('pre');
+						code.className = "system-code prettyprint linenums lang-js";
+						code.innerText = code.textContent = System.formatJS(tmp.innerHTML || '');
+						code.ondblclick = function(){
+							System.copyText(code.innerText || code.textContent);
+							return false;
+						};
+						tmp.parentNode.insertBefore(code, tmp.nextSibling);
 					}
 				}
 				

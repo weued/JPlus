@@ -1,0 +1,42 @@
+/**
+ * @author 
+ */
+.x-tip {
+  padding: 2px 4px 3px;
+  font-size: 10.2px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #999999;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+.x-tip:hover {
+  color: white;
+  text-decoration: none;
+}
+.x-tip-error {
+  background-color: #b94a48;
+}
+.x-tip-error:hover {
+  background-color: #953b39;
+}
+.x-tip-warning {
+  background-color: #f89406;
+}
+.x-tip-warning:hover {
+  background-color: #c67605;
+}
+.x-tip-success {
+  background-color: #468847;
+}
+.x-tip-success:hover {
+  background-color: #356635;
+}
+.x-tip-info {
+  background-color: #3a87ad;
+}
+.x-tip-info:hover {
+  background-color: #2d6987;
+}

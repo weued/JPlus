@@ -251,16 +251,6 @@ blockquote small {
 blockquote small:before {
   content: '\2014 \00A0';
 }
-abbr {
-  font-size: 90%;
-  text-transform: uppercase;
-  border-bottom: 1px dotted #dddddd;
-  cursor: help;
-}
-address,
-cite {
-  font-style: normal;
-}
 fieldset {
   padding: 0;
   margin: 0;

@@ -1,0 +1,62 @@
+/**
+ * @author 
+ */
+.x-tabbable {
+  border-bottom: 1px solid #dddddd;
+  *zoom: 1;
+}
+.x-tabbable:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+.x-tabbable-container {
+  margin: 0;
+}
+.x-tabbable-content {
+  margin: 0 0 -1px;
+  list-style: none;
+  float: left;
+}
+.x-tabbable-content a {
+  display: block;
+  border: 1px solid transparent;
+  -webkit-border-radius: 4px 4px 0 0;
+  -moz-border-radius: 4px 4px 0 0;
+  border-radius: 4px 4px 0 0;
+  padding: 7px 12px;
+  text-decoration: none;
+}
+.x-tabbable-content a:hover {
+  border-color: #eeeeee #eeeeee #dddddd;
+  background-color: #eeeeee;
+}
+.x-tabbable-actived a,
+.x-tabbable-actived a:hover {
+  color: #555555;
+  background-color: white;
+  border: 1px solid #dddddd;
+  border-bottom-color: transparent;
+  cursor: default;
+}
+.x-tabbable-alt {
+  border-bottom: none;
+}
+.x-tabbable-alt .x-tabbable-content a,
+.x-tabbable-alt .x-tabbable-content a:hover {
+  border-color: transparent;
+}
+.x-tabbable-alt .x-tabbable-content a {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+.x-tabbable-alt .x-tabbable-actived a,
+.x-tabbable-alt .x-tabbable-actived a:hover {
+  color: white;
+  background-color: #0088cc;
+}

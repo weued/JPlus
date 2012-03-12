@@ -1,0 +1,22 @@
+.x-button-menu {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  text-indent: -99999px;
+  *text-indent: 0;
+  vertical-align: middle;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid black;
+  opacity: 0.3;
+  filter: alpha(opacity=30);
+  content: "\2193";
+}
+.x-button .x-button-menu {
+  margin-left: 5px;
+}
+.x-button:hover .x-button-menu,
+.x-button-actived .x-button-menu {
+  opacity: 1;
+  filter: alpha(opacity=100);
+}
