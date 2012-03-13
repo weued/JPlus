@@ -1545,8 +1545,9 @@
 		 * @param {String} [type] 方式。
 		 * @return {Element} this
 		 */
-		toggle: function(duration, callBack, type, flag) {
-			return this[(flag === undefined ? Dom.isHidden(this.dom): flag) ? 'show': 'hide'](duration, callBack, type);
+		toggle: function(duration, onShow, onHide, type, flag) {
+			flag = (flag === undefined ? Dom.isHidden(this.dom): flag);
+			return this[flag ? 'show': 'hide'](duration, flag ? onShow : onHide, type);
 		},
 	
 		/**
