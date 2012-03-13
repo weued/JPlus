@@ -25,7 +25,7 @@
 			<div class="x-listcontrol">
 				<ul class="x-listcontrol-container">
 					<li class="x-listcontrol-content">选项1</li>
-					<li class="x-listcontrol-content x-listcontrol-actived">选项2</li>
+					<li class="x-listcontrol-content x-listcontrol-selected">选项2</li>
 					<li class="x-listcontrol-content">选项3</li>
 					<li class="x-listcontrol-content">选项4</li>
 				</ul>
@@ -34,27 +34,27 @@
 		
 		<div id="ct">
 			<ul>
-				
+				<li class="x-control-selected">已存在的项。</li>
 			</ul>
 		</div>
-		<div id="a">#a</div>
-		<div id="b">#b</div>
+		<div id="d">#d</div>
+		<div id="e">#e</div>
 		
 		<script class="system-control">
 		
 			// 创建一个容器对象。
-			var c = new ListControl('ct');
+			var a = new ListControl('ct');
 			
 			// 添加一项。
-			c.items.add('新建项');
+			a.items.add('新建项');
 		</script>
 		
 		<script>
 		
 			var c = new ListControl('ct');
 			
-			var a = Dom.get('a');
-			var b = Dom.get('b');
+			var d = Dom.get('d');
+			var e = Dom.get('e');
 			
 			var testcases = {
 				'ListControl.prototype.items.add': "@c; 'add'",
@@ -64,8 +64,8 @@
 					tests: "@c;",
 					method: false
 				},
-				'ListControl.prototype.append': "@c; a; b",
-				'ListControl.prototype.remove': "@c; b"
+				'ListControl.prototype.append': "@c; d; e",
+				'ListControl.prototype.remove': "@c; d"
 			};
 			
 			System.initTestCases(testcases);

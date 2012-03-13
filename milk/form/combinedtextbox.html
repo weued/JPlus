@@ -13,6 +13,8 @@
 		<script src="../../system/core/assets/scripts/system.js" type="text/javascript"></script>
 		<script src="../../system/dom/assets/scripts/element.js" type="text/javascript"></script>
 		<script src="../core/assets/scripts/base.js" type="text/javascript"></script>
+		<script src="assets/scripts/iinput.js" type="text/javascript"></script>
+		<script src="assets/scripts/textbox.js" type="text/javascript"></script>
 		<script src="assets/scripts/combinedtextbox.js" type="text/javascript"></script>
 		
 		<script src="../../assets/libs/less/less.min.js" type="text/javascript"></script>
@@ -22,11 +24,17 @@
 		<h1>Form/CombinedTextBox</h1>
 		
 		<section class="system-control">
-   			<span class="x-combinedtextbox">
+   			<span class="x-combinedtextbox" id="a">
 				<input type="text" class="x-textbox" type="text" value="文本框" id="id"/>
-				<a href="#" class="x-button"><span class="x-button-menu"></span></a>
+				<button class="x-button"><span class="x-button-menu"></span></button>
 			</span>
    		</section>
+   		
+   		<script>
+   			var a = new CombinedTextBox('a');
+   			
+   			
+   		</script>
 		
 	</body>
 </html>

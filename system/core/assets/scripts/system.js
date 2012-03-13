@@ -508,6 +508,9 @@
 
 		    // 指定成员 。
 		    subClass.prototype = Object.extend(new  emptyFn, members);
+		    
+		    // 清空临时对象。
+		    emptyFn.prototype = null;
 
 		    // 覆盖构造函数。
 		    subClass.prototype.constructor = subClass;
