@@ -1,1 +1,1 @@
-/** * @author  */
+/** * @author  xuld */using("Controls.Core.ContainerControl");/** * 内容显示面板。 * @class Panel * @extends ContainerControl */var Panel = ContainerControl.extend({		tpl: '<div class="x-panel">\				<div class="x-panel-header">\					<h2></h2>\				</div>\				<div class="x-panel-body">\				</div>\			</div>',		/**	 * xType	 * @type String	 */	xType: 'panel'	});

@@ -1,1 +1,1 @@
-/** * @author  */
+/** * @author  */imports("Controls.Core.ContainerControl");using("Controls.Core.ScrollableControl");var ContainerControl = ScrollableControl.extend({		setTitle: function(){			}});
