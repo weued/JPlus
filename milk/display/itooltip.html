@@ -17,8 +17,21 @@
 	</head>
 	<body>
 		
+		<div id="a">Node</div>
 		
+		<div id="tooltip" style="position: absolute"></div>
 		
+		<script class="system-control">
+			
+			
+			var a = Dom.get('tooltip');
+			
+			// 拷贝 IToolTip 方法。
+			Object.extend(a, IToolTip);
+			
+			// 设置。
+			a.setToolTip(Dom.get('a'), 'ToolTip');
+		</script>
 		
 		
 	</body>

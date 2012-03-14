@@ -11,6 +11,7 @@
 		<script src="../../system/core/assets/scripts/system.js" type="text/javascript"></script>
 		<script src="../../system/dom/assets/scripts/element.js" type="text/javascript"></script>
 		<script src="../core/assets/scripts/base.js" type="text/javascript"></script>
+		<script src="assets/scripts/itooltip.js" type="text/javascript"></script>
 		<script src="assets/scripts/tooltip.js" type="text/javascript"></script>
 		
 		<script src="../../assets/libs/less/less.min.js" type="text/javascript"></script>
@@ -76,6 +77,29 @@
 			</div>
 			
 		</section>
+		
+		<div id="a" style="display: inline-block">Node</div>
+		
+		<div id="tooltip" style="position: absolute"></div>
+		
+		<script class="system-control">
+		
+			
+			var a = new ToolTip();
+			
+			// 设置。
+			a.setToolTip(Dom.get('a'), 'ToolTip');
+			
+			
+			var b = new ToolTip().setToolTip(Dom.get('a'), 'ToolTip', 0, 0, 'left');
+			
+			
+			var c = new ToolTip().setToolTip(Dom.get('a'), 'ToolTip', 0, 0, 'bottom');
+			
+			
+			var d = new ToolTip().setToolTip(Dom.get('a'), 'ToolTip', 0, 0, 'right');
+			
+		</script>
 		
 		
 	</body>
