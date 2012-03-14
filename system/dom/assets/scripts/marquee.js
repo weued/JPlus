@@ -1,168 +1,149 @@
-//===============================================
-//  marquee     ¹ö¶¯  (µ¥¸ö)
-//  edited by xuld
-//  Ê¹ÓÃ·½·¨;
-//  marquee.creat({id:"div1",
-//				 direction: "left",
-//				 CSS:"}.marquee img{margin:2px;width:134px;height:96px;",
-//				 width:900,
-//				 height:100,
-//               img:Êý×é »ò text:Êý×é »ò html: »ò elements: Êý×é
-//				 });
-//Í¼Æ¬Array(
-//		  {src:"do1.gif",onclick:"",onmouseover:""}
-//		 )
-//text Array("f")
-//elements Array(
-//		  {tag:div,id:"do1.gif",onclick:"",onmouseover:""}
-//		 )
-//   marquee.stop();
-//   marquee.begin();
-//   marquee.element  //  id µÄ div
-//===============================================
 
 
-var marquee = [];
-marquee.creat = function(){
-	var A = arguments?arguments[0]:{};
-	this.width = A.width || 400;         //¿í
-	this.height  = A.height || 100;        //¸ß
-	this.id = A.id || "div1";  //id
-	this.direction = A.direction || "left";   //-------¹ö¶¯·½ÏòÓÐËÄ¸öÖµleft£¬right£¬up£¬down£¬×Ô¼ºÊÔÊÔ--------//
-	this.speed = A.speed || 100 ;//-------¹ö¶¯ËÙ¶È100Ïàµ±ÓÚ1Ãë£¬Ô½Ð¡Ô½¿ì--------//
-	this.cid = this.id +"_c";//-------·ÅÍ¼Æ¬µÄÈÝÆ÷id--------//
-	var sHTML="";
-	var sCSS = "div.marquee{overflow:hidden; cursor:pointer; margin-top:50px;width:"+this.width+"px ;height:"+this.height+"px}\n\t.marquee li{list-style:none; float:left; border:0; padding:0px; margin:0px;}\n\t.marquee img{border:0px;  padding:0px; margin:0px;display:block;}\n";
-	if( A.CSS)
-		sCSS+=".marquee{" + A.CSS + "}\n";
-	var HTML=1,bStop=1;    //Ê¹ÓÃ<img>  ºÍ   <img />   //  Êó±êÒÆ¶¯Í£Ö¹
+
+
+using("System.Fx.Animate");
+using("System.Dom.Element");
+
+var Marquee = Control.extend({
 	
-	if(A.img){
-		HTML=HTML?"></li>\n":" /></li>\n";
-		for(var i=0;i<A.img.length;i++){
-			sHTML+="\t\t<li><img";
-			for(attr in A.img[i])
-				sHTML+=" "+attr + "='"+ A.img[i][attr] + "'";
-			sHTML+=HTML;
-			
+	direction: 'left',
+	
+	duration:-1,
+	
+	delay: 1000,
+	
+	_currentIndex: 0,
+	
+	/**
+	 * æ˜¯å¦å¾ªçŽ¯ã€‚
+	 * @property {Boolean} loop
+	 */
+	
+	_getWidthBefore: function(ctrl, xy){
+		
+		ctrl = ctrl.getPrevious();
+		
+		if(ctrl) {
+			return Dom.calc(ctrl.dom, xy) + this._getWidthBefore(ctrl, xy);
 		}
 		
-	}else if(A.elements){		
-		sHTML+="<"+elements.tag+" ";
-		for(attr in elements){
-			if(attr.toString=="tag") continue;
-			sHTML+=attr + "='"+ elements[attr] + "' ";
-		}
-		sHTML+=">\n";		
-	}else if(A.text){
-		for(var i=0;i<A.text.length;i++){
-			sHTML+="\t\t<li>"+A.text[i]+"</li>\n";
-			
-		}
+		return 0;
+	},
 	
+	_getScrollByIndex: function(value){
+		return this._getWidthBefore(this.container.getChild(value), /^[lr]/.test(this.direction) ? 'mx+sx' : 'my+sy')   ;
+	},
+	
+	_getTotalSize: function(){
+		var size = 0;
 		
-	}else if(A.html){
-		sHTML+=A.html;
+		var xy = /^[lr]/.test(this.direction) ? "mx+sx" : "my+sy";
 		
-	}
+		this.container.getChildren().each(function(child){
+			size += Dom.calc(child, xy);
+		});
+		
+		return size;
+	},
 	
-	var sStop;
-	if(bStop) sStop=" onmouseover=\"marquee.stop()\" onmouseout=\"marquee.begin()\""; else sStop="";
-	sHTML = "<style>\n\t" + sCSS + "</style>\n<div id=\""+ this.id +"\" class=\"marquee\"" + sStop + ">\n\t<ul id=\""+ this.id+"_c\"  style=\"clear:both;list-style:none; border:0px; padding:0px; margin:0px;\">\n" + sHTML + "\n\t</ul>\n</div>"
+	/**
+	 * æ›´æ–°èŠ‚ç‚¹çŠ¶æ€ã€‚
+	 */
+	update: function(){
+		var children = this.container.getChildren();
+		this.childCount = children.length;
+		var size = this._getTotalSize();
+		var xy = /^[lr]/.test(this.direction) ? 'Width' : 'Height';
+		
+		this.disabled = this['get' + xy]() >= size;
+		
+		if(!this.disabled && this.loop && !this.cloned){
+			children.clone().appendTo(this.container);
+			size = this._getTotalSize();
+			this.cloned = true;
+		}
+		
+		this.container['set' + xy](size);
+		this.container.setScroll(0, 0);
+		this._currentIndex = 0;
+	},
 	
-	document.write(sHTML);
+	init: function(options){
+		this.container = this.find('ul');
+		
+		
+		if(options.loop !== false){
+			this.loop = true;
+			delete options.loop;
+		}
+		
+		this.update();
+	},
 	
-	
-	
-	
-	var _HtmlL = document.getElementById(this.cid).innerHTML;
-	var _HtmlT = document.getElementById(this.id).innerHTML;
-	switch (this.direction){
-		case "left":
-			document.getElementById(this.cid).innerHTML=_HtmlL+_HtmlL+_HtmlL+_HtmlL;
-			break;
-		case "right":
-			document.getElementById(this.cid).innerHTML=_HtmlL+_HtmlL+_HtmlL+_HtmlL;
-			break;
-		case "up":
-			document.getElementById(this.id).innerHTML=_HtmlT+_HtmlT+_HtmlT+_HtmlT;
-			break;
-		case "down":
-			document.getElementById(this.id).innerHTML=_HtmlT+_HtmlT+_HtmlT+_HtmlT;
-			break;
-	}
-	document.getElementById(this.cid).style.width=this.width*2;
-	document.getElementById(this.cid).style.height=this.height;
-	this.element=document.getElementById(this.id);
-	this.begin();
-}
-
-marquee.stop=function(id){
-	if(!id) id = this.id;
-	document.getElementById(id).scrollLeft=document.getElementById(this.id).scrollLeft;
-	document.getElementById(id).scrollTop=document.getElementById(this.id).scrollTop;
-	clearTimeout(marquee.showert);
-}
-
-
-marquee.begin=function(id){	
-	if(!id) id = this.id;
-	var ele;
-	ele=document.getElementById(id);	
-	switch (this.direction){
-		case "left":
-			window.shower=function(id){
-				var ele;
-				ele=document.getElementById(id);
-				ele.style.width=marquee.width;
-				ele.style.height=marquee.height;
-				ele.scrollLeft=ele.scrollLeft+5;
-				if (ele.scrollLeft>=marquee.width){
-					ele.scrollLeft=0;
-				}
-				marquee.showert=setTimeout("window.shower('"+id+"')",marquee.speed);
-			};
+	moveTo: function(index){
+		var xy = /^[lr]/.test(this.direction) ? 'x' : 'y';
+		if( index < 0){
+			this._currentIndex = index = this.childCount + index;
+			this.container.setStyle(xy === 'x' ? 'marginLeft' : 'marginTop', -this._getScrollByIndex(index + 1));
+			newIndex = null;
+		} else {
+			var newIndex = index % this.childCount;
 			
-			break;
-		case "right":
-			window.shower=function(id){
-				var ele;
-				ele=document.getElementById(id);
-				ele.style.width=marquee.width;
-				ele.style.height=marquee.height;
-				ele.scrollLeft=ele.scrollLeft-5;
-				if (ele.scrollLeft<=0){
-					ele.scrollLeft=marquee.width;
+			if(newIndex < index){
+				if(this.loop){
+						
+				} else {
+					index = newIndex;
+					newIndex = null;
 				}
-				marquee.showert=setTimeout("window.shower('"+id+"')",marquee.speed);
-			};
-			break;
-		case "up":
-			window.shower=function(id){
-				var ele;
-				ele=document.getElementById(id);
-				ele.style.width=marquee.width;
-				ele.style.height=marquee.height;
-				ele.scrollTop=ele.scrollTop+5;
-				if (ele.scrollTop>=marquee.height){
-					ele.scrollTop=0;
-				}
-				marquee.showert=setTimeout("window.shower('"+id+"')",marquee.speed);
-			};
-			break;
-		case "down":
-			window.shower=function(id){
-				var ele;
-				ele=document.getElementById(id);
-				ele.style.width=marquee.width;
-				ele.style.height=marquee.height;
-				ele.scrollTop=ele.scrollTop-5;
-				if (ele.scrollTop<=0){
-					ele.scrollTop=marquee.height;
-				}
-				marquee.showert=setTimeout("window.shower('"+id+"')",marquee.speed);
-			};
-			break;
+			}
+		}
+		
+		var me = this, newScroll = me._getScrollByIndex(index);
+		me.container.animate(xy === 'x' ? 'marginLeft' : 'marginTop', -newScroll, me.duration, function(){
+			if(newIndex !== null){
+				newScroll = me._getScrollByIndex(newIndex);
+				me.container.setStyle(xy === 'x' ? 'marginLeft' : 'marginTop', -newScroll);
+				me._currentIndex = newIndex;
+			}
+		}, null, 'replace');
+		return this;
+		
+	},
+	
+	moveBy: function(index){
+		this.moveTo(this._currentIndex + index);
+	},
+	
+	/**
+	 * æš‚åœæ»šåŠ¨
+	 * @method pause
+	 */
+	stop: function() {
+		clearInterval(this.timer);
+		this.timer = 0;
+		return this;
+	},
+	
+	/**
+	 * (é‡æ–°)å¼€å§‹æ»šåŠ¨
+	 * @method start
+	 */
+	start: function(delta, direction) {
+		if(this.disabled)
+			return;
+		delta = delta || 1;
+		var me = this.stop();
+		if(direction)
+			this.direction = direction;
+		if(/^[rb]/.test(this.direction))
+			delta *= -1;
+		me.timer = setInterval(function(){
+			me.moveBy(delta || 1);
+		}, me.delay);
+		
+		return me;
 	}
-	window.shower(this.id);	
-}
+	
+});

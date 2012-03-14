@@ -589,6 +589,15 @@
 			div.className = className;
 			return new Dom(div);
 		},
+		
+		/**
+		 * 根据一个 id 获取元素。如果传入的id不是字符串，则直接返回参数。
+		 * @param {String/Node/Control} id 要获取元素的 id 或元素本身。
+	 	 * @return {Node} 元素。
+		 */
+		getNode: function (id) {
+			return typeof id == "string" ? document.getElementById(id): (id && id.dom || id);
+		},
 
 		/**
 		 * 解析一个 html 字符串，返回相应的原生节点。
@@ -2338,8 +2347,9 @@
 		 */
 		contains: function(control) {
 			var elem = this.dom;
+			control = Dom.getNode(control);
 			assert.notNull(control, "Control.prototype.contains(control):{control} ~");
-			return control.dom == elem || Dom.hasChild(elem, control.dom);
+			return control == elem || Dom.hasChild(elem, control);
 		},
 		
 		/**
@@ -2348,7 +2358,7 @@
 		 * @return {Boolean} 有返回true 。
 		 */
 		hasChild: function(control) {
-			return control ? Dom.hasChild(this.dom, control.dom): !Dom.isEmpty(this.dom);
+			return control ? Dom.hasChild(this.dom, Dom.getNode(control)): !Dom.isEmpty(this.dom);
 		}
 		
 	}, 4);

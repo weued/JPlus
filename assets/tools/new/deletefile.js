@@ -23,6 +23,13 @@ if(System.IO.File.Exists(path)) {
 }
 
 
+path = saveRoot + mainModuleName + "/assets/styles/" + subModuleName + ".less";
+
+if(System.IO.File.Exists(path)) {
+	System.IO.File.Delete(path);
+}
+
+
 path = saveRoot + mainModuleName + "/assets/scripts/" + subModuleName + ".js";
 
 if(System.IO.File.Exists(path)) {

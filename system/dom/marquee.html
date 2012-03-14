@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>J+ Core Library</title>
+		
+		<script type="text/javascript" src="../../system/core/assets/scripts/system.js"></script>
+		<script type="text/javascript" src="../dom/assets/scripts/element.js" ></script>
+		<script type="text/javascript" src="../fx/assets/scripts/base.js" ></script>
+		<script type="text/javascript" src="../fx/assets/scripts/animate.js" ></script>
+		<script type="text/javascript" src="assets/scripts/marquee.js"></script>
+		
+		<script type="text/javascript" src="../../assets/scripts/default.js" ></script>
+		
+		<style>
+			
+			.demo  {
+				width: 300px; 
+				border: 1px solid red;
+				overflow: hidden;
+				height: 60px;
+				clear: both;
+			}
+			
+			.demo  li {
+				float:left;
+				margin: 10px;
+				border: 1px solid red;
+				padding: 0 20px;
+				list-style: none;
+			}
+			
+			
+			.demo2  {
+				width: 300px; 
+				border: 1px solid red;
+				overflow: hidden;
+				height: 60px;
+				clear: both;
+			}
+			
+			.demo2  li {
+				margin: 10px;
+				border: 1px solid red;
+				padding: 0 20px;
+				list-style: none;
+			}
+		</style>
+	</head>
+	<body>
+		
+		<div id='a' class="demo">
+			<ul>
+				<li>aa</li>
+				<li>bb</li>
+				<li>cc</li>
+				<li>dd</li>
+				<li>ee</li>
+				<li>ff</li>
+				<li>rtr</li>
+			</ul>
+		</div>
+		
+		
+		<script class="system-control">
+			var a = new Marquee('a').start(1);
+		</script>
+		
+		<div id='b' class="demo">
+			<ul>
+				<li>aa</li>
+				<li>bb</li>
+				<li>cc</li>
+				<li>dd</li>
+				<li>ee</li>
+				<li>ff</li>
+				<li>rtr</li>
+			</ul>
+		</div>
+		
+		<script class="system-control">
+			var b = new Marquee('b').start(1, 'right');
+		</script>
+		
+		<div id='c' class="demo2">
+			<ul>
+				<li>aa</li>
+				<li>bb</li>
+				<li>cc</li>
+				<li>dd</li>
+				<li>ee</li>
+				<li>ff</li>
+				<li>rtr</li>
+			</ul>
+		</div>
+		
+		<script class="system-control">
+			var c = new Marquee('c').start(1, 'top');
+		</script>
+		
+		<div id='d' class="demo2">
+			<ul>
+				<li>aa</li>
+				<li>bb</li>
+				<li>cc</li>
+				<li>dd</li>
+				<li>ee</li>
+				<li>ff</li>
+				<li>rtr</li>
+			</ul>
+		</div>
+		
+		<script class="system-control">
+			var d = new Marquee('d').start(1, 'bottom');
+		</script>
+		
+	</body>
+</html>

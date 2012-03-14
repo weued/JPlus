@@ -17,7 +17,7 @@
 	moduleName = moduleName.substring(0, moduleName.indexOf('/'));
 	
 	document.write('<link type="text/css" rel="stylesheet" href="' + root + 'assets/styles/default.css" />');
-	document.write('<link type="text/css" rel="stylesheet" href="' + root + 'assets/libs/google-code-prettify/prettify.css" />');
+	//document.write('<link type="text/css" rel="stylesheet" href="' + root + 'assets/libs/google-code-prettify/prettify.css" />');
 	if(!window.console || !window.console.groupEnd)
 		document.write('<script type="text/javascript" src="' + root + 'assets/libs/firebug-lite/build/firebug-lite.js"></script>');
 	
@@ -134,7 +134,7 @@
 				if(tmp){
 					
 					var label = document.createElement('label');
-					label.className = 'system-right';
+					label.className = 'system-togglecode';
 					label.innerHTML = '<input type="checkbox" style="vertical-align: middle;" onclick="System.toggleSources(!this.checked)">隐藏源码';
 					main.insertBefore(label,  main.firstChild);
 				    window.prettyPrint && prettyPrint();
@@ -577,13 +577,13 @@
 					return true;
 				}
 			} else if (window.netscape) {
-				try {
-					netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
-				} catch (e) {
-					return function(){
-						return false;
-					};
-				}
+				// try {
+					// netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+				// } catch (e) {
+					// return function(){
+						// return false;
+					// };
+				// }
 				
 				
 				return function(content){
