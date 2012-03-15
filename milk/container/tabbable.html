@@ -18,9 +18,9 @@
 		
 		
 		<section class="system-control system-block">
-			<div class="x-tabbable">
+			<div class="x-tabbable" id="a">
 				<ul class="x-tabbable-container">
-					<li class="x-tabbable-content x-tabbable-actived">
+					<li class="x-tabbable-content x-tabbable-selected">
 						<a href="#">选项卡1</a>
 					</li>
 					<li class="x-tabbable-content">
@@ -31,11 +31,15 @@
 					</li>
 				</ul>
 			</div>
+			
+			<script>
+				var a = new Tabbable("a");
+			</script>
 		</section>
 		<section class="system-control system-block">
 			<div class="x-tabbable x-tabbable-alt">
 				<ul class="x-tabbable-container">
-					<li class="x-tabbable-content x-tabbable-actived">
+					<li class="x-tabbable-content x-tabbable-selected">
 						<a href="#">选项卡1</a>
 					</li>
 					<li class="x-tabbable-content">

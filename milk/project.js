@@ -11,7 +11,7 @@ var menus = {
 	Display: '+IToolTip +Thumbnail +Icon -IcoMoon -List -Label +Arrow +Tip +TipBox +ProgressBar +Bubble +ToolTip *BalloonTip +Line',
 	Form: '+IInput +Form +TextBox +TextArea +CombinedTextBox +ComboBox +Select +CheckBox +RadioButton +SearchTextBox +ListBox +Suggest',
 	Button: '*Button *MenuButton *SplitButton +ButtonGroup -Menu +CloseButton -ToolBar +LinkButton',
-	Container: '+Tabbable +Stackable *TabControls -Dialog -MessageBox *Accordion *Panel',
+	Container: '+Tabbable +Stackable *TabControls -Dialog -MessageBox +Accordion +Panel',
 	DataView: '+Table -TreeView',
 	Test: '-Vertical-Align'
 };

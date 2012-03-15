@@ -1,1 +1,1 @@
-/** * @author  */
+/** * @author  */var TabControls = ScrollableControl.extend({	});

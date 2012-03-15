@@ -1,1 +1,1 @@
-/** * @author  */
+/** * @author  */using("Controls.Core.ListControl");var Tabbable = ListControl.extend({		xType: 'tabbable',		init: function(){		this.base('init');		this.controls.each(function(value){			value.getParent().on('click', function(){				this.setSelectedItem(value)			}, this);		}, this);	}});

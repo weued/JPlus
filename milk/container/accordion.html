@@ -9,7 +9,11 @@
 		
 		<script src="../../system/core/assets/scripts/system.js" type="text/javascript"></script>
 		<script src="../../system/dom/assets/scripts/element.js" type="text/javascript"></script>
+		<script src="../../system/fx/assets/scripts/base.js" type="text/javascript"></script>
+		<script src="../../system/fx/assets/scripts/animate.js" type="text/javascript"></script>
 		<script src="../core/assets/scripts/base.js" type="text/javascript"></script>
+		<script src="../core/assets/scripts/icollapsable.js" type="text/javascript"></script>
+		<script src="../core/assets/scripts/scrollablecontrol.js" type="text/javascript"></script>
 		<script src="assets/scripts/accordion.js" type="text/javascript"></script>
 		
 		<script src="../../assets/libs/less/less.min.js" type="text/javascript"></script>
@@ -21,7 +25,7 @@
 		
 		<section class="system-control system-block">
 		
-		<div class="x-accordion">
+		<div class="x-accordion" id="a">
             <div class="x-accordion-panel">
               <div class="x-accordion-header">
                 <a href="#collapseOne">
@@ -34,7 +38,7 @@
                 </div>
               </div>
             </div>
-            <div class="x-accordion-panel x-accordion-panel-collapsed">
+            <div class="x-accordion-panel x-accordion-collapsed">
               <div class="x-accordion-header">
                 <a href="#collapseTwo" class="x-accordion-toggle">
                   	标题 title 2
@@ -46,7 +50,7 @@
                 </div>
               </div>
             </div>
-            <div class="x-accordion-panel x-accordion-panel-collapsed">
+            <div class="x-accordion-panel x-accordion-collapsed">
               <div class="x-accordion-header">
                 <a href="#collapseThree" class="x-accordion-toggle">
                   	标题 title 3
@@ -60,9 +64,24 @@
             </div>
           </div>
 		
+			<script>
+				var  a = new  Accordion('a');
+			</script>
 		
 		
 		</section>
+		
+		
+		<script>
+			
+			
+		//	var a = new  Accordion().appendTo();
+			
+		//	var b = a.controls.add('aa').setHtml('aaaa');
+		//	var c = a.controls.add('bb').setHtml('bbbb');
+			
+			
+		</script>
 		
 	</body>
 </html>
