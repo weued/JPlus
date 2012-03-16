@@ -509,8 +509,6 @@
 		 */
 		getCookie: function(name){
 			
-			assert.isString(name, "Cookies.get(name): 参数 name ~。");
-			
 			name = encodeURIComponent(name);
 			
 			var matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([-.*+?^${}()|[\]\/\\])/g, '\\$1') + "=([^;]*)"));

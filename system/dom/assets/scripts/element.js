@@ -1769,10 +1769,18 @@
 				map = wrapMap.$default;
 			
 			assert(elem.nodeType === 1, "Control.prototype.setHtml(value): 仅当 dom.nodeType === 1 时才能使用此函数。"); 
+			
 			value = (map[1] + value + map[2]).replace(rXhtmlTag, "<$1></$2>");
-		
-			o.each(elem.getElementsByTagName("*"), clean);
-			elem.innerHTML = value;
+			o.each(elem.getElementsByTagName("*"), p.removeData);
+			
+			try {
+				elem.innerHTML = value;
+				
+			// 如果 innerHTML 出现错误，则直接使用节点方式操作。
+			} catch(e){
+				this.empty().append(value);
+				return this;
+			}
 			if (map[0] > 1) {
 				value = elem.lastChild;
 				elem.removeChild(elem.firstChild);
