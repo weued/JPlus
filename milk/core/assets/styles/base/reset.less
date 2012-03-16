@@ -66,13 +66,29 @@ sub {
   bottom: -0.25em;
 }
 
+input, button, select, textarea {
+  #font > #family > .sans-serif();
+  vertical-align: middle;
+}
+
+button, select, textarea {
+  margin: 0; 
+}
+
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+  padding: 0;
+  border: 0;
+}
+
 textarea {
 	
 	// remove vertical scrollbar in IE6-9
 	overflow: auto;
 	
 	// readability and alignment cross-browser
-	vertical-align: 0px;
+	vertical-align: baseline;
+	*vertical-align: top;
 }
 
 // Quotes

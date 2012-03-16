@@ -61,9 +61,27 @@ sup {
 sub {
   bottom: -0.25em;
 }
+input,
+button,
+select,
+textarea {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  vertical-align: middle;
+}
+button,
+select,
+textarea {
+  margin: 0;
+}
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+  padding: 0;
+  border: 0;
+}
 textarea {
   overflow: auto;
-  vertical-align: 0px;
+  vertical-align: baseline;
+  *vertical-align: top;
 }
 q:before,
 q:after,
@@ -107,6 +125,9 @@ a {
 a:hover {
   color: #005580;
   text-decoration: underline;
+}
+a:focus {
+  outline-offset: -2px;
 }
 h1,
 h2,

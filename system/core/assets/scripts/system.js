@@ -1816,7 +1816,12 @@ function using(ns, isStyle) {
 
     // 如果在节点找到符合的就返回，找不到，调用 callback 进行真正的 加载处理。
     Object.each(doms, function(dom) {
-        return !dom[src] || dom[src].toLowerCase().indexOf(path) === -1;
+    	var url = navigator.isQuirks ? (
+    		isStyle ? 
+    			dom.owningElement ? dom.owningElement.getAttribute(src, 4) : dom.href :
+    			dom.getAttribute(src, 4)
+    	) :  dom[src];
+        return !url || url.toLowerCase().indexOf(path) === -1;
     }) && callback(p.rootPath + ns);
 };
 
