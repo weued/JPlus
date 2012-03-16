@@ -2,7 +2,7 @@
 // ------------------------------------------------------------------------
 
 // Clear default margins & paddings
-html, body, form, object, iframe, img, pre {
+html, body, form, object, iframe, img, pre, ul, li {
 	margin: 0;
 	padding: 0;
 }
@@ -12,7 +12,7 @@ html, body, a img {
 	border: 0;
 }
 
-// remove spacing between table cells
+// Remove spacing between table cells
 table {
 	border-collapse: collapse;
 	border-spacing: 0;
@@ -22,6 +22,15 @@ table {
 th, td {
 	padding: 0;	
 	border: 0;
+}
+
+// Lists
+ul, li {
+  list-style-type: none;
+}
+
+ol li {
+  list-style-type: decimal;
 }
 
 // remove hr shadows
@@ -66,9 +75,7 @@ textarea {
 	vertical-align: 0px;
 }
 
-// quotes
+// Quotes
 q:before, q:after, blockquote:before, blockquote:after {
   content: "";
 }
-
-

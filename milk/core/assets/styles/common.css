@@ -33,7 +33,6 @@ html .x-block {
 html .x-inline-block {
   display: inline-block;
   *display: inline;
-  /* IE7 inline-block hack */
   *zoom: 1;
 }
 html .x-hide,
@@ -49,12 +48,6 @@ html div.x-plain {
   margin: 0;
   padding: 0;
 }
-ul.x-plain li,
-li.x-plain {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
 .x-clear {
   *zoom: 1;
 }
@@ -65,11 +58,19 @@ li.x-plain {
   clear: both;
   visibility: hidden;
 }
-html .x-alt {
+html .x-alt,
+.x-alt a {
   color: #70a3cd;
 }
-html .x-hint {
+html .x-hint,
+.x-hint a {
   color: #999999;
+}
+.x-alt a:hover,
+.x-hint a:hover,
+a.x-alt:hover,
+a.x-hint:hover {
+  color: #005580;
 }
 .x-highlight {
   color: #ff6600 !important;

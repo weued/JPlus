@@ -8,7 +8,9 @@ form,
 object,
 iframe,
 img,
-pre {
+pre,
+ul,
+li {
   margin: 0;
   padding: 0;
 }
@@ -26,6 +28,13 @@ th,
 td {
   padding: 0;
   border: 0;
+}
+ul,
+li {
+  list-style-type: none;
+}
+ol li {
+  list-style-type: decimal;
 }
 hr {
   clear: both;
@@ -79,7 +88,6 @@ canvas,
 video {
   display: inline-block;
   *display: inline;
-  /* IE7 inline-block hack */
   *zoom: 1;
 }
 audio:not([controls]) {
@@ -160,15 +168,11 @@ p {
 p small {
   color: #999999;
 }
-ul,
 ol {
   margin: 0 0 9px 25px;
   padding: 0;
 }
-ul ul,
-ul ol,
-ol ol,
-ol ul {
+ol ol {
   margin-bottom: 0;
 }
 dl {

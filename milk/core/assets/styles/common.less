@@ -80,28 +80,23 @@ html .x-plain, html div.x-plain {
   padding: 0;
 }
 
-ul.x-plain li, li.x-plain {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
 // clear
 .x-clear {
   .clearfix();
 }
 
 // colors
-html {
   
-  .x-alt {
-  	color: @blueLight;
-  }
-  
-  .x-hint {
-  	color: @grayLight;
-  }
+html .x-alt, .x-alt a {
+  color: @blueLight;
+}
 
+html .x-hint, .x-hint a {
+  color: @grayLight;
+}
+
+.x-alt a:hover, .x-hint a:hover, a.x-alt:hover, a.x-hint:hover {
+  color: @linkColorHover;
 }
 
 .x-highlight {
