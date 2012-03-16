@@ -26,6 +26,21 @@
 		
 		<script>
 			var a = new ScrollableControl('a');
+			
+			var testcases = {
+				'Control': '-',
+				'ScrollableControl.prototype.append': '@a; "text"; Dom.create("div", "system-area")',
+				
+				'ScrollableControl#controls': '-',
+				'ScrollableControl.prototype.controls.add': '@a; "text"; Dom.create("div", "system-area")',
+				'ScrollableControl.prototype.controls.length': {
+					tests: '@a; ',
+					method: false
+				},
+				'ScrollableControl.prototype.controls.removeAt': '@a; 0'
+			};
+			
+			System.initTestCases(testcases);
 		</script>
 		
 		

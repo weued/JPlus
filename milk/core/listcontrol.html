@@ -22,12 +22,12 @@
 		<p>ListControl 封装了列表性质的控件。一个列表性质的控件肯定包含一个 ul 标签，其格式如:</p>
 		
 		<section class="system-control">
-			<div class="x-listcontrol">
-				<ul class="x-listcontrol-container">
-					<li class="x-listcontrol-content">选项1</li>
-					<li class="x-listcontrol-content x-listcontrol-selected">选项2</li>
-					<li class="x-listcontrol-content">选项3</li>
-					<li class="x-listcontrol-content">选项4</li>
+			<div class="x-control">
+				<ul class="x-control-container">
+					<li class="x-control-content">选项1</li>
+					<li class="x-control-content x-control-selected">选项2</li>
+					<li class="x-control-content">选项3</li>
+					<li class="x-control-content">选项4</li>
 				</ul>
 			</div>
 		</section>
@@ -57,15 +57,18 @@
 			var e = Dom.get('e');
 			
 			var testcases = {
+				'Control': '-',
+				'ListControl.prototype.append': "@c; d; e",
+				'ListControl.prototype.remove': "@c; d",
+
+				'ListControl#items': '-',
 				'ListControl.prototype.items.add': "@c; 'add'",
 				'ListControl.prototype.items.insert': "@c; 2, 'insert'",
-				'ListControl.prototype.items.removeAt': "@c; 0",
 				'ListControl.prototype.items.length': {
 					tests: "@c;",
 					method: false
 				},
-				'ListControl.prototype.append': "@c; d; e",
-				'ListControl.prototype.remove': "@c; d"
+				'ListControl.prototype.items.removeAt': "@c; 0"
 			};
 			
 			System.initTestCases(testcases);

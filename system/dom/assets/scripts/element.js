@@ -2574,7 +2574,7 @@
 			 * @param {String} type 类型。
 			 * @param {Function} fn 函数。
 			 */
-			add: document.addEventListener ? function(ctrl, type, fn) {
+			add: div.addEventListener ? function(ctrl, type, fn) {
 				ctrl.dom.addEventListener(type, fn, false);
 			}: function(ctrl, type, fn) {
 				ctrl.dom.attachEvent('on' + type, fn);
@@ -2586,7 +2586,7 @@
 			 * @param {String} type 类型。
 			 * @param {Function} fn 函数。
 			 */
-			remove: document.removeEventListener ? function(ctrl, type, fn) {
+			remove: div.removeEventListener ? function(ctrl, type, fn) {
 				ctrl.dom.removeEventListener(type, fn, false);
 			}: function(ctrl, type, fn) {
 				ctrl.dom.detachEvent('on' + type, fn);
