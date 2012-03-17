@@ -1392,7 +1392,7 @@
 			if (arguments.length) {
 				assert(childControl && this.hasChild(childControl), 'Control.prototype.remove(childControl): {childControl} 不是当前节点的子节点', childControl);
 				this.removeChild(childControl);
-			} else if (childControl = this.getParent()){
+			} else if (childControl = this.parent || this.getParent()){
 				childControl.removeChild(this);
 			}
 	

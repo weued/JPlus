@@ -78,7 +78,7 @@
 			
 		</section>
 		
-		<div id="a" style="display: inline-block">Node</div>
+		<span id="a" style="display: inline-block">Node</span>
 		
 		<div id="tooltip" style="position: absolute"></div>
 		
@@ -91,13 +91,13 @@
 			a.setToolTip(Dom.get('a'), 'ToolTip');
 			
 			
-			var b = new ToolTip().setToolTip(Dom.get('a'), 'ToolTip', 0, 0, 'left');
+			var b = new ToolTip().setToolTip(Dom.get('a'), 'ToolTip', 'left', 0, 0);
 			
 			
-			var c = new ToolTip().setToolTip(Dom.get('a'), 'ToolTip', 0, 0, 'bottom');
+			var c = new ToolTip().setToolTip(Dom.get('a'), 'ToolTip', 'bottom', 0, 0);
 			
 			
-			var d = new ToolTip().setToolTip(Dom.get('a'), 'ToolTip', 0, 0, 'right');
+			var d = new ToolTip().setToolTip(Dom.get('a'), 'ToolTip', 'right', 0, 0);
 			
 		</script>
 		

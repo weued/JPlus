@@ -13,37 +13,34 @@
 .x-balloontip {
   position: absolute;
   z-index: @zindexPopover;
-  padding: 5px;
-  &.top    { margin-top:  -5px; }
-  &.right  { margin-left:  5px; }
-  &.bottom { margin-top:   5px; }
-  &.left   { margin-left: -5px; }
-}
-.x-balloontip-container {
-  padding: 3px;
   width: 280px;
-  overflow: hidden;
   background: @black; // has to be full background declaration for IE fallback
   background: rgba(0,0,0,.8);
+  padding: 3px;
   .border-radius(6px);
   .box-shadow(0 3px 7px rgba(0,0,0,0.3));
 }
-.x-balloontip-title {
+
+.x-balloontip-body {
+  overflow: hidden;
+}
+
+.x-balloontip-container {
+  padding: 10px;
+  background-color: @white;
+  .border-radius(0 0 3px 3px);
+  .background-clip(padding-box);
+}
+.x-balloontip-header {
   padding: 9px 15px;
   line-height: 1;
   background-color: #f5f5f5;
   border-bottom:1px solid #eee;
   .border-radius(3px 3px 0 0);
-  margin: 0;
 }
-.x-balloontip-content {
-  padding: 10px 14px 14px;
-  background-color: @white;
-  .border-radius(0 0 3px 3px);
-  .background-clip(padding-box);
-  p, ul, ol {
-    margin: 0;
-  }
+
+.x-balloontip-header h2, .x-balloontip-header h3, .x-balloontip-header h4, .x-balloontip-header h5 {
+  margin: 0;
 }
 
 .x-balloontip .x-arrow {

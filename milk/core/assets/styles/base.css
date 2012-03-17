@@ -299,3 +299,6 @@ legend small {
 select {
   background-color: white;
 }
+body {
+  behavior: url(base/base/base/PIE.htc);
+}
