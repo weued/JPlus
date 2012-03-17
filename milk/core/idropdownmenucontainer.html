@@ -18,11 +18,13 @@
 	<body>
 		<h1>Core/IDropDownMenuContainer</h1>
 		
-		<p>IDropDownMenuContainer 表示一个下拉菜单容器。
-			实现了 IDropDownMenuContainer 接口的控件将拥有显示与之关联的下拉菜单的功能。
-			下拉菜单可以是任何控件。容器也可以是任何控件。通过调用容器的 toggleDropDownMenu 可以显示/关闭下拉菜单。
-			一般地，容器需要在初始化的时候绑定 click 事件后调用 toggleDropDownMenu	。
-		</p>
+		<p>如果一个控件包含了一个自定义的下拉菜单，则可以让这个控件实现 IDropDownMenuContainer 接口。</p>
+		
+		<p>调用 IDropDownMenuContainer.setDropDownMenu 来设置下拉菜单。</p>
+		<p>调用 IDropDownMenuContainer.toggleDropDownMenu 来切换下拉菜单的显示状态。</p>
+		<p>子类可以重写 onDropDownMenuOpen 和 onDropDownMenuClose 来实现菜单打开和关闭时的自定义操作。</p>
+		
+		<p>一般地，容器需要在初始化的时候绑定 click 事件后调用 toggleDropDownMenu	。</p>
 		
 		<input type="button" id="a" value="按钮 #a" />
 		

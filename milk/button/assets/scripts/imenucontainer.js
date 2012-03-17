@@ -1,0 +1,1 @@
+/** * @author  */var IMenuContainer = Object.extend(IDropDownMenuContainer, {		});
