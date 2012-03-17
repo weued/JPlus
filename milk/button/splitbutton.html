@@ -22,10 +22,15 @@
 		<h1>Button/SplitButton</h1>
 		
 		<section class="system-control">
-   			<span class="x-splitbutton x-buttongroup">
+   			<span class="x-splitbutton x-buttongroup" id="a">
 				<a href="#" class="x-button">按钮button</a>
 				<a href="#" class="x-button"><span class="x-button-menu x-button-menu-down"></span></a>
 			</span>
+			<script>
+	   			var a = new SplitButton('a');
+	   			a.items.add('aa');
+	   		</script>
+	   		
    		</section>
 		
 		
