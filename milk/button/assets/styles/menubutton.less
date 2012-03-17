@@ -23,24 +23,34 @@
 // Dropdown arrow/x-button-menu
 .x-button-menu {
   display: inline-block;
+  width: 8px;
+  height: 8px;
+  vertical-align: middle;
+  .opacity(30);
+  content: "\2193";
+  font-size: 0;
+}
+
+.x-button-menu-down {
   width: 0;
   height: 0;
-  vertical-align: middle;
   border-left:  4px solid transparent;
   border-right: 4px solid transparent;
   border-top:   4px solid @black;
-  .opacity(30);
-  content: "\2193";
   margin-top: -3px;
-  font-size: 0;
   *margin-top: 0;
-  _border: 0;
-  _font-size: 10px;
+  _vertical-align: baseline;
+  _background: transparent;
+  _border-left:  4px solid white;
+  _border-right: 4px solid white;
+  _filter: chroma(color=white);
 }
 
 .x-button .x-button-menu {
   // margin-top: 8px;
   margin-left: 5px;
+  _margin-top: 7px;
+  _margin-bottom: 5px;
 }
 // 
 // .x-button-small .x-button-menu {
