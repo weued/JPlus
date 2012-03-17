@@ -20,7 +20,16 @@
 		<h1>Button/MenuButton</h1>
 		
 		<section class="system-control">
-   			<a href="#" class="x-button x-menubutton">菜单Menu<span class="x-button-menu x-button-menu-down"></span></a>
+   			<a id="a" href="#" class="x-button x-menubutton">菜单Menu<span class="x-button-menu x-button-menu-down"></span></a>
+	   		<script>
+	   			var a = new MenuButton('a');
+	   			a.items.add('aa');
+	   		</script>
+	   		
+   		</section>
+		
+		<section class="system-control">
+   			<button class="x-button x-menubutton">菜单Menu<span class="x-button-menu x-button-menu-down"></span></button>
    		</section>
 		
 		

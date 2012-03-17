@@ -7,11 +7,11 @@
 
 var menus = {
 	Core: '+Base +Common +ScrollableControl +ListControl +ContainerControl +ContentControl +ICollapsable +IDropDownMenuContainer -Mask -Splitter -Resizable -Wrapper',
-	Page: '+Scaffolding +Scaffolding-Absolute +Grid# +Grid-Fluid +Grid-Fixed# -TopBar -NavBar -Footer +Breadcrumb +Pagination +Pager',
-	Display: '+IToolTip +Thumbnail +Icon -IcoMoon +List -Label +Arrow +Tip +TipBox +ProgressBar +Bubble +ToolTip +BalloonTip +Line',
-	Form: '+IInput +Form +TextBox +TextArea +CombinedTextBox +ComboBox +Select +CheckBox +RadioButton -SearchTextBox +ListBox +Suggest',
-	Button: '+Button *MenuButton *SplitButton +ButtonGroup -Menu +CloseButton -ToolBar +LinkButton',
-	Container: '+Tabbable +Stackable *TabControls -Dialog -MessageBox +Accordion +Panel',
+	Page: '+Scaffolding +Scaffolding-Absolute +Grid# +Grid-Fluid +Grid-Fixed# +Breadcrumb +Pagination +Pager -TopBar -NavBar -Footer',
+	Display: '+IToolTip +Thumbnail +Icon +List +Arrow +Tip +TipBox +ProgressBar +Bubble +ToolTip +BalloonTip +Line -IcoMoon -Label',
+	Form: '+IInput +Form +TextBox +TextArea +CombinedTextBox +ComboBox +Select +CheckBox +RadioButton +ListBox +Suggest -SearchTextBox',
+	Button: '+Button *MenuButton *SplitButton +ButtonGroup +CloseButton +LinkButton -Menu -ToolBar',
+	Container: '+Tabbable +Stackable *TabControls +Accordion +Panel -Dialog -MessageBox',
 	DataView: '+Table -TreeView',
 	Test: '+Vertical-Align'
 };
