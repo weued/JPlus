@@ -6,13 +6,13 @@
 		
 		<link href="../core/assets/styles/base.css" rel="stylesheet" type="text/css">
 		<link href="assets/styles/tabbable.less" rel="stylesheet/less" type="text/css" />
-		<link href="assets/styles/tabcontrols.less" rel="stylesheet/less" type="text/css" />
+		<link href="assets/styles/tabcontrol.less" rel="stylesheet/less" type="text/css" />
 		
 		<script src="../../system/core/assets/scripts/system.js" type="text/javascript"></script>
 		<script src="../../system/dom/assets/scripts/element.js" type="text/javascript"></script>
 		<script src="../core/assets/scripts/base.js" type="text/javascript"></script>
 		<script src="../core/assets/scripts/listcontrol.js" type="text/javascript"></script>
-		<script src="assets/scripts/tabcontrols.js" type="text/javascript"></script>
+		<script src="assets/scripts/tabcontrol.js" type="text/javascript"></script>
 		
 		<script src="../../assets/libs/less/less.min.js" type="text/javascript"></script>
 		<script src="../../assets/scripts/default.js" type="text/javascript"></script>
@@ -24,7 +24,7 @@
 		
 		<section class="system-control system-block">
 		
-		<div class="x-tabcontrols">
+		<div class="x-tabcontrol" id="a">
 			
 			<div class="x-tabbable">
 				<ul class="x-tabbable-container">
@@ -34,19 +34,23 @@
 			      </ul>
 			</div>
 			
-			<div class="x-tabcontrols-container">
+			<div class="x-tabcontrol-container">
 				内容
 			</div>
 			
-			<div class="x-tabcontrols-container">
+			<div class="x-tabcontrol-container">
 				内容
 			</div>
 			
-			<div class="x-tabcontrols-container">
+			<div class="x-tabcontrol-container">
 				内容
 			</div>
 	      
 	     </div>
+	     
+	     <script>
+	     	var a = new TabControl('a');
+	     </script>
 	      
 		</section>
 		
@@ -54,7 +58,7 @@
 		
 		<section class="system-control system-block">
 		
-		<div class="x-tabcontrols x-tabcontrols-alt">
+		<div class="x-tabcontrol x-tabcontrol-alt">
 			
 			<div class="x-tabbable">
 				<ul class="x-tabbable-container">
@@ -64,7 +68,7 @@
 			      </ul>
 			</div>
 			
-			<div class="x-tabcontrols-container">
+			<div class="x-tabcontrol-container">
 				内容
 			</div>
 	      
