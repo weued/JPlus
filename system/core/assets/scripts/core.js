@@ -1,5 +1,5 @@
 ﻿/*
- * This file is created by a tool at 2012/03/04 18:29:10
+ * This file is created by a tool at 2012/03/19 19:30:19
  */
 
 
@@ -445,7 +445,7 @@
 	    },
 
 	    /**
-		 * 继承当前类创建并返回子类。
+		 * 继承当前类并返回子类。
 		 * @param {Object/Function} [methods] 子类的员或构造函数。
 		 * @return {Class} 继承的子类。
 		 *         <p>
@@ -504,6 +504,9 @@
 
 		    // 指定成员 。
 		    subClass.prototype = Object.extend(new  emptyFn, members);
+		    
+		    // 清空临时对象。
+		    emptyFn.prototype = null;
 
 		    // 覆盖构造函数。
 		    subClass.prototype.constructor = subClass;
@@ -1770,6 +1773,7 @@
 
 	/// #endregion
 
+
 })(this);
 
 /// #if !Release
@@ -1794,7 +1798,7 @@ function using(ns, isStyle) {
         return;
 
     if (ns.indexOf('/') === -1)
-        ns = p.resolveNamespace(ns.toLowerCase(), isStyle) + (isStyle ? '.css' : '.js');
+        ns = p.resolveNamespace(ns.toLowerCase(), isStyle);
 
     var doms, callback, path = ns.replace(/^[\.\/\\]+/, "");
     if (isStyle) {
@@ -1809,7 +1813,12 @@ function using(ns, isStyle) {
 
     // 如果在节点找到符合的就返回，找不到，调用 callback 进行真正的 加载处理。
     Object.each(doms, function(dom) {
-        return !dom[src] || dom[src].toLowerCase().indexOf(path) === -1;
+    	var url = navigator.isQuirks ? (
+    		isStyle ? 
+    			dom.owningElement ? dom.owningElement.getAttribute(src, 4) : dom.href :
+    			dom.getAttribute(src, 4)
+    	) :  dom[src];
+        return !url || url.toLowerCase().indexOf(path) === -1;
     }) && callback(p.rootPath + ns);
 };
 
@@ -2030,9 +2039,9 @@ function assert(bValue, msg) {
          * @param {String} ns 名字空间。
          * @param {Boolean} isStyle=false 是否为样式表。
          */
-        resolveNamespace: function(ns) {
+        resolveNamespace: function(ns, isStyle) {
             // 如果名字空间本来就是一个地址，则不需要转换，否则，将 . 替换为 / ,并在末尾加上 文件后缀。
-            return ns.replace(/\./g, '/');
+            return ns.replace(/\./g, '/') + (isStyle ? '.css' : '.js');
         }
 
     });
@@ -2823,7 +2832,7 @@ JPlus.stackTrace = true;
 JPlus.rootPath = JPlus.rootPath.substr(0, JPlus.rootPath.length - "system/core/assets/scripts/".length);
 
 JPlus.resolveNamespace = function(ns, isStyle){
-	return ns.replace(/^([^.]+\.[^.]+)\./, isStyle ? '$1.assets.styles.' : '$1.assets.scripts.').replace(/\./g, '/');
+	return ns.replace(/^([^.]+\.[^.]+)\./, isStyle ? '$1.assets.styles.' : '$1.assets.scripts.').replace(/\./g, '/') + (isStyle ? '.css' : '.js');
 };
 
 
@@ -3410,6 +3419,15 @@ JPlus.resolveNamespace = function(ns, isStyle){
 			div.className = className;
 			return new Dom(div);
 		},
+		
+		/**
+		 * 根据一个 id 获取元素。如果传入的id不是字符串，则直接返回参数。
+		 * @param {String/Node/Control} id 要获取元素的 id 或元素本身。
+	 	 * @return {Node} 元素。
+		 */
+		getNode: function (id) {
+			return typeof id == "string" ? document.getElementById(id): (id && id.dom || id);
+		},
 
 		/**
 		 * 解析一个 html 字符串，返回相应的原生节点。
@@ -3894,8 +3912,8 @@ JPlus.resolveNamespace = function(ns, isStyle){
 		 * 设置一个元素可拖动。
 		 * @param {Element} elem 要设置的节点。
 		 */
-		setMovable: function(elem) {
-			assert.isElement(elem, "Dom.setMovable(elem): 参数 elem ~");
+		move: function(elem) {
+			assert.isElement(elem, "Dom.movable(elem): 参数 elem ~");
 			if(!/^(?:abs|fix)/.test(styleString(elem, "position")))
 				elem.style.position = "relative";
 		},
@@ -4204,7 +4222,7 @@ JPlus.resolveNamespace = function(ns, isStyle){
 			if (arguments.length) {
 				assert(childControl && this.hasChild(childControl), 'Control.prototype.remove(childControl): {childControl} 不是当前节点的子节点', childControl);
 				this.removeChild(childControl);
-			} else if (childControl = this.getParent()){
+			} else if (childControl = this.parent || this.getParent()){
 				childControl.removeChild(this);
 			}
 	
@@ -4366,8 +4384,9 @@ JPlus.resolveNamespace = function(ns, isStyle){
 		 * @param {String} [type] 方式。
 		 * @return {Element} this
 		 */
-		toggle: function(duration, callBack, type, flag) {
-			return this[(flag === undefined ? Dom.isHidden(this.dom): flag) ? 'show': 'hide'](duration, callBack, type);
+		toggle: function(duration, onShow, onHide, type, flag) {
+			flag = (flag === undefined ? Dom.isHidden(this.dom): flag);
+			return this[flag ? 'show': 'hide'](duration, flag ? onShow : onHide, type);
 		},
 	
 		/**
@@ -4580,10 +4599,18 @@ JPlus.resolveNamespace = function(ns, isStyle){
 				map = wrapMap.$default;
 			
 			assert(elem.nodeType === 1, "Control.prototype.setHtml(value): 仅当 dom.nodeType === 1 时才能使用此函数。"); 
+			
 			value = (map[1] + value + map[2]).replace(rXhtmlTag, "<$1></$2>");
-		
-			o.each(elem.getElementsByTagName("*"), clean);
-			elem.innerHTML = value;
+			o.each(elem.getElementsByTagName("*"), p.removeData);
+			
+			try {
+				elem.innerHTML = value;
+				
+			// 如果 innerHTML 出现错误，则直接使用节点方式操作。
+			} catch(e){
+				this.empty().append(value);
+				return this;
+			}
 			if (map[0] > 1) {
 				value = elem.lastChild;
 				elem.removeChild(elem.firstChild);
@@ -4663,7 +4690,7 @@ JPlus.resolveNamespace = function(ns, isStyle){
 		
 			if (p.x) offset.x += p.x;
 		
-			Dom.setMovable(me.dom);
+			Dom.movable(me.dom);
 		
 			return me.setOffset(offset);
 		},
@@ -5158,8 +5185,9 @@ JPlus.resolveNamespace = function(ns, isStyle){
 		 */
 		contains: function(control) {
 			var elem = this.dom;
+			control = Dom.getNode(control);
 			assert.notNull(control, "Control.prototype.contains(control):{control} ~");
-			return control.dom == elem || Dom.hasChild(elem, control.dom);
+			return control == elem || Dom.hasChild(elem, control);
 		},
 		
 		/**
@@ -5168,7 +5196,7 @@ JPlus.resolveNamespace = function(ns, isStyle){
 		 * @return {Boolean} 有返回true 。
 		 */
 		hasChild: function(control) {
-			return control ? Dom.hasChild(this.dom, control.dom): !Dom.isEmpty(this.dom);
+			return control ? Dom.hasChild(this.dom, Dom.getNode(control)): !Dom.isEmpty(this.dom);
 		}
 		
 	}, 4);
@@ -5375,7 +5403,7 @@ JPlus.resolveNamespace = function(ns, isStyle){
 			 */
 			trigger: function(ctrl, type, fn, e) {
 				ctrl = ctrl.dom;
-				return fn( e = new Dom.Event(ctrl, type, e)) && (!elem[ type = 'on' + type] || elem[type](e) !== false);
+				return fn( e = new Dom.Event(ctrl, type, e)) && (!ctrl[ type = 'on' + type] || ctrl[type](e) !== false);
 			},
 			
 			/**
@@ -5384,7 +5412,7 @@ JPlus.resolveNamespace = function(ns, isStyle){
 			 * @param {String} type 类型。
 			 * @param {Function} fn 函数。
 			 */
-			add: document.addEventListener ? function(ctrl, type, fn) {
+			add: div.addEventListener ? function(ctrl, type, fn) {
 				ctrl.dom.addEventListener(type, fn, false);
 			}: function(ctrl, type, fn) {
 				ctrl.dom.attachEvent('on' + type, fn);
@@ -5396,7 +5424,7 @@ JPlus.resolveNamespace = function(ns, isStyle){
 			 * @param {String} type 类型。
 			 * @param {Function} fn 函数。
 			 */
-			remove: document.removeEventListener ? function(ctrl, type, fn) {
+			remove: div.removeEventListener ? function(ctrl, type, fn) {
 				ctrl.dom.removeEventListener(type, fn, false);
 			}: function(ctrl, type, fn) {
 				ctrl.dom.detachEvent('on' + type, fn);
@@ -6737,7 +6765,8 @@ Ajax.submit = function(form, onsuccess, onerror, timeouts, ontimeout, oncomplete
  * @return {String} 参数形式。
  */
 JPlus.namespace("HTMLFormElement").param = function(formElem) {
-	assert(formElem && formElem.tagName == "FORM", "HTMLFormElement.param(formElem): 参数 {formElem} 不是合法的 表单 元素", formElem);
+	//assert(formElem && formElem.tagName == "FORM", "HTMLFormElement.param(formElem): 参数 {formElem} 不是合法的 表单 元素", formElem);
+	formElem = Dom.get(formElem).dom;
 	var s = [], input, e = encodeURIComponent, value, name;
 	for (var i = 0, len = formElem.length; i < len; i++) {
 		input = formElem[i];

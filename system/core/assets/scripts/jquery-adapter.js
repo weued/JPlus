@@ -69,21 +69,23 @@
 		},
 	
 		/**
-		 * JPlus 全局静态对象。
+		 * JPlus 全局静态对象。包含系统有关的函数。
 		 * @namespace JPlus
 		 */
 		p = namespace("JPlus", {
 	
 		    /**
-			 * 获取属于一个元素的数据。
-			 * @param {Object} obj 元素。
-			 * @param {String} dataType 类型。
-			 * @return {Object} 值。 这个函数会在对象内生成一个 data 字段， 并生成一个 data.dataType 对象返回。
-			 *         如果原先存在 data.dataType, 则直接返回。
+			 * 获取用于在一个对象读写数据的对象。
+			 * @param {Object} obj 任何对象。
+			 * @param {String} dataType 数据类型名。
+			 * @return {Object} 用于读写数据的对象。
+			 * @remark {JPlus.data} 总是返回一个对象，该对象和指定的 obj 关联。对于同一个 obj，如果 dataType 相同，则返回相同的数据对象。
+			 * @see JPlus.getData
+			 * @see JPlus.setData
 			 * @example <code>
 		     * var obj = {};
-             * JPlus.data(obj, 'a').c = 2;
-             * trace(  JPlus.data(obj, 'a').c  ) // 2
+			 * var data =  JPlus.data(obj, 'a'); // 创建并返回数据对象 'a'
+             * data.c = 2; // 读写数据对象的值。
              * </code>
 			 */
 		    data: function(obj, dataType) {
@@ -103,15 +105,16 @@
 		    },
 	
 		    /**
-			 * 如果存在，获取属于一个元素的数据。
-			 * @param {Object} obj 元素。
-			 * @param {String} dataType 类型。
-			 * @return {Object} 值。 这个函数会在对象内生成一个 data 字段， 并生成一个 data.dataType 对象返回。
-			 *         如果原先存在 data.dataType, 则直接返回。
+			 * 获取一个对象指定字段的数据，如果数据不存在，则返回 undefined。
+			 * @param {Object} obj 任何对象。
+			 * @param {String} dataType 数据类型名。
+			 * @return {Object} 返回对应的值。如果数据不存在，则返回 undefined。
+			 * @see JPlus.data
+			 * @see JPlus.setData
 			 * @example <code>
 		     * var obj = {};
-		     * if(JPlus.getData(obj, 'a')) // 如果存在 a 属性。 
-		     *     trace(  JPlus.data(obj, 'a')  )
+			 * var a = JPlus.getData(obj, 'a'); // 获取 a 字段的数据。 
+		     * trace( a )
 		     * </code>
 			 */
 		    getData: function(obj, dataType) {
@@ -128,14 +131,17 @@
 		    },
 	
 		    /**
-			 * 设置属于一个元素的数据。
-			 * @param {Object} obj 元素。
-			 * @param {String} dataType 类型。
-			 * @param {Object} data 内容。
-			 * @return data
+			 * 设置属于一个对象指定字段的数据。
+			 * @param {Object} obj 任何对象。
+			 * @param {String} dataType 数据类型名。
+			 * @param {Object} data 要设置的数据内容。
+			 * @return {Object} data 返回 data 本身。
+			 * @see JPlus.data
+			 * @see JPlus.getData
 			 * @example <code>
 		     * var obj = {};
-		     * JPlus.setData(obj, 'a', 5);    //     5
+		     * JPlus.setData(obj, 'a', 5);    // 设置 a 字段的数据值为 5。 
+			 * var val = JPlus.getData(obj, 'a'); // 获取值， 返回 5
 		     * </code>
 			 */
 		    setData: function(obj, dataType, data) {
@@ -151,8 +157,12 @@
 		    },
 			
 			/**
-			 * 删除属于一个对象的数据。
-			 * @param {Object} obj 元素。
+			 * 删除属于一个对象指定字段的全部数据。
+			 * @param {Object} obj 任何对象。
+			 * @example <code>
+		     * var obj = {};
+		     * JPlus.removeData(obj);
+		     * </code>
 			 */
 			removeData: function(obj){
 				if(obj.dom)
@@ -162,20 +172,26 @@
 	
 		    /**
 			 * 创建一个类。
-			 * @param {Object/Function} [methods] 成员或构造函数。
-			 * @return {Class} 生成的类。 创建一个类，相当于继承于 JPlus.Object创建。
+			 * @param {Object/Function} [methods] 类成员列表对象或类构造函数。
+			 * @return {Class} 返回创建的类。
 			 * @see JPlus.Object.extend
-			 * @example <code>
+			 * @example 以下代码演示了如何创建一个类:
+			 * <code>
 		     * var MyCls = Class({
 		     * 
 		     *    constructor: function (g, h) {
 		     * 	      alert('构造函数' + g + h)
-		     *    }	
+		     *    },
+		     *
+			 *    say: function(){
+			 *    	alert('say');
+			 *    } 
 		     * 
 		     * });
 		     * 
 		     * 
-		     * var c = new MyCls(4, ' g');
+		     * var c = new MyCls(4, ' g');  // 创建类。
+			 * c.say();  //  调用 say 方法。
 		     * </code>
 			 */
 		    Class: function(members) {
@@ -191,9 +207,9 @@
 		    Object:  Base,
 	
 		    /**
-			 * 由存在的类修改创建类。
-			 * @param {Function/Class} constructor 将创建的类。
-			 * @return {Class} 生成的类。
+			 * 将一个原生的 Javascript 函数对象转换为一个类。
+			 * @param {Function/Class} constructor 用于转换的对象，将修改此对象，让它看上去和普通的类一样。
+			 * @return {Class} 返回生成的类。
 			 */
 		    Native: function(constructor) {
 	
@@ -204,9 +220,10 @@
 		    },
 
             /**
-             * 判断一个状态码是否为正确的返回。
-             * @param {Number} statusCode 请求。
-             * @return {Boolean} 正常返回true 。
+             * 判断一个 HTTP 状态码是否表示正常响应。
+             * @param {Number} statusCode 要判断的状态码。
+             * @return {Boolean} 如果正常则返回true, 否则返回 false 。
+			 * 一般地， 200、304、1223 被认为是正常的状态吗。
              */
             checkStatusCode: function(statusCode) {
 
@@ -225,44 +242,25 @@
             },
 	
 		    /**
-			 * 定义名字空间。
-			 * @param {String} name 名字空间。
-			 * @param {Object} [obj] 值。
-			 *            <p>
-			 *            名字空间是项目中表示资源的符合。
+			 * 创建一个名字空间。
+			 * @param {String} namespace 要创建的名字空间，格式如 "System.Dom" 。
+			 * @param {Object} [obj] 声明的名字空间对应的初始值。
+			 * @remark 	 <p>
+			 *            使用名字空间有助于帮助不同组件之间的对象命名冲突。
 			 *            </p>
-			 *            <p>
-			 *            比如 system/dom/keys.js 文件， 名字空间是 System.Dom.Keys
+			 *			  <p>
+			 * 如果使用 JPlus.namespace(namespace) 重载，则函数会创建对应的对象，但如果要创建的对象已存在，则函数不进行任何操作。
 			 *            名字空间用来快速表示资源。 {@link using} 可以根据制定的名字空间载入相应的内容。
 			 *            </p>
 			 *            <p>
-			 *            namespace 函数有多个重载， 如果只有1个参数: <code>
-		     * namespace("System.Dom.Keys"); 
+			 * 如果使用 JPlus.namespace(namespace, obj) 重载，则函数将对应的对象值更改为 obj，如果要创建的对象已存在，则拷贝已有对象的属性到新对象。 如<code>
+		     * JPlus.namespace("A.B.C", 5); // 最后 A = {B: {C: 5}}  
 		     * </code>
-			 *            表示系统已经载入了这个名字空间的资源， using 将忽视这个资源的载入。
-			 *            </p>
-			 *            <p>
-			 *            namespace 如果有2个参数， 表示在指定的位置创建对象。 <code>
-		     * namespace("A.B.C", 5); // 最后 A = {B: {C: 5}}  
-		     * </code>
-			 *            这个写法最后覆盖了 C 的值，但不影响 A 和 B。
-			 *            <p>
-			 *            如果这个名字空间的首字符是 . 则系统会补上 'JPlus'
-			 *            </p>
-			 *            <p>
-			 *            如果这个名字空间的最后的字符是 . 则系统不会覆盖已有对象，而是复制成员到存在的成员。
-			 *            </p>
-			 *            </p>
 			 * @example <code>
-		     * namespace("System.Dom.Keys");  // 避免 重新去引入   System.Dom.Keys
+		     * JPlus.namespace("A.B");  // 创建 A 和 A.B 对象，避免修改已存在的对象。
 		     * 
 		     * var A = {   B:  {b: 5},  C: {b: 5}    };
-		     * namespace("A.B", {a: 6})  // A = { B: {a: 6}, C: {b: 5}  }
-		     * 
-		     * var A = {   B:  {b: 5},  C: {b: 5}    };
-		     * namespace("A.C.", {a: 6})  // A = { B: {b: 5},  C: {a: 6, b: 5} }
-		     * 
-		     * namespace(".G", 4);    // JPlus.G = G  = 4
+		     * JPlus.namespace("A.B", {a: 6})  // A = { B: {a: 6}, C: {b: 5}  }
 		     * </code>
 			 */
 		    namespace: namespace,
@@ -270,6 +268,9 @@
             /**
              * id种子 。
              * @type Number
+			 * @example 下例演示了 JPlus.id 的用处。<code>
+			 *		var uid = JPlus.id++;  // 每次使用之后执行 ++， 保证页面内的 id 是唯一的。
+			 * </code>
              */
             id: 1,
 	
@@ -277,7 +278,8 @@
 			 * 管理所有事件类型的工具。
 			 * @property
 			 * @type  Object
-			 * @private 所有类的事件信息存储在这个变量。使用 xType -> name的结构。
+			 * @internal
+			 * 所有类的事件信息都存储在这个对象。
 			 */
 		    Events: eventMgr
 	
@@ -294,10 +296,10 @@
 
 	    /**
 		 * 扩展当前类的动态方法。
-		 * @param { Base} members 成员。
+		 * @param {Object} members 用于扩展的成员列表。
 		 * @return this
-		 * @seeAlso JPlus.Object.implementIf
-		 * @example <code>
+		 * @see #implementIf
+		 * @example 以下示例演示了如何扩展 Number 类的成员。<code>
 	     * Number.implement({
 	     *   sin: function () {
 	     * 	    return Math.sin(this);
@@ -317,10 +319,10 @@
 	    },
 
 	    /**
-		 * 如果不存在成员, 扩展当前类的动态方法。
-		 * @param { Base} members 成员。
+		 * 扩展当前类的动态方法，但不覆盖已存在的成员。
+		 * @param {Object} members 成员。
 		 * @return this
-		 * @seeAlso JPlus.Object.implement
+		 * @see #implement
 		 */
 	    implementIf: function(members) {
 
@@ -333,8 +335,9 @@
 
 	    /**
 		 * 为当前类添加事件。
-		 * @param { Base} [evens] 所有事件。 具体见下。
+		 * @param {Object} [evens] 所有事件。 具体见下。
 		 * @return this
+		 * @remark
 		 *         <p>
 		 *         由于一个类的事件是按照 xType 属性存放的，拥有相同 xType 的类将有相同的事件，为了避免没有 xType
 		 *         属性的类出现事件冲突， 这个方法会自动补全 xType 属性。
@@ -445,7 +448,7 @@
 
 	    /**
 		 * 继承当前类并返回子类。
-		 * @param { Base/Function} [methods] 成员或构造函数。
+		 * @param {Object/Function} [methods] 子类的员或构造函数。
 		 * @return {Class} 继承的子类。
 		 *         <p>
 		 *         这个函数是实现继承的核心。
@@ -474,6 +477,15 @@
 		 *         <p>
 		 *         你也可以把动态成员的定义放到 构造函数， 如: this.c = []; 这是最好的解决方案。
 		 *         </p>
+		 * @example 下面示例演示了如何创建一个子类。<code>
+		 * var MyClass = new Class(); //创建一个类。
+		 * 
+		 * var Child = MyClass.extend({  // 创建一个子类。
+		 * 	  type: 'a'
+		 * });
+		 * 
+		 * var obj = new Child(); // 创建子类的实例。
+		 * </code>
 		 */
 	    extend: function(members) {
 
@@ -494,6 +506,9 @@
 
 		    // 指定成员 。
 		    subClass.prototype = Object.extend(new  $.noop, members);
+		    
+		    // 清空临时对象。
+		    $.noop.prototype = null;
 
 		    // 覆盖构造函数。
 		    subClass.prototype.constructor = subClass;
@@ -513,10 +528,10 @@
 
 	    /**
 		 * 复制对象的所有属性到其它对象。
-		 * @param { Base} dest 复制目标。
-		 * @param { Base} obj 要复制的内容。
-		 * @return { Base} 复制后的对象 (dest)。
-		 * @seeAlso Object.extendIf
+		 * @param {Object} dest 复制目标。
+		 * @param {Object} obj 要复制的内容。
+		 * @return {Object} 复制后的对象 (dest)。
+		 * @see Object.extendIf
 		 * @example <code>
 	     * var a = {v: 3}, b = {g: 2};
 	     * Object.extend(a, b);
@@ -547,10 +562,10 @@
 
 	    /**
 		 * 如果目标成员不存在就复制对象的所有属性到其它对象。
-		 * @param { Base} dest 复制目标。
-		 * @param { Base} obj 要复制的内容。
-		 * @return { Base} 复制后的对象 (dest)。
-		 * @seeAlso Object.extend <code>
+		 * @param {Object} dest 复制目标。
+		 * @param {Object} obj 要复制的内容。
+		 * @return {Object} 复制后的对象 (dest)。
+		 * @see Object.extend <code>
 	     * var a = {v: 3, g: 5}, b = {g: 2};
 	     * Object.extendIf(a, b);
 	     * trace(a); // {v: 3, g: 5}  b 未覆盖 a 任何成员。
@@ -565,7 +580,7 @@
 		 *            {@param {Number} key 当前变量的索引} {@param {Number} index
 		 *            当前变量的索引} {@param {Array} array 数组本身} {@return {Boolean}
 		 *            如果中止循环， 返回 false。}
-		 * @param { Base} bind 函数执行时的作用域。
+		 * @param {Object} bind 函数执行时的作用域。
 		 * @return {Boolean} 如果已经遍历完所传的所有值， 返回 true， 如果遍历被中断过，返回 false。
 		 * @example <code> 
 	     * Object.each({a: '1', c: '3'}, function (value, key) {
@@ -605,9 +620,9 @@
 		 * @param {Function} fn 对每个变量调用的函数。 {@param {Object} value 当前变量的值}
 		 *            {@param {Number} key 当前变量的索引} {@param {Array} array 数组本身}
 		 *            {@return {Boolean} 如果中止循环， 返回 false。}
-		 * @param { Base} bind=iterable 函数执行时的作用域。
+		 * @param {Object} bind=iterable 函数执行时的作用域。
 		 * @param { Base/Boolean} [args] 参数/是否间接传递。
-		 * @return { Base} 返回的对象。
+		 * @return {Object} 返回的对象。
 		 * @example 该函数支持多个功能。主要功能是将一个对象根据一个关系变成新的对象。 <code>
 	     * Object.update(["aa","aa23"], "length", []); // => [2, 4];
 	     * Object.update([{a: 1},{a: 4}], "a", [{},{}], true); // => [{a: 1},{a: 4}];
@@ -655,7 +670,7 @@
 
 	    /**
 		 * 判断一个变量是否是引用变量。
-		 * @param { Base} object 变量。
+		 * @param {Object} object 变量。
 		 * @return {Boolean} 所有对象变量返回 true, null 返回 false 。
 		 * @example <code>
 	     * Object.isObject({}); // true
@@ -670,8 +685,8 @@
 
 	    /**
 		 * 将一个对象解析成一个类的属性。
-		 * @param { Base} obj 类实例。
-		 * @param { Base} options 参数。 这个函数会分析对象，并试图找到一个 属性设置函数。 当设置对象 obj 的 属性
+		 * @param {Object} obj 类实例。
+		 * @param {Object} options 参数。 这个函数会分析对象，并试图找到一个 属性设置函数。 当设置对象 obj 的 属性
 		 *            key 为 value: 发生了这些事: 检查，如果存在就调用: obj.setKey(value) 否则，
 		 *            检查，如果存在就调用: obj.key(value) 否则， 检查，如果存在就调用:
 		 *            obj.key.set(value) 否则，检查，如果存在就调用: obj.set(value) 否则，执行
@@ -688,7 +703,7 @@
 	     * </code>
 		 */
 	    set: function(obj, options) {
-
+		
 			assert.notNull(obj, "Object.set(obj, options): {obj}~");
 
 		    for ( var key in options) {
@@ -730,7 +745,7 @@
 
 	    /**
 		 * 返回一个变量的类型的字符串形式。
-		 * @param { Base} obj 变量。
+		 * @param {Object} obj 变量。
 		 * @return {String} 所有可以返回的字符串： string number boolean undefined null
 		 *         array function element class date regexp object。
 		 * @example <code> 
@@ -762,7 +777,7 @@
 
 	    /**
 		 * 判断一个变量是否是数组。
-		 * @param { Base} object 变量。
+		 * @param {Object} obj 要判断的变量。
 		 * @return {Boolean} 如果是数组，返回 true， 否则返回 false。
 		 * @example <code> 
 	     * Array.isArray([]); // true
@@ -774,7 +789,7 @@
 
 	    /**
 		 * 在原有可迭代对象生成一个数组。
-		 * @param { Base} iterable 可迭代的实例。
+		 * @param {Object} iterable 可迭代的实例。
 		 * @param {Number} startIndex=0 开始的位置。
 		 * @return {Array} 复制得到的数组。
 		 * @example <code>
@@ -792,12 +807,12 @@
 	apply(Function, {
 
 	    /**
-		 * 绑定函数作用域。
+		 * 绑定函数作用域。返回一个函数，这个函数内的 this 为指定的 bind 。
 		 * @param {Function} fn 函数。
-		 * @param { Base} bind 位置。 注意，未来 Function.prototype.bind 是系统函数，
+		 * @param {Object} bind 位置。 注意，未来 Function.prototype.bind 是系统函数，
 		 *            因此这个函数将在那个时候被 替换掉。
 		 * @example <code>
-	     * Function.bind(function () {return this}, 0)()    ; // 0
+	     * Function.bind(function () {trace( this );}, 0)()    ; // 0
 	     * </code>
 		 */
 	    bind: $.proxy,
@@ -805,7 +820,8 @@
 	    /**
 		 * 空函数。
 		 * @property
-		 * @type Function Function.empty返回空函数的引用。
+		 * @type Function
+		 * Function.empty返回空函数的引用。
 		 */
 	    empty: $.noop,
 
@@ -825,7 +841,7 @@
 
 	    /**
 		 * 判断一个变量是否是函数。
-		 * @param { Base} object 变量。
+		 * @param {Object} obj 要判断的变量。
 		 * @return {Boolean} 如果是函数，返回 true， 否则返回 false。
 		 * @example <code>
 	     * Function.isFunction(function () {}); // true
@@ -837,7 +853,7 @@
 
 	    /**
 		 * 返回自身的函数。
-		 * @param { Base} v 需要返回的参数。
+		 * @param {Object} v 需要返回的参数。
 		 * @return {Function} 执行得到参数的一个函数。
 		 * @hide
 		 * @example <code>
@@ -857,7 +873,7 @@
 	    /**
 		 * 格式化字符串。
 		 * @param {String} format 字符。
-		 * @param { Base} ... 参数。
+		 * @param {Object} ... 参数。
 		 * @return {String} 格式化后的字符串。
 		 * @example <code>
 	     *  String.format("{0}转换", 1); //  "1转换"
@@ -890,9 +906,9 @@
 
 	    /**
 		 * 将一个数组源形式的字符串内容拷贝。
-		 * @param { Base} str 字符串。用空格隔开。
+		 * @param {Object} str 字符串。用空格隔开。
 		 * @param { Base/Function} source 更新的函数或源。
-		 * @param { Base} [dest] 如果指明了， 则拷贝结果到这个目标。
+		 * @param {Object} [dest] 如果指明了， 则拷贝结果到这个目标。
 		 * @example <code>
 	     * String.map("aaa bbb ccc", trace); //  aaa bbb ccc
 	     * String.map("aaa bbb ccc", function (v) { return v; }, {});    //    {aaa:aaa, bbb:bbb, ccc:ccc};
@@ -1059,8 +1075,8 @@
 	    /**
 	     * 调用父类的成员变量。
 	     * @param {String} methodName 属性名。
-	     * @param { Base} ... 调用的参数数组。
-	     * @return { Base} 父类返回。 注意只能从子类中调用父类的同名成员。
+	     * @param {Object} [...] 调用的参数数组。
+	     * @return {Object} 父类返回。 注意只能从子类中调用父类的同名成员。
 	     * @protected
 	     * @example <code>
 	     *
@@ -1072,7 +1088,7 @@
 	     *
 	     * var MyCls = MyBa.extend({
 	     * 	  a: function (g, b) {
-	     * 	    this.base('a', g, b);   // 或   this.base('a', arguments);
+	     * 	    this.base('a'); // 调用 MyBa#a 成员。
 	     *    }
 	     * });
 	     *
@@ -1123,7 +1139,7 @@
 		 * 增加一个监听者。
 		 * @param {String} type 监听名字。
 		 * @param {Function} listener 调用函数。
-		 * @param { Base} bind=this listener 执行时的作用域。
+		 * @param {Object} bind=this listener 执行时的作用域。
 		 * @return  Base this
 		 * @example <code>
          * elem.on('click', function (e) {
@@ -1237,7 +1253,7 @@
         /**
 		 * 触发一个监听器。
 		 * @param {String} type 监听名字。
-		 * @param { Base} [e] 事件参数。
+		 * @param {Object} [e] 事件参数。
 		 * @return  Base this trigger 只是手动触发绑定的事件。
 		 * @example <code>
          * elem.trigger('click');
@@ -1257,7 +1273,7 @@
 		 * 增加一个只执行一次的监听者。
 		 * @param {String} type 监听名字。
 		 * @param {Function} listener 调用函数。
-		 * @param { Base} bind=this listener 执行时的作用域。
+		 * @param {Object} bind=this listener 执行时的作用域。
 		 * @return  Base this
 		 * @example <code>
          * elem.one('click', function (e) {
@@ -1303,10 +1319,10 @@
 	    /// #if CompactMode
 
 	    /**
-		 * 去除首尾空格。
+		 * 去除字符串的首尾空格。
 		 * @return {String} 处理后的字符串。
 		 * @example <code>
-	     * "   g h   ".trim(); //     "g h"
+	     * "   g h   ".trim(); //  返回     "g h"
 	     * </code>
 		 */
 	    trim: function() {
@@ -1352,10 +1368,10 @@
 	    /**
 		 * 对数组运行一个函数。
 		 * @param {Function} fn 函数.参数 value, index
-		 * @param { Base} bind 对象。
+		 * @param {Object} bind 对象。
 		 * @return {Boolean} 有无执行完。
 		 * @method
-		 * @seeAlso Array.prototype.forEach
+		 * @see #forEach
 		 * @example <code> 
 	     * [2, 5].each(function (value, key) {
 	     * 		trace(value);
@@ -1368,7 +1384,7 @@
 
 	    /**
 		 * 包含一个元素。元素存在直接返回。
-		 * @param { Base} value 值。
+		 * @param {Object} value 值。
 		 * @return {Boolean} 是否包含元素。
 		 * @example <code>
 	     * ["", "aaa", "zzz", "qqq"].include(""); //   true
@@ -1387,7 +1403,7 @@
 	    /**
 		 * 在指定位置插入项。
 		 * @param {Number} index 插入的位置。
-		 * @param { Base} value 插入的内容。
+		 * @param {Object} value 插入的内容。
 		 * @example <code>
 	     * ["", "aaa", "zzz", "qqq"].insert(3, 4); //   ["", "aaa", "zzz", 4, "qqq"]
 	     * </code>
@@ -1450,7 +1466,7 @@
 
 	    /**
 		 * 删除元素, 参数为元素的内容。
-		 * @param { Base} value 值。
+		 * @param {Object} value 值。
 		 * @return {Number} 删除的值的位置。
 		 * @example <code>
 	     * [1,7,8,8].remove(7); //   1
@@ -1468,7 +1484,7 @@
 	    /**
 		 * 获取指定索引的元素。如果 index < 0， 则获取倒数 index 元素。
 		 * @param {Number} index 元素。
-		 * @return { Base} 指定位置所在的元素。
+		 * @return {Object} 指定位置所在的元素。
 		 * @example <code>
 	     * [1,7,8,8].item(0); //   1
 	     * [1,7,8,8].item(-1); //   8
@@ -1483,12 +1499,12 @@
 
 	    /**
 		 * 返回数组某个值的第一个位置。值没有,则为-1 。
-		 * @param { Base} item 成员。
+		 * @param {Object} item 成员。
 		 * @param {Number} start=0 开始查找的位置。
 		 * @return Number 位置，找不到返回 -1 。 现在大多数浏览器已含此函数.除了 IE8- 。
 		 */
 	    indexOf: function(item, startIndex) {
-		   startIndex = startIndex || 0;
+		    startIndex = startIndex || 0;
 		    for ( var len = this.length; startIndex < len; startIndex++)
 			    if (this[startIndex] === item)
 				    return startIndex;
@@ -1498,7 +1514,7 @@
 	    /**
 		 * 对数组每个元素通过一个函数过滤。返回所有符合要求的元素的数组。
 		 * @param {Function} fn 函数。参数 value, index, this。
-		 * @param { Base} bind 绑定的对象。
+		 * @param {Object} bind 绑定的对象。
 		 * @return {Array} 新的数组。
 		 * @seeAlso Array.prototype.select
 		 * @example <code> 
@@ -1524,7 +1540,7 @@
 		 * @param {Function} fn 对每个变量调用的函数。 {@param {Object} value 当前变量的值}
 		 *            {@param {Number} key 当前变量的索引} {@param {Number} index
 		 *            当前变量的索引} {@param {Array} array 数组本身}
-		 * @param { Base} bind 函数执行时的作用域。
+		 * @param {Object} bind 函数执行时的作用域。
 		 * @seeAlso Array.prototype.each
 		 * @example <code> 
 	     * [2, 5].forEach(function (value, key) {
@@ -1551,8 +1567,9 @@
 	if (!window.XMLHttpRequest) {
 		
 		/**
-		 * 生成一个请求。
-		 * @class window.XMLHttpRequest
+		 * 初始化一个 XMLHttpRequest 对象。
+		 * @constructor
+		 * @class XMLHttpRequest
 		 * @return {XMLHttpRequest} 请求的对象。
 		 */
 		window.XMLHttpRequest = function() {
@@ -1565,9 +1582,8 @@
 	if (!window.execScript) {
 
 		/**
-		 * 全局运行一个函数。
-		 * @param {String} statement 语句。
-		 * @return { Base} 执行返回值。
+		 * 在全局作用域运行一个字符串内的代码。
+		 * @param {String} statement Javascript 语句。
 		 * @example <code>
 		 * execScript('alert("hello")');
 		 * </code>
@@ -1588,9 +1604,9 @@
 
 	/**
 	 * 复制所有属性到任何对象。
-	 * @param { Base} dest 复制目标。
-	 * @param { Base} src 要复制的内容。
-	 * @return { Base} 复制后的对象。
+	 * @param {Object} dest 复制目标。
+	 * @param {Object} src 要复制的内容。
+	 * @return {Object} 复制后的对象。
 	 */
 	function apply(dest, src) {
 
@@ -1604,9 +1620,9 @@
 
 	/**
 	 * 如果不存在就复制所有属性到任何对象。
-	 * @param { Base} dest 复制目标。
-	 * @param { Base} src 要复制的内容。
-	 * @return { Base} 复制后的对象。
+	 * @param {Object} dest 复制目标。
+	 * @param {Object} src 要复制的内容。
+	 * @return {Object} 复制后的对象。
 	 */
 	function applyIf(dest, src) {
 
@@ -1622,7 +1638,7 @@
 	/**
 	 * 对数组运行一个函数。
 	 * @param {Function} fn 遍历的函数。参数依次 value, index, array 。
-	 * @param { Base} bind 对象。
+	 * @param {Object} bind 对象。
 	 * @return {Boolean} 返回一个布尔值，该值指示本次循环时，有无出现一个函数返回 false 而中止循环。
 	 */
 	function each(fn, bind) {
@@ -1646,7 +1662,7 @@
 
 	/**
 	 * 返回返回指定结果的函数。
-	 * @param { Base} ret 结果。
+	 * @param {Object} ret 结果。
 	 * @return {Function} 函数。
 	 */
 	function from(ret) {
@@ -1659,7 +1675,9 @@
 
 	/**
 	 * 将一个字符转为大写。
+	 * @param {String} ch 参数。
 	 * @param {String} match 字符。
+	 * @return {String} 转为大写之后的字符串。
 	 */
 	function toUpperCase(ch, match) {
 		return match.toUpperCase();
@@ -1667,9 +1685,9 @@
 
 	/**
 	 * 获取指定的对象所有的事件管理器。
-	 * @param { Base} obj 要使用的对象。
+	 * @param {Object} obj 要使用的对象。
 	 * @param {String} type 事件名。
-	 * @return { Base} 符合要求的事件管理器，如果找不到合适的，返回默认的事件管理器。
+	 * @return {Object} 符合要求的事件管理器，如果找不到合适的，返回默认的事件管理器。
 	 */
 	function getMgr(eMgr, type) {
 		var evt = eMgr.constructor;
@@ -1691,7 +1709,7 @@
 	/**
 	 * 定义名字空间。
 	 * @param {String} ns 名字空间。
-	 * @param { Base} obj 值。
+	 * @param {Object} obj 值。
 	 */
 	function namespace(ns, obj) {
 
@@ -1714,9 +1732,9 @@
 
 	/// #endregion
 
+
 })(jQuery);
 
-/// #if !Release
 
 /// #if !Release
 
@@ -1740,7 +1758,7 @@ function using(ns, isStyle) {
         return;
 
     if (ns.indexOf('/') === -1)
-        ns = p.resolveNamespace(ns.toLowerCase(), isStyle) + (isStyle ? '.css' : '.js');
+        ns = p.resolveNamespace(ns.toLowerCase(), isStyle);
 
     var doms, callback, path = ns.replace(/^[\.\/\\]+/, "");
     if (isStyle) {
@@ -1755,7 +1773,12 @@ function using(ns, isStyle) {
 
     // 如果在节点找到符合的就返回，找不到，调用 callback 进行真正的 加载处理。
     Object.each(doms, function(dom) {
-        return !dom[src] || dom[src].toLowerCase().indexOf(path) === -1;
+    	var url = navigator.isQuirks ? (
+    		isStyle ? 
+    			dom.owningElement ? dom.owningElement.getAttribute(src, 4) : dom.href :
+    			dom.getAttribute(src, 4)
+    	) :  dom[src];
+        return !url || url.toLowerCase().indexOf(path) === -1;
     }) && callback(p.rootPath + ns);
 };
 
@@ -1773,7 +1796,7 @@ function imports(ns){
 
 /**
  * 调试输出指定的信息。
- * @param { Base} ... 要输出的变量。
+ * @param {Object} ... 要输出的变量。
  */
 function trace() {
     if (JPlus.debug) {
@@ -1795,7 +1818,7 @@ function trace() {
 
 /**
  * 确认一个值正确。
- * @param { Base} bValue 值。
+ * @param {Object} bValue 值。
  * @param {String} msg="断言失败" 错误后的提示。
  * @return {Boolean} 返回 bValue 。
  * @example <code>
@@ -1820,7 +1843,7 @@ function assert(bValue, msg) {
         // 错误源
         val = arguments.callee.caller;
 
-        if (JPlus.stackTrace !== false) {
+        if (JPlus.stackTrace) {
 
             while (val.debugStepThrough)
                 val = val.caller;
@@ -1936,7 +1959,7 @@ function assert(bValue, msg) {
          * JPlus 安装的根目录, 可以为相对目录。
          * @config {String}
          */
-        rootPath: p.rootPath || (function(){
+        rootPath: (function(){
             try {
                 var scripts = document.getElementsByTagName("script");
 
@@ -1976,9 +1999,9 @@ function assert(bValue, msg) {
          * @param {String} ns 名字空间。
          * @param {Boolean} isStyle=false 是否为样式表。
          */
-        resolveNamespace: function(ns) {
+        resolveNamespace: function(ns, isStyle) {
             // 如果名字空间本来就是一个地址，则不需要转换，否则，将 . 替换为 / ,并在末尾加上 文件后缀。
-            return ns.replace(/\./g, '/');
+            return ns.replace(/\./g, '/') + (isStyle ? '.css' : '.js');
         }
 
     });
@@ -1986,17 +2009,6 @@ function assert(bValue, msg) {
     /// #endregion
 
     /// #region Trace
-
-    /**
-     * 是否打开调试。启用调试后，将支持assert检查。
-     * @config {Boolean}
-     */
-    p.debug = true;
-
-    /**
-     * 是否在 assert 失败时显示函数调用堆栈。
-     * @config {Boolean} stackTrace
-     */
 
     /**
      * @namespace String
@@ -2042,7 +2054,7 @@ function assert(bValue, msg) {
 
         /**
          * 输出类的信息。
-         * @param { Base} [obj] 要查看成员的对象。如果未提供这个对象，则显示全局的成员。
+         * @param {Object} [obj] 要查看成员的对象。如果未提供这个对象，则显示全局的成员。
          * @param {Boolean} showPredefinedMembers=true 是否显示内置的成员。
          */
         api: (function() {
@@ -2434,7 +2446,7 @@ function assert(bValue, msg) {
 
         /**
          * 获取对象的字符串形式。
-         * @param { Base} obj 要输出的内容。
+         * @param {Object} obj 要输出的内容。
          * @param {Number/undefined} deep=0 递归的层数。
          * @return String 成员。
          */
@@ -2504,7 +2516,7 @@ function assert(bValue, msg) {
 
         /**
          * 输出一个错误信息。
-         * @param { Base} msg 内容。
+         * @param {Object} msg 内容。
          */
         error: function(msg) {
             if (p.debug) {
@@ -2517,7 +2529,7 @@ function assert(bValue, msg) {
 
         /**
          * 输出一个警告信息。
-         * @param { Base} msg 内容。
+         * @param {Object} msg 内容。
          */
         warn: function(msg) {
             if (p.debug) {
@@ -2530,7 +2542,7 @@ function assert(bValue, msg) {
 
         /**
          * 输出一个信息。
-         * @param { Base} msg 内容。
+         * @param {Object} msg 内容。
          */
         info: function(msg) {
             if (p.debug) {
@@ -2543,7 +2555,7 @@ function assert(bValue, msg) {
 
         /**
          * 遍历对象每个元素。
-         * @param { Base} obj 对象。
+         * @param {Object} obj 对象。
          */
         dir: function(obj) {
             if (p.debug) {
@@ -2607,14 +2619,6 @@ function assert(bValue, msg) {
 
     /// #region Assert
 
-    function assertInternal(asserts, msg, value, dftMsg) {
-        return assert(asserts, msg ? msg.replace('~', dftMsg) : dftMsg, value);
-    }
-
-    function assertInternal2(fn, dftMsg, args) {
-        return assertInternal(fn(args[0]), args[1], args[0], dftMsg);
-    }
-
     /**
      * @namespace assert
      */
@@ -2622,7 +2626,7 @@ function assert(bValue, msg) {
 
         /**
          * 确认一个值为函数变量。
-         * @param { Base} bValue 值。
+         * @param {Object} bValue 值。
          * @param {String} msg="断言失败" 错误后的提示。
          * @return {Boolean} 返回 bValue 。
          * @example <code>
@@ -2635,7 +2639,7 @@ function assert(bValue, msg) {
 
         /**
          * 确认一个值为数组。
-         * @param { Base} bValue 值。
+         * @param {Object} bValue 值。
          * @param {String} msg="断言失败" 错误后的提示。
          * @return {Boolean} 返回 bValue 。
          */
@@ -2645,7 +2649,7 @@ function assert(bValue, msg) {
 
         /**
          * 确认一个值为函数变量。
-         * @param { Base} bValue 值。
+         * @param {Object} bValue 值。
          * @param {String} msg="断言失败" 错误后的提示。
          * @return {Boolean} 返回 bValue 。
          */
@@ -2655,7 +2659,7 @@ function assert(bValue, msg) {
 
         /**
          * 确认一个值为数字。
-         * @param { Base} bValue 值。
+         * @param {Object} bValue 值。
          * @param {String} msg="断言失败" 错误后的提示。
          * @return {Boolean} 返回 bValue 。
          */
@@ -2665,7 +2669,7 @@ function assert(bValue, msg) {
 
         /**
          * 确认一个值为节点。
-         * @param { Base} bValue 值。
+         * @param {Object} bValue 值。
          * @param {String} msg="断言失败" 错误后的提示。
          * @return {Boolean} 返回 bValue 。
          */
@@ -2675,7 +2679,7 @@ function assert(bValue, msg) {
 
         /**
          * 确认一个值为节点。
-         * @param { Base} bValue 值。
+         * @param {Object} bValue 值。
          * @param {String} msg="断言失败" 错误后的提示。
          * @return {Boolean} 返回 bValue 。
          */
@@ -2685,7 +2689,7 @@ function assert(bValue, msg) {
 
         /**
          * 确认一个值是字符串。
-         * @param { Base} bValue 值。
+         * @param {Object} bValue 值。
          * @param {String} msg="断言失败" 错误后的提示。
          * @return {Boolean} 返回 bValue 。
          */
@@ -2695,7 +2699,7 @@ function assert(bValue, msg) {
 
         /**
          * 确认一个值是日期。
-         * @param { Base} bValue 值。
+         * @param {Object} bValue 值。
          * @param {String} msg="断言失败" 错误后的提示。
          * @return {Boolean} 返回 bValue 。
          */
@@ -2705,7 +2709,7 @@ function assert(bValue, msg) {
 
         /**
          * 确认一个值是正则表达式。
-         * @param { Base} bValue 值。
+         * @param {Object} bValue 值。
          * @param {String} msg="断言失败" 错误后的提示。
          * @return {Boolean} 返回 bValue 。
          */
@@ -2715,7 +2719,7 @@ function assert(bValue, msg) {
 
         /**
          * 确认一个值非空。
-         * @param { Base} value 值。
+         * @param {Object} value 值。
          * @param {String} argsName 变量的名字字符串。
          * @return {Boolean} 返回 assert 是否成功 。
          */
@@ -2737,7 +2741,7 @@ function assert(bValue, msg) {
 
         /**
          * 确认一个值非空。
-         * @param { Base} value 值。
+         * @param {Object} value 值。
          * @param {String} argsName 变量的参数名。
          * @return {Boolean} 返回 assert 是否成功 。
          */
@@ -2746,6 +2750,16 @@ function assert(bValue, msg) {
         }
 
     });
+	
+    function assertInternal(asserts, msg, value, dftMsg) {
+        return assert(asserts, msg ? msg.replace('~', dftMsg) : dftMsg, value);
+    }
+
+    function assertInternal2(fn, dftMsg, args) {
+        return assertInternal(fn(args[0]), args[1], args[0], dftMsg);
+    }
+
+	// 追加 debugStepThrough 防止被认为是 assert 错误源堆栈。
 
     assertInternal.debugStepThrough = assertInternal2.debugStepThrough = assert.debugStepThrough = true;
 
@@ -2760,19 +2774,30 @@ function assert(bValue, msg) {
 
 })(JPlus, Object.extend);
 
-/// #endif
-
 
 /// #if !Publish
+
+/**
+ * 是否打开调试。启用调试后，将支持assert检查。
+ * @config {Boolean}
+ */
+JPlus.debug = true;
+
+/**
+ * 是否在 assert 失败时显示函数调用堆栈。
+ * @config {Boolean} stackTrace
+ */
+JPlus.stackTrace = true;
 
 JPlus.rootPath = JPlus.rootPath.substr(0, JPlus.rootPath.length - "system/core/assets/scripts/".length);
 
 JPlus.resolveNamespace = function(ns, isStyle){
-	return ns.replace(/^([^.]+\.[^.]+)\./, isStyle ? '$1.assets.styles.' : '$1.assets.scripts.').replace(/\./g, '/');
+	return ns.replace(/^([^.]+\.[^.]+)\./, isStyle ? '$1.assets.styles.' : '$1.assets.scripts.').replace(/\./g, '/') + (isStyle ? '.css' : '.js');
 };
 
 
 /// #endif
+
 
 /// #endif
 
@@ -2900,8 +2925,7 @@ JPlus.scripts.push('System.Dom.Element');
 			 * 当被子类重写时，渲染控件。
 			 * @method
 			 * @param {Object} options 配置。
-			 * @protected
-			 * @virtual
+			 * @protected virtual
 			 */
 			init: Function.empty,
 		
@@ -2909,7 +2933,7 @@ JPlus.scripts.push('System.Dom.Element');
 			 * 将当前控件插入到指定父节点，并显示在指定节点之前。
 			 * @param {Node} parentNode 渲染的目标。
 			 * @param {Node} refNode=null 渲染的位置。
-			 * @protected
+			 * @protected virtual
 			 */
 			attach: function(parentNode, refNode) {
 				assert(parentNode && parentNode.nodeType, 'Control.prototype.attach(parentNode, refNode): {parentNode} 必须是 DOM 节点。', parentNode);
@@ -2920,6 +2944,7 @@ JPlus.scripts.push('System.Dom.Element');
 			/**
 			 * 移除节点本身。
 			 * @param {Node} parentNode 渲染的目标。
+			 * @protected virtual
 			 */
 			detach: function(parentNode) {
 				assert(parentNode && parentNode.removeChild, 'Control.prototype.detach(parentNode): {parentNode} 必须是 DOM 节点或控件。', parent);
@@ -3068,7 +3093,7 @@ JPlus.scripts.push('System.Dom.Element');
 			constructor: function(nodes) {
 	
 				if(nodes) {
-	
+
 					assert(nodes.length !== undefined, 'DomList.prototype.constructor(nodes): {nodes} 必须是一个 DomList 或 Array 类型的变量。', nodes);
 	
 					var len = this.length = nodes.length;
@@ -3116,7 +3141,7 @@ JPlus.scripts.push('System.Dom.Element');
 			 * 初始化 Point 的实例。
 			 * @param {Number} x X 坐标。
 			 * @param {Number} y Y 坐标。
-			 * @constructor Point
+			 * @constructor
 			 */
 			constructor: function(x, y) {
 				this.x = x;
@@ -3232,11 +3257,14 @@ JPlus.scripts.push('System.Dom.Element');
 	
 	$.fn = $.prototype = $.fn.init.prototype = Object.extend(new DomList, $.fn);
 
+	/**
+	 * @namespace Dom
+	 */
 	apply(Dom, {
 		
 		/**
 		 * 根据一个 id 获取元素。如果传入的id不是字符串，则直接返回参数。
-		 * @param {String/Element} id 要获取元素的 id 或元素。
+		 * @param {String/Node/Control} id 要获取元素的 id 或元素本身。
 	 	 * @return {Control} 元素。
 		 */
 		get: function(id) {
@@ -3246,8 +3274,8 @@ JPlus.scripts.push('System.Dom.Element');
 		},
 		
 		/**
-		 * 执行一个选择器，返回一个新的 DomList。
-		 * @param {String} selecter 选择器。 如 h2 .cls attr=value 。
+		 * 执行一个选择器，返回一个新的 {DomList} 对象。
+		 * @param {String} selecter 选择器。 如 "h2" ".cls" "[attr=value]" 。
 		 * @return {Element/undefined} 节点。
 		 */
 		query: function(selector) {
@@ -3255,10 +3283,10 @@ JPlus.scripts.push('System.Dom.Element');
 		},
 
 		/**
-		 * 解析一个 html 字符串返回相应的控件。
+		 * 解析一个 html 字符串，返回相应的控件。
 		 * @param {String/Element} html 字符。
 		 * @param {Element} context=document 生成节点使用的文档中的任何节点。
-		 * @param {Boolean} cachable=true 是否缓存。
+		 * @param {Boolean} cachable=true 指示是否缓存节点。
 		 * @return {Control} 控件。
 		 */
 		parse: function(html, context, cachable) {
@@ -3270,8 +3298,8 @@ JPlus.scripts.push('System.Dom.Element');
 		
 		/**
 		 * 创建一个节点。
-		 * @param {Object} tagName
-		 * @param {Object} className
+		 * @param {String} tagName 创建的节点的标签名。
+		 * @param {String} className 创建的节点的类名。
 		 */
 		create: function(tagName, className) {
 			assert.isString(tagName, 'Dom.create(tagName, className): {tagName} ~');
@@ -3279,14 +3307,22 @@ JPlus.scripts.push('System.Dom.Element');
 			div.className = className;
 			return new Dom(div);
 		},
+		
+		/**
+		 * 根据一个 id 获取元素。如果传入的id不是字符串，则直接返回参数。
+		 * @param {String/Node/Control} id 要获取元素的 id 或元素本身。
+	 	 * @return {Node} 元素。
+		 */
+		getNode: function (id) {
+			return typeof id == "string" ? document.getElementById(id): (id && id.dom || id);
+		},
 
 		/**
-		 * 转换一个HTML字符串到节点。
+		 * 解析一个 html 字符串，返回相应的原生节点。
 		 * @param {String/Element} html 字符。
 		 * @param {Element} context=document 生成节点使用的文档中的任何节点。
-		 * @param {Boolean} cachable=true 是否缓存。
+		 * @param {Boolean} cachable=true 指示是否缓存节点。
 		 * @return {Element/TextNode/DocumentFragment} 元素。
-		 * @static
 		 */
 		parseNode: function(html, context, cachable) {
 
@@ -3344,8 +3380,9 @@ JPlus.scripts.push('System.Dom.Element');
 		textField: textField,
 		
 		/**
-		 * 获取值。
-		 * @return {Object/String} 值。对普通节点返回 text 属性。
+		 * 获取一个元素对应的文本。
+		 * @param {Element} elem 元素。
+		 * @return {String} 值。对普通节点返回 text 属性。
 		 */
 		getText: function(elem) {
 
@@ -3355,7 +3392,6 @@ JPlus.scripts.push('System.Dom.Element');
 
 		/**
 		 * 获取一个节点属性。
-		 * @static
 		 * @param {Element} elem 元素。
 		 * @param {String} name 名字。
 		 * @return {String} 属性。
@@ -3364,6 +3400,7 @@ JPlus.scripts.push('System.Dom.Element');
 		
 		/**
 		 * 判断一个节点是否隐藏。
+		 * @method isHidden
 		 * @return {Boolean} 隐藏返回 true 。
 		 */
 		
@@ -3584,13 +3621,11 @@ JPlus.scripts.push('System.Dom.Element');
 		/**
 		 * 设置一个元素可拖动。
 		 * @param {Element} elem 要设置的节点。
-		 * @static
 		 */
-		setMovable: function(elem) {
-			assert.isElement(elem, "Dom.setMovable(elem): 参数 elem ~");
-			if(!/^(?:abs|fix)/.test(styleString(elem, "position"))) {
+		move: function(elem) {
+			assert.isElement(elem, "Dom.movable(elem): 参数 elem ~");
+			if(!/^(?:abs|fix)/.test(styleString(elem, "position")))
 				elem.style.position = "relative";
-			}
 		},
 		
 		/**
@@ -3679,7 +3714,8 @@ JPlus.scripts.push('System.Dom.Element');
 		 * @param {Object} obj 要附加的对象。
 		 * @param {Number} listType = 1 说明如何复制到 DomList 实例。
 		 * @return {Element} this
-		 * @static 对 Element 扩展，内部对 Element DomList document 皆扩展。
+		 * @static
+		 * 对 Element 扩展，内部对 Element DomList document 皆扩展。
 		 *         这是由于不同的函数需用不同的方法扩展，必须指明扩展类型。 所谓的扩展，即一个类所需要的函数。 DOM 方法
 		 *         有 以下种 1, 其它 setText - 执行结果返回 this， 返回 this 。(默认) 2
 		 *         getText - 执行结果是数据，返回结果数组。 3 getElementById - 执行结果是DOM
@@ -3760,9 +3796,10 @@ JPlus.scripts.push('System.Dom.Element');
 	
 		/**
 		 * 定义事件。
-		 * @param {String} 事件名。
-		 * @param {Function} trigger 触发器。
-		 * @return {Function} 函数本身
+		 * @param {String} events 事件名。
+		 * @param {String} baseEvent 基础事件。
+		 * @param {Function} initEvent 触发器。
+		 * @return {Function} 函数本身。
 		 * @static
 		 * @memberOf Element 原则 Control.addEvents 可以解决问题。 但由于 DOM
 		 *           的特殊性，额外提供 defineEvents 方便定义适合 DOM 的事件。 defineEvents
@@ -3846,6 +3883,7 @@ JPlus.scripts.push('System.Dom.Element');
 		 * @param {String} delegate 委托变量。
 		 * @param {String} methods 所有成员名。
 		 *            因此经常需要将一个函数转换为对节点的调用。
+		 * @static
 		 */
 		delegate: function(control, target, setters, getters) {
 			assert(control && control.prototype, "Control.delegate(control, target, setters, getters): {control} 必须是一个类", control);
@@ -3872,9 +3910,8 @@ JPlus.scripts.push('System.Dom.Element');
 		/**
 		 * 将当前节点添加到其它节点。
 		 * @param {Element/String} elem=document.body 节点、控件或节点的 id 字符串。
-		 * @return {Element} this this.appendTo(parent) 相当于
-		 *         elem.appendChild(this) 。 appendTo 同时执行 render(parent,
-		 *         null) 通知当前控件正在执行渲染。
+		 * @return this 
+		 * this.appendTo(parent) 相当于 parent.append(this) 。 
 		 */
 		appendTo: function(parent) {
 		
@@ -3895,7 +3932,7 @@ JPlus.scripts.push('System.Dom.Element');
 			if (arguments.length) {
 				assert(childControl && this.hasChild(childControl), 'Control.prototype.remove(childControl): {childControl} 不是当前节点的子节点', childControl);
 				this.removeChild(childControl);
-			} else if (childControl = this.getParent()){
+			} else if (childControl = this.parent || this.getParent()){
 				childControl.removeChild(this);
 			}
 	
@@ -3924,11 +3961,10 @@ JPlus.scripts.push('System.Dom.Element');
 		},
 	
 		/**
-		 * 设置内容样式。
+		 * 设置一个样式属性的值。
 		 * @param {String} name CSS 属性名或 CSS 字符串。
-		 * @param {String/Number} [value] CSS属性值， 数字如果不加单位，则自动转为像素。
-		 * @return {Element} this setStyle('cssText') 不被支持，需要使用 name，
-		 *         value 来设置样式。
+		 * @param {String/Number} [value] CSS属性值， 数字如果不加单位，则函数会自动追为像素。
+		 * @return {Element} this
 		 */
 		setStyle: function(name, value) {
 			$(this.dom).css(name, value);
@@ -4008,8 +4044,9 @@ JPlus.scripts.push('System.Dom.Element');
 		 * @param {String} [type] 方式。
 		 * @return {Element} this
 		 */
-		toggle: function(duration, callBack, type, flag) {
-			return this[(flag === undefined ? Dom.isHidden(this.dom): flag) ? 'show': 'hide'](duration, callBack, type);
+		toggle: function(duration, onShow, onHide, type, flag) {
+			flag = (flag === undefined ? Dom.isHidden(this.dom): flag);
+			return this[flag ? 'show': 'hide'](duration, flag ? onShow : onHide, type);
 		},
 	
 		/**
@@ -4225,7 +4262,7 @@ JPlus.scripts.push('System.Dom.Element');
 		
 			if (p.x) offset.x += p.x;
 		
-			Dom.setMovable(me.dom);
+			Dom.movable(me.dom);
 		
 			return me.setOffset(offset);
 		},
@@ -4245,6 +4282,18 @@ JPlus.scripts.push('System.Dom.Element');
 			if (p.y != null) elem.scrollTop = p.y;
 			return this;
 	
+		},
+		
+		delegate: function(selector, eventName, handler){
+			
+			assert.isFunction(handler, "Control.prototype.delegate(selector, eventName, handler): {handler}  ~");
+			
+			this.on(eventName, function(e){
+				if(e.getTarget().match(selector)){
+					return handler.call(this, e);
+				}
+			});
+			
 		}
 
 	})
@@ -4588,8 +4637,9 @@ JPlus.scripts.push('System.Dom.Element');
 		 */
 		contains: function(control) {
 			var elem = this.dom;
+			control = Dom.getNode(control);
 			assert.notNull(control, "Control.prototype.contains(control):{control} ~");
-			return control.dom == elem || Dom.hasChild(elem, control.dom);
+			return control == elem || Dom.hasChild(elem, control);
 		},
 		
 		/**
@@ -4598,7 +4648,7 @@ JPlus.scripts.push('System.Dom.Element');
 		 * @return {Boolean} 有返回true 。
 		 */
 		hasChild: function(control) {
-			return control ? Dom.hasChild(this.dom, control.dom): !Dom.isEmpty(this.dom);
+			return control ? Dom.hasChild(this.dom, Dom.getNode(control)): !Dom.isEmpty(this.dom);
 		}
 		
 	}, 4);
@@ -4638,7 +4688,7 @@ JPlus.scripts.push('System.Dom.Element');
 		},
 		
 		find: function(selector){
-			return this.query(selector)[0];
+			return Dom.get(this.query(selector)[0]);
 		},
 		
 		/**
@@ -4774,18 +4824,19 @@ JPlus.scripts.push('System.Dom.Element');
 	
 			/**
 			 * 创建当前事件可用的参数。
-			 * @param {Object} elem 对象。
+			 * @param {Control} ctrl 事件所有者。
 			 * @param {Event} e 事件参数。
 			 * @param {Object} target 事件目标。
 			 * @return {Event} e 事件参数。
 			 */
-			trigger: function(elem, type, fn, e) {
-				return fn( e = new Dom.Event(elem, type, e)) && (!elem[ type = 'on' + type] || elem[type](e) !== false);
+			trigger: function(ctrl, type, fn, e) {
+				ctrl = ctrl.dom;
+				return fn( e = new Dom.Event(ctrl, type, e)) && (!ctrl[ type = 'on' + type] || ctrl[type](e) !== false);
 			},
 			
 			/**
 			 * 添加绑定事件。
-			 * @param {Object} elem 对象。
+			 * @param {Control} ctrl 事件所有者。
 			 * @param {String} type 类型。
 			 * @param {Function} fn 函数。
 			 */
@@ -4959,6 +5010,7 @@ JPlus.scripts.push('System.Dom.Element');
 	 * @param {Functon} fn 执行的函数。
 	 * @member document.onLoad
 	 */
+
 
 	map('ready load', function(readyOrLoad, isLoad) {
 

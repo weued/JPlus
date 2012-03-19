@@ -1082,8 +1082,8 @@
 		 * 设置一个元素可拖动。
 		 * @param {Element} elem 要设置的节点。
 		 */
-		setMovable: function(elem) {
-			assert.isElement(elem, "Dom.setMovable(elem): 参数 elem ~");
+		move: function(elem) {
+			assert.isElement(elem, "Dom.movable(elem): 参数 elem ~");
 			if(!/^(?:abs|fix)/.test(styleString(elem, "position")))
 				elem.style.position = "relative";
 		},
@@ -1860,7 +1860,7 @@
 		
 			if (p.x) offset.x += p.x;
 		
-			Dom.setMovable(me.dom);
+			Dom.movable(me.dom);
 		
 			return me.setOffset(offset);
 		},
