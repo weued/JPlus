@@ -1082,7 +1082,7 @@
 		 * 设置一个元素可拖动。
 		 * @param {Element} elem 要设置的节点。
 		 */
-		move: function(elem) {
+		movable: function(elem) {
 			assert.isElement(elem, "Dom.movable(elem): 参数 elem ~");
 			if(!/^(?:abs|fix)/.test(styleString(elem, "position")))
 				elem.style.position = "relative";

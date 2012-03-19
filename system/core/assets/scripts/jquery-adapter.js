@@ -3329,19 +3329,26 @@ JPlus.scripts.push('System.Dom.Element');
 			// 不是 html，直接返回。
 			if( typeof html === 'string') {
 				
-				html = $(html, context);
-				
-				if(html.length > 1){
-					context = context && context.ownerDocument || document;
-					cachable = html;
-					html = context.createDocumentFragment();
+				if(html.indexOf('<') === -1) {
+					html = document.createTextNode(html);	
+				} else {
 					
-					for(var i = 0; i < cachable.length; i++){
-						html.appendChild(cachable[i]);	
+					html = $(html, context);
+					
+					if(html.length > 1){
+						context = context && context.ownerDocument || document;
+						cachable = html;
+						html = context.createDocumentFragment();
+						
+						for(var i = 0; i < cachable.length; i++){
+							html.appendChild(cachable[i]);	
+						}
+						
+					} else {
+						html = html[0];	
 					}
 					
-				} else {
-					html = html[0];	
+					
 				}
 
 			}
@@ -3622,7 +3629,7 @@ JPlus.scripts.push('System.Dom.Element');
 		 * 设置一个元素可拖动。
 		 * @param {Element} elem 要设置的节点。
 		 */
-		move: function(elem) {
+		movable: function(elem) {
 			assert.isElement(elem, "Dom.movable(elem): 参数 elem ~");
 			if(!/^(?:abs|fix)/.test(styleString(elem, "position")))
 				elem.style.position = "relative";
