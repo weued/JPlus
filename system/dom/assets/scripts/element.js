@@ -2573,7 +2573,7 @@
 			 */
 			trigger: function(ctrl, type, fn, e) {
 				ctrl = ctrl.dom;
-				return fn( e = new Dom.Event(ctrl, type, e)) && (!elem[ type = 'on' + type] || elem[type](e) !== false);
+				return fn( e = new Dom.Event(ctrl, type, e)) && (!ctrl[ type = 'on' + type] || ctrl[type](e) !== false);
 			},
 			
 			/**

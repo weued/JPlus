@@ -37,15 +37,9 @@
 }
 
 // Hover state
-.x-listbox-content:hover{
-  color: @white;
+.x-listbox-content:hover, .x-dropdownmenu .x-listbox-selected{
   background-color: @linkColor;
   
-  a {
-    color: @white;
-    text-decoration: none;
-    cursor: default;
-  }
 }
 
 .x-listbox-content a{
@@ -53,10 +47,14 @@
 }
 
 .x-listbox-selected {
-  color: @white;
   background-color: darken(@linkColor, 15%);
 }
 
-.x-listbox-selected a{
+.x-listbox-content:hover, .x-listbox-selected {
   color: @white;
+  a {
+    color: @white;
+    text-decoration: none;
+    cursor: default;
+  }
 }

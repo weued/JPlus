@@ -42,8 +42,8 @@ var Collection = Class({
 		return item;
 	},
 	
-	push: function(args){
-		return Array.prototype.forEach.call(Array.isArray(args) ? args : arguments, this.add, this);
+	addRange: function(args){
+		return Array.prototype.forEach.call(args && typeof args.length === 'number' ? args : arguments, this.add, this);
 	},
 	
 	insert: function(index, item){
