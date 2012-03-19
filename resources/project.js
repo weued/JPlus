@@ -38,7 +38,8 @@ var menus = {
 	'HTML/CSS 教程资源': {
 		'CSS 学习资源': 'resources/frontend/links.html',
 		'CSS Hack': 'resources/frontend/cssfix.html',
-		'IE6  实现 Fixed': 'resources/frontend/fixed.html'
+		'IE6  实现 Fixed': 'resources/frontend/fixed.html',
+		'特殊字符': 'resources/frontend/specialcharacters.html'
 	}, 
 	
 	'开发工具': {
