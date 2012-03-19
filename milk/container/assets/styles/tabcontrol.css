@@ -1,0 +1,32 @@
+/**
+ * @author 
+ */
+.x-tabcontrol-container {
+  padding: 10px;
+}
+.x-tabcontrol-alt .x-tabcontrol-container {
+  border-width: 0 1px 1px;
+  border-style: solid;
+  border-color: #dddddd;
+  -webkit-border-radius: 0 0 4px 4px;
+  -moz-border-radius: 0 0 4px 4px;
+  border-radius: 0 0 4px 4px;
+}
+.x-tabcontrol-alt .x-tabbable-content a {
+  margin-right: 10px;
+  border-color: #dddddd;
+  background-color: whitesmoke;
+  color: #555555;
+}
+.x-tabcontrol-alt .x-tabbable-content a:hover {
+  background-color: white;
+  -webkit-transition: background-color 0.1s linear;
+  -moz-transition: background-color 0.1s linear;
+  -ms-transition: background-color 0.1s linear;
+  -o-transition: background-color 0.1s linear;
+  transition: background-color 0.1s linear;
+}
+.x-tabcontrol-alt .x-tabbable-actived a {
+  background-color: white;
+  border-bottom-color: transparent;
+}

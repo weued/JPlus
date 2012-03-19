@@ -1,0 +1,67 @@
+.x-grid-fluid {
+  margin-top: 10px;
+  *zoom: 1;
+}
+.x-grid-fluid:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+.x-col {
+  float: left;
+  margin-left: 1.63%;
+}
+.x-container-fluid {
+  margin-left: auto;
+  margin-right: auto;
+  *zoom: 1;
+}
+.x-container-fluid:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+.x-col-1 {
+  width: 6.84%;
+}
+.x-col-2 {
+  width: 15.31%;
+}
+.x-col-3 {
+  width: 23.78%;
+}
+.x-col-4 {
+  width: 32.24%;
+}
+.x-col-5 {
+  width: 40.71%;
+}
+.x-col-6 {
+  width: 49.18%;
+}
+.x-col-7 {
+  width: 57.65%;
+}
+.x-col-8 {
+  width: 66.12%;
+}
+.x-col-9 {
+  width: 74.59%;
+}
+.x-col-10 {
+  width: 83.06%;
+}
+.x-col-11 {
+  width: 91.53%;
+}
+.x-col-12 {
+  width: 100%;
+}
+.x-col-first,
+.x-col:first-child {
+  margin-left: 0;
+}

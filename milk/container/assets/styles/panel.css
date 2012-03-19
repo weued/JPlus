@@ -1,0 +1,37 @@
+/**
+ * @author 
+ */
+.x-panel {
+  background: none repeat scroll 0 0 white;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+}
+.x-panel-header {
+  background-color: #fafafa;
+  background-image: -moz-linear-gradient(center top, white, #f3f3f3);
+  border-bottom: 1px solid #cccccc;
+  padding: 10px 10px;
+  border-radius: 4px 4px 0 0;
+}
+.x-panel-header h2 {
+  font-size: 14px;
+  line-height: 14px;
+  color: #333333;
+  margin: 0;
+}
+.x-panel-body {
+  overflow: hidden;
+  padding: 10px;
+  *zoom: 1;
+}
+.x-panel-body:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+.x-panel-collapsed .x-panel-header {
+  border-bottom: 0;
+  border-radius: 4px;
+}

@@ -1,0 +1,19 @@
+.x-closebutton {
+  font-size: 20px;
+  font-weight: bold;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  color: black;
+  text-shadow: 0 1px 0 white;
+  opacity: 0.2;
+  filter: alpha(opacity=20);
+  cursor: pointer;
+}
+.x-closebutton:hover {
+  color: black;
+  text-decoration: none;
+  opacity: 0.4;
+  filter: alpha(opacity=40);
+}

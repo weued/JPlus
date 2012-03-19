@@ -5,14 +5,13 @@
   position: absolute;
   z-index: 1020;
   display: block;
-  padding: 5px;
   font-size: 11px;
   opacity: 0.8;
   filter: alpha(opacity=80);
 }
 .x-tooltip-container {
   max-width: 200px;
-  padding: 3px 8px;
+  padding: 4px 9px;
   color: white;
   text-align: center;
   text-decoration: none;

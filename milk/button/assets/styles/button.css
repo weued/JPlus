@@ -1,11 +1,14 @@
 .x-button {
   display: inline-block;
+  *display: inline;
+  *zoom: 1;
   padding: 4px 10px;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 18px;
   color: #333333;
   text-align: center;
   text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+  vertical-align: middle;
   background-color: whitesmoke;
   background-image: -moz-linear-gradient(top, white, #e6e6e6);
   background-image: -ms-linear-gradient(top, white, #e6e6e6);
@@ -19,20 +22,19 @@
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
   border: 1px solid #cccccc;
-  border-bottom-color: #bbbbbb;
+  border-bottom-color: #b3b3b3;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
   -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
   -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
   *margin-left: .3em;
 }
 .x-button:hover,
 .x-button:active,
-.x-button.active,
-.x-button.disabled,
+.x-button.x-button-actived,
+.x-button.x-button-disabled,
 .x-button[disabled] {
   background-color: #e6e6e6;
 }
@@ -57,12 +59,16 @@
 a.x-button {
   cursor: pointer;
 }
-button.x-button:focus {
+button.x-button:focus,
+input.x-button:focus {
   outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
 }
-.x-button-actived,
-.x-button:active {
+.x-button:focus {
+  outline-offset: -2px;
+}
+.x-button:active,
+.x-button-actived {
   background-image: none;
   -webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
   -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -71,8 +77,8 @@ button.x-button:focus {
   background-color: #d9d9d9 9;
   outline: 0;
 }
-.x-button-disabled,
-.x-button[disabled] {
+.x-button[disabled],
+.x-button-disabled {
   cursor: default;
   background-image: none;
   background-color: #e6e6e6;
@@ -94,8 +100,9 @@ button.x-button:focus {
   font-size: 10px;
 }
 .x-button-smallest {
-  padding: 0 6px;
+  padding: 1px 6px;
   font-size: 10px;
+  line-height: 14px;
 }
 .x-button-highlight,
 .x-button-highlight:hover,
@@ -128,8 +135,8 @@ button.x-button:focus {
 }
 .x-button-highlight:hover,
 .x-button-highlight:active,
-.x-button-highlight.active,
-.x-button-highlight.disabled,
+.x-button-highlight.x-button-actived,
+.x-button-highlight.x-button-disabled,
 .x-button-highlight[disabled] {
   background-color: #4a81ca;
 }
@@ -153,8 +160,8 @@ button.x-button:focus {
 }
 .x-button-warning:hover,
 .x-button-warning:active,
-.x-button-warning.active,
-.x-button-warning.disabled,
+.x-button-warning.x-button-actived,
+.x-button-warning.x-button-disabled,
 .x-button-warning[disabled] {
   background-color: #f89406;
 }
@@ -178,8 +185,8 @@ button.x-button:focus {
 }
 .x-button-error:hover,
 .x-button-error:active,
-.x-button-error.active,
-.x-button-error.disabled,
+.x-button-error.x-button-actived,
+.x-button-error.x-button-disabled,
 .x-button-error[disabled] {
   background-color: #bd362f;
 }
@@ -203,8 +210,8 @@ button.x-button:focus {
 }
 .x-button-success:hover,
 .x-button-success:active,
-.x-button-success.active,
-.x-button-success.disabled,
+.x-button-success.x-button-actived,
+.x-button-success.x-button-disabled,
 .x-button-success[disabled] {
   background-color: #51a351;
 }
@@ -228,8 +235,8 @@ button.x-button:focus {
 }
 .x-button-info:hover,
 .x-button-info:active,
-.x-button-info.active,
-.x-button-info.disabled,
+.x-button-info.x-button-actived,
+.x-button-info.x-button-disabled,
 .x-button-info[disabled] {
   background-color: #2f96b4;
 }
@@ -253,8 +260,8 @@ button.x-button:focus {
 }
 .x-button-inverse:hover,
 .x-button-inverse:active,
-.x-button-inverse.active,
-.x-button-inverse.disabled,
+.x-button-inverse.x-button-actived,
+.x-button-inverse.x-button-disabled,
 .x-button-inverse[disabled] {
   background-color: #262626;
 }
@@ -264,27 +271,20 @@ button.x-button:focus {
 }
 button.x-button,
 input.x-button {
-  *padding-top: 2px;
-  *padding-bottom: 2px;
+  *padding: 4px 5px 0;
 }
-button.x-button::-moz-focus-inner,
-input.x-button::-moz-focus-inner {
-  padding: 0;
-  border: 0;
-}
-button.x-button.x-button-large,
-input.x-button.x-button-large {
+button.x-button-large,
+input.x-button-large {
   *padding-top: 7px;
-  *padding-bottom: 7px;
+  *padding-bottom: 5px;
 }
-button.x-button.x-button-small,
-input.x-button.x-button-small {
-  *padding-top: 3px;
-  *padding-bottom: 3px;
+button.x-button-small,
+input.x-button-small {
+  *padding-top: 1px;
 }
 .x-button-plain {
   background: none;
-  border: none;
+  border-color: transparent;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;

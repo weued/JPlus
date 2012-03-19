@@ -1,0 +1,21 @@
+/**
+ * @author 
+ */
+body,
+#main {
+  background: url(../../assets/images/bg.jpg) no-repeat center top;
+}
+#main {
+  position: relative;
+  width: 980px;
+  margin-left: auto;
+  margin-right: auto;
+  *zoom: 1;
+}
+#main:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}

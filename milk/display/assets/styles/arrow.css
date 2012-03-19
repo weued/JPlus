@@ -67,20 +67,20 @@
   right: 1px;
 }
 .x-arrow-bottom {
-  bottom: -5px;
+  bottom: -10px;
   left: 36%;
 }
 .x-arrow-top {
-  top: -5px;
+  top: -10px;
   left: 36%;
 }
 .x-arrow-left {
-  left: -5px;
+  left: -10px;
   top: 50%;
   margin-top: -10px;
 }
 .x-arrow-right {
   top: 50%;
   margin-top: -10px;
-  right: -5px;
+  right: -10px;
 }

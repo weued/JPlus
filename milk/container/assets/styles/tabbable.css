@@ -23,6 +23,8 @@
 .x-tabbable-content a {
   display: block;
   border: 1px solid transparent;
+  _border-color: white;
+  _filter: chroma(color=white);
   -webkit-border-radius: 4px 4px 0 0;
   -moz-border-radius: 4px 4px 0 0;
   border-radius: 4px 4px 0 0;
@@ -33,12 +35,14 @@
   border-color: #eeeeee #eeeeee #dddddd;
   background-color: #eeeeee;
 }
-.x-tabbable-actived a,
-.x-tabbable-actived a:hover {
+.x-tabbable-selected a,
+.x-tabbable-selected a:hover {
   color: #555555;
   background-color: white;
   border: 1px solid #dddddd;
   border-bottom-color: transparent;
+  _border-bottom-color: white;
+  _filter: chroma(color=white);
   cursor: default;
 }
 .x-tabbable-alt {
@@ -47,6 +51,7 @@
 .x-tabbable-alt .x-tabbable-content a,
 .x-tabbable-alt .x-tabbable-content a:hover {
   border-color: transparent;
+  _border-color: white;
 }
 .x-tabbable-alt .x-tabbable-content a {
   padding-top: 6px;
@@ -55,8 +60,8 @@
   -moz-border-radius: 5px;
   border-radius: 5px;
 }
-.x-tabbable-alt .x-tabbable-actived a,
-.x-tabbable-alt .x-tabbable-actived a:hover {
+.x-tabbable-alt .x-tabbable-selected a,
+.x-tabbable-alt .x-tabbable-selected a:hover {
   color: white;
   background-color: #0088cc;
 }

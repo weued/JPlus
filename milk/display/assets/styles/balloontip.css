@@ -4,26 +4,10 @@
 .x-balloontip {
   position: absolute;
   z-index: 1010;
-  padding: 5px;
-}
-.x-balloontip.top {
-  margin-top: -5px;
-}
-.x-balloontip.right {
-  margin-left: 5px;
-}
-.x-balloontip.bottom {
-  margin-top: 5px;
-}
-.x-balloontip.left {
-  margin-left: -5px;
-}
-.x-balloontip-container {
-  padding: 3px;
   width: 280px;
-  overflow: hidden;
   background: black;
   background: rgba(0, 0, 0, 0.8);
+  padding: 3px;
   -webkit-border-radius: 6px;
   -moz-border-radius: 6px;
   border-radius: 6px;
@@ -31,18 +15,11 @@
   -moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
   box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
 }
-.x-balloontip-title {
-  padding: 9px 15px;
-  line-height: 1;
-  background-color: whitesmoke;
-  border-bottom: 1px solid #eeeeee;
-  -webkit-border-radius: 3px 3px 0 0;
-  -moz-border-radius: 3px 3px 0 0;
-  border-radius: 3px 3px 0 0;
-  margin: 0;
+.x-balloontip-body {
+  overflow: hidden;
 }
-.x-balloontip-content {
-  padding: 10px 14px 14px;
+.x-balloontip-container {
+  padding: 10px;
   background-color: white;
   -webkit-border-radius: 0 0 3px 3px;
   -moz-border-radius: 0 0 3px 3px;
@@ -51,9 +28,19 @@
   -moz-background-clip: padding-box;
   background-clip: padding-box;
 }
-.x-balloontip-content p,
-.x-balloontip-content ul,
-.x-balloontip-content ol {
+.x-balloontip-header {
+  padding: 9px 15px;
+  line-height: 1;
+  background-color: whitesmoke;
+  border-bottom: 1px solid #eeeeee;
+  -webkit-border-radius: 3px 3px 0 0;
+  -moz-border-radius: 3px 3px 0 0;
+  border-radius: 3px 3px 0 0;
+}
+.x-balloontip-header h2,
+.x-balloontip-header h3,
+.x-balloontip-header h4,
+.x-balloontip-header h5 {
   margin: 0;
 }
 .x-balloontip .x-arrow {

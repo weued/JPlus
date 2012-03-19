@@ -1,7 +1,7 @@
 .x-textbox {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding: 4px;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 18px;
   color: #555555;
   border: 1px solid #cccccc;
@@ -28,6 +28,14 @@
 .x-textbox[readonly] {
   border-color: #dddddd;
   background-color: #eeeeee;
+}
+input.x-textbox {
+  height: 18px;
+}
+textarea.x-textbox {
+  width: 60%;
+  height: 90px;
+  line-height: 19px;
 }
 .x-textbox-warning {
   border-color: #c09853;

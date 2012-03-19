@@ -84,8 +84,8 @@ a.x-hint:hover {
 .x-success {
   color: #468847 !important;
 }
-html .x-control,
-html div.x-control {
+html .x-row,
+html div.x-row {
   margin-bottom: 10px;
 }
 .x-blank {
