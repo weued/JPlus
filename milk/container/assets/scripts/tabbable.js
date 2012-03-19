@@ -1,1 +1,1 @@
-/** * @author  */using("Controls.Core.ListControl");var Tabbable = ListControl.extend({		xType: 'tabbable',		init: function(){		this.base('init');		this.controls.each(function(value){			this.getChildContainer(value).on('click', function(){				this.setSelectedItem(value)			}, this);		}, this);	}});
+/** * @author  */using("Controls.Core.ListControl");var Tabbable = ListControl.extend({		xType: 'tabbable',		init: function(){		this.base('init');				this.bindSelector('click');	}});
