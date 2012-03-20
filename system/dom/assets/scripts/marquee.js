@@ -71,6 +71,7 @@ var Marquee = Control.extend({
 	
 	init: function(options){
 		this.container = this.find('ul');
+		this.setStyle('overflow', 'hidden');
 		
 		
 		if(options.loop !== false){
