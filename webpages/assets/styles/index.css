@@ -2,10 +2,9 @@
  * @author 
  */
 
-body{
-	font-family: "Helvetica Neue","微软雅黑", Helvetica,Arial,sans-serif;
+h2, h3 {
+	color: #0092DB;	
 }
-
 
 #intro {
 	padding-left: 190px;
@@ -13,22 +12,37 @@ body{
 }
 
 
-h2 {
-	color: #0092DB;	
+.rightborder {
+	border-right: 1px dotted #E5E5E5;
 }
 
+
+.concat {
+	float: right;
+	width: 240px;	
+}
+
+#footer {
+    border-top: 1px solid #E5E5E5;
+    clear: both;
+    color: #6F6F6F;
+    font-size: 11px;
+    height: 65px;
+    line-height: 65px;
+}
 
 #content {
     background: url(../images/shadow.png) no-repeat scroll center top #F7F7F7;
     padding: 10px 0;
     text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
 }
+/*
 
 
-#content .concat {
-	float: right;
-	width: 240px;	
-}
+
+
+
+#content 
 
 .control-label {
 	float: left;
@@ -41,21 +55,9 @@ h2 {
 	vertical-align: 3px;
 }
 
-#footer {
-    border-top: 1px solid #E5E5E5;
-    clear: both;
-    color: #6F6F6F;
-    font-size: 11px;
-    height: 65px;
-    line-height: 65px;
-}
 
 .host {
 	float: right;	
-}
-
-.rightborder {
-	border-right: 1px dotted #E5E5E5;
 }
 
 .span4 {
@@ -85,14 +87,12 @@ hr {
 .project-git {
 	padding: 7px 10px;
 	margin: 10px;	
-}
-
-
+}*/
 
 /*   panel1  */
 
-
+/*
 .splitcontainer-west {
 	border: 1px solid #B5BCC7;
 	float: left;
-}
+}*/
