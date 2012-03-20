@@ -16,7 +16,7 @@
 		
 	moduleName = moduleName.substring(0, moduleName.indexOf('/'));
 	
-	document.write('<link type="text/css" rel="stylesheet" href="' + root + 'assets/styles/default.css" />');
+	document.write('<link type="text/css" rel="stylesheet" href="' + root + 'assets/styles/system.css" />');
 	//document.write('<link type="text/css" rel="stylesheet" href="' + root + 'assets/libs/google-code-prettify/prettify.css" />');
 	if(!window.console || !window.console.groupEnd)
 		document.write('<script type="text/javascript" src="' + root + 'assets/libs/firebug-lite/build/firebug-lite.js"></script>');
