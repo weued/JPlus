@@ -1,5 +1,5 @@
 ﻿/*
- * This file is created by a tool at 2012/03/19 17:09:34
+ * This file is created by a tool at 2012/03/20 10:25:08
  */
 
 
@@ -3911,7 +3911,7 @@ JPlus.resolveNamespace = function(ns, isStyle){
 		 * 设置一个元素可拖动。
 		 * @param {Element} elem 要设置的节点。
 		 */
-		move: function(elem) {
+		movable: function(elem) {
 			assert.isElement(elem, "Dom.movable(elem): 参数 elem ~");
 			if(!/^(?:abs|fix)/.test(styleString(elem, "position")))
 				elem.style.position = "relative";
@@ -7563,7 +7563,11 @@ var ListControl = ScrollableControl.extend({
 			this.selectedItem = item;
 			
 			if(item != null){
-				this.baseSetSelected(this.getContainerOf(item).scrollIntoView(), true);
+				item = this.getContainerOf(item);
+				if(!navigator.isQuirks)
+					item.scrollIntoView();
+				this.baseSetSelected(item, true);
+				
 			}
 			
 		}
@@ -7782,11 +7786,15 @@ var ContentControl = Control.extend({
 	setText: function(value){
 		this.container.setText(value);
 		this.insertIcon(this.icon);
+		
+		return this;
 	},
 	
 	setHtml: function(value){
 		this.container.setHtml(value);
 		this.insertIcon(this.icon);
+		
+		return this;
 	}
 	
 });
@@ -8416,6 +8424,18 @@ var CombinedTextBox = TextBox.extend({
 	 * @override
 	 */
 	init: function(){
+		
+		if(this.dom.tagName === 'INPUT'){
+			var t = this.dom;
+			this.dom = document.createElement('span');
+			if(t.parentNode)
+				t.parentNode.replaceChild(this.dom, t);
+				
+			this.dom.className = 'x-combinedtextbox';
+			this.dom.appendChild(t);
+			this.dom.appendChild(Dom.parseNode('<button class="x-button"><span class="x-button-menu x-button-menu-down"></span></button>'));
+		}
+		
 		this.addClass('x-combinedtextbox');
 		this.textBox = new TextBox(this.find('[type=text]'));
 		this.menuButton = this.find('.x-button');
@@ -8569,8 +8589,7 @@ var ComboBox = CombinedTextBox.extend(IDropDownMenuContainer).implement({
 	 * 获取当前组合框的值。
 	 */
 	getValue: function(){
-		var t = this.dropDownMenu.formProxy;
-		return t ? t.value : null;
+		return this.dropDownMenu.getValue();
 	},
 	
 	/**
@@ -8695,7 +8714,7 @@ var ListBox = ListControl.extend(IInput).implement({
 		if(this.dom.tagName === 'SELECT'){
 			t = this.dom;
 			this.dom = this.create(options);
-			t.parentNode.replaceChild(this.dom, select);
+			t.parentNode.replaceChild(this.dom, t);
 		}
 		
 		this.base('init');

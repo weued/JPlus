@@ -1,5 +1,5 @@
 ﻿/*
- * This file is created by a tool at 2012/03/19 17:09:34
+ * This file is created by a tool at 2012/03/20 10:25:08
  */
 
 
@@ -1407,7 +1407,6 @@ textarea.x-textbox {
 }
 .x-panel-body {
   overflow: hidden;
-  padding: 10px;
   *zoom: 1;
 }
 .x-panel-body:after {
@@ -1416,6 +1415,9 @@ textarea.x-textbox {
   height: 0;
   clear: both;
   visibility: hidden;
+}
+.x-paner-container {
+  padding: 10px;
 }
 .x-panel-collapsed .x-panel-header {
   border-bottom: 0;
