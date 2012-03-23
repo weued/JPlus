@@ -1838,10 +1838,14 @@
 		 */
 		setOffset: function(p) {
 		
-			assert(o.isObject(p) && 'x' in p && 'y' in p, "Control.prototype.setOffset(p): {p} 必须有 'x' 和 'y' 属性。", p);
+			assert(o.isObject(p), "Control.prototype.setOffset(p): {p} 必须有 'x' 和 'y' 属性。", p);
 			var s = this.dom.style;
-			s.top = p.y + 'px';
-			s.left = p.x + 'px';
+			
+			if(p.y != null)
+				s.top = p.y + 'px';
+				
+			if(p.x != null)
+				s.left = p.x + 'px';
 			return this;
 		},
 	
@@ -1856,13 +1860,13 @@
 				offset = me.getOffset().sub(me.getPosition()),
 				p = formatPoint(x, y);
 		
-			if (p.y) offset.y += p.y;
+			if (p.y != null) p.y += offset.y; 
 		
-			if (p.x) offset.x += p.x;
+			if (p.x != null) p.x += offset.x;
 		
 			Dom.movable(me.dom);
 		
-			return me.setOffset(offset);
+			return me.setOffset(p);
 		},
 	
 		/**
@@ -2865,6 +2869,8 @@
 	} else {
 		setTimeout(Dom.load, 1);
 	}
+	
+	Point.format = formatPoint;
 	
 	div = null;
 

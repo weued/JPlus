@@ -1,0 +1,45 @@
+/**
+ * @author 
+ */
+
+
+
+@import "../../../core/assets/styles/mixins.less";
+
+
+// Badge
+// ------
+
+// Base
+.x-badge {
+  padding: 1px 9px 2px;
+  font-size: @baseFontSize * .925;
+  font-weight: bold;
+  white-space: nowrap;
+  color: @white;
+  background-color: @grayLight;
+  .border-radius(9px);
+}
+
+// Hover state
+.x-badge:hover {
+  color: @white;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+// Colors
+.x-badge-error            { background-color: @errorText; }
+.x-badge-error:hover      { background-color: darken(@errorText, 10%); }
+
+.x-badge-warning          { background-color: @orange; }
+.x-badge-warning:hover    { background-color: darken(@orange, 10%); }
+
+.x-badge-success          { background-color: @successText; }
+.x-badge-success:hover    { background-color: darken(@successText, 10%); }
+
+.x-badge-info             { background-color: @infoText; }
+.x-badge-info:hover       { background-color: darken(@infoText, 10%); }
+
+.x-badge-inverse          { background-color: @grayDark; }
+.x-badge-inverse:hover    { background-color: darken(@grayDark, 10%); }

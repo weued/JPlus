@@ -4,3 +4,41 @@
 
 
 
+@import "../../../core/assets/styles/mixins.less";
+
+.x-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: @zindexModal;
+  overflow: auto;
+  width: 560px;
+  margin-left: -280px;
+  background-color: @white;
+  border: 1px solid #999;
+  border: 1px solid rgba(0,0,0,.3);
+  *border: 1px solid #999; /* IE6-7 */
+  .border-radius(6px);
+  .box-shadow(0 3px 7px rgba(0,0,0,0.3));
+  .background-clip(padding-box);
+}
+
+
+.x-dialog-header {
+  padding: 7px 10px;
+  border-bottom: 1px solid #D9D9D9;
+  background-color: #F2F2F2;
+  background-image: -moz-linear-gradient(center top , #F8F8F8, #F0F0F0);
+  h2, h3, h4 {
+    margin: 0;
+  }
+}
+
+.x-dialog-body {
+  overflow: hidden;
+}
+
+.x-dialog-container {
+  padding: 10px; 
+  overflow-y: auto;
+}

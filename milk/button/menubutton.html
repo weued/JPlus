@@ -6,6 +6,7 @@
 		
 		<link href="../core/assets/styles/base.css" rel="stylesheet" type="text/css">
 		<link href="assets/styles/button.less" rel="stylesheet/less" type="text/css" />
+		<link href="assets/styles/menu.less" rel="stylesheet/less" type="text/css" />
 		<link href="assets/styles/menubutton.less" rel="stylesheet/less" type="text/css" />
 		
 		<script src="../../system/core/assets/scripts/system.js" type="text/javascript"></script>
@@ -29,7 +30,8 @@
    			<a id="a" href="#" class="x-button x-menubutton">菜单Menu<span class="x-button-menu x-button-menu-down"></span></a>
 	   		<script>
 	   			var a = new MenuButton('a');
-	   			a.items.add('aa');
+	   			a.items.add('click me').setAttr('href', 'javascript:alert(\'hello\');');
+	   			a.items.add('<a href="javascript:alert(\'hello\');">click me</a>');
 	   		</script>
 	   		
    		</section>

@@ -38,10 +38,13 @@
 .x-menuitem {
 	display: block;
   padding: 3px 10px;
-  color: @gray;
   white-space: nowrap;
   cursor: default;
   _width:100%;
+}
+
+.x-menuitem, .x-menuitem a{
+  color: @gray;
 }
 
 // Dividers (basically an hr) within the dropdown
@@ -71,8 +74,11 @@
 // Hover state
 .x-menuitem:hover,
 .x-menuitem-selected {
-  color: @white;
   background-color: @linkColor;
-  text-decoration: none;
   background-position: 100% -33px;
+}
+
+.x-menuitem:hover, .x-menuitem-selected, .x-menuitem:hover a, .x-menuitem-selected a{
+  color: @white;
+  text-decoration: none;
 }
