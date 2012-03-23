@@ -10,6 +10,7 @@
   opacity: 0.2;
   filter: alpha(opacity=20);
   cursor: pointer;
+  float: right;
 }
 .x-closebutton:hover {
   color: black;

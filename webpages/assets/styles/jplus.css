@@ -1,5 +1,5 @@
 ﻿/*
- * This file is created by a tool at 2012/03/20 15:56:25
+ * This file is created by a tool at 2012/03/23 19:34:12
  */
 
 
@@ -426,36 +426,42 @@ blockquote.x-right small {
 /**
  * @author 
  */
+
 /************************************
  * Milk.Core.ListControl
  ************************************/
 /**
  * @author 
  */
+
 /************************************
  * Milk.Core.ContainerControl
  ************************************/
 /**
  * @author 
  */
+
 /************************************
  * Milk.Core.ContentControl
  ************************************/
 /**
  * @author 
  */
+
 /************************************
  * Milk.Core.ICollapsable
  ************************************/
 /**
  * @author 
  */
+
 /************************************
  * Milk.Core.IDropDownMenuContainer
  ************************************/
 /**
  * @author 
  */
+
 .x-dropdownmenu {
   -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
@@ -508,7 +514,7 @@ blockquote.x-right small {
 }
 .x-button:active,
 .x-button.x-button-actived {
-  background-color: #cccccc 9;
+  background-color: #cccccc \9;
 }
 .x-button:first-child {
   *margin-left: 0;
@@ -542,7 +548,7 @@ input.x-button:focus {
   -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
   background-color: #e6e6e6;
-  background-color: #d9d9d9 9;
+  background-color: #d9d9d9 \9;
   outline: 0;
 }
 .x-button[disabled],
@@ -610,7 +616,7 @@ input.x-button:focus {
 }
 .x-button-highlight:active,
 .x-button-highlight.x-button-actived {
-  background-color: #3368ae 9;
+  background-color: #3368ae \9;
 }
 .x-button-warning {
   background-color: #faa732;
@@ -635,7 +641,7 @@ input.x-button:focus {
 }
 .x-button-warning:active,
 .x-button-warning.x-button-actived {
-  background-color: #c67605 9;
+  background-color: #c67605 \9;
 }
 .x-button-error {
   background-color: #da4f49;
@@ -660,7 +666,7 @@ input.x-button:focus {
 }
 .x-button-error:active,
 .x-button-error.x-button-actived {
-  background-color: #942a25 9;
+  background-color: #942a25 \9;
 }
 .x-button-success {
   background-color: #5bb75b;
@@ -685,7 +691,7 @@ input.x-button:focus {
 }
 .x-button-success:active,
 .x-button-success.x-button-actived {
-  background-color: #408140 9;
+  background-color: #408140 \9;
 }
 .x-button-info {
   background-color: #49afcd;
@@ -710,7 +716,7 @@ input.x-button:focus {
 }
 .x-button-info:active,
 .x-button-info.x-button-actived {
-  background-color: #24748c 9;
+  background-color: #24748c \9;
 }
 .x-button-inverse {
   background-color: #393939;
@@ -735,7 +741,7 @@ input.x-button:focus {
 }
 .x-button-inverse:active,
 .x-button-inverse.x-button-actived {
-  background-color: #0c0c0c 9;
+  background-color: #0c0c0c \9;
 }
 button.x-button,
 input.x-button {
@@ -809,6 +815,7 @@ input.x-button-small {
 /**
  * @author 
  */
+
 .x-splitbutton .x-button:last-child {
   padding-left: 8px;
   padding-right: 8px;
@@ -877,6 +884,7 @@ input.x-button-small {
   opacity: 0.2;
   filter: alpha(opacity=20);
   cursor: pointer;
+  float: right;
 }
 .x-closebutton:hover {
   color: black;
@@ -890,6 +898,7 @@ input.x-button-small {
 /**
  * @author 
  */
+
 .x-linkbutton {
   text-decoration: underline;
 }
@@ -926,10 +935,13 @@ input.x-button-small {
 .x-menuitem {
   display: block;
   padding: 3px 10px;
-  color: #555555;
   white-space: nowrap;
   cursor: default;
   _width: 100%;
+}
+.x-menuitem,
+.x-menuitem a {
+  color: #555555;
 }
 .x-menu-seperator {
   height: 1px;
@@ -947,10 +959,15 @@ input.x-button-small {
 }
 .x-menuitem:hover,
 .x-menuitem-selected {
-  color: white;
   background-color: #0088cc;
-  text-decoration: none;
   background-position: 100% -33px;
+}
+.x-menuitem:hover,
+.x-menuitem-selected,
+.x-menuitem:hover a,
+.x-menuitem-selected a {
+  color: white;
+  text-decoration: none;
 }
 /************************************
  * Milk.Form.IInput
@@ -958,12 +975,14 @@ input.x-button-small {
 /**
  * @author 
  */
+
 /************************************
  * Milk.Form.Form
  ************************************/
 /**
  * @author 
  */
+
 .x-formfield {
   line-height: 28px;
   margin-bottom: 10px;
@@ -1079,12 +1098,14 @@ textarea.x-textbox {
 /**
  * @author 
  */
+
 /************************************
  * Milk.Form.CombinedTextBox
  ************************************/
 /**
  * @author 
  */
+
 .x-combinedtextbox {
   position: relative;
   display: inline-block;
@@ -1124,12 +1145,14 @@ textarea.x-textbox {
 /**
  * @author 
  */
+
 /************************************
  * Milk.Form.Select
  ************************************/
 /**
  * @author 
  */
+
 .x-select {
   padding: 4px;
   font-size: 14px;
@@ -1158,6 +1181,7 @@ textarea.x-textbox {
 /**
  * @author 
  */
+
 .x-checkbox {
   margin: 0px 4px 2px;
 }
@@ -1167,6 +1191,7 @@ textarea.x-textbox {
 /**
  * @author 
  */
+
 .x-radiobutton {
   margin: 0px 4px 2px;
 }
@@ -1231,6 +1256,7 @@ textarea.x-textbox {
 /**
  * @author 
  */
+
 .x-suggest {
   margin-top: 2px;
   -webkit-border-radius: 4px;
@@ -1243,6 +1269,7 @@ textarea.x-textbox {
 /**
  * @author 
  */
+
 .x-tabbable {
   border-bottom: 1px solid #dddddd;
   *zoom: 1;
@@ -1313,6 +1340,7 @@ textarea.x-textbox {
 /**
  * @author 
  */
+
 .x-stackable {
   border-bottom: none;
 }
@@ -1357,6 +1385,7 @@ textarea.x-textbox {
 /**
  * @author 
  */
+
 .x-accordion {
   margin-bottom: 18px;
 }
@@ -1387,6 +1416,7 @@ textarea.x-textbox {
 /**
  * @author 
  */
+
 .x-panel {
   background: none repeat scroll 0 0 white;
   border: 1px solid #cccccc;
@@ -1512,6 +1542,7 @@ textarea.x-textbox {
 /**
  * @author 
  */
+
 /************************************
  * Milk.Page.Grid-Fluid
  ************************************/
@@ -1528,7 +1559,7 @@ textarea.x-textbox {
 }
 .x-col {
   float: left;
-  margin-left: 1.63%;
+  margin-left: 1.632653061%;
 }
 .x-container-fluid {
   margin-left: auto;
@@ -1543,40 +1574,40 @@ textarea.x-textbox {
   visibility: hidden;
 }
 .x-col-1 {
-  width: 6.84%;
+  width: 6.836734693%;
 }
 .x-col-2 {
-  width: 15.31%;
+  width: 15.306122447%;
 }
 .x-col-3 {
-  width: 23.78%;
+  width: 23.775510201%;
 }
 .x-col-4 {
-  width: 32.24%;
+  width: 32.244897955%;
 }
 .x-col-5 {
-  width: 40.71%;
+  width: 40.714285709%;
 }
 .x-col-6 {
-  width: 49.18%;
+  width: 49.183673463%;
 }
 .x-col-7 {
-  width: 57.65%;
+  width: 57.653061217%;
 }
 .x-col-8 {
-  width: 66.12%;
+  width: 66.122448971%;
 }
 .x-col-9 {
-  width: 74.59%;
+  width: 74.591836725%;
 }
 .x-col-10 {
-  width: 83.06%;
+  width: 83.061224479%;
 }
 .x-col-11 {
-  width: 91.53%;
+  width: 91.530612233%;
 }
 .x-col-12 {
-  width: 100%;
+  width: 99.999999987%;
 }
 .x-col-first,
 .x-col:first-child {
@@ -1659,6 +1690,7 @@ textarea.x-textbox {
 /**
  * @author 
  */
+
 .x-breadcrumb {
   padding: 7px 14px;
   margin: 0;
@@ -1698,6 +1730,7 @@ textarea.x-textbox {
 /**
  * @author 
  */
+
 .x-pagination {
   height: 36px;
 }
@@ -1763,6 +1796,7 @@ textarea.x-textbox {
 /**
  * @author 
  */
+
 .x-pager {
   margin-left: 0;
   list-style: none;
@@ -1804,6 +1838,7 @@ textarea.x-textbox {
 /**
  * @author 
  */
+
 /************************************
  * Milk.Display.Thumbnail
  ************************************/
@@ -2220,6 +2255,7 @@ a.x-thumbnail:hover {
 /**
  * @author 
  */
+
 ul.x-list,
 .x-list ul {
   margin: 0 0 9px 25px;
@@ -2238,6 +2274,7 @@ li.x-list,
 /**
  * @author
  */
+
 .x-arrow {
   font-family: "SimSun";
   overflow: hidden;
@@ -2327,6 +2364,7 @@ li.x-list,
 /**
  * @author 
  */
+
 .x-tip {
   padding: 2px 4px 3px;
   font-size: 10.2px;
@@ -2433,6 +2471,7 @@ div.x-tipbox {
 /**
  * @author 
  */
+
 @-webkit-keyframes progress-bar-stripes {
   from {
     background-position: 0 0;
@@ -2607,6 +2646,7 @@ div.x-tipbox {
 /**
  * @author 
  */
+
 .x-tooltip {
   position: absolute;
   z-index: 1020;
@@ -2632,6 +2672,7 @@ div.x-tipbox {
 /**
  * @author 
  */
+
 .x-balloontip {
   position: absolute;
   z-index: 1010;
@@ -2683,6 +2724,7 @@ div.x-tipbox {
 /**
  * @author 
  */
+
 .x-line {
   border-color: #dddddd;
 }

@@ -1,5 +1,5 @@
 ﻿/*
- * This file is created by a tool at 2012/03/20 15:56:25
+ * This file is created by a tool at 2012/03/23 19:34:12
  */
 
 
@@ -4667,10 +4667,14 @@ JPlus.resolveNamespace = function(ns, isStyle){
 		 */
 		setOffset: function(p) {
 		
-			assert(o.isObject(p) && 'x' in p && 'y' in p, "Control.prototype.setOffset(p): {p} 必须有 'x' 和 'y' 属性。", p);
+			assert(o.isObject(p), "Control.prototype.setOffset(p): {p} 必须有 'x' 和 'y' 属性。", p);
 			var s = this.dom.style;
-			s.top = p.y + 'px';
-			s.left = p.x + 'px';
+			
+			if(p.y != null)
+				s.top = p.y + 'px';
+				
+			if(p.x != null)
+				s.left = p.x + 'px';
 			return this;
 		},
 	
@@ -4685,13 +4689,13 @@ JPlus.resolveNamespace = function(ns, isStyle){
 				offset = me.getOffset().sub(me.getPosition()),
 				p = formatPoint(x, y);
 		
-			if (p.y) offset.y += p.y;
+			if (p.y != null) p.y += offset.y; 
 		
-			if (p.x) offset.x += p.x;
+			if (p.x != null) p.x += offset.x;
 		
 			Dom.movable(me.dom);
 		
-			return me.setOffset(offset);
+			return me.setOffset(p);
 		},
 	
 		/**
@@ -5694,6 +5698,8 @@ JPlus.resolveNamespace = function(ns, isStyle){
 	} else {
 		setTimeout(Dom.load, 1);
 	}
+	
+	Point.format = formatPoint;
 	
 	div = null;
 
@@ -7564,8 +7570,8 @@ var ListControl = ScrollableControl.extend({
 			
 			if(item != null){
 				item = this.getContainerOf(item);
-				if(!navigator.isQuirks)
-					item.scrollIntoView();
+			//	if(!navigator.isQuirks)
+			//		item.scrollIntoView();
 				this.baseSetSelected(item, true);
 				
 			}
@@ -7664,9 +7670,9 @@ var ListControl = ScrollableControl.extend({
  ************************************/
 var ContainerControl = ScrollableControl.extend({
 	
-	initHeader: function(){
-		Dom.get(this.dom).insert('afterBegin', this.header);
-		this.header.setHtml('<h2></h2>');
+	initHeader: function(header){
+		Dom.get(this.dom).insert('afterBegin', header);
+		header.setHtml('<h2></h2>');
 	},
 	
 	toggleHeader: function (value) {
@@ -7676,19 +7682,18 @@ var ContainerControl = ScrollableControl.extend({
 				this.header = null;
 			}
 		} else if(value){
-			this.header = Dom.create('div', 'x-' + this.xType + '-header');
-			this.initHeader();
+			this.initHeader(this.header = Dom.create('div', 'x-' + this.xType + '-header'));
 		}
 	},
 	
 	getTitle: function(){
-		return this.header.find('h2, h3, h4, h5, a').getText();
+		return (this.header.find('h2, h3, h4, h5') || this.header.find('a')).getText();
 	},
 	
 	setTitle: function(value){
 		if(value != null){
 			this.toggleHeader(true);
-			this.header.find('h2, h3, h4, h5, a').setText(value);
+			(this.header.find('h2, h3, h4, h5') || this.header.find('a')).setText(value);
 		} else {
 			this.toggleHeader(false);
 		}

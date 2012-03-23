@@ -28,10 +28,13 @@
 .x-menuitem {
   display: block;
   padding: 3px 10px;
-  color: #555555;
   white-space: nowrap;
   cursor: default;
   _width: 100%;
+}
+.x-menuitem,
+.x-menuitem a {
+  color: #555555;
 }
 .x-menu-seperator {
   height: 1px;
@@ -49,8 +52,13 @@
 }
 .x-menuitem:hover,
 .x-menuitem-selected {
-  color: white;
   background-color: #0088cc;
-  text-decoration: none;
   background-position: 100% -33px;
+}
+.x-menuitem:hover,
+.x-menuitem-selected,
+.x-menuitem:hover a,
+.x-menuitem-selected a {
+  color: white;
+  text-decoration: none;
 }
