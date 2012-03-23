@@ -48,6 +48,8 @@
 "../../assets/tools/dotless/dotless.Compiler.exe" ../form/assets/styles/radiobutton.less
 "../../assets/tools/dotless/dotless.Compiler.exe" ../form/assets/styles/listbox.less
 "../../assets/tools/dotless/dotless.Compiler.exe" ../form/assets/styles/suggest.less
+"../../assets/tools/dotless/dotless.Compiler.exe" ../form/assets/styles/validator.less
+"../../assets/tools/dotless/dotless.Compiler.exe" ../form/assets/styles/tagpicker.less
 "../../assets/tools/dotless/dotless.Compiler.exe" ../form/assets/styles/searchtextbox.less
 
 :: Button
@@ -66,6 +68,7 @@
 "../../assets/tools/dotless/dotless.Compiler.exe" ../container/assets/styles/tabcontrol.less
 "../../assets/tools/dotless/dotless.Compiler.exe" ../container/assets/styles/accordion.less
 "../../assets/tools/dotless/dotless.Compiler.exe" ../container/assets/styles/panel.less
+"../../assets/tools/dotless/dotless.Compiler.exe" ../container/assets/styles/dialog.less
 
 :: DataView
 "../../assets/tools/dotless/dotless.Compiler.exe" ../dataview/assets/styles/table.less
