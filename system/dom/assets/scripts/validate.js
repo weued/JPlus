@@ -212,7 +212,7 @@ Validator.messages = {
 	
 	pattern: '格式不正确',
 	
-	email: '请填写有效的邮箱地址。例如：example@163.com',
+	email: '请填写有效的邮箱地址。',
 	
 	id: '请填写正确的身份证',
 	
