@@ -10,6 +10,7 @@ var navs = {
 	'Milk': 'milk/index.html',
 	'hust': 'hust/index.html',
 	'wplus':'wplus/index.html',
+	'CodeBase': 'codebase/index.html',
 	'资源': 'resources/index.html'
 };
 
