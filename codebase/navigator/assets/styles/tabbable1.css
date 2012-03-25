@@ -1,0 +1,52 @@
+/**
+ * @author 
+ */
+
+
+body{
+color: #000;
+font-family: "宋体", arial;
+font-size: 12px;
+background: #fff;
+text-align: center;
+margin: 0;
+}
+.nTab{
+float: left;
+width: 960px;
+margin: 0 auto;
+border-bottom:1px #AACCEE solid;
+background:#d5d5d5;
+background-position:left;
+background-repeat:repeat-y;
+margin-bottom:2px;
+}
+.nTab .TabTitle{
+clear: both;
+height: 22px;
+overflow: hidden;
+}
+.nTab .TabTitle ul{
+border:0;
+margin:0;
+padding:0;
+}
+.nTab .TabTitle li{
+float: left;
+width: 70px;
+cursor: pointer;
+padding-top: 4px;
+padding-right: 0px;
+padding-left: 0px;
+padding-bottom: 2px;
+list-style-type: none;
+}
+.nTab .TabTitle .active{background:#fff;border-left:1px #AACCEE solid;border-top:1px #AACCEE solid;border-right:1px #AACCEE solid;border-bottom:1px #fff solid;}
+.nTab .TabTitle .normal{background:#EBF3FB;border:1px #AACCEE solid;}
+.nTab .TabContent{
+width:auto;background:#fff;
+margin: 0px auto;
+padding:10px 0 0 0;
+border-right:1px #AACCEE solid;border-left:1px #AACCEE solid;
+}
+.none {display:none;}

@@ -1,0 +1,59 @@
+/**
+ * @author 
+ */
+
+
+BODY {
+	FONT-SIZE: 12px; COLOR: #414141; FONT-FAMILY: "宋体", Arial, Helvetica, sans-serif; TEXT-ALIGN: center
+}
+.public_top_window {
+	BORDER-RIGHT: #b39f86 1px solid; PADDING-RIGHT: 28px; BORDER-TOP: #b39f86 1px solid; PADDING-LEFT: 28px; PADDING-BOTTOM: 3px; BORDER-LEFT: #b39f86 1px solid; WIDTH: 608px; PADDING-TOP: 3px; BORDER-BOTTOM: #b39f86 1px solid; HEIGHT: 154px; BACKGROUND-COLOR: #fff
+}
+.public_top_window A:link {
+	COLOR: #0041d3; TEXT-DECORATION: none
+}
+.public_top_window A:visited {
+	COLOR: #0041d3; TEXT-DECORATION: none
+}
+.public_top_window A:hover {
+	COLOR: #ff7000; TEXT-DECORATION: underline
+}
+.public_top_window A:active {
+	COLOR: #bc2931; TEXT-DECORATION: underline
+}
+.public_top_window {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px
+}
+.public_top_window UL {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 10px; WIDTH: 688px; PADDING-TOP: 10px; BORDER-BOTTOM: #d1cfd0 1px dotted; LIST-STYLE-TYPE: none
+}
+.public_top_window UL LI {
+	DISPLAY: block; FLOAT: left; WIDTH: 86px; LINE-HEIGHT: 20px
+}
+.public_top_window UL H2 {
+	FONT-WEIGHT: normal; FONT-SIZE: 12px; FLOAT: left; WIDTH: 52px; MARGIN-RIGHT: 14px; PADDING-TOP: 3px; HEIGHT: 16px; BACKGROUND-COLOR: #f6791f; TEXT-ALIGN: center
+}
+.public_top_window UL H2 A:link {
+	COLOR: #fff; TEXT-DECORATION: none
+}
+.public_top_window UL H2 A:visited {
+	COLOR: #fff; TEXT-DECORATION: none
+}
+.public_top_window UL H2 A:hover {
+	COLOR: #fff; TEXT-DECORATION: underline
+}
+.public_top_window UL .h_bj {
+	BACKGROUND-COLOR: #00a881
+}
+.public_top_window .reduce_h {
+	PADDING-BOTTOM: 5px; HEIGHT: 20px
+}
+.n2Pop {
+	BORDER-RIGHT: #eeeddd 0px outset; BORDER-TOP: #eeeddd 0px outset; Z-INDEX: 200; BORDER-LEFT: #eeeddd 0px outset; BORDER-BOTTOM: #eeeddd 0px outset; POSITION: absolute; BACKGROUND-COLOR: #fff
+}
+.animatedBox {
+	BORDER-RIGHT: gray 1px solid; BORDER-TOP: gray 1px solid; Z-INDEX: 220; BACKGROUND: white; VISIBILITY: hidden; BORDER-LEFT: gray 1px solid; BORDER-BOTTOM: gray 1px solid; POSITION: absolute
+}
+.animatedBoxHollow {
+	BORDER-RIGHT: gray 1px solid; BORDER-TOP: gray 1px solid; Z-INDEX: 220; VISIBILITY: hidden; BORDER-LEFT: gray 1px solid; BORDER-BOTTOM: gray 1px solid; POSITION: absolute
+}

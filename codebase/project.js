@@ -4,5 +4,6 @@
 
 var menus = {
 	Mouse: '+Clock',
-	Form: '+3-Select'
+	Form: '+3-Select',
+	Page: '+Pager1 +Pagination1 +Google-Navigator +Tabbable1'
 };
