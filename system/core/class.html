@@ -7,20 +7,24 @@
 		<script type="text/javascript" src="../../assets/scripts/system.js" ></script>
 	</head>
 	<body>
+		<h1>Core/Class</h1>
+		
+		<p>面向对象的实现是类库的重要组成部分。</p>
+		
 		<script>
 		
-			var SimpleClass = JPlus.Native(function(){
-				console.log("Simple");
-			});
-		
+			// 创建一个类。
 			var MyClass1 = new Class({
 				xType: "MyClass1",
+				
+				// 构造函数。
 				constructor: function MyClass1Ctr(args){
 					console.log("MyClass1->" + args);
 					assert.log("1");
 				}
 			});
 			
+			// 继承创建一个类。
 			var MyClass2 = MyClass1.extend({
 				xType: "MyClass2",
 				constructor: function MyClass2Ctr(args){
@@ -83,6 +87,11 @@
 						assert.log("unbind");
 					}
 				}
+			});
+		
+			// 从一个 Javascript 函数创建一个类。
+			var SimpleClass = JPlus.Native(function(){
+				console.log("Simple");
 			});
 			
 			
