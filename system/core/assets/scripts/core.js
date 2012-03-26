@@ -1,5 +1,5 @@
 ﻿/*
- * This file is created by a tool at 2012/03/19 19:30:19
+ * This file is created by a tool at 2012/03/26 20:15:34
  */
 
 
@@ -445,7 +445,7 @@
 	    },
 
 	    /**
-		 * 继承当前类并返回子类。
+		 * 继承当前类创建并返回子类。
 		 * @param {Object/Function} [methods] 子类的员或构造函数。
 		 * @return {Class} 继承的子类。
 		 *         <p>
@@ -1772,7 +1772,6 @@
 	}
 
 	/// #endregion
-
 
 })(this);
 
@@ -3376,13 +3375,21 @@ JPlus.resolveNamespace = function(ns, isStyle){
 		
 		/**
 		 * 根据一个 id 获取元素。如果传入的id不是字符串，则直接返回参数。
-		 * @param {String/Node/Control} id 要获取元素的 id 或元素本身。
+		 * @param {String/Node/Control/DomList} id 要获取元素的 id 或元素本身。
 	 	 * @return {Control} 元素。
 		 */
 		get: function(id) {
-			id = typeof id == "string" ? document.getElementById(id): id;
-			assert(!id || id.dom || id.nodeType, "Dom.get(id): {id} 必须是ID字符串或节点本身。", id);
-			return id ? id.dom ? id : new Dom(id) : null;
+			
+			return typeof id === "string" ?
+				(id = document.getElementById(id)) && new Dom(id) :
+				id ? 
+					id.dom ? 
+						id : 
+						id instanceof DomList ? 
+							id[0] ? new Dom(id[0]) : null : 
+							new Dom(id) : 
+					null;
+			
 		},
 		
 		/**
@@ -3391,7 +3398,32 @@ JPlus.resolveNamespace = function(ns, isStyle){
 		 * @return {Element/undefined} 节点。
 		 */
 		query: function(selector) {
-			return document.query(selector);
+			
+			// 如果传入的是字符串，作为选择器处理。
+			// 否则作为一个节点处理。
+			return selector ? 
+				typeof selector === 'string' ? 
+					document.query(selector) :
+					selector instanceof DomList ?
+						selector :
+						new DomList([Dom.get(selector)]) :
+				new DomList;
+			
+		},
+		
+		match: function (elem, selector) {
+			assert.isString(selector, "Control.prototype.find(selector): selector ~。");
+			
+			if(!elem.parentNode){
+				var div = document.createElement('div');
+				div.appendChild(elem);
+				try{
+					return match(elem, selector);
+				} finally {
+					div.removeChild(elem);
+				}
+			}
+			return match(elem, selector);
 		},
 
 		/**
@@ -3414,10 +3446,19 @@ JPlus.resolveNamespace = function(ns, isStyle){
 		 * @param {String} className 创建的节点的类名。
 		 */
 		create: function(tagName, className) {
+			return new Dom(Dom.createNode(tagName, className || ''));
+		},
+		
+		/**
+		 * 创建一个节点。
+		 * @param {String} tagName 创建的节点的标签名。
+		 * @param {String} className 创建的节点的类名。
+		 */
+		createNode: function(tagName, className) {
 			assert.isString(tagName, 'Dom.create(tagName, className): {tagName} ~');
 			var div = document.createElement(tagName);
 			div.className = className;
-			return new Dom(div);
+			return div;
 		},
 		
 		/**
@@ -3426,7 +3467,7 @@ JPlus.resolveNamespace = function(ns, isStyle){
 	 	 * @return {Node} 元素。
 		 */
 		getNode: function (id) {
-			return typeof id == "string" ? document.getElementById(id): (id && id.dom || id);
+			return typeof id === "string" ? document.getElementById(id): (id && id.dom || id);
 		},
 
 		/**
@@ -3599,7 +3640,7 @@ JPlus.resolveNamespace = function(ns, isStyle){
 			},
 			visible: function( elem ){ return !Dom.isHidden(elem); },
 			
-			not: function(elem, args){ return !match(args, elem); },
+			not: function(elem, args){ return !match(elem, args); },
 			has: function(elem, args){ return query(args, new Dom(elem)).length > 0; },
 			
 			selected: function(elem){ return elem.selected; },
@@ -4668,10 +4709,14 @@ JPlus.resolveNamespace = function(ns, isStyle){
 		 */
 		setOffset: function(p) {
 		
-			assert(o.isObject(p) && 'x' in p && 'y' in p, "Control.prototype.setOffset(p): {p} 必须有 'x' 和 'y' 属性。", p);
+			assert(o.isObject(p), "Control.prototype.setOffset(p): {p} 必须有 'x' 和 'y' 属性。", p);
 			var s = this.dom.style;
-			s.top = p.y + 'px';
-			s.left = p.x + 'px';
+			
+			if(p.y != null)
+				s.top = p.y + 'px';
+				
+			if(p.x != null)
+				s.left = p.x + 'px';
 			return this;
 		},
 	
@@ -4686,9 +4731,11 @@ JPlus.resolveNamespace = function(ns, isStyle){
 				offset = me.getOffset().sub(me.getPosition()),
 				p = formatPoint(x, y);
 		
-			if (p.y) offset.y += p.y;
+			if (p.y != null) offset.y += p.y; 
+			else offset.y = null;
 		
-			if (p.x) offset.x += p.x;
+			if (p.x != null) offset.x += p.x; 
+			else offset.x = null;
 		
 			Dom.movable(me.dom);
 		
@@ -4939,8 +4986,10 @@ JPlus.resolveNamespace = function(ns, isStyle){
 
 	.implement({
 		
+		// 父节点。
 		getParent: createTreeWalker(true, 'parentNode'),
 		
+		// 全部父节点。
 		getAllParent: createTreeWalker(false, 'parentNode'),
 
 		// 第一个节点。
@@ -5037,6 +5086,7 @@ JPlus.resolveNamespace = function(ns, isStyle){
 		 */
 		query: function(selector){
 			assert.isString(selector, "Control.prototype.find(selector): selector ~。");
+			assert(selector, "Control.prototype.find(selector): {selector} 不能为空。", selector);
 			var elem = this.dom, result;
 			
 			if(elem.nodeType !== 1) {
@@ -5163,19 +5213,7 @@ JPlus.resolveNamespace = function(ns, isStyle){
 	.implement({
 		
 		match: function (selector) {
-			assert.isString(selector, "Control.prototype.find(selector): selector ~。");
-			
-			var elem = this.dom;
-			if(!elem.parentNode){
-				var div = document.createElement('div');
-				div.appendChild(elem);
-				try{
-					return match(selector, elem);
-				} finally {
-					div.removeChild(elem);
-				}
-			}
-			return match(selector, elem);
+			return Dom.match(this.dom, selector);
 		},
 		
 		/**
@@ -5533,14 +5571,14 @@ JPlus.resolveNamespace = function(ns, isStyle){
 					elem.setAttribute(name, value);
 				}
 			};
-
-		}
-
-		try {
-
-			// 修复IE6 因 css 改变背景图出现的闪烁。
-			document.execCommand("BackgroundImageCache", false, true);
-		} catch(e) {
+	
+			try {
+	
+				// 修复IE6 因 css 改变背景图出现的闪烁。
+				document.execCommand("BackgroundImageCache", false, true);
+			} catch(e) {
+	
+			}
 
 		}
 
@@ -5549,7 +5587,7 @@ JPlus.resolveNamespace = function(ns, isStyle){
 	/// #endif
 
 	Control.addEvents
-		("mousewheel blur focus focusin focusout scroll change select submit error load unload", initUIEvent)
+		("mousewheel blur focus focusin focusout scroll change select submit resize error load unload touchstart touchmove touchend", initUIEvent)
 		("click dblclick DOMMouseScroll mousedown mouseup mouseover mouseenter mousemove mouseleave mouseout contextmenu selectstart selectend", initMouseEvent)
 		("keydown keypress keyup", initKeyboardEvent);
 
@@ -5696,6 +5734,8 @@ JPlus.resolveNamespace = function(ns, isStyle){
 		setTimeout(Dom.load, 1);
 	}
 	
+	Point.format = formatPoint;
+	
 	div = null;
 
 	apply(window, {
@@ -5748,6 +5788,8 @@ JPlus.resolveNamespace = function(ns, isStyle){
 		first = first || next;
 		return getFirst ? function(args) {
 			var node = this.dom[first];
+			
+			// 如果参数为空，则表示仅仅获取第一个节点，加速本函数的执行。
 			if(args == null) {
 				while(node) {
 					if(node.nodeType === 1)
@@ -5782,28 +5824,44 @@ JPlus.resolveNamespace = function(ns, isStyle){
 	 * @return {Funtion} 函数。
 	 */
 	function getFilter(args) {
-		switch (typeof args) {
-			case 'number':
-				return function(elem) {
-					return elem.nodeType === 1 && --args < 0;
-				};
-			case 'string':
-				if(args && args !== '*'){
-					args = args.toUpperCase();
-					return function(elem) {
-						return elem.nodeType === 1 && elem.tagName === args;
-					};
-				}
+		
+		// 如果存在 args，则根据不同的类型返回不同的检查函数。
+		if(args){
+			switch (typeof args) {
 				
-				// fall through
-			default:
-				return args ? Function.returnTrue : function(elem) {
-					return elem.nodeType === 1;
-				};
+				// 数字返回一个计数器函数。
+				case 'number':
+					return function(elem) {
+						return elem.nodeType === 1 && --args < 0;
+					};
+					
+				// 字符串，表示选择器。
+				case 'string':
+					return function(elem) {
+						return elem.nodeType === 1 && Dom.match(elem, args);
+					};
+					
+				// 布尔类型，而且是 true, 返回 Function.returnTrue，  表示不过滤。
+				case 'boolean':
+					return Function.returnTrue;
+				
+			}
+	
+			assert.isFunction(args, "Control.prototype.getXXX(args): {args} 必须是一个函数、空、数字或字符串。", args);
+			
+		} else {
+			
+			// 默认返回只判断节点的函数。
+			args = isElement;
 		}
-
-		assert.isFunction(args, "Control.prototype.getXXX(args): {args} 必须是一个函数、空、数字或字符串。", args);
 		return args;
+	}
+	
+	/**
+	 * 判断一个节点是否为元素。
+	 */
+	function isElement(elem){
+		return elem.nodeType === 1;
 	}
 
 	/**
@@ -5952,7 +6010,7 @@ JPlus.resolveNamespace = function(ns, isStyle){
 		throw new SyntaxError('An invalid or illegal string was specified : "' + string + '"!');
 	}
 
-	function match(selector, dom){
+	function match(dom, selector){
 		return new Dom(dom.parentNode).query(selector).indexOf(dom) >= 0;
 	}
 
