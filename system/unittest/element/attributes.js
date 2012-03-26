@@ -6,44 +6,44 @@ var functionReturningObj = function(value) { return (function() { return value; 
 
 test("Control.prototype.getAttr", function() {
 
-	equals( Dom.get("text1").getAttr("type"), "text", "Check for type attribute" );
-	equals( Dom.get("radio1").getAttr("type"), "radio", "Check for type attribute" );
-	equals( Dom.get("check1").getAttr("type"), "checkbox", "Check for type attribute" );
-	equals( Dom.get("simon1").getAttr("rel"), "bookmark", "Check for rel attribute" );
-	equals( Dom.get("google").getAttr("title"), "Google!", "Check for title attribute" );
-	equals( Dom.get("mark").getAttr("hreflang"), "en", "Check for hreflang attribute" );
-	equals( Dom.get("en").getAttr("lang"), "en", "Check for lang attribute" );
-	equals( Dom.get("simon").getAttr("class"), "blog link", "Check for class attribute" );
-	equals( Dom.get("name").getAttr("name"), "name", "Check for name attribute" );
-	equals( Dom.get("text1").getAttr("name"), "action", "Check for name attribute" );
+	equal( Dom.get("text1").getAttr("type"), "text", "Check for type attribute" );
+	equal( Dom.get("radio1").getAttr("type"), "radio", "Check for type attribute" );
+	equal( Dom.get("check1").getAttr("type"), "checkbox", "Check for type attribute" );
+	equal( Dom.get("simon1").getAttr("rel"), "bookmark", "Check for rel attribute" );
+	equal( Dom.get("google").getAttr("title"), "Google!", "Check for title attribute" );
+	equal( Dom.get("mark").getAttr("hreflang"), "en", "Check for hreflang attribute" );
+	equal( Dom.get("en").getAttr("lang"), "en", "Check for lang attribute" );
+	equal( Dom.get("simon").getAttr("class"), "blog link", "Check for class attribute" );
+	equal( Dom.get("name").getAttr("name"), "name", "Check for name attribute" );
+	equal( Dom.get("text1").getAttr("name"), "action", "Check for name attribute" );
 	ok( Dom.get("form").getAttr("action").indexOf("formaction") >= 0, "Check for action attribute" );
-	equals( Dom.get("text1").setAttr("value", "t").getAttr("value"), "t", "Check setting the value attribute" );
-	equals( Dom.parse("<div value='t'></div>").getAttr("value"), "t", "Check setting custom attr named 'value' on a div" );
-	equals( Dom.get("form").setAttr("blah", "blah").getAttr("blah"), "blah", "Set non-existant attribute on a form" );
-	equals( Dom.get("foo").getAttr("height"), null, "Non existent height attribute should return undefined" );
+	equal( Dom.get("text1").setAttr("value", "t").getAttr("value"), "t", "Check setting the value attribute" );
+	equal( Dom.parse("<div value='t'></div>").getAttr("value"), "t", "Check setting custom attr named 'value' on a div" );
+	equal( Dom.get("form").setAttr("blah", "blah").getAttr("blah"), "blah", "Set non-existant attribute on a form" );
+	equal( Dom.get("foo").getAttr("height"), null, "Non existent height attribute should return undefined" );
 
 	// [7472] & [3113] (form contains an input with name="action" or name="id")
 	var extras = Dom.parse("<input name='id' name='name' />").appendTo("testForm");
 	
-	equals( Dom.get("form").setAttr("action","newformaction").getAttr("action"), "newformaction", "Check that action attribute was changed" );
-	equals( Dom.get("testForm").getAttr("target"), null, "Retrieving target does not equal the input with name=target" );
-	equals( Dom.get("testForm").setAttr("target", "newTarget").getAttr("target"), "newTarget", "Set target successfully on a form" );
-	equals( Dom.get("testForm").getAttr("name"), null, "Retrieving name does not retrieve input with name=name" );
+	equal( Dom.get("form").setAttr("action","newformaction").getAttr("action"), "newformaction", "Check that action attribute was changed" );
+	equal( Dom.get("testForm").getAttr("target"), null, "Retrieving target does not equal the input with name=target" );
+	equal( Dom.get("testForm").setAttr("target", "newTarget").getAttr("target"), "newTarget", "Set target successfully on a form" );
+	equal( Dom.get("testForm").getAttr("name"), null, "Retrieving name does not retrieve input with name=name" );
 	
-	equals( Dom.get("testForm").setAttr("id", null).getAttr("id"), null, "Retrieving id does not equal the input with name=id after id is removed" );
+	equal( Dom.get("testForm").setAttr("id", null).getAttr("id"), null, "Retrieving id does not equal the input with name=id after id is removed" );
 	extras.remove();
 
-	equals( Dom.get("text1").getAttr("maxlength"), 30, "Check for maxlength attribute" );
-	equals( Dom.get("text1").getAttr("maxLength"), 30, "Check for maxLength attribute" );
-	equals( Dom.get("area1").getAttr("maxLength"), '30', "Check for maxLength attribute" );
+	equal( Dom.get("text1").getAttr("maxlength"), 30, "Check for maxlength attribute" );
+	equal( Dom.get("text1").getAttr("maxLength"), 30, "Check for maxLength attribute" );
+	equal( Dom.get("area1").getAttr("maxLength"), '30', "Check for maxLength attribute" );
 
 	// using innerHTML in IE causes href attribute to be serialized to the full path
 	Dom.parse("<a/>").set({ "id": "tAnchor5", "href": "#5" }).appendTo("qunit-fixture");
-	equals( Dom.get("tAnchor5").getAttr("href"), "#5", "Check for non-absolute href (an anchor)" );
+	equal( Dom.get("tAnchor5").getAttr("href"), "#5", "Check for non-absolute href (an anchor)" );
 
 	// list attribute is readonly by default in browsers that support it
 	Dom.get("list-test").setAttr("list", "datalist");
-	equals( Dom.get("list-test").getAttr("list"), "datalist", "Check setting list attribute" );
+	equal( Dom.get("list-test").getAttr("list"), "datalist", "Check setting list attribute" );
 
 	// Related to [5574] and [5683]
 	var body = document.body, $body = Dom.get(body);
@@ -51,10 +51,10 @@ test("Control.prototype.getAttr", function() {
 	strictEqual( $body.getAttr("foo"), null, "Make sure that a non existent attribute returns null" );
 
 	body.setAttribute("foo", "baz");
-	equals( $body.getAttr("foo"), "baz", "Make sure the dom attribute is retrieved when no expando is found" );
+	equal( $body.getAttr("foo"), "baz", "Make sure the dom attribute is retrieved when no expando is found" );
 
 	$body.setAttr("foo","cool");
-	equals( $body.getAttr("foo"), "cool", "Make sure that setting works well when both expando and dom attribute are available" );
+	equal( $body.getAttr("foo"), "cool", "Make sure that setting works well when both expando and dom attribute are available" );
 
 	body.removeAttribute("foo"); // Cleanup
 
@@ -65,8 +65,8 @@ test("Control.prototype.getAttr", function() {
 	// equal( Dom.get( option ).getAttr("selected"), true, "Make sure that a single option is selected, even when in an optgroup." );
 
 	// var Dom.getimg = Dom.parse("<img style='display:none' width='215' height='53' src='http://static.jquery.com/files/rocker/images/logo_jquery_215x53.gif'/>").appendTo();
-	// equals( Dom.getimg.getAttr("width"), "215", "Retrieve width attribute an an element with display:none." );
-	// equals( Dom.getimg.getAttr("height"), "53", "Retrieve height attribute an an element with display:none." );
+	// equal( Dom.getimg.getAttr("width"), "215", "Retrieve width attribute an an element with display:none." );
+	// equal( Dom.getimg.getAttr("height"), "53", "Retrieve height attribute an an element with display:none." );
  
 	// Check for style support
 	//ok( !!~Dom.get("dl").getAttr("style").indexOf("position"), "Check style attribute getter, also normalize css props to lowercase" );
@@ -75,12 +75,12 @@ test("Control.prototype.getAttr", function() {
 	// Check value on button element (#1954)
 	var $button = Dom.get("button").insert( "afterEnd", "<button value='foobar'>text</button>");
 	
-	equals( $button.getAttr("value"), "foobar", "Value retrieval on a button does not return innerHTML" );
-	equals( $button.setAttr("value", "baz").getHtml(), "text", "Setting the value does not change innerHTML" );
+	equal( $button.getAttr("value"), "foobar", "Value retrieval on a button does not return innerHTML" );
+	equal( $button.setAttr("value", "baz").getHtml(), "text", "Setting the value does not change innerHTML" );
 
 	// Attributes with a colon on a table element (#1591)
-	equals( Dom.get("table").getAttr("test:attrib"), null, "Retrieving a non-existent attribute on a table with a colon does not throw an error." );
-	equals( Dom.get("table").setAttr("test:attrib", "foobar").getAttr("test:attrib"), "foobar", "Setting an attribute on a table with a colon does not throw an error." );
+	equal( Dom.get("table").getAttr("test:attrib"), null, "Retrieving a non-existent attribute on a table with a colon does not throw an error." );
+	equal( Dom.get("table").setAttr("test:attrib", "foobar").getAttr("test:attrib"), "foobar", "Setting an attribute on a table with a colon does not throw an error." );
 
 	var $form = Dom.parse("<form class='something'></form>").appendTo("qunit-fixture");
 	equal( $form.getAttr("class"), "something", "Retrieve the class attribute on a form." );
@@ -107,51 +107,51 @@ test("Control.prototype.setAttr", function() {
 		}
 	}
   
-	equals( fail, false, "Set Attribute, the #" + fail + " element didn't get the attribute 'foo'" );
+	equal( fail, false, "Set Attribute, the #" + fail + " element didn't get the attribute 'foo'" );
 
 	ok( Dom.get("foo").setAttr("width", null), "Try to set an attribute to nothing" );
 
 	Dom.get("name").setAttr("name", "something");
-	equals( Dom.get("name").getAttr("name"), "something", "Set name attribute" );
+	equal( Dom.get("name").getAttr("name"), "something", "Set name attribute" );
 	Dom.get("name").setAttr("name", null);
-	equals( Dom.get("name").getAttr("name"), null, "Remove name attribute" );
+	equal( Dom.get("name").getAttr("name"), null, "Remove name attribute" );
 	var $input = Dom.parse("<input>").set({ name: "something" });
-	equals( $input.getAttr("name"), "something", "Check element creation gets/sets the name attribute." );
+	equal( $input.getAttr("name"), "something", "Check element creation gets/sets the name attribute." );
 
 	
 	Dom.get("check2").setAttr("checked", false);
-	equals( document.getElementById("check2").checked, false, "Set checked attribute" );
-	equals( Dom.get("check2").getAttr("checked"), false, "Set checked attribute" );
+	equal( document.getElementById("check2").checked, false, "Set checked attribute" );
+	equal( Dom.get("check2").getAttr("checked"), false, "Set checked attribute" );
 	Dom.get("text1").setAttr("readonly", true);
-	equals( document.getElementById("text1").readOnly, true, "Set readonly attribute" );
-	equals( Dom.get("text1").getAttr("readonly"), true, "Set readonly attribute" );
+	equal( document.getElementById("text1").readOnly, true, "Set readonly attribute" );
+	equal( Dom.get("text1").getAttr("readonly"), true, "Set readonly attribute" );
 	Dom.get("text1").setAttr("readonly", false);
-	equals( document.getElementById("text1").readOnly, false, "Set readonly attribute" );
-	equals( Dom.get("text1").getAttr("readonly"), false, "Set readonly attribute" );
+	equal( document.getElementById("text1").readOnly, false, "Set readonly attribute" );
+	equal( Dom.get("text1").getAttr("readonly"), false, "Set readonly attribute" );
 
 	Dom.get("check2").dom.checked = true;
-	equals( document.getElementById("check2").checked, true, "Set checked attribute" );
-	equals( Dom.get("check2").getAttr("checked"), true, "Set checked attribute" );
+	equal( document.getElementById("check2").checked, true, "Set checked attribute" );
+	equal( Dom.get("check2").getAttr("checked"), true, "Set checked attribute" );
 	Dom.get("check2").dom.checked = false;
-	equals( document.getElementById("check2").checked, false, "Set checked attribute" );
-	equals( Dom.get("check2").getAttr("checked"), false, "Set checked attribute" );
+	equal( document.getElementById("check2").checked, false, "Set checked attribute" );
+	equal( Dom.get("check2").getAttr("checked"), false, "Set checked attribute" );
 	
 	Dom.get("check2").setAttr("checked", "checked");
 	equal( document.getElementById("check2").checked, true, "Set checked attribute with 'checked'" );
 	equal( Dom.get("check2").getAttr("checked"), true, "Set checked attribute" );
 	
 	Dom.get("text1").dom.readOnly = true;
-	equals( document.getElementById("text1").readOnly, true, "Set readonly attribute" );
-	equals( Dom.get("text1").getAttr("readOnly"), true, "Set readonly attribute" );
+	equal( document.getElementById("text1").readOnly, true, "Set readonly attribute" );
+	equal( Dom.get("text1").getAttr("readOnly"), true, "Set readonly attribute" );
 	
 	Dom.get("text1").dom.readOnly = false;
-	equals( document.getElementById("text1").readOnly, false, "Set readonly attribute" );
-	equals( Dom.get("text1").getAttr("readOnly"), false, "Set readonly attribute" );
+	equal( document.getElementById("text1").readOnly, false, "Set readonly attribute" );
+	equal( Dom.get("text1").getAttr("readOnly"), false, "Set readonly attribute" );
 	
 	Dom.get("name").setAttr("maxlength", "5");
-	equals( document.getElementById("name").maxLength, 5, "Set maxlength attribute" );
+	equal( document.getElementById("name").maxLength, 5, "Set maxlength attribute" );
 	Dom.get("name").setAttr("maxLength", "10");
-	equals( document.getElementById("name").maxLength, 10, "Set maxlength attribute" );
+	equal( document.getElementById("name").maxLength, 10, "Set maxlength attribute" );
 
 	// HTML5 boolean attributes
 	var $text = Dom.get("text1").setAttr("autofocus", true).setAttr("required", true);
@@ -176,7 +176,7 @@ test("Control.prototype.setAttr", function() {
 	equal( $text.setAttr("aria-disabled", false).getAttr("aria-disabled"), "false", "Setting aria attributes are not affected by boolean settings");
 	
 	Dom.get("foo").setAttr("contenteditable", true);
-	equals( Dom.get("foo").getAttr("contenteditable"), "true", "Enumerated attributes are set properly" );
+	equal( Dom.get("foo").getAttr("contenteditable"), "true", "Enumerated attributes are set properly" );
 
 	strictEqual( document.getAttr("nonexisting"), null, "attr works correctly for non existing attributes." );
 		equal( document.setAttr("something", "foo" ).getAttr("something"), "foo", "attr falls back to prop on unsupported arguments" );
@@ -190,20 +190,20 @@ test("Control.prototype.setAttr", function() {
 	td.setAttr("rowspan", "2");
 	
 	// FIXME:  why  ?
-	// equals( td.rowSpan, 2, "Check rowspan is correctly set" );
+	// equal( td.rowSpan, 2, "Check rowspan is correctly set" );
 	//    td.setAttr("colspan", "2");
-	//    equals( td.colSpan, 2, "Check colspan is correctly set" );
+	//    equal( td.colSpan, 2, "Check colspan is correctly set" );
 	table.setAttr("cellspacing", "2");
-	equals( table.dom.cellSpacing, "2", "Check cellspacing is correctly set" );
-	equals( Dom.get("area1").getAttr("value"), "foobar", "Value attribute retrieves the property for backwards compatibility." );
+	equal( table.dom.cellSpacing, "2", "Check cellspacing is correctly set" );
+	equal( Dom.get("area1").getAttr("value"), "foobar", "Value attribute retrieves the property for backwards compatibility." );
 
 	// for #1070
 	Dom.get("name").setAttr("someAttr", "0");
-	equals( Dom.get("name").getAttr("someAttr"), "0", "Set attribute to a string of \"0\"" );
+	equal( Dom.get("name").getAttr("someAttr"), "0", "Set attribute to a string of \"0\"" );
 	Dom.get("name").setAttr("someAttr", 0);
-	equals( Dom.get("name").getAttr("someAttr"), "0", "Set attribute to the number 0" );
+	equal( Dom.get("name").getAttr("someAttr"), "0", "Set attribute to the number 0" );
 	Dom.get("name").setAttr("someAttr", 1);
-	equals( Dom.get("name").getAttr("someAttr"), "1", "Set attribute to the number 1" );
+	equal( Dom.get("name").getAttr("someAttr"), "1", "Set attribute to the number 1" );
 
 	QUnit.reset();
 
@@ -215,7 +215,7 @@ test("Control.prototype.setAttr", function() {
 		
 	}
 	ok( true, "Exception thrown when trying to change type property" );
-	// equals( type, Dom.get("check2").getAttr("type"), "Verify that you can't change the type of an input element" );
+	// equal( type, Dom.get("check2").getAttr("type"), "Verify that you can't change the type of an input element" );
 
 	var check = Dom.create("input");
 	//var thrown = true;
@@ -225,7 +225,7 @@ test("Control.prototype.setAttr", function() {
 		//thrown = false;
 	}
 	ok( true, "Exception thrown when trying to change type property" );
-	//equals( "checkbox", check.getAttr("type"), "Verify that you can change the type of an input element that isn't in the DOM" );
+	//equal( "checkbox", check.getAttr("type"), "Verify that you can change the type of an input element that isn't in the DOM" );
 
 	var check = Dom.parse("<input />");
 	//var thrown = true;
@@ -235,7 +235,7 @@ test("Control.prototype.setAttr", function() {
 		//thrown = false;
 	}
 	ok( true, "Exception thrown when trying to change type property" );
-	//equals( "checkbox", check.getAttr("type"), "Verify that you can change the type of an input element that isn't in the DOM" );
+	//equal( "checkbox", check.getAttr("type"), "Verify that you can change the type of an input element that isn't in the DOM" );
 
 	var button = Dom.get("button");
 	//var thrown = false;
@@ -245,11 +245,11 @@ test("Control.prototype.setAttr", function() {
 		//thrown = true;
 	}
 	ok( true, "Exception thrown when trying to change type property" );
-	//equals( "button", button.getAttr("type"), "Verify that you can't change the type of a button element" );
+	//equal( "button", button.getAttr("type"), "Verify that you can't change the type of a button element" );
 
 	var $radio = Dom.parse("<input value='sup' type='radio'>").appendTo("testForm");
 	
-	equals( $radio.getText(), "sup", "Value is not reset when type is set after value on a radio" );
+	equal( $radio.getText(), "sup", "Value is not reset when type is set after value on a radio" );
 	// Setting attributes on svg element
 	var $svg = Dom.parse("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1' baseProfile='full' width='200' height='200'>"
 		+ "<circle cx='200' cy='200' r='150' />"
@@ -263,7 +263,7 @@ test("Control.prototype.setAttr", function() {
 	
 	
 	$svg.appendTo();
-	equals( $svg.setAttr("cx", 100).getAttr("cx"), "100", "Set attribute on svg element" );
+	equal( $svg.setAttr("cx", 100).getAttr("cx"), "100", "Set attribute on svg element" );
 	$svg.remove();
 });
 
@@ -280,13 +280,13 @@ test("Control.prototype.set", function(){
 
 	// one at a time
 	elem.set({innerHTML: "foo"});
-	equals( elem.dom.innerHTML, "foo", "set(innerHTML)");
+	equal( elem.dom.innerHTML, "foo", "set(innerHTML)");
 
 	elem.set({style: "color: red"});
 	ok( /^(#ff0000|red)$/i.test(elem.dom.style.color), "set(css)");
 
 	elem.set({height: 10});
-	equals( elem.dom.style.height, "10px", "set(height)");
+	equal( elem.dom.style.height, "10px", "set(height)");
 
 	// Multiple attributes
 
@@ -295,62 +295,62 @@ test("Control.prototype.set", function(){
 		width:10
 	});
 
-	equals( elem.dom.style.width, "10px", "set({...})");
-	equals( elem.dom.style.paddingLeft, "1px", "set({...})");
-	equals( elem.dom.style.paddingRight, "1px", "set({...})");
+	equal( elem.dom.style.width, "10px", "set({...})");
+	equal( elem.dom.style.paddingLeft, "1px", "set({...})");
+	equal( elem.dom.style.paddingRight, "1px", "set({...})");
 });
 
 test("Control.prototype.getAttr('tabindex')", function() {
 
 	// elements not natively tabbable
-	equals(Dom.get("listWithTabIndex").getAttr("tabindex"), 5, "not natively tabbable, with tabindex set to 0");
-	equals(Dom.get("divWithNoTabIndex").getAttr("tabindex") <= 0, true, "not natively tabbable, no tabindex set");
+	equal(Dom.get("listWithTabIndex").getAttr("tabindex"), 5, "not natively tabbable, with tabindex set to 0");
+	equal(Dom.get("divWithNoTabIndex").getAttr("tabindex") <= 0, true, "not natively tabbable, no tabindex set");
 
 	// anchor with href
-	equals(Dom.get("linkWithNoTabIndex").getAttr("tabindex"), 0, "anchor with href, no tabindex set");
-	equals(Dom.get("linkWithTabIndex").getAttr("tabindex"), 2, "anchor with href, tabindex set to 2");
-	equals(Dom.get("linkWithNegativeTabIndex").getAttr("tabindex"), -1, "anchor with href, tabindex set to -1");
+	equal(Dom.get("linkWithNoTabIndex").getAttr("tabindex"), 0, "anchor with href, no tabindex set");
+	equal(Dom.get("linkWithTabIndex").getAttr("tabindex"), 2, "anchor with href, tabindex set to 2");
+	equal(Dom.get("linkWithNegativeTabIndex").getAttr("tabindex"), -1, "anchor with href, tabindex set to -1");
 
 	// anchor without href
-	equals(Dom.get("linkWithNoHrefWithNoTabIndex").getAttr("tabindex") <= 0, true, "anchor without href, no tabindex set");
-	equals(Dom.get("linkWithNoHrefWithTabIndex").getAttr("tabindex"), 1, "anchor without href, tabindex set to 2");
-	equals(Dom.get("linkWithNoHrefWithNegativeTabIndex").getAttr("tabindex"), -1, "anchor without href, no tabindex set");
+	equal(Dom.get("linkWithNoHrefWithNoTabIndex").getAttr("tabindex") <= 0, true, "anchor without href, no tabindex set");
+	equal(Dom.get("linkWithNoHrefWithTabIndex").getAttr("tabindex"), 1, "anchor without href, tabindex set to 2");
+	equal(Dom.get("linkWithNoHrefWithNegativeTabIndex").getAttr("tabindex"), -1, "anchor without href, no tabindex set");
 });
 
 test("Control.prototype.setAttr('tabindex', value)", function() {
 
 	var element = Dom.get("divWithNoTabIndex");
-	//equals(element.getAttr("tabindex"), -1, "start with no tabindex");
+	//equal(element.getAttr("tabindex"), -1, "start with no tabindex");
 
 	// set a positive string
 	element.setAttr("tabindex", "1");
-	equals(element.getAttr("tabindex"), 1, "set tabindex to 1 (string)");
+	equal(element.getAttr("tabindex"), 1, "set tabindex to 1 (string)");
 
 	// set a zero string
 	element.setAttr("tabindex", "0");
-	equals(element.getAttr("tabindex"), 0, "set tabindex to 0 (string)");
+	equal(element.getAttr("tabindex"), 0, "set tabindex to 0 (string)");
 
 	// set a negative string
 	element.setAttr("tabindex", "-1");
-	equals(element.getAttr("tabindex"), -1, "set tabindex to -1 (string)");
+	equal(element.getAttr("tabindex"), -1, "set tabindex to -1 (string)");
 
 	// set a positive number
 	element.setAttr("tabindex", 1);
-	equals(element.getAttr("tabindex"), 1, "set tabindex to 1 (number)");
+	equal(element.getAttr("tabindex"), 1, "set tabindex to 1 (number)");
 
 	// set a zero number
 	element.setAttr("tabindex", 0);
-	equals(element.getAttr("tabindex"), 0, "set tabindex to 0 (number)");
+	equal(element.getAttr("tabindex"), 0, "set tabindex to 0 (number)");
 
 	// set a negative number
 	element.setAttr("tabindex", -1);
-	equals(element.getAttr("tabindex"), -1, "set tabindex to -1 (number)");
+	equal(element.getAttr("tabindex"), -1, "set tabindex to -1 (number)");
 
 	element = Dom.get("linkWithTabIndex");
-	equals(element.getAttr("tabindex"), 2, "start with tabindex 2");
+	equal(element.getAttr("tabindex"), 2, "start with tabindex 2");
 
 	element.setAttr("tabindex", -1);
-	equals(element.getAttr("tabindex"), -1, "set negative tabindex");
+	equal(element.getAttr("tabindex"), -1, "set negative tabindex");
 });
 
 test("Control.prototype.setAttr(String, null)", function() {
@@ -404,7 +404,7 @@ test("setText(select) after form.reset()", function() {
 	equal( Dom.get("kkk").getText(), "cf", "Check value of select after form reset." );
 
 	// re-verify the multi-select is not broken (after form.reset) by our fix for single-select
-	//same( Dom.get("select3").getText().split(','), ["1", "2"], "Call getText() on a multiple=\"multiple\" select" );
+	//deepEqual( Dom.get("select3").getText().split(','), ["1", "2"], "Call getText() on a multiple=\"multiple\" select" );
 
 	Dom.get("kk").remove();
 });
@@ -424,15 +424,15 @@ test("Control.prototype.addClass", function() {
 	div = Dom.parse("<div/>");
 
 	div.addClass( "test" );
-	equals( div.getAttr("class"), "test", "Make sure there's no extra whitespace." );
+	equal( div.getAttr("class"), "test", "Make sure there's no extra whitespace." );
 
 	// div.setAttr("class", " foo");
 	// div.addClass( "test" );
-	// equals( div.getAttr("class"), "foo test", "Make sure there's no extra whitespace." );
+	// equal( div.getAttr("class"), "foo test", "Make sure there's no extra whitespace." );
 
 	div.setAttr("class", "foo");
 	div.addClass( "bar baz" );
-	equals( div.getAttr("class"), "foo bar baz", "Make sure there isn't too much trimming." );
+	equal( div.getAttr("class"), "foo bar baz", "Make sure there isn't too much trimming." );
 
 	div.removeClass();
 	div.addClass( "foo" ).addClass( "foo" )
@@ -479,12 +479,12 @@ test("Control.prototype.removeClass", function() {
 	div.className = " test foo ";
 
 	Dom.get(div).removeClass( "foo" );
-	equals( div.className, "test", "Make sure remaining className is trimmed." );
+	equal( div.className, "test", "Make sure remaining className is trimmed." );
 
 	div.className = " test ";
 
 	Dom.get(div).removeClass( "test" );
-	equals( div.className, "", "Make sure there is nothing left after everything is removed." );
+	equal( div.className, "", "Make sure there is nothing left after everything is removed." );
 });
 
 test("Control.prototype.toggleClass", function() {
@@ -539,17 +539,17 @@ test("addClass, removeClass, hasClass", function() {
 	var x = Dom.parse("<p>Hi</p>");
 
 	x.addClass("hi");
-	equals( x.dom.className, "hi", "Check single added class" );
+	equal( x.dom.className, "hi", "Check single added class" );
 
 	x.addClass("foo bar");
-	equals( x.dom.className, "hi foo bar", "Check more added classes" );
+	equal( x.dom.className, "hi foo bar", "Check more added classes" );
 
 	x.removeClass();
-	equals( x.dom.className, "", "Remove all classes" );
+	equal( x.dom.className, "", "Remove all classes" );
 
 	x.addClass("hi foo bar");
 	x.removeClass("foo");
-	equals( x.dom.className, "hi bar", "Check removal of one class" );
+	equal( x.dom.className, "hi bar", "Check removal of one class" );
 
 	ok( x.hasClass("hi"), "Check has1" );
 	ok( x.hasClass("bar"), "Check has2" );

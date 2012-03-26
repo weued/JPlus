@@ -6,78 +6,78 @@ var functionReturningObj = function(value) { return (function() { return value; 
 test("Control.prototype.getText", function() {
 	
 	var expected = "This link has class=\"blog\": Simon Willison's Weblog";
-	equals( Dom.get("sap").getText().replace(/[\r\n]/g, "").replace("hasclass", "has class"), expected, "Check for merged text of more then one element." );
+	equal( Dom.get("sap").getText().replace(/[\r\n]/g, "").replace("hasclass", "has class"), expected, "Check for merged text of more then one element." );
 
 	// Check serialization of text values
-	equals( new Control(document.createTextNode("foo")).getText(), "foo", "Text node was retreived from .getText()." );
+	equal( new Control(document.createTextNode("foo")).getText(), "foo", "Text node was retreived from .getText()." );
 
 	var val = "<div><b>Hello</b> cruel world!</div>";
-	equals( Dom.get("foo").setText(val).dom.innerHTML.replace(/>/g, "&gt;"), "&lt;div&gt;&lt;b&gt;Hello&lt;/b&gt; cruel world!&lt;/div&gt;", "Check escaped text" );
+	equal( Dom.get("foo").setText(val).dom.innerHTML.replace(/>/g, "&gt;"), "&lt;div&gt;&lt;b&gt;Hello&lt;/b&gt; cruel world!&lt;/div&gt;", "Check escaped text" );
 
 	document.getElementById("text1").value = "bla";
-	equals( Dom.get("text1").getText(), "bla", "Check for modified value of input element" );
+	equal( Dom.get("text1").getText(), "bla", "Check for modified value of input element" );
 
 	QUnit.reset();
 
-	equals( Dom.get("text1").getText(), "Test", "Check for value of input element" );
+	equal( Dom.get("text1").getText(), "Test", "Check for value of input element" );
 	// ticket #1714 this caused a JS error in IE
-	equals( Dom.get("first").getText(), "Try them out:", "Check a paragraph element to see if it has a value" );
+	equal( Dom.get("first").getText(), "Try them out:", "Check a paragraph element to see if it has a value" );
 	
-	equals( Dom.get("select2").getText(), "3", "Call getText() on a single=\"single\" select" );
+	equal( Dom.get("select2").getText(), "3", "Call getText() on a single=\"single\" select" );
 
-	//same( Dom.get("select3").getText(), "1,2", "Call getText() on a multiple=\"multiple\" select" );
+	//deepEqual( Dom.get("select3").getText(), "1,2", "Call getText() on a multiple=\"multiple\" select" );
 
-	equals( Dom.get("option3c").getText(), "2", "Call getText() on a option element with value" );
+	equal( Dom.get("option3c").getText(), "2", "Call getText() on a option element with value" );
 
-	//equals( Dom.get("option3a").getText(), "Nothing", "Call getText() on a option element with empty value" );
+	//equal( Dom.get("option3a").getText(), "Nothing", "Call getText() on a option element with empty value" );
 
-	equals( Dom.get("option3e").getText(), "no value", "Call getText() on a option element with no value attribute" );
+	equal( Dom.get("option3e").getText(), "no value", "Call getText() on a option element with no value attribute" );
 
-	//equals( Dom.get("option3a").getText(), "Nothing", "Call getText() on a option element with no value attribute" );
+	//equal( Dom.get("option3a").getText(), "Nothing", "Call getText() on a option element with no value attribute" );
 
 	// IE6 fails in this case. Just ignore it.
 	if(!navigator.isIE6){
 		Dom.get("select3").setText("");
-		same( Dom.get("select3").getText(), "", "Call getText() on a multiple=\"multiple\" select" );
+		deepEqual( Dom.get("select3").getText(), "", "Call getText() on a multiple=\"multiple\" select" );
 	}
-	//same( Dom.get("select4").getText(), "1,2,3", "Call getText() on multiple=\"multiple\" select with all disabled options" );
+	//deepEqual( Dom.get("select4").getText(), "1,2,3", "Call getText() on multiple=\"multiple\" select with all disabled options" );
 
 	Dom.get("select4").setAttr("disabled", true);
-	//same( Dom.get("select4").getText(), "1,2,3", "Call getText() on disabled multiple=\"multiple\" select" );
+	//deepEqual( Dom.get("select4").getText(), "1,2,3", "Call getText() on disabled multiple=\"multiple\" select" );
 
-	equals( Dom.get("select5").getText(), "3", "Check value on ambiguous select." );
+	equal( Dom.get("select5").getText(), "3", "Check value on ambiguous select." );
 
 	Dom.get("select5").setText(1);
-	equals( Dom.get("select5").getText(), "1", "Check value on ambiguous select." );
+	equal( Dom.get("select5").getText(), "1", "Check value on ambiguous select." );
 
 	Dom.get("select5").setText(3);
-	equals( Dom.get("select5").getText(), "3", "Check value on ambiguous select." );
+	equal( Dom.get("select5").getText(), "3", "Check value on ambiguous select." );
 
 	// var checks = Dom.parse("<input type='checkbox' name='test' value='1'/><input type='checkbox' name='test' value='2'/><input type='checkbox' name='test' value=''/><input type='checkbox' name='test'/>").appendTo("#form");
 // 
-	// same( checks.getText(), "", "Get unchecked values." );
+	// deepEqual( checks.getText(), "", "Get unchecked values." );
 // 
-	// equals( checks.eq(3).getText(), "on", "Make sure a value of 'on' is provided if none is specified." );
+	// equal( checks.eq(3).getText(), "on", "Make sure a value of 'on' is provided if none is specified." );
 // 
 	// checks.setText("2");
-	// same( checks.serialize(), "test=2", "Get a single checked value." );
+	// deepEqual( checks.serialize(), "test=2", "Get a single checked value." );
 // 
 	// checks.setText(",1");
-	// same( checks.serialize(), "test=1&test=", "Get multiple checked values." );
+	// deepEqual( checks.serialize(), "test=1&test=", "Get multiple checked values." );
 // 
 	// checks.setText(",2");
-	// same( checks.serialize(), "test=2&test=", "Get multiple checked values." );
+	// deepEqual( checks.serialize(), "test=2&test=", "Get multiple checked values." );
 // 
 	// checks.setText("1,on");
-	// same( checks.serialize(), "test=1&test=on", "Get multiple checked values." );
+	// deepEqual( checks.serialize(), "test=1&test=on", "Get multiple checked values." );
 
 	//   checks.remove();
 
 	var button = Dom.get("button").insert("afterEnd", "<button value='foobar'>text</button>");
-	equals( button.getText(), "text", "Value retrieval on a button does not return innerHTML" );
-	equals( button.setText("baz").getHtml(), "baz", "Setting the value does not change innerHTML" );
+	equal( button.getText(), "text", "Value retrieval on a button does not return innerHTML" );
+	equal( button.setText("baz").getHtml(), "baz", "Setting the value does not change innerHTML" );
 
-	//   equals( Dom.parse("<option/>").setText("test").getAttr("value"), "test", "Setting value sets the value attribute" );
+	//   equal( Dom.parse("<option/>").setText("test").getAttr("value"), "test", "Setting value sets the value attribute" );
 });
 
 
@@ -87,15 +87,15 @@ test("Control.prototype.getText", function() {
 test("Control.prototype.wrap", function() {
 	var defaultText = "Try them out:"
 	var result = Dom.get("first").wrap( "<div class='red'><span></span></div>").getText();
-	equals( defaultText, result, "Check for wrapping of on-the-fly html" );
+	equal( defaultText, result, "Check for wrapping of on-the-fly html" );
 	ok( Dom.get("first").get('parent').get('parent').hasClass("red"), "Check if wrapper has class 'red'" );
 
 	QUnit.reset();
 	var defaultText = "Try them out:";
 	Dom.get("first").wrap(document.getElementById("empty"));
 	var result = Dom.get("first").get('parent');
-	equals( result.tagName, "OL", "Check for element wrapping" );
-	equals( result.getText(), defaultText, "Check for element wrapping" );
+	equal( result.tagName, "OL", "Check for element wrapping" );
+	equal( result.getText(), defaultText, "Check for element wrapping" );
 
 	QUnit.reset();
 	Dom.get("check1").on('click', function() {
@@ -107,25 +107,25 @@ test("Control.prototype.wrap", function() {
 
 	var j = Dom.parse("<label/>");
 	j.wrap( "<li/>");
-	equals( j.nodeName.toUpperCase(), "LABEL", "Element is a label" );
-	equals( j.parentNode.nodeName.toUpperCase(), "LI", "Element has been wrapped" );
+	equal( j.nodeName.toUpperCase(), "LABEL", "Element is a label" );
+	equal( j.parentNode.nodeName.toUpperCase(), "LI", "Element has been wrapped" );
 	
 	// wrap an element containing a text node
 	j = Dom.parse("<span/>");
 	j.wrap("<div>test</div>");
-	equals( j.previousSibling.nodeType, 3, "Make sure the previous node is a text element" );
-	equals( j.parentNode.nodeName.toUpperCase(), "DIV", "And that we're in the div element." );
+	equal( j.previousSibling.nodeType, 3, "Make sure the previous node is a text element" );
+	equal( j.parentNode.nodeName.toUpperCase(), "DIV", "And that we're in the div element." );
 
 	// Try to wrap an element with multiple elements (should fail)
 	//j = Dom.parse("<div><span></span></div>").getChildren();
 	//j.wrap("<p></p><div></div>");
-	//equals( j[0].parentNode.parentNode.childNodes.length, 1, "There should only be one element wrapping." );
-	//equals( j[0].parentNode.nodeName.toUpperCase(), "P", "The span should be in the paragraph." );
+	//equal( j[0].parentNode.parentNode.childNodes.length, 1, "There should only be one element wrapping." );
+	//equal( j[0].parentNode.nodeName.toUpperCase(), "P", "The span should be in the paragraph." );
 
 	j = Dom.parse("<span/>");
 	j.wrap("<div></div>");
 	
-	equals( j.parentNode.nodeName.toLowerCase(), "div", "Wrapping works." );
+	equal( j.parentNode.nodeName.toLowerCase(), "div", "Wrapping works." );
 
 	// wrap an element with a Dom.parse set and event
 	result = Dom.parse("<div></div>").on('click', function(){
@@ -137,7 +137,7 @@ test("Control.prototype.wrap", function() {
 
 	j = Dom.parse("<span/>");
 	j.wrap(result);
-	equals( j.parentNode.nodeName.toLowerCase(), "div", "Wrapping works." );
+	equal( j.parentNode.nodeName.toLowerCase(), "div", "Wrapping works." );
 
 	j.get('parent').trigger("click");
 
@@ -152,19 +152,19 @@ test("wrapAll(String|Element)", function() {
 	var p = Dom.get("firstp,#first")[0].parentNode;
 
 	var result = Dom.get("firstp,#first").wrapAll( "<div class='red'><div class='tmp'></div></div>" );
-	equals( result.get('parent').length, 1, "Check for wrapping of on-the-fly html" );
+	equal( result.get('parent').length, 1, "Check for wrapping of on-the-fly html" );
 	ok( Dom.get("first").get('parent').get('parent').is(".red"), "Check if wrapper has class 'red'" );
 	ok( Dom.get("firstp").get('parent').get('parent').is(".red"), "Check if wrapper has class 'red'" );
-	equals( Dom.get("first").get('parent').get('parent')[0].previousSibling, prev, "Correct Previous Sibling" );
-	equals( Dom.get("first").get('parent').get('parent')[0].parentNode, p, "Correct Parent" );
+	equal( Dom.get("first").get('parent').get('parent')[0].previousSibling, prev, "Correct Previous Sibling" );
+	equal( Dom.get("first").get('parent').get('parent')[0].parentNode, p, "Correct Parent" );
 
 	QUnit.reset();
 	var prev = Dom.get("firstp")[0].previousSibling;
 	var p = Dom.get("first")[0].parentNode;
 	var result = Dom.get("firstp,#first").wrapAll( document.getElementById("empty") );
-	equals( Dom.get("first").get('parent')[0], Dom.get("firstp").get('parent')[0], "Same Parent" );
-	equals( Dom.get("first").get('parent')[0].previousSibling, prev, "Correct Previous Sibling" );
-	equals( Dom.get("first").get('parent')[0].parentNode, p, "Correct Parent" );
+	equal( Dom.get("first").get('parent')[0], Dom.get("firstp").get('parent')[0], "Same Parent" );
+	equal( Dom.get("first").get('parent')[0].previousSibling, prev, "Correct Previous Sibling" );
+	equal( Dom.get("first").get('parent')[0].parentNode, p, "Correct Parent" );
 });
 
 
@@ -172,28 +172,28 @@ test("wrapInner(String|Element)", function() {
 	expect(11);
 	var num = Dom.get("first").getChildren().length;
 	var result = Dom.get("first").wrapInner(val("<div class='red'><div id='tmp'></div></div>"));
-	equals( Dom.get("first").getChildren().length, 1, "Only one child" );
+	equal( Dom.get("first").getChildren().length, 1, "Only one child" );
 	ok( Dom.get("first").getChildren().is(".red"), "Verify Right Element" );
-	equals( Dom.get("first").getChildren().getChildren().getChildren().length, num, "Verify Elements Intact" );
+	equal( Dom.get("first").getChildren().getChildren().getChildren().length, num, "Verify Elements Intact" );
 
 	QUnit.reset();
 	var num = Dom.get("first").setHtml("foo<div>test</div><div>test2</div>").getChildren().length;
 	var result = Dom.get("first").wrapInner(val("<div class='red'><div id='tmp'></div></div>"));
-	equals( Dom.get("first").getChildren().length, 1, "Only one child" );
+	equal( Dom.get("first").getChildren().length, 1, "Only one child" );
 	ok( Dom.get("first").getChildren().is(".red"), "Verify Right Element" );
-	equals( Dom.get("first").getChildren().getChildren().getChildren().length, num, "Verify Elements Intact" );
+	equal( Dom.get("first").getChildren().getChildren().getChildren().length, num, "Verify Elements Intact" );
 
 	QUnit.reset();
 	var num = Dom.get("first").getChildren().length;
 	var result = Dom.get("first").wrapInner(val(document.getElementById("empty")));
-	equals( Dom.get("first").getChildren().length, 1, "Only one child" );
+	equal( Dom.get("first").getChildren().length, 1, "Only one child" );
 	ok( Dom.get("first").getChildren().is("#empty"), "Verify Right Element" );
-	equals( Dom.get("first").getChildren().getChildren().length, num, "Verify Elements Intact" );
+	equal( Dom.get("first").getChildren().getChildren().length, num, "Verify Elements Intact" );
 
 	var div = Dom.parse("<div/>");
 	div.wrapInner(val("<span></span>"));
-	equals(div.getChildren().length, 1, "The contents were wrapped.");
-	equals(div.getChildren()[0].nodeName.toLowerCase(), "span", "A span was inserted.");
+	equal(div.getChildren().length, 1, "The contents were wrapped.");
+	equal(div.getChildren()[0].nodeName.toLowerCase(), "span", "A span was inserted.");
 });
 
 test("unwrap()", function() {
@@ -204,21 +204,21 @@ test("unwrap()", function() {
 	var abcd = Dom.get("unwrap1 > span, #unwrap2 > span").get(),
 		abcdef = Dom.get("unwrap span").get();
 
-	equals( Dom.get("unwrap1 span").add("#unwrap2 span:first").unwrap().length, 3, "make #unwrap1 and #unwrap2 go away" );
-	same( Dom.get("unwrap > span").get(), abcd, "all four spans should still exist" );
+	equal( Dom.get("unwrap1 span").add("#unwrap2 span:first").unwrap().length, 3, "make #unwrap1 and #unwrap2 go away" );
+	deepEqual( Dom.get("unwrap > span").get(), abcd, "all four spans should still exist" );
 
-	same( Dom.get("unwrap3 span").unwrap().get(), Dom.get("unwrap3 > span").get(), "make all b in #unwrap3 go away" );
+	deepEqual( Dom.get("unwrap3 span").unwrap().get(), Dom.get("unwrap3 > span").get(), "make all b in #unwrap3 go away" );
 
-	same( Dom.get("unwrap3 span").unwrap().get(), Dom.get("unwrap > span.unwrap3").get(), "make #unwrap3 go away" );
+	deepEqual( Dom.get("unwrap3 span").unwrap().get(), Dom.get("unwrap > span.unwrap3").get(), "make #unwrap3 go away" );
 
-	same( Dom.get("unwrap").getChildren().get(), abcdef, "#unwrap only contains 6 child spans" );
+	deepEqual( Dom.get("unwrap").getChildren().get(), abcdef, "#unwrap only contains 6 child spans" );
 
-	same( Dom.get("unwrap > span").unwrap().get(), Dom.parse("body > span.unwrap").get(), "make the 6 spans become children of body" );
+	deepEqual( Dom.get("unwrap > span").unwrap().get(), Dom.parse("body > span.unwrap").get(), "make the 6 spans become children of body" );
 
-	same( Dom.parse("body > span.unwrap").unwrap().get(), Dom.parse("body > span.unwrap").get(), "can't unwrap children of body" );
-	same( Dom.parse("body > span.unwrap").unwrap().get(), abcdef, "can't unwrap children of body" );
+	deepEqual( Dom.parse("body > span.unwrap").unwrap().get(), Dom.parse("body > span.unwrap").get(), "can't unwrap children of body" );
+	deepEqual( Dom.parse("body > span.unwrap").unwrap().get(), abcdef, "can't unwrap children of body" );
 
-	same( Dom.parse("body > span.unwrap").get(), abcdef, "body contains 6 .unwrap child spans" );
+	deepEqual( Dom.parse("body > span.unwrap").get(), abcdef, "body contains 6 .unwrap child spans" );
 
 	Dom.parse("body > span.unwrap").remove();
 });
@@ -227,16 +227,16 @@ test("unwrap()", function() {
 
 test("Control.prototype.append", function() {
 	var defaultText = "Try them out:"
-	equals( Dom.get("first").getText(), defaultText, "Check defaultText" );
+	equal( Dom.get("first").getText(), defaultText, "Check defaultText" );
 	var result = Dom.get("first");
 	result.append("<b>buga</b>");
-	equals( result.getText(), defaultText + "buga", "Check if text appending works" );
-	equals( Dom.get("select3").append("<option value='appendTest'>Append Test</option>").getAttr("value"), "appendTest", "Appending html options to select element");
+	equal( result.getText(), defaultText + "buga", "Check if text appending works" );
+	equal( Dom.get("select3").append("<option value='appendTest'>Append Test</option>").getAttr("value"), "appendTest", "Appending html options to select element");
 	
 	QUnit.reset();
 	var expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:";
 	Dom.get("sap").append(document.getElementById("first"));
-	equals( Dom.get("sap").getText().replace(/[\r\n]/g, '').replace("hasclass", "has class"), expected, "Check for appending of element" );
+	equal( Dom.get("sap").getText().replace(/[\r\n]/g, '').replace("hasclass", "has class"), expected, "Check for appending of element" );
 	
 	// QUnit.reset();
 	// Dom.get("sap").append( 5 );
@@ -279,7 +279,7 @@ test("Control.prototype.append", function() {
 
 	QUnit.reset();
 	Dom.get("sap").append( document.getElementById("form") );
-	equals( !Dom.get("sap").find('form'), false, "Check for appending a form" ); // Bug #910
+	equal( !Dom.get("sap").find('form'), false, "Check for appending a form" ); // Bug #910
 
 	QUnit.reset();
 	var pass = true;
@@ -301,22 +301,22 @@ test("Control.prototype.append", function() {
 
 	QUnit.reset();
 	Dom.get("select1").append( "<OPTION>Test</OPTION>" );
-	equals( Dom.get("select1").getLast('option').getText(), "Test", "Appending &lt;OPTION&gt; (all caps)" );
+	equal( Dom.get("select1").getLast('option').getText(), "Test", "Appending &lt;OPTION&gt; (all caps)" );
 	
 	var colgroup = Dom.get("table").append( "<colgroup></colgroup>" );
 	//     colgroup = new Dom(colgroup.childNodes[0] || colgroup);
-	// equals( Dom.get("table").get("last").tagName.toLowerCase(), "colgroup", "Append colgroup" );
+	// equal( Dom.get("table").get("last").tagName.toLowerCase(), "colgroup", "Append colgroup" );
 
 	colgroup.append ( "<col/>" );
-	equals( colgroup.getLast().dom.tagName, "COL", "Append col" );
+	equal( colgroup.getLast().dom.tagName, "COL", "Append col" );
 	
 	// QUnit.reset();
 	// Dom.get("table").append( "<caption></caption>" );
-	// equals( Dom.get("table").get("first").tagName.toLowerCase(), "caption", "Append caption" );
+	// equal( Dom.get("table").get("first").tagName.toLowerCase(), "caption", "Append caption" );
 
 	//  QUnit.reset();
 	// var Dom.getinput = Dom.parse("<input />").set({ "type": "checkbox", "checked": true }).appendTo('testForm');
-	//  equals( Dom.getinput.checked, true, "A checked checkbox that is appended stays checked" );
+	//  equal( Dom.getinput.checked, true, "A checked checkbox that is appended stays checked" );
 
 	QUnit.reset();
 	var radio = document.find("input[type='radio'][name='R1']"),
@@ -326,8 +326,8 @@ test("Control.prototype.append", function() {
 	
   
 	radio.getParent().replaceWith("<div></div>").append(radio);
-	//   equals( Dom.getradio.checked, true, "Reappending radios uphold which radio is checked" );
-	equals( radioNot.checked, false, "Reappending radios uphold not being checked" );
+	//   equal( Dom.getradio.checked, true, "Reappending radios uphold which radio is checked" );
+	equal( radioNot.checked, false, "Reappending radios uphold not being checked" );
 
 	radioNot.remove();
 	QUnit.reset();
@@ -340,7 +340,7 @@ test("Control.prototype.append", function() {
 		"<span></span>"
 	);
 
-	equals( Dom.get("sap").getChildren().length, prev + 3, "Make sure that multiple arguments works." );
+	equal( Dom.get("sap").getChildren().length, prev + 3, "Make sure that multiple arguments works." );
 	QUnit.reset();
 });
 
@@ -433,25 +433,25 @@ test("Control.prototype.appendTo", function() {
 
 	var defaultText = "Try them out:";
 	Dom.parse("<b>buga</b>").appendTo("first");
-	equals( Dom.get("first").getText(), defaultText + "buga", "Check if text appending works" );
-	equals( Dom.parse("<option value='appendTest'>Append Test</option>").appendTo("select3").getParent().getLast("option").getAttr("value"), "appendTest", "Appending html options to select element");
+	equal( Dom.get("first").getText(), defaultText + "buga", "Check if text appending works" );
+	equal( Dom.parse("<option value='appendTest'>Append Test</option>").appendTo("select3").getParent().getLast("option").getAttr("value"), "appendTest", "Appending html options to select element");
 
 	QUnit.reset();
 	var l = Dom.get("first").getChildren().length + 2;
 	new DomList([ Dom.parse("<strong>test</strong>"), Dom.parse("<strong>test</strong>") ])
 		.appendTo("first");
-	equals( Dom.get("first").getChildren().length, 2, "Make sure the elements were inserted." );
-	equals( Dom.get("first").getChildren()[Dom.get("first").getChildren().length - 1].nodeName.toLowerCase(), "strong", "Verify the last element." );
+	equal( Dom.get("first").getChildren().length, 2, "Make sure the elements were inserted." );
+	equal( Dom.get("first").getChildren()[Dom.get("first").getChildren().length - 1].nodeName.toLowerCase(), "strong", "Verify the last element." );
 
 	QUnit.reset();
 	var expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:";
 	Dom.get("first").appendTo("sap");
-	equals( Dom.get("sap").getText().replace(/[\r\n]/g, "").replace("hasclass", "has class"), expected, "Check for appending of element" );
+	equal( Dom.get("sap").getText().replace(/[\r\n]/g, "").replace("hasclass", "has class"), expected, "Check for appending of element" );
 
 	QUnit.reset();
 	expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo";
 	new DomList([document.getElementById("first"), document.getElementById("yahoo")]).appendTo("sap");
-	equals( Dom.get("sap").getText().replace(/[\r\n]/g, "").replace(/[\r\n]/g, "").replace("hasclass", "has class"), expected, "Check for appending of array of elements" );
+	equal( Dom.get("sap").getText().replace(/[\r\n]/g, "").replace(/[\r\n]/g, "").replace("hasclass", "has class"), expected, "Check for appending of array of elements" );
 
 	QUnit.reset();
 	ok( Dom.create("script").appendTo(), "Make sure a disconnected script can be appended." );
@@ -460,7 +460,7 @@ test("Control.prototype.appendTo", function() {
 	expected = "This link has class=\"blog\": Simon Willison's WeblogYahooTry them out:";
 	Dom.get("yahoo").appendTo("sap");
 	Dom.get("first").appendTo("sap");
-	equals( Dom.get("sap").getText().replace(/[\r\n]/g, "").replace("hasclass", "has class"), expected, "Check for appending of Dom.parse object" );
+	equal( Dom.get("sap").getText().replace(/[\r\n]/g, "").replace("hasclass", "has class"), expected, "Check for appending of Dom.parse object" );
 	
 	QUnit.reset();
 	Dom.get("select1").appendTo("foo");
@@ -486,14 +486,14 @@ test("Control.prototype.appendTo", function() {
 	div = Dom.parse("<div/>");
 	div.append(Dom.parse("<span>a</span><b>b</b>"));
 
-	equals( div.getChildren().length, 2, "Make sure the right number of children were inserted." );
+	equal( div.getChildren().length, 2, "Make sure the right number of children were inserted." );
 
 	div = Dom.get("moretests").query('div');
 
 	var num = Dom.get("qunit-fixture").query('div').length;
 	div.remove().appendTo("qunit-fixture");
 
-	equals( Dom.get("qunit-fixture").query('div').length, num, "Make sure all the removed divs were inserted." );
+	equal( Dom.get("qunit-fixture").query('div').length, num, "Make sure all the removed divs were inserted." );
 
 	QUnit.reset();
 });
@@ -502,77 +502,77 @@ test("Control.prototype.insert('afterBegin', html)", function() {
 	var defaultText = "Try them out:"
 	var result = Dom.get("first");
 	result.insert( 'afterBegin', "<b>buga</b>");
-	equals( result.getText(), "buga" + defaultText, "Check if text prepending works" );
-	equals( Dom.get("select3").insert( 'afterBegin', "<option value='prependTest'>Prepend Test</option>" ).getAttr("value"), "prependTest", "Prepending html options to select element");
+	equal( result.getText(), "buga" + defaultText, "Check if text prepending works" );
+	equal( Dom.get("select3").insert( 'afterBegin', "<option value='prependTest'>Prepend Test</option>" ).getAttr("value"), "prependTest", "Prepending html options to select element");
 
 	QUnit.reset();
 	var expected = "Try them out:This link has class=\"blog\": Simon Willison's Weblog";
 	Dom.get("sap").insert('afterBegin', document.getElementById("first"));
-	equals( Dom.get("sap").getText().replace(/[\r\n]/g, "").replace("hasclass", "has class"), expected, "Check for prepending of element" );
+	equal( Dom.get("sap").getText().replace(/[\r\n]/g, "").replace("hasclass", "has class"), expected, "Check for prepending of element" );
 
 	QUnit.reset();
 	expected = "YahooThis link has class=\"blog\": Simon Willison's Weblog";
 	Dom.get("sap").insert( 'afterBegin', Dom.get("yahoo") );
-	equals( Dom.get("sap").getText().replace(/[\r\n]/g, "").replace("hasclass", "has class"), expected, "Check for prepending of Dom.parse object" );
+	equal( Dom.get("sap").getText().replace(/[\r\n]/g, "").replace("hasclass", "has class"), expected, "Check for prepending of Dom.parse object" );
 });
 
 test("Control.prototype.insert('beforeBegin', html)", function() {
 	var expected = "This is a normal link: bugaYahoo";
 	Dom.get("yahoo").insert('beforeBegin', "<b>buga</b>");
-	equals( Dom.get("en").getText().replace(/[\r\n]/g, ""), expected, "Insert String before" );
+	equal( Dom.get("en").getText().replace(/[\r\n]/g, ""), expected, "Insert String before" );
 
 	QUnit.reset();
 	expected = "This is a normal link: Try them out:Yahoo";
 	Dom.get("yahoo").insert( 'beforeBegin' , document.getElementById("first"));
 	
 	// !Safari
-	equals( Dom.get("en").getText().replace(/[\r\n]/g, "").replace("link:T", "link: T"), expected, "Insert element before" );
+	equal( Dom.get("en").getText().replace(/[\r\n]/g, "").replace("link:T", "link: T"), expected, "Insert element before" );
 
 	QUnit.reset();
 	expected = "This is a normal link: diveintomarkYahoo";
 	Dom.get("yahoo").insert('beforeBegin', Dom.get("mark"));
-	equals( Dom.get("en").getText().replace(/[\r\n]/g, ""), expected, "Insert Dom.parse before" );
+	equal( Dom.get("en").getText().replace(/[\r\n]/g, ""), expected, "Insert Dom.parse before" );
 
 	// var set = Dom.parse("<div/>").insert("<span>test</span>", 'beforeBegin');
-	// equals( set.nodeName.toLowerCase(), "span", "Insert the element before the disconnected node." );
+	// equal( set.nodeName.toLowerCase(), "span", "Insert the element before the disconnected node." );
 });
 
 test("Control.prototype.insert('afterEnd', html)", function() {
 	var expected = "This is a normal link: Yahoobuga";
 	Dom.get("yahoo").insert( 'afterEnd',  "<b>buga</b>" );
-	equals( Dom.get("en").getText().replace(/[\r\n]/g, ""), expected, "Insert String after" );
+	equal( Dom.get("en").getText().replace(/[\r\n]/g, ""), expected, "Insert String after" );
 
 	QUnit.reset();
 	expected = "This is a normal link: YahooTry them out:";
 	Dom.get("yahoo").insert(  'afterEnd',  document.getElementById("first")  );
-	equals( Dom.get("en").getText().replace(/[\r\n]/g, ""), expected, "Insert element after" );
+	equal( Dom.get("en").getText().replace(/[\r\n]/g, ""), expected, "Insert element after" );
 
 	QUnit.reset();
 	expected = "This is a normal link: Yahoodiveintomark";
 	Dom.get("yahoo").insert( 'afterEnd',  Dom.get("mark"));
-	equals( Dom.get("en").getText().replace(/[\r\n]/g, ""), expected, "Insert Dom.parse after" );
+	equal( Dom.get("en").getText().replace(/[\r\n]/g, ""), expected, "Insert Dom.parse after" );
 
 	// var set = Dom.parse("<div/>").insert("<span>test</span>"   , 'afterEnd');
-	// equals( set.nodeName.toLowerCase(), "span", "Insert the element after the disconnected node." );
+	// equal( set.nodeName.toLowerCase(), "span", "Insert the element after the disconnected node." );
 });
 
 test("Control.prototype.insert('beforeEnd', html)", function() {
 	var expected = "This is a normal link: Yahoobuga";
 	Dom.get("yahoo").insert( 'beforeEnd', "<b>buga</b>" );
-	equals( Dom.get("en").getText().replace(/[\r\n]/g, ""), expected, "Insert String after" );
+	equal( Dom.get("en").getText().replace(/[\r\n]/g, ""), expected, "Insert String after" );
 
 	QUnit.reset();
 	expected = "This is a normal link: YahooTry them out:";
 	Dom.get("yahoo").insert(   'beforeEnd', document.getElementById("first")  );
-	equals( Dom.get("en").getText().replace(/[\r\n]/g, ""), expected, "Insert element after" );
+	equal( Dom.get("en").getText().replace(/[\r\n]/g, ""), expected, "Insert element after" );
 
 	QUnit.reset();
 	expected = "This is a normal link: Yahoodiveintomark";
 	Dom.get("yahoo").insert('beforeEnd', Dom.get("mark"));
-	equals( Dom.get("en").getText().replace(/[\r\n]/g, ""), expected, "Insert Dom.parse after" );
+	equal( Dom.get("en").getText().replace(/[\r\n]/g, ""), expected, "Insert Dom.parse after" );
 
 	var set = Dom.parse("<div/>").insert('beforeEnd', "<span>test</span>");
-	equals( set.dom.nodeName.toLowerCase(), "span", "Insert the element after the disconnected node." );
+	equal( set.dom.nodeName.toLowerCase(), "span", "Insert the element after the disconnected node." );
 });
 
 test("Control.prototype.replaceWith", function() {
@@ -589,7 +589,7 @@ test("Control.prototype.replaceWith", function() {
 	QUnit.reset();
 	Dom.get("qunit-fixture").append("<div id='bar'><div id='baz'></div></div>");
 	Dom.get("baz").replaceWith("Baz");
-	equals( Dom.get("bar").getText().replace(/[\r\n]/g, ""),"Baz", "Replace element with text" );
+	equal( Dom.get("bar").getText().replace(/[\r\n]/g, ""),"Baz", "Replace element with text" );
 	ok( !Dom.get("baz"), "Verify that original element is gone, after element" );
 
 	QUnit.reset();
@@ -629,36 +629,36 @@ test("Control.prototype.replaceWith", function() {
 	QUnit.reset();
 
 	var set = Dom.parse("<div/>").replaceWith( "<span>test</span>" );
-	equals( set.dom.nodeName.toLowerCase(), "span", "Replace the disconnected node." );
+	equal( set.dom.nodeName.toLowerCase(), "span", "Replace the disconnected node." );
 
 	var div = Dom.parse("<div class='replacewith'></div>").appendTo();
 	// TODO: Work on Dom.parse(...) inline script execution
 	//div.replaceWith("<div class='replacewith'></div><script>" +
-		//"equals(Dom.parse('.replacewith').length, 1, 'Check number of elements in page.');" +
+		//"equal(Dom.parse('.replacewith').length, 1, 'Check number of elements in page.');" +
 		//"</script>");
-	equals(document.query(".replacewith").length, 1, "Check number of elements in page.");
+	equal(document.query(".replacewith").length, 1, "Check number of elements in page.");
 	document.query(".replacewith").remove();
 
 	QUnit.reset();
 
 	Dom.get("qunit-fixture").append("<div id='replaceWith'></div>");
-	equals( Dom.get("qunit-fixture").query("div[id=replaceWith]").length, 1, "Make sure only one div exists." );
+	equal( Dom.get("qunit-fixture").query("div[id=replaceWith]").length, 1, "Make sure only one div exists." );
 
 	Dom.get("replaceWith").replaceWith( "<div id='replaceWith'></div>" );
-	equals( Dom.get("qunit-fixture").query("div[id=replaceWith]").length, 1, "Make sure only one div exists." );
+	equal( Dom.get("qunit-fixture").query("div[id=replaceWith]").length, 1, "Make sure only one div exists." );
 
 	Dom.get("replaceWith").replaceWith(  "<div id='replaceWith'></div>" );
-	equals( Dom.get("qunit-fixture").query("div[id=replaceWith]").length, 1, "Make sure only one div exists." );
+	equal( Dom.get("qunit-fixture").query("div[id=replaceWith]").length, 1, "Make sure only one div exists." );
 });
 
 test("Control.prototype.replaceWith(string) for more than one element", function(){
 	expect(3);
 
-	equals(document.query("#foo p").length, 3, "ensuring that test data has not changed");
+	equal(document.query("#foo p").length, 3, "ensuring that test data has not changed");
 
 	document.query("#foo p").replaceWith("<span>bar</span>");
-	equals(document.query("#foo span").length, 3, "verify that all the three original element have been replaced");
-	equals(document.query("#foo p").length, 0, "verify that all the three original element have been replaced");
+	equal(document.query("#foo span").length, 3, "verify that all the three original element have been replaced");
+	equal(document.query("#foo p").length, 0, "verify that all the three original element have been replaced");
 });
 
 test("Dom.parse.clone() (#8017)", function() {
@@ -666,7 +666,7 @@ test("Dom.parse.clone() (#8017)", function() {
 	var main = Dom.get("qunit-fixture"),
 			clone = main.clone();
 
-	equals( main.dom.childNodes.length, clone.dom.childNodes.length, "Simple child length to ensure a large dom tree copies correctly" );
+	equal( main.dom.childNodes.length, clone.dom.childNodes.length, "Simple child length to ensure a large dom tree copies correctly" );
 
 	
 	Dom.get("qunit-fixture").append("<select class='test8070'></select><select class='test8070'></select>");
@@ -674,19 +674,19 @@ test("Dom.parse.clone() (#8017)", function() {
 	
 	selects.append("<OPTION>1</OPTION><OPTION>2</OPTION>");
 
-	equals( selects[0].childNodes.length, 2, "First select got two nodes" );
-	equals( selects[1].childNodes.length, 2, "Second select got two nodes" );
+	equal( selects[0].childNodes.length, 2, "First select got two nodes" );
+	equal( selects[1].childNodes.length, 2, "Second select got two nodes" );
 
 	selects.dispose();
 	
 });
 
 test("Control.prototype.clone", function() {
-	equals( "This is a normal link: Yahoo", Dom.get("en").getText(), "Assert text for #en" );
+	equal( "This is a normal link: Yahoo", Dom.get("en").getText(), "Assert text for #en" );
 	var clone = Dom.get("yahoo").clone();
 	Dom.get("first").append(clone);
-	equals( "Try them out:Yahoo", Dom.get("first").getText(), "Check for clone" );
-	equals( "This is a normal link: Yahoo", Dom.get("en").getText(), "Reassert text for #en" );
+	equal( "Try them out:Yahoo", Dom.get("first").getText(), "Check for clone" );
+	equal( "This is a normal link: Yahoo", Dom.get("en").getText(), "Reassert text for #en" );
 
 	var cloneTags = [
 		"<table/>", "<tr/>", "<td/>", "<div/>",
@@ -696,7 +696,7 @@ test("Control.prototype.clone", function() {
 	];
 	for (var i = 0; i < cloneTags.length; i++) {
 		var j = Dom.parse(cloneTags[i]);
-		equals( j.dom.tagName, j.clone().dom.tagName, "Clone a " + cloneTags[i]);
+		equal( j.dom.tagName, j.clone().dom.tagName, "Clone a " + cloneTags[i]);
 	}
 	
 	var div = Dom.parse("<div><ul><li>test</li></ul></div>").on('click' ,function(){
@@ -713,7 +713,7 @@ test("Control.prototype.clone", function() {
 	// manually clean up detached elements
 	clone.remove();
 
-	equals( div.dom.nodeName.toUpperCase(), "DIV", "DIV element cloned" );
+	equal( div.dom.nodeName.toUpperCase(), "DIV", "DIV element cloned" );
 	div.trigger("click");
 
 	// manually clean up detached elements
@@ -726,7 +726,7 @@ test("Control.prototype.clone", function() {
 	});
 
 	clone = div.clone(true);
-	equals( clone.dom.nodeName.toUpperCase(), "DIV", "DIV element cloned" );
+	equal( clone.dom.nodeName.toUpperCase(), "DIV", "DIV element cloned" );
 	clone.find("table").trigger("click");
 
 	// manually clean up detached elements
@@ -751,15 +751,15 @@ test("Control.prototype.clone", function() {
 
 	// !IE9
 	//clone = div.clone(true);
-	//equals( clone.getHtml(), div.getHtml(), "Element contents cloned" );
-	//equals( clone.nodeName.toUpperCase(), "DIV", "DIV element cloned" );
+	//equal( clone.getHtml(), div.getHtml(), "Element contents cloned" );
+	//equal( clone.nodeName.toUpperCase(), "DIV", "DIV element cloned" );
 
 	// and here's a valid one.
 	div = Dom.parse("<div/>").setHtml("<object height='355' width='425' type='application/x-shockwave-flash' data='http://www.youtube.com/v/3KANI2dpXLw&amp;hl=en'>  <param name='movie' value='http://www.youtube.com/v/3KANI2dpXLw&amp;hl=en'>  <param name='wmode' value='transparent'> </object>");
 
 	clone = div.clone(true);
-	equals( clone.getHtml(), div.getHtml(), "Element contents cloned" );
-	equals( clone.dom.nodeName.toUpperCase(), "DIV", "DIV element cloned" );
+	equal( clone.getHtml(), div.getHtml(), "Element contents cloned" );
+	equal( clone.dom.nodeName.toUpperCase(), "DIV", "DIV element cloned" );
 
 	// manually clean up detached elements
 	div.remove();
@@ -771,7 +771,7 @@ test("Control.prototype.clone", function() {
 	div.appendChild( document.createTextNode("test") );
 	form.appendChild( div );
 
-	equals( Dom.get(form).clone().getChildren().length, 1, "Make sure we just get the form back." );
+	equal( Dom.get(form).clone().getChildren().length, 1, "Make sure we just get the form back." );
 
 	//equal( document.find("body").clone().tagName, "BODY", "Make sure cloning body works" );
 });
@@ -779,30 +779,30 @@ test("Control.prototype.clone", function() {
 test("clone(form element) (Bug #3879, #6655)", function() {
 	var element = Dom.parse("<select><option>Foo</option><option selected>Bar</option></select>");
 
-	equals( element.clone().find(":selected").getText(), element.find(":selected").getText(), "Selected option cloned correctly" );
+	equal( element.clone().find(":selected").getText(), element.find(":selected").getText(), "Selected option cloned correctly" );
 
 	element = Dom.parse("<input type='checkbox' value='foo'>").setAttr("checked", "checked");
 	clone = element.clone();
 
-	equals( clone.dom.defaultValue, "foo", "Checked input defaultValue cloned correctly" );
+	equal( clone.dom.defaultValue, "foo", "Checked input defaultValue cloned correctly" );
 
 	// defaultChecked also gets set now due to setAttribute in attr, is this check still valid?
-	// equals( clone[0].defaultChecked, !Dom.parse.support.noCloneChecked, "Checked input defaultChecked cloned correctly" );
+	// equal( clone[0].defaultChecked, !Dom.parse.support.noCloneChecked, "Checked input defaultChecked cloned correctly" );
 
 	// element = Dom.parse("<input type='text' value='foo'>");
 	// clone = element.clone();
-	// equals( clone.defaultValue, "foo", "Text input defaultValue cloned correctly" );
+	// equal( clone.defaultValue, "foo", "Text input defaultValue cloned correctly" );
 
 	// element = Dom.parse("<textarea>foo</textarea>");
 	// clone = element.clone();
-	// equals( clone.defaultValue, "foo", "Textarea defaultValue cloned correctly" );
+	// equal( clone.defaultValue, "foo", "Textarea defaultValue cloned correctly" );
 });
 
 test("clone(multiple selected options)", function() {
 	expect(1);
 	var element = Dom.parse("<select><option>Foo</option><option selected>Bar</option><option selected>Baz</option></select>");
 
-	equals( element.clone().query(":selected").length, element.query(":selected").length, "Multiple selected options cloned correctly" );
+	equal( element.clone().query(":selected").length, element.query(":selected").length, "Multiple selected options cloned correctly" );
 
 });
 
@@ -820,36 +820,36 @@ test("Control.prototype.setHtml", function() {
 
 	div = Dom.parse("<div/>").setHtml( "<div id='parent_1'><div id='child_1'/></div><div id='parent_2'/>"  );
 
-	equals( div.getChildren().length, 2, "Make sure two child nodes exist." );
-	equals( div.getChildren().getChildren().length, 1, "Make sure that a grandchild exists." );
+	equal( div.getChildren().length, 2, "Make sure two child nodes exist." );
+	equal( div.getChildren().getChildren().length, 1, "Make sure that a grandchild exists." );
 
 	var space = Dom.parse("<div/>").setHtml( "&#160;" ).dom.innerHTML;
 	ok( /^\xA0$|^&nbsp;$/.test( space ), "Make sure entities are passed through correctly." );
-	equals( Dom.parse("<div/>").setHtml( "&amp;" ).dom.innerHTML, "&amp;", "Make sure entities are passed through correctly." );
+	equal( Dom.parse("<div/>").setHtml( "&amp;" ).dom.innerHTML, "&amp;", "Make sure entities are passed through correctly." );
 
 	Dom.get("qunit-fixture").setHtml( "<style>.foobar{color:green;}</style>" );
 
-	  equals( Dom.get("qunit-fixture").getChildren().length, 1, "Make sure there is a child element." );
-	    equals( Dom.get("qunit-fixture").getChildren()[0].nodeName.toUpperCase(), "STYLE", "And that a style element was inserted." );
+	  equal( Dom.get("qunit-fixture").getChildren().length, 1, "Make sure there is a child element." );
+	    equal( Dom.get("qunit-fixture").getChildren()[0].nodeName.toUpperCase(), "STYLE", "And that a style element was inserted." );
 
 	//QUnit.reset();
 	//Dom.get("qunit-fixture").setHtml( "<select/>" );
 	//document.find("#qunit-fixture select").setHtml( "<option>O1</option><option selected='selected'>O2</option><option>O3</option>" );
-	//equals( document.find("#qunit-fixture select").getText(), "O2", "Selected option correct" );
+	//equal( document.find("#qunit-fixture select").getText(), "O2", "Selected option correct" );
 
 	var div = Dom.parse("<div />");
-	equals( div.setHtml( 5 ).getHtml(), "5", "Setting a number as html" );
-	equals( div.setHtml( 0 ).getHtml(), "0", "Setting a zero as html" );
+	equal( div.setHtml( 5 ).getHtml(), "5", "Setting a number as html" );
+	equal( div.setHtml( 0 ).getHtml(), "0", "Setting a zero as html" );
 
 	var div2 = Dom.parse("<div/>"), insert = "&lt;div&gt;hello1&lt;/div&gt;";
-	equals( div2.setHtml(insert).getHtml().replace(/>/g, "&gt;"), insert, "Verify escaped insertion." );
-	equals( div2.setHtml("x" + insert).getHtml().replace(/>/g, "&gt;"), "x" + insert, "Verify escaped insertion." );
-	// equals( div2.setHtml(" " + insert).getHtml().replace(/>/g, "&gt;"), " " + insert, "Verify escaped insertion." );
+	equal( div2.setHtml(insert).getHtml().replace(/>/g, "&gt;"), insert, "Verify escaped insertion." );
+	equal( div2.setHtml("x" + insert).getHtml().replace(/>/g, "&gt;"), "x" + insert, "Verify escaped insertion." );
+	// equal( div2.setHtml(" " + insert).getHtml().replace(/>/g, "&gt;"), " " + insert, "Verify escaped insertion." );
 
 	var map = Dom.parse("<map/>").setHtml("<area id='map01' shape='rect' coords='50,50,150,150' href='http://www.jquery.com/' alt='Dom.parse'>");
 
-	equals( map.dom.childNodes.length, 1, "The area was inserted." );
-	equals( map.dom.firstChild.nodeName.toLowerCase(), "area", "The area was inserted." );
+	equal( map.dom.childNodes.length, 1, "The area was inserted." );
+	equal( map.dom.firstChild.nodeName.toLowerCase(), "area", "The area was inserted." );
 
 	QUnit.reset();
 
@@ -857,9 +857,9 @@ test("Control.prototype.setHtml", function() {
 
 	var child = Dom.get("qunit-fixture").query("script");
 
-	equals( child.length, 6, "Make sure that two non-JavaScript script tags are left." );
-	equals( child.item(0).dom.type, "something/else", "Verify type of script tag." );
-	equals( child.item(-1).dom.type, "something/else", "Verify type of script tag." );
+	equal( child.length, 6, "Make sure that two non-JavaScript script tags are left." );
+	equal( child.item(0).dom.type, "something/else", "Verify type of script tag." );
+	equal( child.item(-1).dom.type, "something/else", "Verify type of script tag." );
 
 	Dom.get("qunit-fixture").setHtml("<script>ok( true, 'Test repeated injection of script.' );</script>");
 	Dom.get("qunit-fixture").setHtml("<script>ok( true, 'Test repeated injection of script.' );</script>");
@@ -869,7 +869,7 @@ test("Control.prototype.setHtml", function() {
 
 	Dom.get("qunit-fixture").setHtml("foo <form><script type='text/javascript'>ok( true, 'Dom.parse().getHtml().evalScripts() Evals Scripts Twice in Firefox, see #975 (2)' );</script></form>");
 
-	Dom.get("qunit-fixture").setHtml("<script>equals(Dom.parse.scriptorder++, 0, 'Script is executed in order');equals(Dom.parse('#scriptorder').length, 1,'Execute after html (even though appears before)')<\/script><span id='scriptorder'><script>equals(Dom.parse.scriptorder++, 1, 'Script (nested) is executed in order');equals(Dom.parse('#scriptorder').length, 1,'Execute after html')<\/script></span><script>equals(Dom.parse.scriptorder++, 2, 'Script (unnested) is executed in order');equals(Dom.parse('#scriptorder').length, 1,'Execute after html')<\/script>");
+	Dom.get("qunit-fixture").setHtml("<script>equal(Dom.parse.scriptorder++, 0, 'Script is executed in order');equal(Dom.parse('#scriptorder').length, 1,'Execute after html (even though appears before)')<\/script><span id='scriptorder'><script>equal(Dom.parse.scriptorder++, 1, 'Script (nested) is executed in order');equal(Dom.parse('#scriptorder').length, 1,'Execute after html')<\/script></span><script>equal(Dom.parse.scriptorder++, 2, 'Script (unnested) is executed in order');equal(Dom.parse('#scriptorder').length, 1,'Execute after html')<\/script>");
 });
 
 test("Control.prototype.remove", function() {
@@ -878,7 +878,7 @@ test("Control.prototype.remove", function() {
 
 	Dom.get("ap").getChildren().remove();
 	ok( Dom.get("ap").getText().length > 10, "Check text is not removed" );
-	equals( Dom.get("ap").getChildren().length, 0, "Check remove" );
+	equal( Dom.get("ap").getChildren().length, 0, "Check remove" );
 
 	QUnit.reset();
 
@@ -891,8 +891,8 @@ test("Control.prototype.remove", function() {
 });
 
 test("Control.prototype.empty", function() {
-	equals( Dom.get("ap").getChildren().empty().getText().join('').length, 0, "Check text is removed" );
-	equals( Dom.get("ap").getChildren().length, 4, "Check elements are not removed" );
+	equal( Dom.get("ap").getChildren().empty().getText().join('').length, 0, "Check text is removed" );
+	equal( Dom.get("ap").getChildren().length, 4, "Check elements are not removed" );
 
 });
 

@@ -5,8 +5,8 @@ test("disconnected node", function() {
 
 	var result = Dom.create("div").getOffset();
 
-	equals( result.x, 0, "Check top" );
-	equals( result.y, 0, "Check left" );
+	equal( result.x, 0, "Check top" );
+	equal( result.y, 0, "Check left" );
 });
 
 var supportsScroll = false;
@@ -29,12 +29,12 @@ testoffset("absolute", function(iframe) {
 
 	iframe.scrollTo(1, 1);
 	
-	equals( getDom(document, "absolute-1").getPosition().x, 1, "getDom(document, 'absolute-1').getOffsets().x");
-	equals( getDom(document, "absolute-1").getPosition().y, 1, "getDom(document, 'absolute-1').getOffsets().y");
+	equal( getDom(document, "absolute-1").getPosition().x, 1, "getDom(document, 'absolute-1').getOffsets().x");
+	equal( getDom(document, "absolute-1").getPosition().y, 1, "getDom(document, 'absolute-1').getOffsets().y");
 
 	
-	equals( getDom(document, "absolute-1").getOffset().x, 0, "getDom(document, 'absolute-1').getPosition().x");
-	equals( getDom(document, "absolute-1").getOffset().y, 0, "getDom(document, 'absolute-1').getPosition().y");
+	equal( getDom(document, "absolute-1").getOffset().x, 0, "getDom(document, 'absolute-1').getPosition().x");
+	equal( getDom(document, "absolute-1").getOffset().y, 0, "getDom(document, 'absolute-1').getPosition().y");
 
 	forceScroll.remove();
 });
@@ -51,8 +51,8 @@ testoffset("absolute", function( iframe ) {
 		{ id: "absolute-2",     x: 20, y: 20 }
 	];
 	Object.each( tests, function(test) {
-		equals(  getDom(document,  test.id ).getPosition().x, test.x, "getDom(document, '" + test.id + "').getPosition().x" );
-		equals(  getDom(document,  test.id ).getPosition().x,  test.y,  "getDom(document, '" + test.id + "').getPosition().y" );
+		equal(  getDom(document,  test.id ).getPosition().x, test.x, "getDom(document, '" + test.id + "').getPosition().x" );
+		equal(  getDom(document,  test.id ).getPosition().x,  test.y,  "getDom(document, '" + test.id + "').getPosition().y" );
 	});
 
 
@@ -64,14 +64,14 @@ testoffset("absolute", function( iframe ) {
 		{ id: "absolute-2",     y: 19, x: 19 }
 	];
 	Object.each( tests, function(test) {
-		equals( getDom(document,  test.id ).getOffset().y,  test.y,  "getDom(document, '" + test.id + "').getOffset().y" );
-		equals( getDom(document,  test.id ).getOffset().x, test.x, "getDom(document, '" + test.id + "').getOffset().x" );
+		equal( getDom(document,  test.id ).getOffset().y,  test.y,  "getDom(document, '" + test.id + "').getOffset().y" );
+		equal( getDom(document,  test.id ).getOffset().x, test.x, "getDom(document, '" + test.id + "').getOffset().x" );
 	});
 
 	// test #5781
 	var offset = getDom(document,  "positionTest" ).setOffset({ y: 10, x: 10 }).getPosition();
-	equals( offset.y,  10, "Setting offset on element with position absolute but 'auto' values." )
-	equals( offset.x, 10, "Setting offset on element with position absolute but 'auto' values." )
+	equal( offset.y,  10, "Setting offset on element with position absolute but 'auto' values." )
+	equal( offset.x, 10, "Setting offset on element with position absolute but 'auto' values." )
 
 
 	// set offset
@@ -95,12 +95,12 @@ testoffset("absolute", function( iframe ) {
 	];
 	Object.each( tests, function(test) {
 		getDom(document,  test.id ).setPosition({ y: test.y, x: test.x });
-		equals( getDom(document,  test.id ).getPosition().y,  test.y,  "getDom(document, '" + test.id + "').setOffset({ y: "  + test.y  + " })" );
-		equals( getDom(document,  test.id ).getPosition().x, test.x, "getDom(document, '" + test.id + "').setOffset({ x: " + test.x + " })" );
+		equal( getDom(document,  test.id ).getPosition().y,  test.y,  "getDom(document, '" + test.id + "').setOffset({ y: "  + test.y  + " })" );
+		equal( getDom(document,  test.id ).getPosition().x, test.x, "getDom(document, '" + test.id + "').setOffset({ x: " + test.x + " })" );
 
 		getDom(document,  test.id ).setPosition({ x: test.x + 2, y:  test.y  + 2 })
-		equals( getDom(document,  test.id ).getPosition().y,  test.y  + 2, "Setting one property at a time." );
-		equals( getDom(document,  test.id ).getPosition().x, test.x + 2, "Setting one property at a time." );
+		equal( getDom(document,  test.id ).getPosition().y,  test.y  + 2, "Setting one property at a time." );
+		equal( getDom(document,  test.id ).getPosition().x, test.x + 2, "Setting one property at a time." );
 		
 		
 	});
@@ -108,13 +108,13 @@ testoffset("absolute", function( iframe ) {
 	
 	var offsets = getDom(document, 'positionTest').getOffset();
 	getDom(document, 'positionTest').setOffset(offsets);
-	equals( getDom(document, 'positionTest').getOffset().y,  offsets.y,  "getDom(document, 'positionTest').setOffset().getOffset()" );
-	equals( getDom(document, 'positionTest').getOffset().x,  offsets.x,  "getDom(document, 'positionTest').setOffset().getOffset()" );
+	equal( getDom(document, 'positionTest').getOffset().y,  offsets.y,  "getDom(document, 'positionTest').setOffset().getOffset()" );
+	equal( getDom(document, 'positionTest').getOffset().x,  offsets.x,  "getDom(document, 'positionTest').setOffset().getOffset()" );
 	
 	var position = getDom(document, 'positionTest').getPosition();
 	getDom(document, 'positionTest').setPosition(position);
-	equals( getDom(document, 'positionTest').getPosition().y,  position.y,  "getDom(document, 'positionTest').setPosition().getPosition()" );
-	equals( getDom(document, 'positionTest').getPosition().x,  position.x,  "getDom(document, 'positionTest').setPosition().getPosition()" );
+	equal( getDom(document, 'positionTest').getPosition().y,  position.y,  "getDom(document, 'positionTest').setPosition().getPosition()" );
+	equal( getDom(document, 'positionTest').getPosition().x,  position.x,  "getDom(document, 'positionTest').setPosition().getPosition()" );
 });
 
 testoffset("relative", function( iframe ) {
@@ -131,8 +131,8 @@ testoffset("relative", function( iframe ) {
 		{ id: "relative-2",   y: ie ? 141 : 142, x: 27 }
 	];
 	Object.each( tests, function(test) {
-		equals( getDom(document,  test.id ).getPosition().y,  test.y,  "getDom(document, '" + test.id + "').getPosition().y" );
-		equals( getDom(document,  test.id ).getPosition().x, test.x, "getDom(document, '" + test.id + "').getPosition().x" );
+		equal( getDom(document,  test.id ).getPosition().y,  test.y,  "getDom(document, '" + test.id + "').getPosition().y" );
+		equal( getDom(document,  test.id ).getPosition().x, test.x, "getDom(document, '" + test.id + "').getPosition().x" );
 	});
 
 
@@ -146,8 +146,8 @@ testoffset("relative", function( iframe ) {
 		{ id: "relative-2",   y: 20, x: 20 }
 	];
 	Object.each( tests, function(test) {
-		equals( getDom(document,  test.id ).getOffset().y,  test.y,  "getDom(document, '" + test.id + "').getOffset().y" );
-		equals( getDom(document,  test.id ).getOffset().x, test.x, "getDom(document, '" + test.id + "').getOffset().x" );
+		equal( getDom(document,  test.id ).getOffset().y,  test.y,  "getDom(document, '" + test.id + "').getOffset().y" );
+		equal( getDom(document,  test.id ).getOffset().x, test.x, "getDom(document, '" + test.id + "').getOffset().x" );
 	});
 
 
@@ -168,20 +168,20 @@ testoffset("relative", function( iframe ) {
 	];
 	Object.each( tests, function(test) {
 		getDom(document,  test.id ).setOffset({ y: test.y, x: test.x });
-		equals( getDom(document,  test.id ).getOffset().y,  test.y,  "getDom(document, '" + test.id + "').setOffset({ y: "  + test.y  + " })" );
-		equals( getDom(document,  test.id ).getOffset().x, test.x, "getDom(document, '" + test.id + "').setOffset({ x: " + test.x + " })" );
+		equal( getDom(document,  test.id ).getOffset().y,  test.y,  "getDom(document, '" + test.id + "').setOffset({ y: "  + test.y  + " })" );
+		equal( getDom(document,  test.id ).getOffset().x, test.x, "getDom(document, '" + test.id + "').setOffset({ x: " + test.x + " })" );
 	});
 	
 	
 	var offsets = getDom(document, 'positionTest').getOffset();
 	getDom(document, 'positionTest').setOffset(offsets);
-	equals( getDom(document, 'positionTest').getOffset().y,  offsets.y,  "getDom(document, 'positionTest').setOffset().getOffset()" );
-	equals( getDom(document, 'positionTest').getOffset().x,  offsets.x,  "getDom(document, 'positionTest').setOffset().getOffset()" );
+	equal( getDom(document, 'positionTest').getOffset().y,  offsets.y,  "getDom(document, 'positionTest').setOffset().getOffset()" );
+	equal( getDom(document, 'positionTest').getOffset().x,  offsets.x,  "getDom(document, 'positionTest').setOffset().getOffset()" );
 	
 	var position = getDom(document, 'positionTest').getPosition();
 	getDom(document, 'positionTest').setPosition(position);
-	equals( getDom(document, 'positionTest').getPosition().y,  position.y,  "getDom(document, 'positionTest').setPosition().getPosition()" );
-	equals( getDom(document, 'positionTest').getPosition().x,  position.x,  "getDom(document, 'positionTest').setPosition().getPosition()" );
+	equal( getDom(document, 'positionTest').getPosition().y,  position.y,  "getDom(document, 'positionTest').setPosition().getPosition()" );
+	equal( getDom(document, 'positionTest').getPosition().x,  position.x,  "getDom(document, 'positionTest').setPosition().getPosition()" );
 });
 
 testoffset("static", function( iframe ) {
@@ -199,8 +199,8 @@ testoffset("static", function( iframe ) {
 		{ id: "static-2",     y: ie ? 121 : 122, x:  7 }
 	];
 	Object.each( tests, function(test) {
-		equals( getDom(document,  test.id ).getPosition().y,  test.y,  "getDom(document, '" + test.id + "').getPosition().y" );
-		equals( getDom(document,  test.id ).getPosition().x, test.x, "getDom(document, '" + test.id + "').getPosition().x" );
+		equal( getDom(document,  test.id ).getPosition().y,  test.y,  "getDom(document, '" + test.id + "').getPosition().y" );
+		equal( getDom(document,  test.id ).getPosition().x, test.x, "getDom(document, '" + test.id + "').getPosition().x" );
 	});
 
 
@@ -219,8 +219,8 @@ testoffset("static", function( iframe ) {
 	// !Opera
 	
 	//Object.each( tests, function(test) {
-	//	equals( getDom(document,  test.id ).getOffset().y,  test.y,  "getDom(document, '" + test.id  + "').getOffset().y" );
-	//	equals( getDom(document,  test.id ).getOffset().x, test.x, "getDom(document, '" + test.id +"').getOffset().x" );
+	//	equal( getDom(document,  test.id ).getOffset().y,  test.y,  "getDom(document, '" + test.id  + "').getOffset().y" );
+	//	equal( getDom(document,  test.id ).getOffset().x, test.x, "getDom(document, '" + test.id +"').getOffset().x" );
 	//});
 
 
@@ -245,20 +245,20 @@ testoffset("static", function( iframe ) {
 	];
 	Object.each( tests, function(test) {
 		getDom(document,  test.id ).setOffset({ y: test.y, x: test.x });
-		equals( getDom(document,  test.id ).getOffset().y,  test.y,  "getDom(document, '" + test.id + "').setOffset({ y: "  + test.y  + " })" );
-		equals( getDom(document,  test.id ).getOffset().x, test.x, "getDom(document, '" + test.id + "').setOffset({ x: " + test.x + " })" );
+		equal( getDom(document,  test.id ).getOffset().y,  test.y,  "getDom(document, '" + test.id + "').setOffset({ y: "  + test.y  + " })" );
+		equal( getDom(document,  test.id ).getOffset().x, test.x, "getDom(document, '" + test.id + "').setOffset({ x: " + test.x + " })" );
 	});
 	
 	
 	var offsets = getDom(document, 'positionTest').getOffset();
 	getDom(document, 'positionTest').setOffset(offsets);
-	equals( getDom(document, 'positionTest').getOffset().y,  offsets.y,  "getDom(document, 'positionTest').setOffset().getOffset()" );
-	equals( getDom(document, 'positionTest').getOffset().x,  offsets.x,  "getDom(document, 'positionTest').setOffset().getOffset()" );
+	equal( getDom(document, 'positionTest').getOffset().y,  offsets.y,  "getDom(document, 'positionTest').setOffset().getOffset()" );
+	equal( getDom(document, 'positionTest').getOffset().x,  offsets.x,  "getDom(document, 'positionTest').setOffset().getOffset()" );
 	
 	var position = getDom(document, 'positionTest').getPosition();
 	getDom(document, 'positionTest').setPosition(position);
-	equals( getDom(document, 'positionTest').getPosition().y,  position.y,  "getDom(document, 'positionTest').setPosition().getPosition()" );
-	equals( getDom(document, 'positionTest').getPosition().x,  position.x,  "getDom(document, 'positionTest').setPosition().getPosition()" );
+	equal( getDom(document, 'positionTest').getPosition().y,  position.y,  "getDom(document, 'positionTest').setPosition().getPosition()" );
+	equal( getDom(document, 'positionTest').getPosition().x,  position.x,  "getDom(document, 'positionTest').setPosition().getPosition()" );
 });
 
 testoffset("fixed", function( iframe ) {
@@ -275,8 +275,8 @@ if(navigator.isIE6)
 	];
 
 	Object.each( tests, function(test) {
-		equals( getDom(document,  test.id ).getPosition().y,  test.y,  "getDom(document, '" + test.id + "').getPosition().y" );
-		equals( getDom(document,  test.id ).getPosition().x, test.x, "getDom(document, '" + test.id + "').getPosition().x" );
+		equal( getDom(document,  test.id ).getPosition().y,  test.y,  "getDom(document, '" + test.id + "').getPosition().y" );
+		equal( getDom(document,  test.id ).getPosition().x, test.x, "getDom(document, '" + test.id + "').getPosition().x" );
 	});
 
 	tests = [
@@ -290,25 +290,25 @@ if(navigator.isIE6)
 
 	Object.each( tests, function(test) {
 		getDom(document,  test.id ).setOffset({ y: test.y, x: test.x });
-		equals( getDom(document,  test.id ).getOffset().y,  test.y,  "getDom(document, '" + test.id + "').setOffset({ y: "  + test.y  + " })" );
-		equals( getDom(document,  test.id ).getOffset().x, test.x, "getDom(document, '" + test.id + "').setOffset({ x: " + test.x + " })" );
+		equal( getDom(document,  test.id ).getOffset().y,  test.y,  "getDom(document, '" + test.id + "').setOffset({ y: "  + test.y  + " })" );
+		equal( getDom(document,  test.id ).getOffset().x, test.x, "getDom(document, '" + test.id + "').setOffset({ x: " + test.x + " })" );
 	});
 
 	// Bug 8316
 	var noTopLeft = getDom(document, "fixed-no-top-left");
-	equals( noTopLeft.getPosition().y,  1007,  "Check offset top for fixed element with no top set" );
-	equals( noTopLeft.getPosition().x, 1007, "Check offset left for fixed element with no left set" );
+	equal( noTopLeft.getPosition().y,  1007,  "Check offset top for fixed element with no top set" );
+	equal( noTopLeft.getPosition().x, 1007, "Check offset left for fixed element with no left set" );
 	
 	
 	var offsets = getDom(document, 'positionTest').getOffset();
 	getDom(document, 'positionTest').setOffset(offsets);
-	equals( getDom(document, 'positionTest').getOffset().y,  offsets.y,  "getDom(document, 'positionTest').setOffset().getOffset()" );
-	equals( getDom(document, 'positionTest').getOffset().x,  offsets.x,  "getDom(document, 'positionTest').setOffset().getOffset()" );
+	equal( getDom(document, 'positionTest').getOffset().y,  offsets.y,  "getDom(document, 'positionTest').setOffset().getOffset()" );
+	equal( getDom(document, 'positionTest').getOffset().x,  offsets.x,  "getDom(document, 'positionTest').setOffset().getOffset()" );
 	
 	var position = getDom(document, 'positionTest').getPosition();
 	getDom(document, 'positionTest').setPosition(position);
-	equals( getDom(document, 'positionTest').getPosition().y,  position.y,  "getDom(document, 'positionTest').setPosition().getPosition()" );
-	equals( getDom(document, 'positionTest').getPosition().x,  position.x,  "getDom(document, 'positionTest').setPosition().getPosition()" );
+	equal( getDom(document, 'positionTest').getPosition().y,  position.y,  "getDom(document, 'positionTest').setPosition().getPosition()" );
+	equal( getDom(document, 'positionTest').getPosition().x,  position.x,  "getDom(document, 'positionTest').setPosition().getPosition()" );
 });
 
 testoffset("table", function( iframe ) {
@@ -316,11 +316,11 @@ testoffset("table", function( iframe ) {
 	var document = iframe.document ;
 	expect(4);
 
-	equals( getDom(document, "table-1").getPosition().y, 6, "getDom(document, 'table-1').getPosition().y" );
-	equals( getDom(document, "table-1").getPosition().x, 6, "getDom(document, 'table-1').getPosition().x" );
+	equal( getDom(document, "table-1").getPosition().y, 6, "getDom(document, 'table-1').getPosition().y" );
+	equal( getDom(document, "table-1").getPosition().x, 6, "getDom(document, 'table-1').getPosition().x" );
 
-	equals( getDom(document, "th-1").getPosition().y, 10, "getDom(document, 'th-1').getPosition().y" );
-	equals( getDom(document, "th-1").getPosition().x, 10, "getDom(document, 'th-1').getPosition().x" );
+	equal( getDom(document, "th-1").getPosition().y, 10, "getDom(document, 'th-1').getPosition().y" );
+	equal( getDom(document, "th-1").getPosition().x, 10, "getDom(document, 'th-1').getPosition().x" );
 });
 
 testoffset("scroll", function( iframe ) {
@@ -330,32 +330,32 @@ testoffset("scroll", function( iframe ) {
 	var ie = navigator.isQuirks;
 
 	// IE is collapsing the top margin of 1px
-	equals( new Dom(document.getElementById("scroll-1")).getPosition().y, ie ? 6 : 7, "getDom(document, 'scroll-1').getPosition().y" );
-	equals( new Dom(document.getElementById("scroll-1")).getPosition().x, 7, "getDom(document, 'scroll-1').getPosition().x" );
+	equal( new Dom(document.getElementById("scroll-1")).getPosition().y, ie ? 6 : 7, "getDom(document, 'scroll-1').getPosition().y" );
+	equal( new Dom(document.getElementById("scroll-1")).getPosition().x, 7, "getDom(document, 'scroll-1').getPosition().x" );
 
 	// IE is collapsing the top margin of 1px
-	equals( getDom(document, "scroll-1-1").getPosition().y, ie ? 9 : 11, "getDom(document, 'scroll-1-1').getPosition().y" );
-	equals( getDom(document, "scroll-1-1").getPosition().x, 11, "getDom(document, 'scroll-1-1').getPosition().x" );
+	equal( getDom(document, "scroll-1-1").getPosition().y, ie ? 9 : 11, "getDom(document, 'scroll-1-1').getPosition().y" );
+	equal( getDom(document, "scroll-1-1").getPosition().x, 11, "getDom(document, 'scroll-1-1').getPosition().x" );
 
 
 	// scroll offset tests .scrollTop/Left
-	equals( getDom(document, "scroll-1").getScroll().y, 5, "getDom(document, 'scroll-1').getScroll().y" );
-	equals( getDom(document, "scroll-1").getScroll().x, 5, "getDom(document, 'scroll-1').getScroll().x" );
+	equal( getDom(document, "scroll-1").getScroll().y, 5, "getDom(document, 'scroll-1').getScroll().y" );
+	equal( getDom(document, "scroll-1").getScroll().x, 5, "getDom(document, 'scroll-1').getScroll().x" );
 
-	equals( getDom(document, "scroll-1-1").getScroll().y, 0, "getDom(document, 'scroll-1-1').getScroll().y" );
-	equals( getDom(document, "scroll-1-1").getScroll().x, 0, "getDom(document, 'scroll-1-1').getScroll().x" );
+	equal( getDom(document, "scroll-1-1").getScroll().y, 0, "getDom(document, 'scroll-1-1').getScroll().y" );
+	equal( getDom(document, "scroll-1-1").getScroll().x, 0, "getDom(document, 'scroll-1-1').getScroll().x" );
 
-	// equals( Dom.get(document.body).getScroll().y, 0, "Dom.get(document.body).getScroll().y" );
-	// equals( Dom.get(document.body).getScroll().x, 0, "Dom.get(document.body).getScroll().y" );
+	// equal( Dom.get(document.body).getScroll().y, 0, "Dom.get(document.body).getScroll().y" );
+	// equal( Dom.get(document.body).getScroll().x, 0, "Dom.get(document.body).getScroll().y" );
 
 	iframe.name = "test";
 	
-	equals( document.getScroll().y, 1000, "getDom(document, document).getScroll().y" );
-	equals( document.getScroll().x, 1000, "getDom(document, document).getScroll().x" );
+	equal( document.getScroll().y, 1000, "getDom(document, document).getScroll().y" );
+	equal( document.getScroll().x, 1000, "getDom(document, document).getScroll().x" );
 
 	document.setScroll(0,0);
-	equals( document.getScroll().y, 0, "document.getScroll().y other document" );
-	equals( document.getScroll().x, 0, "document.getScroll().x other document" );
+	equal( document.getScroll().y, 0, "document.getScroll().y other document" );
+	equal( document.getScroll().x, 0, "document.getScroll().x other document" );
 
 	equal( document.setScroll(null, 100), document, "getDom(document, ).scrollTop(100) testing setter on empty jquery object" );
 	equal( document.setScroll(100, null), document, "getDom(document, ).scrollLeft(100) testing setter on empty jquery object" );
@@ -366,28 +366,28 @@ testoffset("scroll", function( iframe ) {
 
 testoffset("body", function( iframe ) {
 	expect(2);
-	equals( Dom.get(iframe.document.body).getPosition().y, 1, "document.body.getPosition().y" );
-	equals( Dom.get(iframe.document.body).getPosition().x, 1, "document.body.getPosition().x" );
+	equal( Dom.get(iframe.document.body).getPosition().y, 1, "document.body.getPosition().y" );
+	equal( Dom.get(iframe.document.body).getPosition().x, 1, "document.body.getPosition().x" );
 });
 
 test("offsetParent", function(){
 
 	var body = Dom.get(document.body).getOffsetParent();
-	equals( body.dom, document.body, "The body is its own offsetParent." );
+	equal( body.dom, document.body, "The body is its own offsetParent." );
 
 	var header = getDom(document, "qunit-header").getOffsetParent();
-	equals( header.dom, document.body, "The body is the offsetParent." );
+	equal( header.dom, document.body, "The body is the offsetParent." );
 
 	var div = getDom(document, "nothiddendivchild").getOffsetParent();
-	equals( div.dom, document.body, "The body is the offsetParent." );
+	equal( div.dom, document.body, "The body is the offsetParent." );
 
 	getDom(document, "nothiddendiv").set("position", "relative");
 
 	div = getDom(document, "nothiddendivchild").getOffsetParent();
-	equals( div.dom, getDom(document, "nothiddendiv").dom, "The div is the offsetParent." );
+	equal( div.dom, getDom(document, "nothiddendiv").dom, "The div is the offsetParent." );
 
 	div = Dom.get(document.body).getOffsetParent();
-	equals( div.dom, document.body, "The body is the offsetParent." );
+	equal( div.dom, document.body, "The body is the offsetParent." );
 });
 
 test("fractions (see #7730 and #7885)", function() {
@@ -410,8 +410,8 @@ test("fractions (see #7730 and #7885)", function() {
 
 	var result = div.getPosition();
 
-	equals( result.y, expected.y, "Check top" );
-	equals( result.x, expected.x, "Check left" );
+	equal( result.y, expected.y, "Check top" );
+	equal( result.x, expected.x, "Check left" );
 
 	div.remove();
 });

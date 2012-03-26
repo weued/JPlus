@@ -1902,13 +1902,15 @@
 				offset = me.getOffset().sub(me.getPosition()),
 				p = formatPoint(x, y);
 		
-			if (p.y != null) p.y += offset.y; 
+			if (p.y != null) offset.y += p.y; 
+			else offset.y = null;
 		
-			if (p.x != null) p.x += offset.x;
+			if (p.x != null) offset.x += p.x; 
+			else offset.x = null;
 		
 			Dom.movable(me.dom);
 		
-			return me.setOffset(p);
+			return me.setOffset(offset);
 		},
 	
 		/**

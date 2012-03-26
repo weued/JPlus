@@ -28,31 +28,31 @@ test( "execScript", function() {
 
 test("Object.type", function() {
 
-	equals( Object.type(null), "null", "null" );
-	equals( Object.type(undefined), "undefined", "undefined" );
-	equals( Object.type(true), "boolean", "Boolean" );
-	equals( Object.type(false), "boolean", "Boolean" );
-	equals( Object.type(Boolean(true)), "boolean", "Boolean" );
-	equals( Object.type(0), "number", "Number" );
-	equals( Object.type(1), "number", "Number" );
-	equals( Object.type(Number(1)), "number", "Number" );
-	equals( Object.type(""), "string", "String" );
-	equals( Object.type("a"), "string", "String" );
-	equals( Object.type(String("a")), "string", "String" );
-	equals( Object.type({}), "object", "Object" );
-	equals( Object.type(/foo/), "regexp", "RegExp" );
-	equals( Object.type(new RegExp("asdf")), "regexp", "RegExp" );
-	equals( Object.type([1]), "array", "Array" );
-	equals( Object.type(new Date()), "date", "Date" );
-	equals( Object.type(new Function("return;")), "function", "Function" );
-	equals( Object.type(function(){}), "function", "Function" );
-	equals( Object.type(window), "object", "Window" );
-	equals( Object.type(document), "control", "Document" );
-	equals( Object.type(Dom.get(document.body)), "control", "Element" );
-	equals( Object.type(document.createTextNode("foo")), "object", "TextNode" );
+	equal( Object.type(null), "null", "null" );
+	equal( Object.type(undefined), "undefined", "undefined" );
+	equal( Object.type(true), "boolean", "Boolean" );
+	equal( Object.type(false), "boolean", "Boolean" );
+	equal( Object.type(Boolean(true)), "boolean", "Boolean" );
+	equal( Object.type(0), "number", "Number" );
+	equal( Object.type(1), "number", "Number" );
+	equal( Object.type(Number(1)), "number", "Number" );
+	equal( Object.type(""), "string", "String" );
+	equal( Object.type("a"), "string", "String" );
+	equal( Object.type(String("a")), "string", "String" );
+	equal( Object.type({}), "object", "Object" );
+	equal( Object.type(/foo/), "regexp", "RegExp" );
+	equal( Object.type(new RegExp("asdf")), "regexp", "RegExp" );
+	equal( Object.type([1]), "array", "Array" );
+	equal( Object.type(new Date()), "date", "Date" );
+	equal( Object.type(new Function("return;")), "function", "Function" );
+	equal( Object.type(function(){}), "function", "Function" );
+	equal( Object.type(window), "object", "Window" );
+	equal( Object.type(document), "control", "Document" );
+	equal( Object.type(Dom.get(document.body)), "control", "Element" );
+	equal( Object.type(document.createTextNode("foo")), "object", "TextNode" );
 	
 	// !Safari
-	//equals( Object.type(document.getElementsByTagName("*")), "object", "DomList" );
+	//equal( Object.type(document.getElementsByTagName("*")), "object", "DomList" );
 });
 
 test("Object.extend", function() {
@@ -61,43 +61,43 @@ test("Object.extend", function() {
 		expected ={ toString: 2};
 
 	Object.extend(target, expected);
-	same( target, expected, "内置成员" );
+	deepEqual( target, expected, "内置成员" );
 
 });
 
 test("Object.each", function() {
 	expect(13);
 	Object.each( [0,1,2], function(n, i){
-		equals( i, n, "Check array iteration" );
+		equal( i, n, "Check array iteration" );
 	});
 
 	Object.each( [5,6,7], function(n, i){
-		equals( i, n - 5, "Check array iteration" );
+		equal( i, n - 5, "Check array iteration" );
 	});
 
 	Object.each( { name: "name", lang: "lang" }, function(n, i){
-		equals( i, n, "Check object iteration" );
+		equal( i, n, "Check object iteration" );
 	});
 
 	var total = 0;
 	Object.each([1,2,3], function(v, i){ total += v; });
-	equals( total, 6, "Looping over an array" );
+	equal( total, 6, "Looping over an array" );
 	total = 0;
 	Object.each([1,2,3], function(v, i){ total += v; if ( i == 1 ) return false; });
-	equals( total, 3, "Looping over an array, with break" );
+	equal( total, 3, "Looping over an array, with break" );
 	total = 0;
 	Object.each({"a":1,"b":2,"c":3}, function(v, i){ total += v; });
-	equals( total, 6, "Looping over an object" );
+	equal( total, 6, "Looping over an object" );
 	total = 0;
 	Object.each({"a":3,"b":3,"c":3}, function(v, i){ total += v; return false; });
-	equals( total, 3, "Looping over an object, with break" );
+	equal( total, 3, "Looping over an object, with break" );
 
 	//var f = function(){};
 	//f.foo = "bar";
 	//Object.each(f, function(v, i){
 	//	f[i] = "baz";
 	//});
-	//equals( "baz", f.foo, "Loop over a function" );
+	//equal( "baz", f.foo, "Loop over a function" );
 
 	var stylesheet_count = 0;
 	Object.each(document.styleSheets, function(i){
@@ -180,30 +180,30 @@ test("Array.isArray", function() {
 
 test("Array.create", function(){
 
-	// equals( Array.create(document.findAll("head").doms)[0].nodeName.toUpperCase(), "HEAD", "Pass makeArray a List object" );
+	// equal( Array.create(document.findAll("head").doms)[0].nodeName.toUpperCase(), "HEAD", "Pass makeArray a List object" );
 
-	// equals( Array.create(document.getElementsByName("PWD")).slice(0,1)[0].name, "PWD", "Pass makeArray a nodelist" );
+	// equal( Array.create(document.getElementsByName("PWD")).slice(0,1)[0].name, "PWD", "Pass makeArray a nodelist" );
 
-	equals( (function(){ return Array.create(arguments); })(1,2).join(""), "12", "Pass makeArray an arguments array" );
+	equal( (function(){ return Array.create(arguments); })(1,2).join(""), "12", "Pass makeArray an arguments array" );
 
-	equals( Array.create([1,2,3]).join(""), "123", "Pass makeArray a real array" );
+	equal( Array.create([1,2,3]).join(""), "123", "Pass makeArray a real array" );
 
-	equals( Array.create().length, 0, "Pass nothing to makeArray and expect an empty array" );
+	equal( Array.create().length, 0, "Pass nothing to makeArray and expect an empty array" );
 
-	equals( Array.create( [0] )[0], 0 , "Pass makeArray a number" );
+	equal( Array.create( [0] )[0], 0 , "Pass makeArray a number" );
 	
-	equals( Array.create( {length:2, 0:"a", 1:"b"} ).join(""), "ab", "Pass makeArray an array like map (with length)" );
+	equal( Array.create( {length:2, 0:"a", 1:"b"} ).join(""), "ab", "Pass makeArray an array like map (with length)" );
 
 	// ok( !!Array.create( document.documentElement.childNodes ).slice(0,1)[0].nodeName, "Pass makeArray a childNodes array" );
 
 	// ok( Array.create(document.getElementById("form")).length >= 13, "Pass makeArray a form (treat as elements)" );
 
-	same( Array.create({length: "0"}), [], "Make sure object is coerced properly.");
+	deepEqual( Array.create({length: "0"}), [], "Make sure object is coerced properly.");
 });
 
 test("Function.bind", function(){
 
-	var test = function(){ equals( this, thisObject, "Make sure that scope is set properly." ); };
+	var test = function(){ equal( this, thisObject, "Make sure that scope is set properly." ); };
 	var thisObject = { foo: "bar", method: test };
 
 	// Make sure normal works
@@ -303,14 +303,14 @@ test("Function.isFunction", function() {
 test("JSON.decode", function(){return
 	expect(8);
 
-	equals( JSON.decode(), null, "Nothing in, null out." );
-	equals( JSON.decode( null ), null, "Nothing in, null out." );
-	equals( JSON.decode( "" ), null, "Nothing in, null out." );
+	equal( JSON.decode(), null, "Nothing in, null out." );
+	equal( JSON.decode( null ), null, "Nothing in, null out." );
+	equal( JSON.decode( "" ), null, "Nothing in, null out." );
 
-	same( JSON.decode("{}"), {}, "Plain object parsing." );
-	same( JSON.decode("{\"test\":1}"), {"test":1}, "Plain object parsing." );
+	deepEqual( JSON.decode("{}"), {}, "Plain object parsing." );
+	deepEqual( JSON.decode("{\"test\":1}"), {"test":1}, "Plain object parsing." );
 
-	same( JSON.decode("\n{\"test\":1}"), {"test":1}, "Make sure leading whitespaces are handled." );
+	deepEqual( JSON.decode("\n{\"test\":1}"), {"test":1}, "Make sure leading whitespaces are handled." );
 
 	try {
 		JSON.decode("{a:1}");
@@ -331,24 +331,24 @@ test("String.format", function() {
 
 	var nbsp = String.fromCharCode(160);
 
-	equals( String.format("{0} {1}  {2}", 1, 2 ,3 ), "1 2  3", "格式化{序号}" );
-	equals( String.format("{a} {b}  {c}", {a:1, b:2, c:3} ), "1 2  3", "格式化{字段}" );
-	equals( String.format("{2} {2}  {2}", 1, 2 ,3 ), "3 3  3", "重复序号" );
-	equals( String.format("{2}" ), "", "不存在的序号" );
-	equals( String.format.call(function(){return 3}, "{0}",  1 ), "3", "自定义格式化对象的函数" );
-	equals( String.format("{{}} {0}", 1), "{} 1", "格式化的字符串内有 { 和  }" );
+	equal( String.format("{0} {1}  {2}", 1, 2 ,3 ), "1 2  3", "格式化{序号}" );
+	equal( String.format("{a} {b}  {c}", {a:1, b:2, c:3} ), "1 2  3", "格式化{字段}" );
+	equal( String.format("{2} {2}  {2}", 1, 2 ,3 ), "3 3  3", "重复序号" );
+	equal( String.format("{2}" ), "", "不存在的序号" );
+	equal( String.format.call(function(){return 3}, "{0}",  1 ), "3", "自定义格式化对象的函数" );
+	equal( String.format("{{}} {0}", 1), "{} 1", "格式化的字符串内有 { 和  }" );
 });
 
 test("String.prototype.trim", function() {
 
 	var nbsp = String.fromCharCode(160);
 
-	equals( "hello  ".trim(), "hello", "尾部" );
-	equals( "  hello".trim(), "hello", "头部" );
-	equals( "  hello   ".trim(), "hello", "全部" );
-	equals( ("  " + nbsp + "hello  " + nbsp + " ")    .trim(), "hello", "&nbsp;" );
+	equal( "hello  ".trim(), "hello", "尾部" );
+	equal( "  hello".trim(), "hello", "头部" );
+	equal( "  hello   ".trim(), "hello", "全部" );
+	equal( ("  " + nbsp + "hello  " + nbsp + " ")    .trim(), "hello", "&nbsp;" );
 
-	equals( "".trim(), "", "空字符串" );
+	equal( "".trim(), "", "空字符串" );
 });
 
 
