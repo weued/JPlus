@@ -13,7 +13,7 @@
 	<body>
 		
 		
-		<img data-src="404.jpg" width="500" height="300">
+		<img class="a" data-src="404.jpg" width="500" height="300">
 		<img data-src="404.jpg" width="500" height="300">
 		<img data-src="404.jpg" width="500" height="300">
 		<img data-src="404.jpg" width="500" height="300">
@@ -26,7 +26,12 @@
 		
 		
 		<script>
-			Dom.query('img').lazyload();
+		
+			setTimeout(function(){
+		
+				Dom.query('img.a').lazyload();
+				
+			}, 900);
 			
 			
 		</script>

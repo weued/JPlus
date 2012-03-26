@@ -546,13 +546,21 @@
 		
 		/**
 		 * 根据一个 id 获取元素。如果传入的id不是字符串，则直接返回参数。
-		 * @param {String/Node/Control} id 要获取元素的 id 或元素本身。
+		 * @param {String/Node/Control/DomList} id 要获取元素的 id 或元素本身。
 	 	 * @return {Control} 元素。
 		 */
 		get: function(id) {
-			id = typeof id == "string" ? document.getElementById(id): id;
-			assert(!id || id.dom || id.nodeType || id.document, "Dom.get(id): {id} 必须是ID字符串或节点本身。", id);
-			return id ? id.dom ? id : new Dom(id) : null;
+			
+			return typeof id === "string" ?
+				(id = document.getElementById(id)) && new Dom(id) :
+				id ? 
+					id.dom ? 
+						id : 
+						id instanceof DomList ? 
+							id[0] ? new Dom(id[0]) : null : 
+							new Dom(id) : 
+					null;
+			
 		},
 		
 		/**
@@ -630,7 +638,7 @@
 	 	 * @return {Node} 元素。
 		 */
 		getNode: function (id) {
-			return typeof id == "string" ? document.getElementById(id): (id && id.dom || id);
+			return typeof id === "string" ? document.getElementById(id): (id && id.dom || id);
 		},
 
 		/**
@@ -2732,14 +2740,14 @@
 					elem.setAttribute(name, value);
 				}
 			};
-
-		}
-
-		try {
-
-			// 修复IE6 因 css 改变背景图出现的闪烁。
-			document.execCommand("BackgroundImageCache", false, true);
-		} catch(e) {
+	
+			try {
+	
+				// 修复IE6 因 css 改变背景图出现的闪烁。
+				document.execCommand("BackgroundImageCache", false, true);
+			} catch(e) {
+	
+			}
 
 		}
 
@@ -2748,7 +2756,7 @@
 	/// #endif
 
 	Control.addEvents
-		("mousewheel blur focus focusin focusout scroll change select submit error load unload", initUIEvent)
+		("mousewheel blur focus focusin focusout scroll change select submit resize error load unload touchstart touchmove touchend", initUIEvent)
 		("click dblclick DOMMouseScroll mousedown mouseup mouseover mouseenter mousemove mouseleave mouseout contextmenu selectstart selectend", initMouseEvent)
 		("keydown keypress keyup", initKeyboardEvent);
 
