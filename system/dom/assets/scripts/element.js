@@ -551,7 +551,7 @@
 		 */
 		get: function(id) {
 			id = typeof id == "string" ? document.getElementById(id): id;
-			assert(!id || id.dom || id.nodeType, "Dom.get(id): {id} 必须是ID字符串或节点本身。", id);
+			assert(!id || id.dom || id.nodeType || id.document, "Dom.get(id): {id} 必须是ID字符串或节点本身。", id);
 			return id ? id.dom ? id : new Dom(id) : null;
 		},
 		
