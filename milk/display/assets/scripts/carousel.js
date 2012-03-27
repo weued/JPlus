@@ -1,0 +1,1 @@
+/** * @author  */using("System.Dom.Marquee");var Carousel = Control.extend({		init: function(){		this.marquee = this.find('.x-carousel-container');			}});

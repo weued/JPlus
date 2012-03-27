@@ -117,6 +117,14 @@ var Marquee = Control.extend({
 		this.moveTo(this._currentIndex + index);
 	},
 	
+	prev: function(){
+		return this.stop().moveBy(-1).start();
+	},
+	
+	next: function(){
+		return this.stop().moveBy(1).start();;
+	},
+	
 	/**
 	 * 暂停滚动
 	 * @method pause
