@@ -117,80 +117,116 @@ var cases = {
 	},
 	'工具函数': '-',
 	'Object - 拷贝': {
-			jplus: 'Object.extend({a:1}, {b:2})',
-			mootools: 'Object.append({a:1}, {b:2})',
-			jQuery: '$.extend({a:1}, {b:2})'
-		},
-		'Object - 遍历':{
-			jplus: 'Object.each({a:1}, fn)',
-			mootools: 'Object.each({a:1}, fn)',
-			jQuery: '$.each({a:1}, function(i, n){fn(n)})'
-		},
-		'Object - 类型':{
-			jplus: 'Object.type({})',
-			mootools: '$type({})',
-			jQuery: '-'
-		},
-		'Object - 无成员判断':{
-			jplus: '-',
-			mootools: '-',
-			jQuery: '$.isEmptyObject({})'
-		},
-		'Array - 遍历':{
-			jplus: '[2,3].forEach(fn)',
-			mootools: '[2,3].forEach(fn)',
-			jQuery: '$.each([2,3], function(i, n){fn(n)})'
-		},
-		'Array - 数组判断':{
-			jplus: 'Array.isArray([])',
-			mootools: '-',
-			jQuery: '$.isArray([])'
-		},
-		'Array - 生成':{
-			jplus: 'Array.create([2,3])',
-			mootools: 'Array.from([2,3])',
-			jQuery: '$.makeArray([2,3])'
-		},
-		'Array - 过滤':{
-			jplus: '[2,3].filter(function(v){return v > 2;})',
-			mootools: '[2,3].filter(function(v){return v > 2;})',
-			jQuery: '$.grep([2,3], function(v){return v > 2;})'
-		},
-		'Array - 匹配':{
-			jplus: 'Object.update([2,3], function(v){return v * v;})',
-			mootools: '[2,3].map(function(v){return v * v;})',
-			jQuery: '$.map([2,3], function(v){return v * v;})'
-		},
-		'Array - 查找':{
-			jplus: '[2,3].indexOf(3)',
-			mootools: '[2,3].indexOf(3)',
-			jQuery: '$.inArray(3, [2,3])'
-		},
-		'Array - 删除重复':{
-			jplus: 'var a = new Array();a.push(2,3,2,4,5);a.unique()',
-			mootools: '-',
-			jQuery: '$.unique([2,3,2,4,5])'
-		},
-		'Function - 空':{
-			jplus: 'Function.empty()',
-			mootools: '$empty()',
-			jQuery: '$.noop()'
-		},
-		'Function - 作用域绑定':{
-			jplus: 'Function.bind(fn, this)',
-			mootools: '$empty.bind(this)',
-			jQuery: '$.proxy(fn, this)'
-		},
-		'Function - 函数判断':{
-			jplus: 'Function.isFunction(function(){})',
-			mootools: '$type(function(){}) == "function"',
-			jQuery: '$.isFunction(function(){})'
-		},
-		'String - trim':{
-			jplus: '" s ".trim()',
-			mootools: '" s ".trim()',
-			jQuery: '$.trim(" s ")'
-		}
+		jplus: 'Object.extend({a:1}, {b:2})',
+		mootools: 'Object.append({a:1}, {b:2})',
+		jQuery: '$.extend({a:1}, {b:2})'
+	},
+	'Object - 遍历':{
+		jplus: 'Object.each({a:1}, fn)',
+		mootools: 'Object.each({a:1}, fn)',
+		jQuery: '$.each({a:1}, function(i, n){fn(n)})'
+	},
+	'Object - 类型':{
+		jplus: 'Object.type({})',
+		mootools: '$type({})',
+		jQuery: '-'
+	},
+	'Object - 无成员判断':{
+		jplus: '-',
+		mootools: '-',
+		jQuery: '$.isEmptyObject({})'
+	},
+	'Array - 遍历':{
+		jplus: '[2,3].forEach(fn)',
+		mootools: '[2,3].forEach(fn)',
+		jQuery: '$.each([2,3], function(i, n){fn(n)})'
+	},
+	'Array - 数组判断':{
+		jplus: 'Array.isArray([])',
+		mootools: '-',
+		jQuery: '$.isArray([])'
+	},
+	'Array - 生成':{
+		jplus: 'Array.create([2,3])',
+		mootools: 'Array.from([2,3])',
+		jQuery: '$.makeArray([2,3])'
+	},
+	'Array - 过滤':{
+		jplus: '[2,3].filter(function(v){return v > 2;})',
+		mootools: '[2,3].filter(function(v){return v > 2;})',
+		jQuery: '$.grep([2,3], function(v){return v > 2;})'
+	},
+	'Array - 匹配':{
+		jplus: 'Object.update([2,3], function(v){return v * v;})',
+		mootools: '[2,3].map(function(v){return v * v;})',
+		jQuery: '$.map([2,3], function(v){return v * v;})'
+	},
+	'Array - 查找':{
+		jplus: '[2,3].indexOf(3)',
+		mootools: '[2,3].indexOf(3)',
+		jQuery: '$.inArray(3, [2,3])'
+	},
+	'Array - 删除重复':{
+		jplus: 'var a = new Array();a.push(2,3,2,4,5);a.unique()',
+		mootools: '-',
+		jQuery: '$.unique([2,3,2,4,5])'
+	},
+	'Function - 空':{
+		jplus: 'Function.empty()',
+		mootools: '$empty()',
+		jQuery: '$.noop()'
+	},
+	'Function - 作用域绑定':{
+		jplus: 'Function.bind(fn, this)',
+		mootools: '$empty.bind(this)',
+		jQuery: '$.proxy(fn, this)'
+	},
+	'Function - 函数判断':{
+		jplus: 'Function.isFunction(function(){})',
+		mootools: '$type(function(){}) == "function"',
+		jQuery: '$.isFunction(function(){})'
+	},
+	'String - trim':{
+		jplus: '" s ".trim()',
+		mootools: '" s ".trim()',
+		jQuery: '$.trim(" s ")'
+	},
+	'CSS 选择器': '-',
+	'#id': {
+		jplus: '$("#id")',
+		mootools: '$$("#id")',
+		jQuery: '$("#id")'
+	},
+	'div': {
+		jplus: '$("div")',
+		mootools: '$$("div")',
+		jQuery: '$("div")'
+	},
+	'.class': {
+		jplus: '$(".class")',
+		mootools: '$$(".class")',
+		jQuery: '$(".class")'
+	},
+	'div.class': {
+		jplus: '$("div.class")',
+		mootools: '$$("div.class")',
+		jQuery: '$("div.class")'
+	},
+	'div#id.class': {
+		jplus: '$("div#id.class")',
+		mootools: '$$("div#id.class")',
+		jQuery: '$("div#id.class")'
+	},
+	'div > div': {
+		jplus: '$("div > div")',
+		mootools: '$$("div > div")',
+		jQuery: '$("div > div")'
+	},
+	'div:first-child': {
+		jplus: '$("div:first-child")',
+		mootools: '$$("div:first-child")',
+		jQuery: '$("div:first-child")'
+	}
 
 };
 

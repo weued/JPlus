@@ -556,8 +556,8 @@
 				id ? 
 					id.dom ? 
 						id : 
-						id instanceof DomList ? 
-							id[0] ? new Dom(id[0]) : null : 
+						typeof id.length === 'number' ? 
+							Dom.get(id[0]) : 
 							new Dom(id) : 
 					null;
 			
@@ -575,13 +575,18 @@
 			return selector ? 
 				typeof selector === 'string' ? 
 					document.query(selector) :
-					selector instanceof DomList ?
-						selector :
+					typeof selector.length === 'number' ? 
+						selector instanceof DomList ?
+							selector :
+							new DomList(selector) :
 						new DomList([Dom.get(selector)]) :
 				new DomList;
 			
 		},
 		
+		/**
+		 * 判断一个元素是否符合一个选择器。
+		 */
 		match: function (elem, selector) {
 			assert.isString(selector, "Control.prototype.find(selector): selector ~。");
 			
@@ -3182,7 +3187,18 @@
 	}
 
 	function match(dom, selector){
-		return new Dom(dom.parentNode).query(selector).indexOf(dom) >= 0;
+		var r, i = -1;
+		try{
+			r = dom.parentNode.querySelectorAll(selector);
+		} catch(e){
+			r = query(selector, new Dom(dom.parentNode));
+		}
+		
+		while(r[++i])
+			if(r[i] === dom)
+				return true;
+		
+		return false;
 	}
 
 	/**
