@@ -21,7 +21,7 @@ DomList.implement({
 		this.on('mouseenter', function(e){
 			me.each( function( elem ) {
 		    	if( elem != e.target ){
-					new Dom(elem).animate('opacity', opacity, -1, onFade, null, 'restart' );
+					new Dom(elem).animate('opacity', opacity, -1, onFade, null, 'reset' );
 				}
 		    });
 		});
@@ -29,7 +29,7 @@ DomList.implement({
 		this.on('mouseleave', function(e) {
 		    me.each( function( elem ){
 		      if( elem != e.target )
-					new Dom(elem).animate('opacity', 1, -1, onShow, null, 'restart');
+					new Dom(elem).animate('opacity', 1, -1, onShow, null, 'reset');
 		    });
 		});
 		

@@ -132,7 +132,7 @@
 			 * @param {Number} duration=-1 变化的时间。
 			 * @param {Function} [onStop] 停止回调。
 			 * @param {Function} [onStart] 开始回调。
-			 * @param {String} link='wait' 变化串联的方法。 可以为 wait, 等待当前队列完成。 restart 柔和转换为目前渐变。 cancel 强制关掉已有渐变。 ignore 忽视当前的效果。
+			 * @param {String} link='wait' 变化串联的方法。 可以为 wait, 等待当前队列完成。 reset 柔和转换为目前渐变。 cancel 强制关掉已有渐变。 ignore 忽视当前的效果。 replace 直接替换成新的渐变。
 			 * @return {Boolean} 是否可发。
 			 */
 			delay: function() {
@@ -162,7 +162,7 @@
 							
 							return false;
 							
-						case 'restart':
+						case 'reset':
 							me.pause();
 							while(me._competeListeners.pop());
 							break;

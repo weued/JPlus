@@ -1,1 +1,3 @@
-/** * @author  */using("System.Dom.Marquee");var Carousel = Control.extend({		init: function(){		this.marquee = this.find('.x-carousel-container');			}});
+/** * @author  */using("System.Dom.Marquee");var Carousel = Marquee.extend({		onChanging: function (newIndex) {
+		var ul = this.find('.x-carousel-header'), t;		if(t = ul.getChild(this.getCurrentIndex()))			t.removeClass('x-carousel-header-selected');					if(t = ul.getChild(newIndex))			t.addClass('x-carousel-header-selected');				return !this.disabled && this.trigger('changing', newIndex);
+	},		init: function(options){		options.loop = false;		this.base('init');		var me = this;		this.query('.x-carousel-header > li').setWidth(this.getWidth() / this.childCount).on(options.event || 'mouseover', function(e){			me.moveTo(this.getIndex());		});				me.start();	}});

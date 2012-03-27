@@ -9,6 +9,7 @@
 		
 		<script src="../../system/core/assets/scripts/system.js" type="text/javascript"></script>
 		<script src="../../system/dom/assets/scripts/element.js" type="text/javascript"></script>
+		<script src="../../system/dom/assets/scripts/marquee.js" type="text/javascript"></script>
 		<script src="../core/assets/scripts/base.js" type="text/javascript"></script>
 		<script src="assets/scripts/carousel.js" type="text/javascript"></script>
 		
@@ -18,7 +19,7 @@
 	<body>
 		
 		
-		<div class="x-carousel" id="a">
+		<div class="x-carousel" id="a" style="width: 260px;">
 			
 			<ul class="x-carousel-container">
 				<li class="x-carousel-content"><img src="../../assets/images/260x180.gif"></li>
@@ -42,7 +43,9 @@
 		
 		
 		<script>
-			var a = new Carousel('a');
+			var a = new Carousel({
+				dom: 'a'	
+			});
 		</script>
 		
 	</body>

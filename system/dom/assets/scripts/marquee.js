@@ -11,9 +11,13 @@ var Marquee = Control.extend({
 	
 	duration:-1,
 	
-	delay: 1000,
+	delay: 3000,
 	
 	_currentIndex: 0,
+	
+	getCurrentIndex: function(){
+		return this._currentIndex;
+	},
 	
 	/**
 	 * 是否循环。
@@ -47,6 +51,14 @@ var Marquee = Control.extend({
 		return size;
 	},
 	
+	onChanging: function(newIndex){
+		return !this.disabled && this.trigger('changing', newIndex);
+	},
+	
+	onChange: function(oldIndex, newIndex){
+		this.trigger('change', oldIndex);
+	},
+	
 	/**
 	 * 更新节点状态。
 	 */
@@ -60,12 +72,12 @@ var Marquee = Control.extend({
 		
 		if(!this.disabled && this.loop && !this.cloned){
 			children.clone().appendTo(this.container);
+			children.clone().appendTo(this.container);
 			size = this._getTotalSize();
 			this.cloned = true;
 		}
 		
 		this.container['set' + xy](size);
-		this.container.setScroll(0, 0);
 		this._currentIndex = 0;
 	},
 	
@@ -74,7 +86,7 @@ var Marquee = Control.extend({
 		this.setStyle('overflow', 'hidden');
 		
 		
-		if(options.loop !== false){
+		if(options.loop !== false && this.loop !== false){
 			this.loop = true;
 			delete options.loop;
 		}
@@ -82,47 +94,85 @@ var Marquee = Control.extend({
 		this.update();
 	},
 	
+	restart: function(){
+		if(!this.timer && this.step)
+			this.timer = setInterval(this.step, this.delay);
+	},
+	
 	moveTo: function(index){
-		var xy = /^[lr]/.test(this.direction) ? 'x' : 'y';
-		if( index < 0){
-			this._currentIndex = index = this.childCount + index;
-			this.container.setStyle(xy === 'x' ? 'marginLeft' : 'marginTop', -this._getScrollByIndex(index + 1));
-			newIndex = null;
-		} else {
-			var newIndex = index % this.childCount;
-			
-			if(newIndex < index){
-				if(this.loop){
-						
-				} else {
-					index = newIndex;
-					newIndex = null;
-				}
-			}
-		}
+		clearInterval(this.timer);
+		this.timer = 0;
+		this.one('change', this.restart);
+		this.moveToInternal(index % (this.loop ? this.childCount * 3 : this.childCount));
+		return this;
+	},
+	
+	setCurrentIndex: function(index){
+		this.container.setStyle(/^[lr]/.test(this.direction) ? 'marginLeft' : 'marginTop', -this._getScrollByIndex(index));
+	},
+	
+	/**
+	 * 内部实现移动到指定位置的效果。
+	 */
+	moveToInternal: function(index){
 		
-		var me = this, newScroll = me._getScrollByIndex(index);
-		me.container.animate(xy === 'x' ? 'marginLeft' : 'marginTop', -newScroll, me.duration, function(){
-			if(newIndex !== null){
-				newScroll = me._getScrollByIndex(newIndex);
-				me.container.setStyle(xy === 'x' ? 'marginLeft' : 'marginTop', -newScroll);
-				me._currentIndex = newIndex;
+		var actualNewIndex, resetIndex, newIndex = index % this.childCount;
+		
+		if(newIndex < 0)
+			newIndex += this.childCount;
+		
+		if(this.onChanging(actualNewIndex = newIndex)) {
+			
+			// 如果是循环的，则需要保证变化是平滑的。	
+			if(this.loop){
+				
+				// 循环表示，有三层，中间这层的索引是显示值。
+				actualNewIndex = index + this.childCount;
+				
+				// 当前位置。
+				//index = this._currentIndex;
+				
+				// 如果是正向变化。则应该保证 newIndex > index。
+				// 否则，应该保证 newIndex < index 。
+				// if(/^[lt]/.test(this.direction)){
+// 					
+					// if(newIndex <= index) {
+						// resetIndex = newIndex;
+					// }
+// 					
+				// } else if(newIndex >= index) {
+					// resetIndex = newIndex;
+				//}
+				if(actualNewIndex <= this.childCount || actualNewIndex >= (this.childCount + this.childCount))
+					resetIndex = newIndex;
+				
 			}
-		}, null, 'replace');
+			
+			var me = this;
+			var oldIndex = me._currentIndex;
+			me.container.animate(/^[lr]/.test(this.direction) ? 'marginLeft' : 'marginTop', -me._getScrollByIndex(actualNewIndex), me.duration, function(){
+				if(resetIndex != null){
+					me.setCurrentIndex(resetIndex + me.childCount);
+				}
+				me.onChange(oldIndex, newIndex);
+			}, function(){
+				me._currentIndex = newIndex;
+			}, 'reset');
+		}
 		return this;
 		
 	},
 	
 	moveBy: function(index){
-		this.moveTo(this._currentIndex + index);
+		return this.moveTo(this._currentIndex + index);
 	},
 	
 	prev: function(){
-		return this.stop().moveBy(-1).start();
+		return this.moveBy(-1);
 	},
 	
 	next: function(){
-		return this.stop().moveBy(1).start();;
+		return this.moveBy(1);
 	},
 	
 	/**
@@ -132,6 +182,7 @@ var Marquee = Control.extend({
 	stop: function() {
 		clearInterval(this.timer);
 		this.timer = 0;
+		this.step = null;
 		return this;
 	},
 	
@@ -140,16 +191,15 @@ var Marquee = Control.extend({
 	 * @method start
 	 */
 	start: function(delta, direction) {
-		if(this.disabled)
-			return;
 		delta = delta || 1;
 		var me = this.stop();
 		if(direction)
 			this.direction = direction;
 		if(/^[rb]/.test(this.direction))
 			delta *= -1;
-		me.timer = setInterval(function(){
-			me.moveBy(delta || 1);
+		me.set(me._currentIndex + (this.loop ? this.childCount : 0));
+		me.timer = setInterval(me.step = function(){
+			me.moveToInternal(me._currentIndex + delta);
 		}, me.delay);
 		
 		return me;
