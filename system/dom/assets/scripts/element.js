@@ -3013,7 +3013,13 @@
 					
 				// 字符串，表示选择器。
 				case 'string':
-					return function(elem) {
+					if(/^(?:[-\w:]|[^\x00-\xa0]|\\.)+$/.test(elem)) {
+						args = args.toUpperCase();
+						return function(elem) {
+							return elem.nodeType === 1 && elem.tagName === args;
+						};
+					}
+					return args === '*' ? isElement : function(elem) {
 						return elem.nodeType === 1 && Dom.match(elem, args);
 					};
 					
@@ -3263,7 +3269,7 @@
 			// ‘a>b’ ‘a+b’ ‘a~b’ ‘a b’ ‘a *’
 			} else if(m = /^\s*([\s>+~])\s*(\*|(?:[-\w*]|[^\x00-\xa0]|\\.)*)/.exec(selector)) {
 				selector = RegExp.rightContext;
-				result = result[Dom.combinators[m[1]] || throwError(m[1])](m[2].replace(rBackslash, "").toUpperCase());
+				result = result[Dom.combinators[m[1]] || throwError(m[1])](m[2].replace(rBackslash, ""));
 
 				// ‘a>b’: m = ['>', 'b']
 				// ‘a>.b’: m = ['>', '']
