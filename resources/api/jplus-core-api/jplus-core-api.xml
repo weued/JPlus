@@ -1,0 +1,3745 @@
+<?xml version='1.0' encoding='utf-8'?>
+<?xml-stylesheet type='text/xsl' href='assets/styles/default.xsl'?>
+
+<docs version="1.4">
+  <cat value="核心">
+    <subcat value="DOM 核心函数">
+      <function name="Dom.get" return="Control">
+        <desc>这个函数接收一个包含 ID 的字符串，然后查找这个字符串的节点,并返回节点的包装对象。此函数简写为$$。</desc>
+        <longdesc>包装对象是一个 Control 类的变量。所有DOM辅助方法都是这个类的成员函数。如果无法找到指定的节点，则返回 null 。</longdesc>
+        <params name="id" type="String">
+          <desc>要查找的节点ID</desc>
+        </params>
+        <example>
+          <desc>找到所有 p 元素，并且这些元素都必须是 div 元素的子元素。</desc>
+          <html>&lt;p id="a"&gt;one&lt;/p&gt; &lt;div&gt;&lt;p&gt;two&lt;/p&gt;&lt;/div&gt; &lt;p&gt;three&lt;/p&gt;</html>
+          <code>Dom.get("a");</code>
+          <result>Control{dom = #a}</result>
+        </example>
+      </function>
+      <function name="Dom.get" return="Control">
+        <desc>将一个原生的 DOM 节点对象转化为 Control 对象。此函数简写为$$。</desc>
+		<longdesc>包装对象是一个 Control 类的变量。所有DOM辅助方法都是这个类的成员函数。如果无法找到指定的节点，则返回 null 。</longdesc>
+        <params name="element" type="Element">
+          <desc>用于封装成 Control 对象的DOM元素</desc>
+        </params>
+        <example>
+          <desc>设置页面背景色。</desc>
+          <code>Dom.get(document.body).setStyle( "background", "black" );</code>
+        </example>
+      </function>
+      <function name="Dom.get" return="Control">
+        <desc>取集合中的第一个原生，并返回相应的 Control 对象。此函数简写为$$。</desc>
+		<longdesc>包装对象是一个 Control 类的变量。所有DOM辅助方法都是这个类的成员函数。如果无法找到指定的节点，则返回 null 。</longdesc>
+        <params name="nodeList" type="NodeList/DomList/Array">
+          <desc>目标DOM集合，必须是一个有 length 属性的对象，内部的元素是 ID、原生节点或 Control 对象。</desc>
+        </params>
+        <example>
+          <desc>返回 ID = 'id' 的节点。</desc>
+          <code>Dom.get(['id']);</code>
+        </example>
+      </function>
+	  <function name="Dom.get" return="Control">
+        <desc>返回 Control 对象自身。此函数简写为$$。</desc>
+        <params name="control" type="Control">
+          <desc>取集合中的第一个原生，并返回相应的 Control 对象 。</desc>
+        </params>
+        <example>
+          <desc>返回 ID = 'id' 的节点。</desc>
+          <code>Dom.get(Dom.get('id'));</code>
+        </example>
+      </function>
+      <function name="Dom.query" return="DomList">
+        <desc>这个函数接收一个包含 CSS 选择器的字符串，然后用这个字符串去匹配一组元素。此函数简写为 $ 。</desc>
+        <longdesc>参考“选择器”节获取更多用于 expression 参数的 CSS 语法的信息。</longdesc>
+        <params name="expression" type="String">
+          <desc>用来查找的字符串</desc>
+        </params>
+        <example>
+          <desc>找到所有 p 元素，并且这些元素都必须是 div 元素的子元素。</desc>
+          <html>&lt;p&gt;one&lt;/p&gt; &lt;div&gt;&lt;p&gt;two&lt;/p&gt;&lt;/div&gt; &lt;p&gt;three&lt;/p&gt;</html>
+          <code>Dom.query("div &gt; p");</code>
+          <result>[ &lt;p&gt;two&lt;/p&gt; ]</result>
+        </example>
+        <example>
+          <desc>在指定的页面文档中查找所有的单选按钮(即: type 值为 radio 的 input 元素)。</desc>
+          <code>Dom.query("input[type=radio]", window.frames['test'].contentWindow.document);</code>
+        </example>
+      </function>
+      <function name="Dom.query" return="DomList">
+        <desc>这个函数接收一个DOM节点集合，并返回 DomList 对象的包装。</desc>
+        <params name="nodeList" type="NodeList/DomList/Array">
+          <desc>一个DOM节点集合，可以是原生的 NodeList 或 Array。</desc>
+        </params>
+        <example>
+          <desc>找到所有 p 元素，并且这些元素都必须是 div 元素的子元素。</desc>
+          <html>&lt;p&gt;one&lt;/p&gt; &lt;div&gt;&lt;p&gt;two&lt;/p&gt;&lt;/div&gt; &lt;p&gt;three&lt;/p&gt;</html>
+          <code>Dom.query("div &gt; p");</code>
+          <result>[ &lt;p&gt;two&lt;/p&gt; ]</result>
+        </example>
+      </function>
+	  <function name="Dom.query" return="DomList">
+        <desc>返回一个空的 DomList 对象。</desc>
+      </function>
+      <function name="Dom.parse" return="Control">
+        <desc>根据提供的原始 HTML 标记字符串，动态创建由 Control 对象包装的 DOM 元素。</desc>
+        <longdesc>你可以传递一个手写的 HTML 字符串，或者由某些模板引擎或插件创建的字符串，也可以是通过 AJAX 加载过来的字符串。但是在你创建 input 元素的时会有限制，可以参考第二个示例。当然这个字符串可以包含斜杠 (比如一个图像地址)，还有反斜杠。当创建单个元素时，请使用闭合标签或 XHTML 格式。</longdesc>
+        <params name="html" type="String">
+          <desc>用于动态创建DOM元素的HTML标记字符串</desc>
+        </params>
+        <params name="ownerDocument" type="Document" optional="true">
+          <desc>创建DOM元素所在的文档</desc>
+        </params>
+        <example>
+          <desc>动态创建一个 div 元素（以及其中的所有内容），并将它追加到 body 元素中。在这个函数的内部，是通过临时创建一个元素，并将这个元素的 innerHTML 属性设置为给定的标记字符串，来实现标记到 DOM 元素转换的。所以，这个函数既有灵活性，也有局限性。</desc>
+          <code>Dom.parse("&lt;div&gt;&lt;p&gt;Hello&lt;/p&gt;&lt;/div&gt;").appendTo("body");</code>
+        </example>
+        <example>
+          <desc>创建一个 &lt;input&gt; 元素必须同时设定 type 属性。因为微软规定 &lt;input&gt; 元素的 type 只能写一次。</desc>
+          <code>// 在 IE 中无效:
+Dom.parse("&lt;input&gt;").setAttr("type", "checkbox");
+// 在 IE 中有效:
+Dom.parse("&lt;input type='checkbox'&gt;");</code>
+        </example>
+      </function>
+      <function name="Dom.create" return="Control">
+        <desc>创建一个节点，动态创建由 Control 对象包装的 DOM 元素。</desc>
+        <longdesc>创建一个空节点。相当于 document.createElement </longdesc>
+        <params name="tagName" type="String">
+          <desc>要创建的节点标签。</desc>
+        </params>
+		<params name="className" type="String" optional="true">
+          <desc>用于新节点的 CSS 类名。</desc>
+        </params>
+        <example>
+          <desc>动态创建一个 div 元素（以及其中的所有内容），并将它追加到 body 元素中。在这个函数的内部，是通过临时创建一个元素，并将这个元素的 innerHTML 属性设置为给定的标记字符串，来实现标记到 DOM 元素转换的。所以，这个函数既有灵活性，也有局限性。</desc>
+          <code>Dom.create("div", "cls").appendTo("body");</code>
+        </example>
+        <example>
+          <desc>创建一个 div 元素同时设定 class 属性。</desc>
+          <code>// 在 IE 中无效:
+Dom.create("div", "className");</code>
+<result>Control:&lt;div class="className"&gt;&lt;/div&gt;</result>
+        </example>
+      </function>
+      <function name="Dom.ready" return="void">
+        <desc>设置在页面加载(不包含图片)完成时执行函数。</desc>
+        <longdesc>允许你绑定一个在DOM文档载入完成后执行的函数。需要把页面中所有需要在 DOM 加载完成时执行的Dom.ready()操作符都包装到其中来。从技术上来说，这个函数是可链接的－－但真正以这种方式链接的情况并不多。</longdesc>
+        <params name="callback" type="Function">
+          <desc>当DOM加载完成后要执行的函数</desc>
+        </params>
+        <example>
+          <desc>当DOM加载完成后，执行其中的函数。</desc>
+          <code>Dom.ready(function(){
+  // 文档就绪
+});</code>
+        </example>
+      </function>
+      <function name="Dom.load" return="void">
+        <desc>设置在页面加载(包含图片)完成时执行函数。</desc>
+        <longdesc>允许你绑定一个在DOM文档载入完成后执行的函数。需要把页面中所有需要在 DOM 加载完成时执行的Dom.load()操作符都包装到其中来。从技术上来说，这个函数是可链接的－－但真正以这种方式链接的情况并不多。</longdesc>
+        <params name="callback" type="Function">
+          <desc>当DOM加载完成后要执行的函数</desc>
+        </params>
+        <example>
+          <desc>当DOM加载完成后，执行其中的函数。</desc>
+          <code>Dom.load(function(){
+  // 文档就绪
+});</code>
+        </example>
+      </function>
+    </subcat>
+    
+	<subcat value="JPlus 对象访问">
+      <function name="each" return="Control">
+        <desc>以每一个匹配的元素作为上下文来执行一个函数。</desc>
+        <longdesc>意味着，每次执行传递进来的函数时，函数中的this关键字都指向一个不同的DOM元素（每次都是一个不同的匹配元素）。而且，在每次执行函数时，都会给函数传递一个表示作为执行环境的元素在匹配的元素集合中所处位置的数字值作为参数（从零开始的整型）。 返回 'false' 将停止循环 (就像在普通的循环中使用 'break')。返回 'true' 跳至下一个循环(就像在普通的循环中使用'continue')。</longdesc>
+        <params name="callback" type="Function">
+          <desc>对于每个匹配的元素所要执行的函数</desc>
+        </params>
+        <example>
+          <desc>迭代两个图像，并设置它们的 src 属性。注意:此处 this 指代的是 DOM 对象而非 JPlus 对象。</desc>
+          <html>&lt;img/&gt;&lt;img/&gt;</html>
+          <code>$("img").each(function(value, i){
+   value.src = "test" + i + ".jpg";
+ });</code>
+          <result>[ &lt;img src="test0.jpg" /&gt;, &lt;img src="test1.jpg" /&gt; ]</result>
+        </example>
+        <example>
+          <desc>如果你想得到 JPlus对象，可以使用 $(this) 函数。</desc>
+          <html>&lt;button&gt;Change colors&lt;/button&gt;
+&lt;span&gt;&lt;/span&gt; 
+&lt;div&gt;&lt;/div&gt; 
+&lt;div&gt;&lt;/div&gt;
+
+&lt;div&gt;&lt;/div&gt; 
+&lt;div&gt;&lt;/div&gt;
+&lt;div id="stop"&gt;Stop here&lt;/div&gt; 
+&lt;div&gt;&lt;/div&gt;
+
+&lt;div&gt;&lt;/div&gt;
+&lt;div&gt;&lt;/div&gt;</html>
+          <code>$("img").each(function(){
+  $(this).toggleClass("example");
+});</code>
+        </example>
+        <example>
+          <desc>你可以使用 'return' 来提前跳出 each() 循环。</desc>
+          <html>&lt;button&gt;Change colors&lt;/button&gt;
+&lt;span&gt;&lt;/span&gt; 
+&lt;div&gt;&lt;/div&gt; 
+&lt;div&gt;&lt;/div&gt;
+
+&lt;div&gt;&lt;/div&gt; 
+&lt;div&gt;&lt;/div&gt;
+&lt;div id="stop"&gt;Stop here&lt;/div&gt; 
+&lt;div&gt;&lt;/div&gt;
+
+&lt;div&gt;&lt;/div&gt;
+&lt;div&gt;&lt;/div&gt;</html>
+          <code>$("button").click(function () { 
+$("div").each(function (index, domEle) { 
+  // domEle == this 
+  $(domEle).css("backgroundColor", "yellow");  
+  if ($(this).is("#stop")) { 
+  $("span").text("Stopped at div index #" + index); 
+  return false; 
+  } 
+});
+});</code>
+        </example>
+      </function>
+      <function name="size" return="Number">
+        <desc>JPlus 对象中元素的个数。</desc>
+        <longdesc>这个函数的返回值与 JPlus 对象的'&lt;span title="Core/length"&gt;length&lt;/span&gt;' 属性一致。</longdesc>
+        <example>
+          <desc>计算文档中所有图片数量</desc>
+          <html>&lt;img src="test1.jpg"/&gt; &lt;img src="test2.jpg"/&gt;</html>
+          <code>$("img").size();</code>
+          <result>2</result>
+        </example>
+      </function>
+      <property name="length" return="Number">
+        <desc>JPlus 对象中元素的个数。</desc>
+        <longdesc>当前匹配的元素个数。 &lt;span title="Core/size"&gt;size&lt;/span&gt; 将返回相同的值。</longdesc>
+        <example>
+          <desc>计算文档中所有图片数量</desc>
+          <html>&lt;img src="test1.jpg"/&gt; &lt;img src="test2.jpg"/&gt;</html>
+          <code>$("img").length;</code>
+          <result>2</result>
+        </example>
+      </property>
+      <property name="selector" return="Striing">
+        <desc>JPlus 1.3新增。返回传给JPlus()的原始选择器。</desc>
+        <longdesc>换句话说，就是返回你用什么选择器来找到这个元素的。可以与&lt;span title="Core/context"&gt;context&lt;/span&gt;一起使用，用于精确检测选择器查询情况。这两个属性对插件开发人员很有用。</longdesc>
+        <example>
+          <desc>确定查询的选择器</desc>
+          <code>$("ul")
+  .append("&lt;li&gt;" + $("ul").selector + "&lt;/li&gt;")
+  .append("&lt;li&gt;" + $("ul li").selector + "&lt;/li&gt;")
+  .append("&lt;li&gt;" + $("div#foo ul:not([class])").selector + "&lt;/li&gt;");</code>
+          <result>ul
+ul li
+div#foo ul:not([class])</result>
+        </example>
+      </property>
+      <property name="context" return="Element">
+        <desc>JPlus 1.3新增。返回传给JPlus()的原始的DOM节点内容，即JPlus()的第二个参数。如果没有指定，那么context指向当前的文档(document)。</desc>
+        <longdesc>可以与&lt;span title="Core/selector"&gt;selector&lt;/span&gt;一起使用，用于精确检测选择器查询情况。这两个属性对插件开发人员很有用。</longdesc>
+        <example>
+          <desc>检测使用的文档内容</desc>
+          <code>$("ul")
+  .append("&lt;li&gt;" + $("ul").context + "&lt;/li&gt;")
+  .append("&lt;li&gt;" + $("ul", document.body).context.nodeName + "&lt;/li&gt;");</code>
+          <result>[object HTMLDocument]  //如果是IE浏览器，则返回[object]
+BODY</result>
+        </example>
+      </property>
+      <function name="get" return="DomList">
+        <desc>取得所有匹配的 DOM 元素集合。</desc>
+        <longdesc>这是取得所有匹配元素的一种向后兼容的方式（不同于JPlus对象，而实际上是元素数组）。
+
+如果你想要直接操作 DOM 对象而不是 JPlus 对象，这个函数非常有用。</longdesc>
+        <example>
+          <desc>选择文档中所有图像作为元素数组，并用数组内建的 reverse 方法将数组反向。</desc>
+          <html>&lt;img src="test1.jpg"/&gt; &lt;img src="test2.jpg"/&gt;</html>
+          <code>$("img").get().reverse();</code>
+          <result>[ &lt;img src="test2.jpg"/&gt; &lt;img src="test1.jpg"/&gt; ]</result>
+        </example>
+      </function>
+      <function name="get" return="Element">
+        <desc>取得其中一个匹配的元素。 num表示取得第几个匹配的元素。</desc>
+        <longdesc>这能够让你选择一个实际的DOM 元素并且对他直接操作，而不是通过 JPlus 函数。$(this).get(0)与$(this)[0]等价。</longdesc>
+        <params name="index" type="Number">
+          <desc>取得第 index 个位置上的元素</desc>
+        </params>
+        <example>
+          <desc></desc>
+          <html>&lt;img src="test1.jpg"/&gt; &lt;img src="test2.jpg"/&gt;</html>
+          <code>$("img").get(0);</code>
+          <result>[ &lt;img src="test1.jpg"/&gt; ]</result>
+        </example>
+      </function>
+      <function name="index" return="Number">
+        <desc>搜索匹配的元素，并返回相应元素的索引值，从0开始计数。</desc>
+        <longdesc>如果不给 .index() 方法传递参数，那么返回值就是这个JPlus对象集合中第一个元素相对于其同辈元素的位置。
+		
+			如果参数是一组DOM元素或者JPlus对象，那么返回值就是传递的元素相对于原先集合的位置。
+		
+		如果参数是一个选择器，那么返回值就是原先元素相对于选择器匹配元素中的位置。如果找不到匹配的元素，则返回-1。
+		
+		具体请参考示例。
+		</longdesc>
+        <params name="subject" type="Selector,Element" optional="true">
+          <desc>要搜索的对象</desc>
+        </params>
+        <example>
+          <desc>查找元素的索引值</desc>
+          <html>&lt;ul&gt;
+  &lt;li id=&quot;foo&quot;&gt;foo&lt;/li&gt;
+  &lt;li id=&quot;bar&quot;&gt;bar&lt;/li&gt;
+  &lt;li id=&quot;baz&quot;&gt;baz&lt;/li&gt;
+&lt;/ul&gt;</html>
+          <code>$('li').index(document.getElementById('bar')); //1，传递一个DOM对象，返回这个对象在原先集合中的索引位置
+$('li').index($('#bar')); //1，传递一个JPlus对象
+$('li').index($('li:gt(0)')); //1，传递一组JPlus对象，返回这个对象中第一个元素在原先集合中的索引位置
+$('#bar').index('li'); //1，传递一个选择器，返回#bar在所有li中的做引位置
+$('#bar').index(); //1，不传递参数，返回这个元素在同辈中的索引位置。
+		  </code>
+        </example>
+      </function>
+    </subcat>
+    <subcat value="数据缓存">
+      <function name="data" return="Any">
+        <desc>返回元素上储存的相应名字的数据，可以用data(name, value)来设定。</desc>
+        <longdesc>如果JPlus集合指向多个元素，那将只返回第一个元素的对应数据。
+
+这个函数可以用于在一个元素上存取数据而避免了循环引用的风险。JPlus.data是1.2.3版的新功能。你可以在很多地方使用这个函数，另外JPlus UI里经常使用这个函数。
+
+如果不带任何参数，则会把所有数据作为一个JavaScript对象来返回。</longdesc>
+        <params name="name" type="String" optional="true">
+          <desc>存储的数据名</desc>
+        </params>
+        <example>
+          <desc>在一个div上存取数据</desc>
+          <html>&lt;div&gt;&lt;/div&gt;</html>
+          <code>$("div").data("blah");  // undefined
+$("div").data("blah", "hello");  // blah设置为hello
+$("div").data("blah");  // hello
+$("div").data("blah", 86);  // 设置为86
+$("div").data("blah");  //  86
+$("div").removeData("blah");  //移除blah
+$("div").data("blah");  // undefined</code>
+        </example>
+        <example>
+          <desc>在一个div上存取名/值对数据</desc>
+          <html>&lt;div&gt;&lt;/div&gt;</html>
+          <code>$("div").data("test", { first: 16, last: "pizza!" });
+$("div").data("test").first  //16;
+$("div").data("test").last  //pizza!;</code>
+        </example>
+      </function>
+      <function name="data" return="Control">
+        <desc>在元素上存放数据,返回JPlus对象。</desc>
+        <longdesc>如果JPlus集合指向多个元素，那将在所有元素上设置对应数据。
+
+这个函数不用建立一个新的expando，就能在一个元素上存放任何格式的数据，而不仅仅是字符串。</longdesc>
+        <params name="name" type="String">
+          <desc>存储的数据名</desc>
+        </params>
+        <params name="value" type="Any">
+          <desc>将要存储的任意数据</desc>
+        </params>
+        <example>
+          <desc>参考data(name)的示例</desc>
+        </example>
+      </function>
+      <function name="data" return="Control">
+        <desc>在元素上存放一组数据，返回JPlus对象。</desc>
+        <longdesc>注意，如果使用这个方法之后，原先存放的所有数据都会被重写！因为这些数据，包括事件处理函数，都是绑定在元素上的。所以以一个obj作为参数使用 .data()方法时，请务必小心！</longdesc>
+        <params name="obj" type="Object">
+          <desc>一个用于设置数据的键/值对</desc>
+        </params>
+        <example>
+          <desc>参考data(name)的示例</desc>
+        </example>
+      </function>
+      <function name="removeData" return="Control">
+        <desc>在元素上移除存放的数据</desc>
+        <longdesc>与$(...).data(name, value)函数作用相反</longdesc>
+        <params name="name" type="String">
+          <desc>存储的数据名</desc>
+        </params>
+        <example>
+          <desc>参考data(name)的示例</desc>
+        </example>
+      </function>
+      <function name="JPlus.data" return="Control">
+        <desc>在元素上存放数据,返回JPlus对象。</desc>
+        <longdesc>注意：这是一个底层方法。你应当使用.data()来代替。</longdesc>
+        <params name="element" type="String">
+          <desc>要关联数据的DOM对象</desc>
+        </params>
+        <params name="key" type="String">
+          <desc>存储的数据名</desc>
+        </params>
+        <params name="value" type="Any">
+          <desc>将要存储的任意数据</desc>
+        </params>
+        <example>
+          <code>JPlus.data(document.body, 'foo', 52);
+JPlus.data(document.body, 'bar', 'test');</code>
+        </example>
+      </function>
+      <function name="JPlus.data" return="Object">
+        <desc>查询在元素上存放的数据</desc>
+        <longdesc>如果不指定参数，则会返回元素上面存放的所有数据，以Object的形式返回。
+		
+注意：这是一个底层方法。你应当使用.data()来代替。</longdesc>
+        <params name="element" type="String" optional="true">
+          <desc>要查询数据的DOM对象</desc>
+        </params>
+        <params name="key" type="String" optional="true">
+          <desc>存储的数据名</desc>
+        </params>
+        <example>
+          <code>alert(JPlus.data( document.body, 'foo' );
+alert(JPlus.data( document.body ));</code>
+        </example>
+      </function>
+    </subcat>
+    <subcat value="队列控制">
+      <function name="queue" return="Array&lt;Function>">
+        <desc>返回指向元素的队列(将是一个函数数组)</desc>
+        <params name="name" type="String">
+          <desc>队列名，默认为fx</desc>
+        </params>
+        <example>
+          <desc>显示队列长度</desc>
+          <html>&lt;style&gt;
+  div { margin:3px; width:40px; height:40px;
+        position:absolute; left:0px; top:30px; 
+        background:green; display:none; }
+  div.newcolor { background:blue; }
+  span { color:red; }
+  &lt;/style&gt;
+  &lt;button id="show"&gt;Show Length of Queue&lt;/button&gt;
+  &lt;span&gt;&lt;/span&gt;
+  &lt;div&gt;&lt;/div&gt;</html>
+          <code>$("#show").click(function () {
+      var n = $("div").queue("fx");
+      $("span").text("Queue length is: " + n.length);
+});
+function runIt() {
+      $("div").show("slow");
+      $("div").animate({left:'+=200'},2000);
+      $("div").slideToggle(1000);
+      $("div").slideToggle("fast");
+      $("div").animate({left:'-=200'},1500);
+      $("div").hide("slow");
+      $("div").show(1200);
+      $("div").slideUp("normal", runIt);
+}
+runIt();</code>
+        </example>
+      </function>
+      <function name="queue" return="Control">
+        <desc>在匹配的元素的队列最后添加一个函数</desc>
+        <params name="name" type="String">
+          <desc>队列名，默认为fx</desc>
+        </params>
+        <params name="callback" type="Function">
+          <desc>要添加进队列的函数</desc>
+        </params>
+        <example>
+          <desc>插入一个自定义函数
+如果函数执行后要继续队列，则执行 JPlus(this).dequeue();</desc>
+          <html>&lt;style&gt;
+  div { margin:3px; width:40px; height:40px;
+        position:absolute; left:0px; top:30px; 
+        background:green; display:none; }
+  div.newcolor { background:blue; }
+  &lt;/style&gt;
+  Click here...
+  &lt;div&gt;&lt;/div&gt;</html>
+          <code>$(document.body).click(function () {
+      $("div").show("slow");
+      $("div").animate({left:'+=200'},2000);
+      $("div").queue(function () {
+          $(this).addClass("newcolor");
+          $(this).dequeue();
+      });
+      $("div").animate({left:'-=200'},500);
+      $("div").queue(function () {
+          $(this).removeClass("newcolor");
+          $(this).dequeue();
+      });
+      $("div").slideUp();
+});</code>
+        </example>
+      </function>
+      <function name="queue" return="Control">
+        <desc>将匹配元素的队列用新的一个队列来代替(函数数组).</desc>
+        <params name="name" type="String">
+          <desc>队列名，默认为fx</desc>
+        </params>
+        <params name="queue" type="Array&lt;Function&gt;">
+          <desc>用于替换的队列。所有函数都有同一个参数，这个值与queue(callback)相同</desc>
+        </params>
+        <example>
+          <desc>通过设定队列数组来删除动画队列</desc>
+          <html>&lt;style&gt;
+  div { margin:3px; width:40px; height:40px;
+        position:absolute; left:0px; top:30px; 
+        background:green; display:none; }
+  div.newcolor { background:blue; }
+  &lt;/style&gt;
+
+  &lt;button id="start"&gt;Start&lt;/button&gt;
+  &lt;button id="stop"&gt;Stop&lt;/button&gt;
+  &lt;div&gt;&lt;/div&gt;</html>
+          <code>$("#start").click(function () {
+      $("div").show("slow");
+      $("div").animate({left:'+=200'},5000);
+      $("div").queue(function () {
+          $(this).addClass("newcolor");
+          $(this).dequeue();
+      });
+      $("div").animate({left:'-=200'},1500);
+      $("div").queue(function () {
+          $(this).removeClass("newcolor");
+          $(this).dequeue();
+      });
+      $("div").slideUp();
+  });
+  $("#stop").click(function () {
+      $("div").queue("fx", []);
+      $("div").stop();
+  });</code>
+        </example>
+      </function>
+      <function name="dequeue" return="Control">
+        <desc>从队列最前端移除一个队列函数，并执行他。</desc>
+        <params name="name" type="String">
+          <desc>队列名，默认为fx</desc>
+        </params>
+        <example>
+          <desc>用dequeue来结束自定义队列函数，并让队列继续进行下去。</desc>
+          <html>&lt;style&gt;
+  div { margin:3px; width:50px; position:absolute;
+        height:50px; left:10px; top:30px; 
+        background-color:yellow; }
+  div.red { background-color:red; }
+  &lt;/style&gt;
+
+  &lt;button&gt;Start&lt;/button&gt;
+  &lt;div&gt;&lt;/div&gt;</html>
+          <code>$("button").click(function () {
+      $("div").animate({left:'+=200px'}, 2000);
+      $("div").animate({top:'0px'}, 600);
+      $("div").queue(function () {
+          $(this).toggleClass("red");
+          $(this).dequeue();
+      });
+      $("div").animate({left:'10px', top:'30px'}, 700);
+  });</code>
+        </example>
+      </function>
+      <function name="clearQueue" return="Control">
+        <desc>JPlus 1.4 新增。清空对象上尚未执行的所有队列</desc>
+        <longdesc>如果不带参数，则默认清空的是动画队列。这跟stop(true)类似，但stop()只能清空动画队列，而这个可以清空所有通过 .queue() 创建的队列。</longdesc>
+        <params name="queueName" type="Boolean" optional="true">
+          <desc>含有队列名的字符串。默认是"Fx"，动画队列。</desc>
+        </params>
+      </function>
+    </subcat>
+    <subcat value="插件机制">
+
+      <function name="JPlus.fn.extend" return="Control">
+        <desc>扩展 JPlus 元素集来提供新的方法（通常用来制作插件）。</desc>
+        <longdesc>查看这里&lt;a href="http://docs.jquery.com/Plugins/Authoring" title="Plugins/Authoring"&gt;Plugins/Authoring&lt;/a&gt;可以获取更多信息。</longdesc>
+        <params name="object" type="Object">
+          <desc>用来扩充 JPlus 对象。</desc>
+        </params>
+        <example>
+          <desc>增加两个插件方法。</desc>
+          <code>JPlus.fn.extend({
+  check: function() {
+    return this.each(function() { this.checked = true; });
+  },
+  uncheck: function() {
+    return this.each(function() { this.checked = false; });
+  }
+});</code>
+          <result>$("input[type=checkbox]").check();
+$("input[type=radio]").uncheck();</result>
+        </example>
+      </function>
+      <function name="JPlus.extend" return="Control">
+        <desc>扩展JPlus对象本身。</desc>
+        <longdesc>用来在JPlus命名空间上增加新函数。 查看 &lt;span title="Core/JPlus.fn.extend"&gt;'JPlus.fn.extend'&lt;/span&gt; 获取更多添加&lt;a href="http://docs.jquery.com/Plugins/Authoring" title="Plugins/Authoring"&gt;插件&lt;/a&gt;的信息。</longdesc>
+        <params name="object" type="Object">
+          <desc>用以扩展 JPlus 对象</desc>
+        </params>
+        <example>
+          <desc>在JPlus命名空间上增加两个函数。</desc>
+          <code>JPlus.extend({
+  min: function(a, b) { return a &lt; b ? a : b; },
+  max: function(a, b) { return a &gt; b ? a : b; }
+});</code>
+          <result>JPlus.min(2,3); // =&gt; 2
+JPlus.max(4,5); // =&gt; 5</result>
+        </example>
+      </function>
+    </subcat>
+	<subcat value="DOM 函数扩展(组件开发)">
+      <function name="Control.implement" return="Control">
+        <desc>扩展 Control 元素集来提供新的方法（通常用来制作插件）。</desc>
+        <params name="object" type="Object">
+          <desc>用来扩充 Control 对象。</desc>
+        </params>
+        <example>
+          <desc>增加两个方法。</desc>
+          <code>Control.implement({
+  check: function() {
+    this.checked = true;
+	return this;
+  },
+  uncheck: function() {
+    this.checked = false;
+	return this;
+  }
+});</code>
+          <result>$("input[type=checkbox]").check();
+$("input[type=radio]").uncheck();</result>
+        </example>
+      </function>
+      <function name="Control.extend" return="Control">
+        <desc>继承 Control 创建新控件。</desc>
+        <longdesc>继承的组件附带完成组件周期。 </longdesc>
+        <params name="object" type="Object">
+          <desc>用以扩展 Control 对象</desc>
+        </params>
+      </function>
+    </subcat>
+ 
+    <subcat value="多库共存">
+      <function name="JPlus.noConflict" return="Control">
+        <desc>运行这个函数将变量$的控制权让渡给第一个实现它的那个库。</desc>
+        <longdesc>这有助于确保JPlus不会与其他库的$对象发生冲突。
+
+在运行这个函数后，就只能使用JPlus变量访问JPlus对象。例如，在要用到$("div p")的地方，就必须换成JPlus("div p")。
+
+'''注意:'''这个函数必须在你导入JPlus文件之后，并且在导入另一个导致冲突的库'''之前'''使用。当然也应当在其他冲突的库被使用之前，除非JPlus是最后一个导入的。</longdesc>
+        <example>
+          <desc>将$引用的对象映射回原始的对象。</desc>
+          <code>JPlus.noConflict();
+// 使用 JPlus
+JPlus("div p").hide();
+// 使用其他库的 $()
+$("content").style.display = 'none';</code>
+        </example>
+        <example>
+          <desc>恢复使用别名$，然后创建并执行一个函数，在这个函数的作用域中仍然将$作为JPlus的别名来使用。在这个函数中，原来的$对象是无效的。这个函数对于大多数不依赖于其他库的插件都十分有效。</desc>
+          <code>JPlus.noConflict();
+(function($) { 
+  $(function() {
+    // 使用 $ 作为 JPlus 别名的代码
+  });
+})(JPlus);
+// 其他用 $ 作为别名的库的代码</code>
+        </example>
+        <example>
+          <desc>创建一个新的别名用以在接下来的库中使用JPlus对象。</desc>
+          <code>var j = JPlus.noConflict();
+// 基于 JPlus 的代码
+j("div p").hide();
+// 基于其他库的 $() 代码
+$("content").style.display = 'none';</code>
+        </example>
+      </function>
+      <function name="JPlus.noConflict" return="Control">
+        <desc>将$和JPlus的控制权都交还给原来的库。用之前请考虑清楚!</desc>
+        <longdesc>这是相对于简单的 '''noConflict''' 方法更极端的版本，因为这将完全重新定义JPlus。这通常用于一种极端的情况，比如你想要将JPlus嵌入一个高度冲突的环境。'''注意:'''调用此方法后极有可能导致插件失效。</longdesc>
+        <params name="extreme" type="Boolean">
+          <desc>传入 true 来允许彻底将JPlus变量还原</desc>
+        </params>
+        <example>
+          <desc>完全将 JPlus 移到一个新的命名空间。</desc>
+          <code>var dom = {};
+dom.query = JPlus.noConflict(true);</code>
+          <result>// 新 JPlus 的代码
+dom.query("div p").hide();
+// 另一个库 $() 的代码
+$("content").style.display = 'none';
+// 另一个版本 JPlus 的代码
+JPlus("div &gt; p").hide();</result>
+        </example>
+      </function>
+    </subcat>
+  </cat>
+  <cat value="选择器">
+    <subcat value="基本">
+      <selector name="id" return="DomList">
+        <sample>#id</sample>
+        <desc>根据给定的ID匹配一个元素。</desc>
+        <longdesc>如果选择器中包含特殊字符，可以用两个斜杠转义。参见示例。</longdesc>
+        <params name="id" type="String">
+          <desc>用于搜索的，通过元素的 id 属性中给定的值</desc>
+        </params>
+        <example>
+          <desc>查找 ID 为"myDiv"的元素。</desc>
+          <html>&lt;div id="notMe"&gt;&lt;p&gt;id="notMe"&lt;/p&gt;&lt;/div&gt;
+&lt;div id="myDiv"&gt;id="myDiv"&lt;/div&gt;</html>
+          <code>$("#myDiv");</code>
+          <result>[ &lt;div id="myDiv"&gt;id="myDiv"&lt;/div&gt; ]</result>
+        </example>
+        <example>
+          <desc>查找含有特殊字符的元素</desc>
+          <html>&lt;span id="foo:bar"&gt;&lt;/span&gt;
+&lt;span id="foo[bar]"&gt;&lt;/span&gt;
+&lt;span id="foo.bar"&gt;&lt;/span&gt;</html>
+          <code>#foo\\:bar
+#foo\\[bar\\]
+#foo\\.bar</code>
+        </example>
+      </selector>
+      <selector name="element" return="DomList">
+        <sample>element</sample>
+        <desc>根据给定的元素名匹配所有元素</desc>
+        <params name="element" type="String">
+          <desc>一个用于搜索的元素。指向 DOM 节点的标签名。</desc>
+        </params>
+        <example>
+          <desc>查找一个 DIV 元素。</desc>
+          <html>&lt;div&gt;DIV1&lt;/div&gt;
+&lt;div&gt;DIV2&lt;/div&gt;
+&lt;span&gt;SPAN&lt;/span&gt;</html>
+          <code>$("div");</code>
+          <result>[ &lt;div&gt;DIV1&lt;/div&gt;, &lt;div&gt;DIV2&lt;/div&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="class" return="DomList">
+        <sample>.class</sample>
+        <desc>根据给定的类匹配元素。</desc>
+        <params name="class" type="String">
+          <desc>一个用以搜索的类。一个元素可以有多个类，只要有一个符合就能被匹配到。</desc>
+        </params>
+        <example>
+          <desc>查找所有类是 "myClass" 的元素.</desc>
+          <html>&lt;div class="notMe"&gt;div class="notMe"&lt;/div&gt;
+&lt;div class="myClass"&gt;div class="myClass"&lt;/div&gt;
+&lt;span class="myClass"&gt;span class="myClass"&lt;/span&gt;</html>
+          <code>$(".myClass");</code>
+          <result>[ &lt;div class="myClass"&gt;div class="myClass"&lt;/div&gt;, &lt;span class="myClass"&gt;span class="myClass"&lt;/span&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="all" return="DomList">
+        <sample>*</sample>
+        <desc>匹配所有元素</desc>
+        <longdesc>多用于结合上下文来搜索。</longdesc>
+        <example>
+          <desc>找到每一个元素</desc>
+          <html>&lt;div&gt;DIV&lt;/div&gt;
+&lt;span&gt;SPAN&lt;/span&gt;
+&lt;p&gt;P&lt;/p&gt;</html>
+          <code>$("*")</code>
+          <result>[ &lt;div&gt;DIV&lt;/div&gt;, &lt;span&gt;SPAN&lt;/span&gt;, &lt;p&gt;P&lt;/p&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="multiple" return="DomList">
+        <sample>selector1,selector2,selectorN</sample>
+        <desc>将每一个选择器匹配到的元素合并后一起返回。</desc>
+        <longdesc>你可以指定任意多个选择器，并将匹配到的元素合并到一个结果内。</longdesc>
+        <params name="selector1" type="Selector">
+          <desc>一个有效的选择器</desc>
+        </params>
+        <params name="selector2" type="Selector">
+          <desc>另一个有效的选择器</desc>
+        </params>
+        <params name="selectorN" type="Selector" optional="true">
+          <desc>任意多个有效选择器</desc>
+        </params>
+        <example>
+          <desc>找到匹配任意一个类的元素。</desc>
+          <html>&lt;div&gt;div&lt;/div&gt;
+&lt;p class="myClass"&gt;p class="myClass"&lt;/p&gt;
+&lt;span&gt;span&lt;/span&gt;
+&lt;p class="notMyClass"&gt;p class="notMyClass"&lt;/p&gt;</html>
+          <code>$("div,span,p.myClass")</code>
+          <result>[ &lt;div&gt;div&lt;/div&gt;, &lt;p class="myClass"&gt;p class="myClass"&lt;/p&gt;, &lt;span&gt;span&lt;/span&gt; ]</result>
+        </example>
+      </selector>
+    </subcat>
+    <subcat value="层级">
+      <selector name="descendant" return="DomList">
+        <sample>ancestor descendant</sample>
+        <desc>在给定的祖先元素下匹配所有的后代元素</desc>
+        <params name="ancestor" type="Selector">
+          <desc>任何有效选择器</desc>
+        </params>
+        <params name="descendant" type="Selector">
+          <desc>用以匹配元素的选择器，并且它是第一个选择器的后代元素</desc>
+        </params>
+        <example>
+          <desc>找到表单中所有的 input 元素</desc>
+          <html>&lt;form&gt;
+  &lt;label&gt;Name:&lt;/label&gt;
+  &lt;input name="name" /&gt;
+  &lt;fieldset&gt;
+      &lt;label&gt;Newsletter:&lt;/label&gt;
+      &lt;input name="newsletter" /&gt;
+ &lt;/fieldset&gt;
+&lt;/form&gt;
+&lt;input name="none" /&gt;</html>
+          <code>$("form input")</code>
+          <result>[ &lt;input name="name" /&gt;, &lt;input name="newsletter" /&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="child" return="DomList">
+        <sample>parent &gt; child</sample>
+        <desc>在给定的父元素下匹配所有的子元素</desc>
+        <params name="parent" type="Selector">
+          <desc>任何有效选择器</desc>
+        </params>
+        <params name="child" type="Selector">
+          <desc>用以匹配元素的选择器，并且它是第一个选择器的子元素</desc>
+        </params>
+        <example>
+          <desc>匹配表单中所有的子级input元素。</desc>
+          <html>&lt;form&gt;
+  &lt;label&gt;Name:&lt;/label&gt;
+  &lt;input name="name" /&gt;
+  &lt;fieldset&gt;
+      &lt;label&gt;Newsletter:&lt;/label&gt;
+      &lt;input name="newsletter" /&gt;
+ &lt;/fieldset&gt;
+&lt;/form&gt;
+&lt;input name="none" /&gt;</html>
+          <code>$("form &gt; input")</code>
+          <result>[ &lt;input name="name" /&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="next" return="DomList">
+        <sample>prev + next</sample>
+        <desc>匹配所有紧接在 prev 元素后的 next 元素</desc>
+        <params name="prev" type="Selector">
+          <desc>任何有效选择器</desc>
+        </params>
+        <params name="next" type="Selector">
+          <desc>一个有效选择器并且紧接着第一个选择器</desc>
+        </params>
+        <example>
+          <desc>匹配所有跟在 label 后面的 input 元素</desc>
+          <html>&lt;form&gt;
+  &lt;label&gt;Name:&lt;/label&gt;
+  &lt;input name="name" /&gt;
+  &lt;fieldset&gt;
+      &lt;label&gt;Newsletter:&lt;/label&gt;
+      &lt;input name="newsletter" /&gt;
+ &lt;/fieldset&gt;
+&lt;/form&gt;
+&lt;input name="none" /&gt;</html>
+          <code>$("label + input")</code>
+          <result>[ &lt;input name="name" /&gt;, &lt;input name="newsletter" /&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="siblings" return="DomList">
+        <sample>prev ~ siblings</sample>
+        <desc>匹配 prev 元素之后的所有 siblings 元素</desc>
+        <params name="prev" type="Selector">
+          <desc>任何有效选择器</desc>
+        </params>
+        <params name="siblings" type="Selector">
+          <desc>一个选择器，并且它作为第一个选择器的同辈</desc>
+        </params>
+        <example>
+          <desc>找到所有与表单同辈的 input 元素</desc>
+          <html>&lt;form&gt;
+  &lt;label&gt;Name:&lt;/label&gt;
+  &lt;input name="name" /&gt;
+  &lt;fieldset&gt;
+      &lt;label&gt;Newsletter:&lt;/label&gt;
+      &lt;input name="newsletter" /&gt;
+ &lt;/fieldset&gt;
+&lt;/form&gt;
+&lt;input name="none" /&gt;</html>
+          <code>$("form ~ input")</code>
+          <result>[ &lt;input name="none" /&gt; ]</result>
+        </example>
+      </selector>
+    </subcat>
+    <subcat value="属性">
+      <selector name="attributeHas" return="DomList">
+        <sample>[attribute]</sample>
+        <desc>匹配包含给定属性的元素。注意，在JPlus 1.3中，前导的@符号已经被废除！如果想要兼容最新版本，只需要简单去掉@符号即可。</desc>
+        <params name="attribute" type="String">
+          <desc>属性名</desc>
+        </params>
+        <example>
+          <desc>查找所有含有 id 属性的 div 元素</desc>
+          <html>&lt;div&gt;
+  &lt;p&gt;Hello!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id="test2"&gt;&lt;/div&gt;</html>
+          <code>$("div[id]")</code>
+          <result>[ &lt;div id="test2"&gt;&lt;/div&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="attributeEquals" return="DomList">
+        <sample>[attribute=value]</sample>
+        <desc>匹配给定的属性是某个特定值的元素</desc>
+        <params name="attribute" type="String">
+          <desc>属性名</desc>
+        </params>
+        <params name="value" type="String" optional="true">
+          <desc>属性值。引号在大多数情况下是可选的。但在遇到诸如属性值包含"]"时，用以避免冲突。</desc>
+        </params>
+        <example>
+          <desc>查找所有 name 属性是 newsletter 的 input 元素</desc>
+          <html>&lt;input type="checkbox" name="newsletter" value="Hot Fuzz" /&gt;
+&lt;input type="checkbox" name="newsletter" value="Cold Fusion" /&gt;
+&lt;input type="checkbox" name="accept" value="Evil Plans" /&gt;</html>
+          <code>$("input[name='newsletter']").attr("checked", true);</code>
+          <result>[ &lt;input type="checkbox" name="newsletter" value="Hot Fuzz" checked="true" /&gt;, &lt;input type="checkbox" name="newsletter" value="Cold Fusion" checked="true" /&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="attributeNotEqual" return="DomList">
+        <sample>[attribute!=value]</sample>
+        <desc>匹配所有不含有指定的属性，或者属性不等于特定值的元素。</desc>
+        <longdesc>此选择器等价于:not([attr=value])&lt;br&gt;要匹配含有特定属性但不等于特定值的元素，请使用[attr]:not([attr=value])</longdesc>
+        <params name="attribute" type="String">
+          <desc>属性名</desc>
+        </params>
+        <params name="value" type="String" optional="true">
+          <desc>属性值。引号在大多数情况下是可选的。但在遇到诸如属性值包含"]"时，用以避免冲突。</desc>
+        </params>
+        <example>
+          <desc>查找所有 name 属性不是 newsletter 的 input 元素</desc>
+          <html>&lt;input type="checkbox" name="newsletter" value="Hot Fuzz" /&gt;
+&lt;input type="checkbox" name="newsletter" value="Cold Fusion" /&gt;
+&lt;input type="checkbox" name="accept" value="Evil Plans" /&gt;</html>
+          <code>$("input[name!='newsletter']").attr("checked", true);</code>
+          <result>[ &lt;input type="checkbox" name="accept" value="Evil Plans" checked="true" /&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="attributeStartsWith" return="DomList">
+        <sample>[attribute^=value]</sample>
+        <desc>匹配给定的属性是以某些值开始的元素</desc>
+        <params name="attribute" type="String">
+          <desc>属性名</desc>
+        </params>
+        <params name="value" type="String" optional="true">
+          <desc>属性值。引号在大多数情况下是可选的。但在遇到诸如属性值包含"]"时，用以避免冲突。</desc>
+        </params>
+        <example>
+          <desc>查找所有 name 以 'news' 开始的 input 元素</desc>
+          <html>&lt;input name="newsletter" /&gt;
+&lt;input name="milkman" /&gt;
+&lt;input name="newsboy" /&gt;</html>
+          <code>$("input[name^='news']")</code>
+          <result>[ &lt;input name="newsletter" /&gt;, &lt;input name="newsboy" /&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="attributeEndsWith" return="DomList">
+        <sample>[attribute$=value]</sample>
+        <desc>匹配给定的属性是以某些值结尾的元素</desc>
+        <params name="attribute" type="String">
+          <desc>属性名</desc>
+        </params>
+        <params name="value" type="String" optional="true">
+          <desc>属性值。引号在大多数情况下是可选的。但在遇到诸如属性值包含"]"时，用以避免冲突。</desc>
+        </params>
+        <example>
+          <desc>查找所有 name 以 'letter' 结尾的 input 元素</desc>
+          <html>&lt;input name="newsletter" /&gt;
+&lt;input name="milkman" /&gt;
+&lt;input name="jobletter" /&gt;</html>
+          <code>$("input[name$='letter']")</code>
+          <result>[ &lt;input name="newsletter" /&gt;, &lt;input name="jobletter" /&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="attributeContains" return="DomList">
+        <sample>[attribute*=value]</sample>
+        <desc>匹配给定的属性是以包含某些值的元素</desc>
+        <params name="attribute" type="String">
+          <desc>属性名</desc>
+        </params>
+        <params name="value" type="String" optional="true">
+          <desc>属性值。引号在大多数情况下是可选的。但在遇到诸如属性值包含"]"时，用以避免冲突。</desc>
+        </params>
+        <example>
+          <desc>查找所有 name 包含 'man' 的 input 元素</desc>
+          <html>&lt;input name="man-news" /&gt;
+&lt;input name="milkman" /&gt;
+&lt;input name="letterman2" /&gt;
+&lt;input name="newmilk" /&gt;</html>
+          <code>$("input[name*='man']")</code>
+          <result>[ &lt;input name="man-news" /&gt;, &lt;input name="milkman" /&gt;, &lt;input name="letterman2" /&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="attributeMultiple" return="DomList">
+        <sample>[selector1][selector2][selectorN]</sample>
+        <desc>复合属性选择器，需要同时满足多个条件时使用。</desc>
+        <params name="selector1" type="Selector">
+          <desc>属性选择器</desc>
+        </params>
+        <params name="selector2" type="Selector">
+          <desc>另一个属性选择器，用以进一步缩小范围</desc>
+        </params>
+        <params name="selectorN" type="Selector">
+          <desc>任意多个属性选择器</desc>
+        </params>
+        <example>
+          <desc>找到所有含有 id 属性，并且它的 name 属性是以 man 结尾的</desc>
+          <html>&lt;input id="man-news" name="man-news" /&gt;
+&lt;input name="milkman" /&gt;
+&lt;input id="letterman" name="new-letterman" /&gt;
+&lt;input name="newmilk" /&gt;</html>
+          <code>$("input[id][name$='man']")</code>
+          <result>[ &lt;input id="letterman" name="new-letterman" /&gt; ]</result>
+        </example>
+      </selector>
+    </subcat>
+    <subcat value="简单">
+      <selector name="not" return="DomList">
+        <sample>:not</sample>
+        <desc>去除所有与给定选择器匹配的元素</desc>
+        <longdesc>在JPlus 1.3中，已经支持复杂选择器了（例如:not(div a) 和 :not(div,a)）</longdesc>
+        <params name="selector" type="Selector">
+          <desc>用于筛选的选择器</desc>
+        </params>
+        <example>
+          <desc>查找所有未选中的 input 元素</desc>
+          <html>&lt;input name="apple" /&gt;
+&lt;input name="flower" checked="checked" /&gt;</html>
+          <code>$("input:not(:checked)")</code>
+          <result>[ &lt;input name="apple" /&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="even" return="DomList">
+        <sample>:even</sample>
+        <desc>匹配所有索引值为偶数的元素，从 0 开始计数</desc>
+        <example>
+          <desc>查找表格的1、3、5...行（即索引值0、2、4...）</desc>
+          <html>&lt;table&gt;
+  &lt;tr&gt;&lt;td&gt;Header 1&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Value 1&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Value 2&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</html>
+          <code>$("tr:even")</code>
+          <result>[ &lt;tr&gt;&lt;td&gt;Header 1&lt;/td&gt;&lt;/tr&gt;, &lt;tr&gt;&lt;td&gt;Value 2&lt;/td&gt;&lt;/tr&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="odd" return="DomList">
+        <sample>:odd</sample>
+        <desc>匹配所有索引值为奇数的元素，从 0 开始计数</desc>
+        <example>
+          <desc>查找表格的2、4、6行（即索引值1、3、5...）</desc>
+          <html>&lt;table&gt;
+  &lt;tr&gt;&lt;td&gt;Header 1&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Value 1&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Value 2&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</html>
+          <code>$("tr:odd")</code>
+          <result>[ &lt;tr&gt;&lt;td&gt;Value 1&lt;/td&gt;&lt;/tr&gt; ]</result>
+        </example>
+      </selector>
+	  <selector name="has" return="DomList">
+        <sample>:has</sample>
+        <desc>匹配含有选择器所匹配的元素的元素</desc>
+        <params name="selector" type="Selector">
+          <desc>一个用于筛选的选择器</desc>
+        </params>
+        <example>
+          <desc>给所有包含 p 元素的 div 元素添加一个 text 类</desc>
+          <html>&lt;div&gt;&lt;p&gt;Hello&lt;/p&gt;&lt;/div&gt;
+&lt;div&gt;Hello again!&lt;/div&gt;</html>
+          <code>$("div:has(p)").addClass("test");</code>
+          <result>[ &lt;div class="test"&gt;&lt;p&gt;Hello&lt;/p&gt;&lt;/div&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="hidden" return="DomList">
+        <sample>:hidden</sample>
+        <desc>匹配所有的不可见元素，input 元素的 type 属性为 "hidden" 的话也会被匹配到</desc>
+        <example>
+          <desc>查找所有不可见的 tr 元素</desc>
+          <html>&lt;table&gt;
+  &lt;tr style="display:none"&gt;&lt;td&gt;Value 1&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Value 2&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</html>
+          <code>$("tr:hidden")</code>
+          <result>[ &lt;tr style="display:none"&gt;&lt;td&gt;Value 1&lt;/td&gt;&lt;/tr&gt; ]</result>
+        </example>
+      </selector>
+	  <selector name="visible*" return="DomList">
+        <sample>:visible</sample>
+        <desc>匹配所有的可见元素</desc>
+        <example>
+          <desc>查找所有可见的 tr 元素</desc>
+          <html>&lt;table&gt;
+  &lt;tr style="display:none"&gt;&lt;td&gt;Value 1&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Value 2&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</html>
+          <code>$("tr:visible")</code>
+          <result>[ &lt;tr&gt;&lt;td&gt;Value 2&lt;/td&gt;&lt;/tr&gt; ]</result>
+        </example>
+      </selector>
+	</subcat>
+    <subcat value="子元素">
+      <selector name="nthChild" return="DomList">
+        <sample>:nth-child</sample>
+        <desc>匹配其父元素下的第N个子或奇偶元素</desc>
+        <longdesc>':eq(index)' 只匹配一个元素，而这个将为每一个父元素匹配子元素。:nth-child从1开始的，而:eq()是从0算起的！可以使用:&lt;br&gt;nth-child(even)&lt;br&gt;:nth-child(odd)&lt;br&gt;:nth-child(3n)&lt;br&gt;:nth-child(2)&lt;br&gt;:nth-child(3n+1)&lt;br&gt;:nth-child(3n+2)</longdesc>
+        <params name="index" type="Number">
+          <desc>要匹配元素的序号，从1开始</desc>
+        </params>
+        <example>
+          <desc>在每个 ul 查找第 2 个li</desc>
+          <html>&lt;ul&gt;
+  &lt;li&gt;John&lt;/li&gt;
+  &lt;li&gt;Karl&lt;/li&gt;
+  &lt;li&gt;Brandon&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ul&gt;
+  &lt;li&gt;Glen&lt;/li&gt;
+  &lt;li&gt;Tane&lt;/li&gt;
+  &lt;li&gt;Ralph&lt;/li&gt;
+&lt;/ul&gt;</html>
+          <code>$("ul li:nth-child(2)")</code>
+          <result>[ &lt;li&gt;Karl&lt;/li&gt;,   &lt;li&gt;Tane&lt;/li&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="firstChild" return="DomList">
+        <sample>:first-child</sample>
+        <desc>匹配第一个子元素</desc>
+        <longdesc>':first' 只匹配一个元素，而此选择符将为每个父元素匹配一个子元素</longdesc>
+        <example>
+          <desc>在每个 ul 中查找第一个 li</desc>
+          <html>&lt;ul&gt;
+  &lt;li&gt;John&lt;/li&gt;
+  &lt;li&gt;Karl&lt;/li&gt;
+  &lt;li&gt;Brandon&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ul&gt;
+  &lt;li&gt;Glen&lt;/li&gt;
+  &lt;li&gt;Tane&lt;/li&gt;
+  &lt;li&gt;Ralph&lt;/li&gt;
+&lt;/ul&gt;</html>
+          <code>$("ul li:first-child")</code>
+          <result>[ &lt;li&gt;John&lt;/li&gt;, &lt;li&gt;Glen&lt;/li&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="lastChild" return="DomList">
+        <sample>:last-child</sample>
+        <desc>匹配最后一个子元素</desc>
+        <longdesc>':last'只匹配一个元素，而此选择符将为每个父元素匹配一个子元素</longdesc>
+        <example>
+          <desc>在每个 ul 中查找最后一个 li</desc>
+          <html>&lt;ul&gt;
+  &lt;li&gt;John&lt;/li&gt;
+  &lt;li&gt;Karl&lt;/li&gt;
+  &lt;li&gt;Brandon&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ul&gt;
+  &lt;li&gt;Glen&lt;/li&gt;
+  &lt;li&gt;Tane&lt;/li&gt;
+  &lt;li&gt;Ralph&lt;/li&gt;
+&lt;/ul&gt;</html>
+          <code>$("ul li:last-child")</code>
+          <result>[ &lt;li&gt;Brandon&lt;/li&gt;, &lt;li&gt;Ralph&lt;/li&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="onlyChild" return="DomList">
+        <sample>:only-child</sample>
+        <desc>如果某个元素是父元素中唯一的子元素，那将会被匹配</desc>
+        <longdesc>如果父元素中含有其他元素，那将不会被匹配。</longdesc>
+        <example>
+          <desc>在 ul 中查找是唯一子元素的 li</desc>
+          <html>&lt;ul&gt;
+  &lt;li&gt;John&lt;/li&gt;
+  &lt;li&gt;Karl&lt;/li&gt;
+  &lt;li&gt;Brandon&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ul&gt;
+  &lt;li&gt;Glen&lt;/li&gt;
+&lt;/ul&gt;</html>
+          <code>$("ul li:only-child")</code>
+          <result>[ &lt;li&gt;Glen&lt;/li&gt; ]</result>
+        </example>
+      </selector>
+    </subcat>
+    <subcat value="表单">
+      <selector name="input" return="DomList">
+        <sample>:input</sample>
+        <desc>匹配所有 input, textarea, select 和 button 元素</desc>
+        <example>
+          <desc>查找所有的input元素，下面这些元素都会被匹配到。</desc>
+          <html>&lt;form&gt;
+    &lt;input type=&quot;button&quot; value=&quot;Input Button&quot;/&gt;
+    &lt;input type=&quot;checkbox&quot; /&gt;
+
+    &lt;input type=&quot;file&quot; /&gt;
+    &lt;input type=&quot;hidden&quot; /&gt;
+    &lt;input type=&quot;image&quot; /&gt;
+
+    &lt;input type=&quot;password&quot; /&gt;
+    &lt;input type=&quot;radio&quot; /&gt;
+    &lt;input type=&quot;reset&quot; /&gt;
+
+    &lt;input type=&quot;submit&quot; /&gt;
+    &lt;input type=&quot;text&quot; /&gt;
+    &lt;select&gt;&lt;option&gt;Option&lt;/option&gt;&lt;/select&gt;
+
+    &lt;textarea&gt;&lt;/textarea&gt;
+    &lt;button&gt;Button&lt;/button&gt;
+
+&lt;/form&gt;</html>
+          <code>$(":input")</code>
+          <result>[ 
+    &lt;input type=&quot;button&quot; value=&quot;Input Button&quot;/&gt;,
+    &lt;input type=&quot;checkbox&quot; /&gt;,
+
+    &lt;input type=&quot;file&quot; /&gt;,
+    &lt;input type=&quot;hidden&quot; /&gt;,
+    &lt;input type=&quot;image&quot; /&gt;,
+
+    &lt;input type=&quot;password&quot; /&gt;,
+    &lt;input type=&quot;radio&quot; /&gt;,
+    &lt;input type=&quot;reset&quot; /&gt;,
+
+    &lt;input type=&quot;submit&quot; /&gt;,
+    &lt;input type=&quot;text&quot; /&gt;,
+    &lt;select&gt;&lt;option&gt;Option&lt;/option&gt;&lt;/select&gt;,
+
+    &lt;textarea&gt;&lt;/textarea&gt;,
+    &lt;button&gt;Button&lt;/button&gt;,
+ ]</result>
+        </example>
+      </selector>
+	  <selector name="enabled*" return="DomList">
+        <sample>:enabled</sample>
+        <desc>匹配所有可用元素</desc>
+        <example>
+          <desc>查找所有可用的input元素</desc>
+          <html>&lt;form&gt;
+  &lt;input name="email" disabled="disabled" /&gt;
+  &lt;input name="id" /&gt;
+&lt;/form&gt;</html>
+          <code>$("input:enabled")</code>
+          <result>[ &lt;input name="id" /&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="disabled" return="DomList">
+        <sample>:disabled</sample>
+        <desc>匹配所有不可用元素</desc>
+        <example>
+          <desc>查找所有不可用的input元素</desc>
+          <html>&lt;form&gt;
+  &lt;input name="email" disabled="disabled" /&gt;
+  &lt;input name="id" /&gt;
+&lt;/form&gt;</html>
+          <code>$("input:disabled")</code>
+          <result>[ &lt;input name="email" disabled="disabled" /&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="checked" return="DomList">
+        <sample>:checked</sample>
+        <desc>匹配所有选中的被选中元素(复选框、单选框等，不包括select中的option)</desc>
+        <example>
+          <desc>查找所有选中的复选框元素</desc>
+          <html>&lt;form&gt;
+  &lt;input type="checkbox" name="newsletter" checked="checked" value="Daily" /&gt;
+  &lt;input type="checkbox" name="newsletter" value="Weekly" /&gt;
+  &lt;input type="checkbox" name="newsletter" checked="checked" value="Monthly" /&gt;
+&lt;/form&gt;</html>
+          <code>$("input:checked")</code>
+          <result>[ &lt;input type="checkbox" name="newsletter" checked="checked" value="Daily" /&gt;, &lt;input type="checkbox" name="newsletter" checked="checked" value="Monthly" /&gt; ]</result>
+        </example>
+      </selector>
+      <selector name="selected" return="DomList">
+        <sample>:selected</sample>
+        <desc>匹配所有选中的option元素</desc>
+        <example>
+          <desc>查找所有选中的选项元素</desc>
+          <html>&lt;select&gt;
+  &lt;option value="1"&gt;Flowers&lt;/option&gt;
+  &lt;option value="2" selected="selected"&gt;Gardens&lt;/option&gt;
+  &lt;option value="3"&gt;Trees&lt;/option&gt;
+&lt;/select&gt;</html>
+          <code>$("select option:selected")</code>
+          <result>[ &lt;option value="2" selected="selected"&gt;Gardens&lt;/option&gt; ]</result>
+        </example>
+      </selector>
+    </subcat>
+  </cat>
+  <cat value="属性">
+    <subcat value="属性">
+      <function name="getAttr" return="String">
+        <desc>获取元素的属性值。如果元素没有相应属性，则返回 null 。</desc>
+        <params name="name" type="String">
+          <desc>属性名称</desc>
+        </params>
+        <example>
+          <desc>返回文档中第一个图像的src属性值。</desc>
+          <html>&lt;img src="test.jpg"/&gt;</html>
+          <code>$("img").getAttr("src");</code>
+          <result>test.jpg</result>
+        </example>
+      </function>
+	  <function name="setAttr" return="Control">
+        <desc>设置一个属性值。</desc>
+        <params name="key" type="String">
+          <desc>属性名称</desc>
+        </params>
+        <params name="value" type="Object">
+          <desc>属性值</desc>
+        </params>
+        <example>
+          <desc>为所有图像设置src属性。</desc>
+          <html>&lt;img/&gt; 
+&lt;img/&gt;</html>
+          <code>$("img").setAttr("src","test.jpg");</code>
+          <result>[ &lt;img src= "test.jpg" /&gt; , &lt;img src= "test.jpg" /&gt; ]</result>
+        </example>
+      </function>
+      <function name="setAttr" return="Control">
+        <desc>删除一个属性。</desc>
+        <params name="name" type="String">
+          <desc>要删除的属性名</desc>
+        </params>
+        <params name="null" type="Null">
+          <desc>null</desc>
+        </params>
+        <example>
+          <desc>将文档中图像的src属性删除</desc>
+          <html>&lt;img src="test.jpg"/&gt;</html>
+          <code>$("img").removeAttr("src");</code>
+          <result>[ &lt;img /&gt; ]</result>
+        </example>
+      </function>
+	  <function name="set" return="Control">
+        <desc>快速设置一个元素的样式、属性或事件。</desc>
+        <longdesc>此函数相当于调用 setStyle 或 setAttr 。数字将自动转化为像素值。</longdesc>
+        <params name="name" type="value">
+          <desc>属性名。可以是一个 css 属性名或 html 属性名。如果属性名是on开头的，则被认为是绑定事件。</desc>
+        </params>
+        <params name="value" type="String, Number">
+          <desc>属性值。</desc>
+        </params>
+        <example>
+          <desc>将所有段落字体设为红色、设置 class 属性、绑定 click 事件。</desc>
+          <code>$("p").set("color","red").set("class","cls-red").set("onclick", function(){alert('clicked')});</code>
+        </example>
+      </function>
+	  <function name="set" return="Control">
+        <desc>快速设置一个元素的样式、属性或事件。</desc>
+        <longdesc>此函数相当于调用 setStyle 或 setAttr 。数字将自动转化为像素值。</longdesc>
+        <params name="value" type="Object">
+          <desc>属性值，表示 属性名/属性值 的 JSON 对象。</desc>
+        </params>
+        <example>
+          <desc>将所有段落字体设为红色、设置 class 属性、绑定 click 事件。</desc>
+          <code>$("p").set({
+	"color":"red",
+	"class":"cls-red",
+	"onclick": function(){alert('clicked')}
+});</code>
+        </example>
+      </function>
+    
+	</subcat>
+    <subcat value="CSS 类">
+      <function name="addClass" return="Control">
+        <desc>为元素添加指定的类名。</desc>
+        <params name="class" type="String">
+          <desc>一个或多个要添加到元素中的CSS类名，请用空格分开</desc>
+        </params>
+        <example>
+          <desc>为匹配的元素加上 'selected' 类</desc>
+          <html>&lt;p&gt;Hello&lt;/p&gt;</html>
+          <code>$("p").addClass("selected");</code>
+          <result>[ &lt;p class="selected"&gt;Hello&lt;/p&gt; ]</result>
+        </example>
+        <example>
+          <desc>为匹配的元素加上 selected highlight 类</desc>
+          <html>&lt;p&gt;Hello&lt;/p&gt;</html>
+          <code>$("p").addClass("selected highlight");</code>
+          <result>[ &lt;p class="selected highlight"&gt;Hello&lt;/p&gt; ]</result>
+        </example>
+      </function>
+      <function name="removeClass" return="Control">
+        <desc>从元素中删除全部或者指定的类。</desc>
+        <params name="class" type="String">
+          <desc>一个或多个要删除的CSS类名，请用空格分开</desc>
+        </params>
+        <example>
+          <desc>从匹配的元素中删除 'selected' 类</desc>
+          <html>&lt;p class="selected first"&gt;Hello&lt;/p&gt;</html>
+          <code>$("p").removeClass("selected");</code>
+          <result>[ &lt;p class="first"&gt;Hello&lt;/p&gt; ]</result>
+        </example>
+      </function>
+      <function name="removeClass" return="Control">
+        <desc>从元素中删除全部类。</desc>
+        <example>
+          <desc>删除匹配元素的所有类</desc>
+          <html>&lt;p class="selected first"&gt;Hello&lt;/p&gt;</html>
+          <code>$("p").removeClass();</code>
+          <result>[ &lt;p&gt;Hello&lt;/p&gt; ]</result>
+        </example>
+      </function>
+      <function name="toggleClass" return="Control">
+        <desc>如果存在（不存在）就删除（添加）一个类。</desc>
+        <params name="class" type="String">
+          <desc>CSS类名</desc>
+        </params>
+        <example>
+          <desc>为匹配的元素切换 'selected' 类</desc>
+          <html>&lt;p&gt;Hello&lt;/p&gt;&lt;p class="selected"&gt;Hello Again&lt;/p&gt;</html>
+          <code>$("p").toggleClass("selected");</code>
+          <result>[ &lt;p class="selected"&gt;Hello&lt;/p&gt;, &lt;p&gt;Hello Again&lt;/p&gt; ]</result>
+        </example>
+      </function>
+      <function name="hasClass" return="Boolean">
+        <desc>检查当前的元素是否含有某个特定的类，如果有，则返回true。</desc>
+        <params name="className" type="String">
+          <desc>用于匹配的类名</desc>
+        </params>
+        <example>
+          <desc>给包含有某个类的元素进行一个动画。</desc>
+          <html>&lt;div class="protected"&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;</html>
+          <code>$("div").click(function(){
+  if ( $(this).hasClass("protected") )
+    $(this)
+      .animate({ left: -10 })
+      .animate({ left: 10 })
+      .animate({ left: -10 })
+      .animate({ left: 10 })
+      .animate({ left: 0 });
+});</code>
+        </example>
+      </function>
+    </subcat>
+    <subcat value="HTML代码">
+      <function name="getHtml" return="String">
+        <desc>取得元素的html内容。</desc>
+		<example>
+          <desc>获取一个节点的内部 html </desc>
+          <html>&lt;div id="a"&gt;&lt;p/&gt;&lt;/div&gt;</html>
+          <code>$$("a").getHtml();</code>
+          <result>"&lt;p/&gt;"</result>
+        </example>
+      </function>
+      <function name="setHtml" return="Control">
+        <desc>设置每一个匹配元素的html内容。</desc>
+        <params name="value" type="String">
+          <desc>用于设定HTML内容的值</desc>
+        </params>
+		<example>
+          <desc>设置一个节点的内部 html </desc>
+          <html>&lt;div id="a"&gt;&lt;p/&gt;&lt;/div&gt;</html>
+          <code>$$("a").setHtml("&lt;a/&gt;");</code>
+          <result>&lt;div id="a"&gt;&lt;a/&gt;&lt;/div&gt;</result>
+        </example>
+      </function>
+    </subcat>
+    <subcat value="文本/值">
+      <function name="getText" return="String">
+        <desc>取得元素的内容。对于输入框则获取其输入的值。</desc>
+        <longdesc>结果是由所有匹配元素包含的文本内容组合起来的文本。这个方法对HTML和XML文档都有效。</longdesc>
+        <example>
+          <desc>获取文本框中的值</desc>
+          <html>&lt;input type="text" value="some text"/&gt;</html>
+          <code>$("input").getText();</code>
+          <result>["some text"]</result>
+        </example>
+      </function>
+      <function name="setText" return="Control">
+        <desc>设置元素的文本内容。对于输入框则设置其输入的值。</desc>
+        <longdesc>与 setText() 类似, 但将编码 HTML (将 "&lt;" 和 "&gt;" 替换成相应的HTML实体).</longdesc>
+        <params name="value" type="String">
+          <desc>用于设置元素内容的文本</desc>
+        </params>
+        <example>
+          <desc>设定文本框的值</desc>
+          <html>&lt;input type="text"/&gt;</html>
+          <code>$("input").setText("hello world!");</code>
+        </example>
+      </function>
+    </subcat>
+  </cat>
+  <cat value="查找">
+    <subcat value="查找子元素">
+      <function name="find" return="Control">
+        <desc>搜索所有与指定表达式匹配的第一个元素。这个函数是找出正在处理的元素的后代元素的好方法。</desc>
+        <longdesc>所有搜索都依靠CSS表达式来完成。这个表达式可以使用CSS1-3的选择器语法来写。</longdesc>
+        <params name="expr" type="String">
+          <desc>用于查找的表达式</desc>
+        </params>
+        <example>
+          <desc>从所有的段落开始，进一步搜索下面的span元素。与$("p span")相同。</desc>
+          <html>&lt;p&gt;&lt;span&gt;Hello&lt;/span&gt;, how are you?&lt;/p&gt;</html>
+          <code>$("p").find("span")</code>
+          <result>[ &lt;span&gt;Hello&lt;/span&gt; ]</result>
+        </example>
+      </function>
+      <function name="query" return="DomList">
+        <desc>搜索所有与指定表达式匹配的元素。这个函数是找出正在处理的元素的后代元素的好方法。</desc>
+        <longdesc>所有搜索都依靠CSS表达式来完成。这个表达式可以使用CSS1-3的选择器语法来写。</longdesc>
+        <params name="expr" type="String">
+          <desc>用于查找的表达式</desc>
+        </params>
+        <example>
+          <desc>从所有的段落开始，进一步搜索下面的span元素。与$("p span")相同。</desc>
+          <html>&lt;p&gt;&lt;span&gt;Hello&lt;/span&gt;, how are you?&lt;/p&gt;</html>
+          <code>$("p").query("span")</code>
+          <result>[ &lt;span&gt;Hello&lt;/span&gt; ]</result>
+        </example>
+      </function>
+      <function name="getFirst" return="Control">
+        <desc>获取第一个子元素</desc>
+        <params name="filter" type="Integer/String/Function/Boolean" optional="true">
+          <desc>用于查找子元素的 CSS 选择器 或者 元素在Control对象中的索引 或者 用于筛选元素的过滤函数 或者 true 则同时接收包含文本节点的所有节点。</desc>
+        </params>
+        <example>
+          <desc>获取匹配的第二个元素</desc>
+          <html>&lt;p&gt; This is just a test.&lt;/p&gt; &lt;p&gt; So is this&lt;/p&gt;</html>
+          <code>$("p").getChild(1)</code>
+          <result>[ &lt;p&gt; So is this&lt;/p&gt; ]</result>
+        </example>
+      </function>
+     <function name="getLast" return="Control">
+        <desc>获取最后一个子元素</desc>
+        <params name="index" type="Integer/String/Function/Boolean" optional="true">
+          <desc>用于查找子元素的 CSS 选择器 或者 元素在Control对象中的索引 或者 用于筛选元素的过滤函数 或者 true 则同时接收包含文本节点的所有节点。</desc>
+        </params>
+        <example>
+          <desc>获取匹配的第二个元素</desc>
+          <html>&lt;p&gt; This is just a test.&lt;/p&gt; &lt;p&gt; So is this&lt;/p&gt;</html>
+          <code>$("p").getChild(1)</code>
+          <result>[ &lt;p&gt; So is this&lt;/p&gt; ]</result>
+        </example>
+      </function>
+      <function name="getChild" return="Control">
+        <desc>获取子元素</desc>
+        <params name="filter" type="Integer/String/Function/Boolean" optional="true">
+          <desc>用于查找子元素的 CSS 选择器 或者 元素在Control对象中的索引 或者 用于筛选元素的过滤函数 或者 true 则同时接收包含文本节点的所有节点。</desc>
+        </params>
+        <example>
+          <desc>获取匹配的第二个元素</desc>
+          <html>&lt;p&gt; This is just a test.&lt;/p&gt; &lt;p&gt; So is this&lt;/p&gt;</html>
+          <code>$("p").getChild(1)</code>
+          <result>[ &lt;p&gt; So is this&lt;/p&gt; ]</result>
+        </example>
+      </function>
+     <function name="getChildren" return="Control">
+        <desc>取得一个包含匹配的元素集合中每一个元素的所有子元素的元素集合。</desc>
+        <longdesc>可以通过可选的表达式来过滤所匹配的子元素。注意：parents()将查找所有祖辈元素，而children()只考虑子元素而不考虑所有后代元素。</longdesc>
+       <params name="filter" type="Integer/String/Function/Boolean" optional="true">
+          <desc>用于查找子元素的 CSS 选择器 或者 元素在Control对象中的索引 或者 用于筛选元素的过滤函数 或者 true 则同时接收包含文本节点的所有节点。</desc>
+        </params>
+        <example>
+          <desc>查找DIV中的每个子元素。</desc>
+          <html>&lt;p&gt;Hello&lt;/p&gt;&lt;div&gt;&lt;span&gt;Hello Again&lt;/span&gt;&lt;/div&gt;&lt;p&gt;And Again&lt;/p&gt;</html>
+          <code>$("div").getChildren()</code>
+          <result>[ &lt;span&gt;Hello Again&lt;/span&gt; ]</result>
+        </example>
+        <example>
+          <desc>在每个div中查找 div。</desc>
+          <html>&lt;div&gt;&lt;span&gt;Hello&lt;/span&gt;&lt;p class="selected"&gt;Hello Again&lt;/p&gt;&lt;p&gt;And Again&lt;/p&gt;&lt;/div&gt;</html>
+          <code>$("div").getChildren("div")</code>
+          <result>[ &lt;p class="selected"&gt;Hello Again&lt;/p&gt; ]</result>
+        </example>
+      </function>
+	</subcat>	
+    <subcat value="查找兄弟元素">  
+	<function name="getNext" return="Control">
+        <desc>取得一个包含匹配的元素集合中每一个元素紧邻的后面同辈元素的元素集合。</desc>
+        <longdesc>这个函数只返回后面那个紧邻的同辈元素，而不是后面所有的同辈元素（可以使用nextAll）。可以用一个可选的表达式进行筛选。</longdesc>
+        <params name="filter" type="Integer/String/Function/Boolean" optional="true">
+          <desc>用于查找子元素的 CSS 选择器 或者 元素在Control对象中的索引 或者 用于筛选元素的过滤函数 或者 true 则同时接收包含文本节点的所有节点。</desc>
+        </params>
+        <example>
+          <desc>找到每个段落的后面紧邻的同辈元素。</desc>
+          <html>&lt;p&gt;Hello&lt;/p&gt;&lt;p&gt;Hello Again&lt;/p&gt;&lt;div&gt;&lt;span&gt;And Again&lt;/span&gt;&lt;/div&gt;</html>
+          <code>$("p").getNext()</code>
+          <result>[ &lt;p&gt;Hello Again&lt;/p&gt;, &lt;div&gt;&lt;span&gt;And Again&lt;/span&gt;&lt;/div&gt; ]</result>
+        </example>
+      </function>
+      <function name="getAllNext" return="Control">
+        <desc>查找当前元素之后所有的同辈元素。</desc>
+        <longdesc>可以用表达式过滤</longdesc>
+        <params name="filter" type="Integer/String/Function/Boolean" optional="true">
+          <desc>用于查找子元素的 CSS 选择器 或者 元素在Control对象中的索引 或者 用于筛选元素的过滤函数 或者 true 则同时接收包含文本节点的所有节点。</desc>
+        </params>
+        <example>
+          <desc>给第一个div之后的所有元素加个类</desc>
+          <html>&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;</html>
+          <code>$("div:first").getAllNext().addClass("after");</code>
+          <result>[ &lt;div class="after"&gt;&lt;/div&gt;, &lt;div class="after"&gt;&lt;/div&gt;, &lt;div class="after"&gt;&lt;/div&gt; ]</result>
+        </example>
+      </function>
+      <function name="getPrevious" return="Control">
+        <desc>取得一个包含匹配的元素集合中每一个元素紧邻的前一个同辈元素的元素集合。</desc>
+        <longdesc>可以用一个可选的表达式进行筛选。只有紧邻的同辈元素会被匹配到，而不是前面所有的同辈元素。</longdesc>
+        <params name="filter" type="Integer/String/Function/Boolean" optional="true">
+          <desc>用于查找子元素的 CSS 选择器 或者 元素在Control对象中的索引 或者 用于筛选元素的过滤函数 或者 true 则同时接收包含文本节点的所有节点。</desc>
+        </params>
+        <example>
+          <desc>找到每个段落紧邻的前一个同辈元素。</desc>
+          <html>&lt;p&gt;Hello&lt;/p&gt;&lt;div&gt;&lt;span&gt;Hello Again&lt;/span&gt;&lt;/div&gt;&lt;p&gt;And Again&lt;/p&gt;</html>
+          <code>$("p").getPrevious()</code>
+          <result>[ &lt;div&gt;&lt;span&gt;Hello Again&lt;/span&gt;&lt;/div&gt; ]</result>
+        </example>
+        <example>
+          <desc>找到每个段落紧邻的前一个同辈元素中类名为selected的元素。</desc>
+          <html>&lt;div&gt;&lt;span&gt;Hello&lt;/span&gt;&lt;/div&gt;&lt;p class="selected"&gt;Hello Again&lt;/p&gt;&lt;p&gt;And Again&lt;/p&gt;</html>
+          <code>$("p").getPrevious("div")</code>
+          <result>[ &lt;p class="selected"&gt;Hello Again&lt;/p&gt; ]</result>
+        </example>
+      </function>
+      <function name="getAllPrevious" return="Control">
+        <desc>查找当前元素之前所有的同辈元素</desc>
+        <longdesc>可以用表达式过滤。</longdesc>
+        <params name="filter" type="Integer/String/Function/Boolean" optional="true">
+          <desc>用于查找子元素的 CSS 选择器 或者 元素在Control对象中的索引 或者 用于筛选元素的过滤函数 或者 true 则同时接收包含文本节点的所有节点。</desc>
+        </params>
+        <example>
+          <desc>给最后一个之前的所有div加上一个类</desc>
+          <html>&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;</html>
+          <code>$("div:last").getAllPrevious().addClass("before");</code>
+          <result>[ &lt;div class="before"&gt;&lt;/div&gt;, &lt;div class="before"&gt;&lt;/div&gt;, &lt;div class="before"&gt;&lt;/div&gt; ]</result>
+        </example>
+      </function>
+      <function name="getSiblings" return="Control">
+        <desc>取得一个包含匹配的元素集合中每一个元素的所有唯一同辈元素的元素集合。可以用可选的表达式进行筛选。</desc>
+        <params name="filter" type="Integer/String/Function/Boolean" optional="true">
+          <desc>用于查找子元素的 CSS 选择器 或者 元素在Control对象中的索引 或者 用于筛选元素的过滤函数 或者 true 则同时接收包含文本节点的所有节点。</desc>
+        </params>
+        <example>
+          <desc>找到每个div的所有同辈元素。</desc>
+          <html>&lt;p&gt;Hello&lt;/p&gt;&lt;div&gt;&lt;span&gt;Hello Again&lt;/span&gt;&lt;/div&gt;&lt;p&gt;And Again&lt;/p&gt;</html>
+          <code>$("div").getSiblings()</code>
+          <result>[ &lt;p&gt;Hello&lt;/p&gt;, &lt;p&gt;And Again&lt;/p&gt; ]</result>
+        </example>
+        <example>
+          <desc>找到每个div的所有同辈元素中带有类名为selected的元素。</desc>
+          <html>&lt;div&gt;&lt;span&gt;Hello&lt;/span&gt;&lt;/div&gt;&lt;p class="selected"&gt;Hello Again&lt;/p&gt;&lt;p&gt;And Again&lt;/p&gt;</html>
+          <code>$("div").getSiblings("div")</code>
+          <result>[ &lt;p class="selected"&gt;Hello Again&lt;/p&gt; ]</result>
+        </example>
+      </function>
+	</subcat>	
+    <subcat value="查找父元素">  
+	<function name="getParent" return="Control">
+        <desc>取得一个包含着所有匹配元素的祖先元素。可以通过一个可选的表达式进行筛选。</desc>
+        <params name="filter" type="Integer/String/Function/Boolean" optional="true">
+          <desc>用于查找子元素的 CSS 选择器 或者 元素在Control对象中的索引 或者 用于筛选元素的过滤函数 或者 true 则同时接收包含文本节点的所有节点。</desc>
+        </params>
+        <example>
+          <desc>找到每个span元素的所有祖先元素。</desc>
+          <html>&lt;html&gt;&lt;body&gt;&lt;div&gt;&lt;p&gt;&lt;span&gt;Hello&lt;/span&gt;&lt;/p&gt;&lt;span&gt;Hello Again&lt;/span&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</html>
+          <code>$("span").getParent()</code>
+        </example>
+      </function>
+      <function name="getAllParent" return="Control">
+        <desc>取得一个包含着所有匹配元素的祖先元素的元素集合（不包含根元素）。可以通过一个可选的表达式进行筛选。</desc>
+        <params name="filter" type="Integer/String/Function/Boolean" optional="true">
+          <desc>用于查找子元素的 CSS 选择器 或者 元素在Control对象中的索引 或者 用于筛选元素的过滤函数 或者 true 则同时接收包含文本节点的所有节点。</desc>
+        </params>
+        <example>
+          <desc>找到每个span元素的所有祖先元素。</desc>
+          <html>&lt;html&gt;&lt;body&gt;&lt;div&gt;&lt;p&gt;&lt;span&gt;Hello&lt;/span&gt;&lt;/p&gt;&lt;span&gt;Hello Again&lt;/span&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</html>
+          <code>$("span").getAllParent()</code>
+        </example>
+        <example>
+          <desc>找到每个span的所有是p元素的祖先元素。</desc>
+          <code>$("span").getAllParent("p")</code>
+        </example>
+      </function>
+     
+	</subcat>
+  </cat>
+  <cat value="判断">
+    <subcat value="节点"> 
+	  <function name="match" return="Boolean">
+        <desc>用一个表达式来检查当前选择的元素集合，如果其中至少有一个元素符合这个给定的表达式就返回true。</desc>
+        <longdesc>如果没有元素符合，或者表达式无效，都返回  false 。</longdesc>
+        <params name="expr" type="String">
+          <desc>用于筛选的表达式</desc>
+        </params>
+        <example>
+          <desc>由于input元素的父元素是一个表单元素，所以返回true。</desc>
+          <html>&lt;form&gt;&lt;input type="checkbox" /&gt;&lt;/form&gt;</html>
+          <code>$("input[type='checkbox']").match("input")</code>
+          <result>true</result>
+        </example>
+      </function>
+	  <function name="hasChild" return="Boolean">
+        <desc>判断当前节点是否包含指定子节点。</desc>
+        <longdesc>如果没有元素符合，或者表达式无效，都返回'false'。</longdesc>
+        <params name="expr" type="String">
+          <desc>用于判断的子节点。</desc>
+        </params>
+      </function>
+	  <function name="contains" return="Boolean">
+        <desc>判断当前节点是否包含指定子节点或当前节点就是被判断的节点。</desc>
+        <longdesc>如果没有元素符合，或者表达式无效，都返回'false'。</longdesc>
+        <params name="expr" type="String">
+          <desc>用于判断的子节点。</desc>
+        </params>
+      </function>
+	</subcat>
+  </cat>
+  <cat value="文档处理">
+    <subcat value="插入">
+      <function name="append" return="Control">
+        <desc>向每个匹配的元素内部追加内容。</desc>
+        <longdesc>这个操作与对指定的元素执行appendChild方法，将它们添加到文档中的情况类似。</longdesc>
+        <params name="content" type="String, Element, Control">
+          <desc>要追加到目标中的内容</desc>
+        </params>
+        <example>
+          <desc>向所有段落中追加一些HTML标记。</desc>
+          <html>&lt;p&gt;I would like to say: &lt;/p&gt;</html>
+          <code>$("p").append("&lt;b&gt;Hello&lt;/b&gt;");</code>
+          <result>[ &lt;p&gt;I would like to say: &lt;b&gt;Hello&lt;/b&gt;&lt;/p&gt; ]</result>
+        </example>
+      </function>
+       <function name="appendTo" return="Control">
+        <desc>把所有匹配的元素追加到文档中。</desc>
+        <longdesc>实际上，使用这个方法是颠倒了常规的$(A).append(B)的操作，即不是把B追加到A中，而是把A追加到B中。</longdesc>
+        <example>
+          <desc>把所有段落追加到ID值为foo的元素中。</desc>
+          <html>&lt;p&gt;I would like to say: &lt;/p&gt;&lt;div id="foo"&gt;&lt;/div&gt;</html>
+          <code>$("p").appendTo();</code>
+        </example>
+      </function>     
+	 <function name="appendTo" return="Control">
+        <desc>把所有匹配的元素追加到另一个、指定的元素元素集合中。</desc>
+        <longdesc>实际上，使用这个方法是颠倒了常规的$(A).append(B)的操作，即不是把B追加到A中，而是把A追加到B中。</longdesc>
+        <params name="content" type="String">
+          <desc>用于被追加的内容</desc>
+        </params>
+        <example>
+          <desc>把所有段落追加到ID值为foo的元素中。</desc>
+          <html>&lt;p&gt;I would like to say: &lt;/p&gt;&lt;div id="foo"&gt;&lt;/div&gt;</html>
+          <code>$("p").appendTo("foo");</code>
+          <result>&lt;div id="foo"&gt;&lt;p&gt;I would like to say: &lt;/p&gt;&lt;/div&gt;</result>
+        </example>
+      </function>
+      <function name="insert" return="Control">
+        <desc>向每个匹配的元素内部前置内容。</desc>
+        <longdesc>这是向所有匹配元素内部的开始处插入内容的最佳方式。</longdesc>
+		 <params name="where" type="String">
+          <desc>可以是 beforeBegin; beforeEnd; afterBegin; afterEnd 之一，表示插入的位置。</desc>
+        </params>
+        <params name="content" type="String, Element, Control">
+          <desc>要插入到目标元素内部前端的内容</desc>
+        </params>
+        <example>
+          <desc>向所有段落中前置一些HTML标记代码。</desc>
+          <html>&lt;p&gt;I would like to say: &lt;/p&gt;</html>
+          <code>$("p").insert("afterBegin","&lt;b&gt;Hello&lt;/b&gt;");</code>
+          <result>[ &lt;p&gt;&lt;b&gt;Hello&lt;/b&gt;I would like to say: &lt;/p&gt; ]</result>
+        </example>
+      </function>
+    </subcat>
+    <subcat value="替换和包裹">
+      <function name="replaceWith" return="Control">
+        <desc>将所有匹配的元素替换成指定的HTML或DOM元素。</desc>
+        <params name="content" type="String, Element, JPlus, Function">
+          <desc>用于将匹配元素替换掉的内容。如果这里传递一个函数进来的话，函数返回值必须是HTML字符串。</desc>
+        </params>
+        <example>
+          <desc>把所有的段落标记替换成加粗的标记。</desc>
+          <html>&lt;p&gt;Hello&lt;/p&gt;&lt;p&gt;cruel&lt;/p&gt;&lt;p&gt;World&lt;/p&gt;</html>
+          <code>$("p").replaceWith("&lt;b&gt;Paragraph. &lt;/b&gt;");</code>
+          <result>&lt;b&gt;Paragraph. &lt;/b&gt;&lt;b&gt;Paragraph. &lt;/b&gt;&lt;b&gt;Paragraph. &lt;/b&gt;</result>
+        </example>
+        <example>
+          <desc>用第一段替换第三段，你可以发现他是移动到目标位置来替换，而不是复制一份来替换。</desc>
+          <html>&lt;div class=&quot;container&quot;&gt;
+  &lt;div class=&quot;inner first&quot;&gt;Hello&lt;/div&gt;
+  &lt;div class=&quot;inner second&quot;&gt;And&lt;/div&gt;
+  &lt;div class=&quot;inner third&quot;&gt;Goodbye&lt;/div&gt;
+&lt;/div&gt;</html>
+          <code>$('.third').replaceWith($('.first'));</code>
+          <result>&lt;div class=&quot;container&quot;&gt;
+  &lt;div class=&quot;inner second&quot;&gt;And&lt;/div&gt;
+  &lt;div class=&quot;inner first&quot;&gt;Hello&lt;/div&gt;
+&lt;/div&gt;</result>
+        </example>
+      </function>
+      <function name="wrapWith" return="Control">
+        <desc>把所有匹配的元素用其他元素的结构化标记包裹起来。</desc>
+        <longdesc>这种包装对于在文档中插入额外的结构化标记最有用，而且它不会破坏原始文档的语义品质。这个函数的原理是检查提供的第一个元素（它是由所提供的HTML标记代码动态生成的），并在它的代码结构中找到最上层的祖先元素－－这个祖先元素就是包裹元素。当HTML标记代码中的元素包含文本时无法使用这个函数。因此，如果要添加文本应该在包裹完成之后再行添加。</longdesc>
+        <params name="html" type="String">
+          <desc>HTML标记代码字符串，用于动态生成元素并包裹目标元素</desc>
+        </params>
+        <example>
+          <desc>把所有的段落用一个新创建的div包裹起来</desc>
+          <html>&lt;p&gt;Test Paragraph.&lt;/p&gt;</html>
+          <code>$("p").wrap("&lt;div class='wrap'&gt;&lt;/div&gt;");</code>
+          <result>&lt;div class="wrap"&gt;&lt;p&gt;Test Paragraph.&lt;/p&gt;&lt;/div&gt;</result>
+        </example>
+      </function>
+    </subcat>
+    <subcat value="删除">
+      <function name="empty" return="Control">
+        <desc>删除匹配的元素集合中所有的子节点。</desc>
+        <example>
+          <desc>把所有段落的子元素（包括文本节点）删除</desc>
+          <html>&lt;p&gt;Hello, &lt;span&gt;Person&lt;/span&gt; &lt;a href="#"&gt;and person&lt;/a&gt;&lt;/p&gt;</html>
+          <code>$("p").empty();</code>
+          <result>&lt;p&gt;&lt;/p&gt;</result>
+        </example>
+      </function>
+      <function name="remove" return="Control">
+        <desc>从DOM中删除所有匹配的元素。</desc>
+        <longdesc>这个方法不会把匹配的元素从JPlus对象中删除，因而可以在将来再使用这些匹配的元素。但除了这个元素本身得以保留之外，其他的比如绑定的事件，附加的数据等都会被移除。</longdesc>
+        <params name="child" type="String" optional="true">
+          <desc>删除的子节点。</desc>
+        </params>
+        <example>
+          <desc>从DOM中把所有段落删除</desc>
+          <html>&lt;p&gt;Hello&lt;/p&gt; how are &lt;p&gt;you?&lt;/p&gt;</html>
+          <code>$("p").remove();</code>
+          <result>how are</result>
+        </example>
+        <example>
+          <desc>从DOM中把带有hello类的段落删除</desc>
+          <html>&lt;p class="hello"&gt;Hello&lt;/p&gt; how are &lt;p&gt;you?&lt;/p&gt;</html>
+          <code>$("p").remove(".hello");</code>
+          <result>how are &lt;p&gt;you?&lt;/p&gt;</result>
+        </example>
+      </function>
+      <function name="dispose" return="Control">
+        <desc>从DOM中删除所有匹配的元素。</desc>
+        <longdesc>这个方法不会把匹配的元素从JPlus对象中删除，因而可以在将来再使用这些匹配的元素。与remove()不同的是，所有绑定的事件、附加的数据等都会保留下来。</longdesc>
+        <params name="expr" type="String" optional="true">
+          <desc>用于筛选元素的JPlus表达式</desc>
+        </params>
+        <example>
+          <desc>从DOM中把所有段落删除</desc>
+          <html>&lt;p&gt;Hello&lt;/p&gt; how are &lt;p&gt;you?&lt;/p&gt;</html>
+          <code>$("p").detach();</code>
+          <result>how are</result>
+        </example>
+        <example>
+          <desc>从DOM中把带有hello类的段落删除</desc>
+          <html>&lt;p class="hello"&gt;Hello&lt;/p&gt; how are &lt;p&gt;you?&lt;/p&gt;</html>
+          <code>$("p").dispose();</code>
+        </example>
+      </function>
+    </subcat>
+    <subcat value="复制">
+      <function name="clone" return="Control">
+        <desc>克隆匹配的DOM元素并且选中这些克隆的副本。</desc>
+        <longdesc>在想把DOM文档中元素的副本添加到其他位置时这个函数非常有用。</longdesc>
+        <example>
+          <desc>克隆所有b元素（并选中这些克隆的副本），然后将它们前置到所有段落中。</desc>
+          <html>&lt;b&gt;Hello&lt;/b&gt;&lt;p&gt;, how are you?&lt;/p&gt;</html>
+          <code>$("b").clone().prependTo("p");</code>
+          <result>&lt;b&gt;Hello&lt;/b&gt;&lt;p&gt;&lt;b&gt;Hello&lt;/b&gt;, how are you?&lt;/p&gt;</result>
+        </example>
+      </function>
+      <function name="clone" return="Control">
+        <desc>元素以及其所有的事件处理并且选中这些克隆的副本</desc>
+        <longdesc>在想把DOM文档中元素的副本添加到其他位置时这个函数非常有用。</longdesc>
+        <params name="true" type="Boolean">
+          <desc>设置为true以便复制元素的所有事件处理</desc>
+        </params>
+        <example>
+          <desc>创建一个按钮，他可以复制自己，并且他的副本也有同样功能。</desc>
+          <html>&lt;button&gt;Clone Me!&lt;/button&gt;</html>
+          <code>$("button").click(function(){
+  $(this).clone(true).insertAfter(this);
+});</code>
+        </example>
+      </function>
+    </subcat>
+  </cat>
+  <cat value="CSS">
+    <subcat value="CSS">
+      <function name="getStyle" return="String">
+        <desc>访问元素的样式属性。</desc>
+        <params name="name" type="String">
+          <desc>要访问的属性名称</desc>
+        </params>
+        <example>
+          <desc>取得第一个段落的color样式属性的值。</desc>
+          <code>$("p").set("color");</code>
+        </example>
+      </function>
+      <function name="setStyle" return="Control">
+        <desc>把一个“名/值对”对象设置为所有匹配元素的样式属性。</desc>
+        <longdesc>这是一种在所有匹配的元素上设置大量样式属性的最佳方式。</longdesc>
+       <params name="key" type="String">
+          <desc>属性名称</desc>
+        </params>
+        <params name="value" type="Object">
+          <desc>属性值</desc>
+        </params>
+        <example>
+          <desc>将所有段落的字体颜色设为红色并且背景为蓝色。</desc>
+          <code>$("p").setStyle('color', "#ff0011");</code>
+        </example>
+      </function>
+    </subcat>
+    <subcat value="位置">
+      <function name="getPosition" return="Point{x,y}">
+        <desc>获取匹配元素在当前视口的相对偏移。</desc>
+        <longdesc>返回的对象包含两个整型属性：top 和 left。此方法只对可见元素有效。</longdesc>
+        <example>
+          <desc>获取第二段的偏移</desc>
+          <html>&lt;p&gt;Hello&lt;/p&gt;&lt;p&gt;2nd Paragraph&lt;/p&gt;</html>
+          <code>var p = $("p:last");
+var offset = p.offset();
+p.html( "left: " + offset.left + ", top: " + offset.top );</code>
+          <result>&lt;p&gt;Hello&lt;/p&gt;&lt;p&gt;left: 0, top: 35&lt;/p&gt;</result>
+        </example>
+      </function>
+      <function name="setPosition" return="Control">
+        <desc>设置匹配元素相对于document对象的坐标。</desc>
+        <longdesc>.offset()方法可以让我们重新设置元素的位置。这个元素的位置是相对于document对象的。如果对象原先的position样式属性是static的话，会被改成relative来实现重定位。</longdesc>
+        <params name="coordinates" type="Object{top,left}, function(index, coords) ">
+          <desc>一个对象，必须包含top和left属性，作为元素的新坐标。这个参数也可以是一个返回一对坐标的函数，函数的第一个参数是元素的索引，第二个参数是当前的坐标。</desc>
+        </params>
+        <example>
+          <desc>获取第二段的偏移</desc>
+          <html>&lt;p&gt;Hello&lt;/p&gt;&lt;p&gt;2nd Paragraph&lt;/p&gt;</html>
+          <code>$("p:last").offset({ top: 10, left: 30 });</code>
+        </example>
+      </function>
+      <function name="getOffset" return="Point{x,y}">
+        <desc>获取匹配元素相对父元素的偏移。</desc>
+        <longdesc>返回的对象包含两个整型属性：top 和 left。为精确计算结果，请在补白、边框和填充属性上使用像素单位。此方法只对可见元素有效。</longdesc>
+        <example>
+          <desc>获取第一段的偏移</desc>
+          <html>&lt;p&gt;Hello&lt;/p&gt;&lt;p&gt;2nd Paragraph&lt;/p&gt;</html>
+          <code>var p = $("p:first");
+var position = p.position();
+$("p:last").html( "left: " + position.left + ", top: " + position.top );</code>
+          <result>&lt;p&gt;Hello&lt;/p&gt;&lt;p&gt;left: 15, top: 15&lt;/p&gt;</result>
+        </example>
+      </function>
+      <function name="getScroll" return="Point{x,y}">
+        <desc>获取匹配元素相对滚动条顶部的偏移。</desc>
+        <longdesc>此方法对可见和隐藏元素均有效。</longdesc>
+        <example>
+          <desc>获取第一段相对滚动条顶部的偏移</desc>
+          <html>&lt;p&gt;Hello&lt;/p&gt;&lt;p&gt;2nd Paragraph&lt;/p&gt;</html>
+          <code>var p = $("p:first");
+$("p:last").text( "scrollTop:" + p.scrollTop() );</code>
+          <result>&lt;p&gt;Hello&lt;/p&gt;&lt;p&gt;scrollTop: 0&lt;/p&gt;</result>
+        </example>
+      </function>
+      <function name="setScroll" return="Control">
+        <desc>传递参数值时，设置垂直滚动条顶部偏移为该值。</desc>
+        <longdesc>此方法对可见和隐藏元素均有效。</longdesc>
+        <params name="val" type="String, Number">
+          <desc>设定垂直滚动条值</desc>
+        </params>
+        <example>
+          <desc>设置相对滚动条顶部的偏移</desc>
+          <code>$("div.demo").scrollTop(300);</code>
+        </example>
+      </function>
+     
+    </subcat>
+    <subcat value="尺寸">
+      <function name="getHeight" return="Integer">
+        <desc>取得元素当前计算的高度值（px）。</desc>
+        <longdesc>在 JPlus 1.2 以后可以用来获取 window 和 document 的高</longdesc>
+        <example>
+          <desc>获取第一段的高</desc>
+          <code>$("p").height();</code>
+        </example>
+        <example>
+          <desc>获取当前浏览器窗口的高度</desc>
+          <code>$(window).height();</code>
+        </example>
+        <example>
+          <desc>获取当前HTML文档高度</desc>
+          <code>$(document).height();</code>
+        </example>
+      </function>
+      <function name="setHeight" return="Control">
+        <desc>为元素设置CSS高度(hidth)属性的值。如果没有明确指定单位（如：em或%），使用px。</desc>
+        <longdesc>如果没有明确指定单位（如：em或%），使用px。</longdesc>
+        <params name="val" type="String, Number, Function">
+          <desc>设定CSS中 'height' 的值，可以是字符串或者数字，还可以是一个函数，返回要设置的数值。函数接受两个参数，第一个参数是元素在原先集合中的索引位置，第二个参数为原先的高度。</desc>
+        </params>
+        <example>
+          <desc>把所有段落的高设为 20:</desc>
+          <code>$("p").height(20);</code>
+        </example>
+      </function>
+      <function name="getWidth" return="Integer">
+        <desc>取得元素当前计算的宽度值（px）。</desc>
+        <longdesc>在 JPlus 1.2 以后可以用来获取 window 和 document 的宽</longdesc>
+        <example>
+          <desc>获取第一段的宽</desc>
+          <code>$("p").width();</code>
+        </example>
+        <example>
+          <desc>获取当前浏览器窗口的宽度</desc>
+          <code>$(window).width();</code>
+        </example>
+        <example>
+          <desc>获取当前HTML文档宽度</desc>
+          <code>$(document).width();</code>
+        </example>
+      </function>
+      <function name="setWidth" return="Control">
+        <desc>为元素设置CSS宽度(width)属性的值。</desc>
+        <longdesc>如果没有明确指定单位（如：em或%），使用px。</longdesc>
+        <params name="val" type="String, Number, Function">
+          <desc>设定 CSS 'width' 的属性值，可以是字符串或者数字，还可以是一个函数，返回要设置的数值。函数接受两个参数，第一个参数是元素在原先集合中的索引位置，第二个参数为原先的宽度。</desc>
+        </params>
+        <example>
+          <desc>将所有段落的宽设为 20:</desc>
+          <code>$("p").width(20);</code>
+        </example>
+      </function>
+      <function name="getSize" return="Integer">
+        <desc>获取元素内部区域高度（包括补白、不包括边框）。</desc>
+        <longdesc>此方法对可见和隐藏元素均有效。</longdesc>
+        <example>
+          <desc>获取第一段落内部区域高度。</desc>
+          <html>&lt;p&gt;Hello&lt;/p&gt;&lt;p&gt;2nd Paragraph&lt;/p&gt;</html>
+          <code>var p = $("p:first");
+$("p:last").text( "innerHeight:" + p.innerHeight() );</code>
+          <result>&lt;p&gt;Hello&lt;/p&gt;&lt;p&gt;innerHeight: 16&lt;/p&gt;</result>
+        </example>
+      </function>
+      <function name="setSize" return="Integer">
+        <desc>获取元素内部区域宽度（包括补白、不包括边框）。</desc>
+        <longdesc>此方法对可见和隐藏元素均有效。</longdesc>
+        <example>
+          <desc>获取第一段落内部区域宽度。</desc>
+          <html>&lt;p&gt;Hello&lt;/p&gt;&lt;p&gt;2nd Paragraph&lt;/p&gt;</html>
+          <code>var p = $("p:first");
+$("p:last").text( "innerWidth:" + p.innerWidth() );</code>
+          <result>&lt;p&gt;Hello&lt;/p&gt;&lt;p&gt;innerWidth: 40&lt;/p&gt;</result>
+        </example>
+      </function>
+      <function name="getScrollSize" return="Integer">
+        <desc>获取元素外部宽度（默认包括补白和边框）。</desc>
+        <longdesc>此方法对可见和隐藏元素均有效。</longdesc>
+        <example>
+          <desc>获取第一段落外部宽度。</desc>
+          <html>&lt;p&gt;Hello&lt;/p&gt;&lt;p&gt;2nd Paragraph&lt;/p&gt;</html>
+          <code>var p = $("p:first");
+$("p:last").text( "outerWidth:" + p.outerWidth() + " , outerWidth(true):" + p.outerWidth(true) );</code>
+          <result>&lt;p&gt;Hello&lt;/p&gt;&lt;p&gt;outerWidth: 65 , outerWidth(true):85&lt;/p&gt;</result>
+        </example>
+      </function>
+    </subcat>
+  </cat>
+  <cat value="事件">
+    <subcat value="事件处理">
+      <function name="on" return="Control">
+        <desc>为每一个匹配元素的特定事件（像click）绑定一个事件处理器函数。</desc>
+        <longdesc>这个事件处理函数会接收到一个事件对象，可以通过它来阻止（浏览器）默认的行为。如果既想取消默认的行为，又想阻止事件起泡，这个事件处理函数必须返回false。多数情况下，可以把事件处理器函数定义为匿名函数（见示例一）。</longdesc>
+        <params name="type" type="String">
+          <desc>事件类型</desc>
+        </params>
+        <params name="fn" type="Function">
+          <desc>绑定到每个匹配元素的事件上面的处理函数</desc>
+        </params>
+        <example>
+          <desc>当每个段落被点击的时候，弹出其文本。</desc>
+          <code>$("p").on("click", function(){
+  alert( $(this).getText() );
+});</code>
+        </example>
+        <example>
+          <desc>通过返回false来取消默认的行为并阻止事件起泡。</desc>
+          <code>$("form").on("submit", function() { return false; })</code>
+        </example>
+        <example>
+          <desc>通过使用 preventDefault() 方法只取消默认的行为。</desc>
+          <code>$("form").on("submit", function(event){
+  event.preventDefault();
+});</code>
+        </example>
+        <example>
+          <desc>通过使用 stopPropagation() 方法只阻止一个事件起泡。</desc>
+          <code>$("form").bind("submit", function(event){
+  event.stopPropagation();
+});</code>
+        </example>
+      </function>
+      <function name="one" return="Control">
+        <desc>为每一个匹配元素的特定事件（像click）绑定一个事件处理器函数。事件只执行一次。</desc>
+        <longdesc>这个事件处理函数会接收到一个事件对象，可以通过它来阻止（浏览器）默认的行为。如果既想取消默认的行为，又想阻止事件起泡，这个事件处理函数必须返回false。多数情况下，可以把事件处理器函数定义为匿名函数（见示例一）。</longdesc>
+        <params name="type" type="String">
+          <desc>事件类型</desc>
+        </params>
+        <params name="fn" type="Function">
+          <desc>绑定到每个匹配元素的事件上面的处理函数</desc>
+        </params>
+        <example>
+          <desc>当每个段落被点击的时候，弹出其文本。</desc>
+          <code>$("p").one("click", function(){
+  alert( $(this).getText() );
+});</code>
+        </example>
+        <example>
+          <desc>通过返回false来取消默认的行为并阻止事件起泡。</desc>
+          <code>$("form").bind("submit", function() { return false; })</code>
+        </example>
+        <example>
+          <desc>通过使用 preventDefault() 方法只取消默认的行为。</desc>
+          <code>$("form").bind("submit", function(event){
+  event.preventDefault();
+});</code>
+        </example>
+        <example>
+          <desc>通过使用 stopPropagation() 方法只阻止一个事件起泡。</desc>
+          <code>$("form").bind("submit", function(event){
+  event.stopPropagation();
+});</code>
+        </example>
+      </function>
+      <function name="un" return="Control">
+        <desc>on()的反向操作，从每一个匹配的元素中删除绑定的事件。</desc>
+        <params name="type" type="String">
+          <desc>事件类型</desc>
+        </params>
+        <params name="fn" type="Function">
+          <desc>要从每个匹配元素的事件中反绑定的事件处理函数</desc>
+        </params>
+        <example>
+          <desc>把所有段落的所有事件取消绑定</desc>
+          <code>$("p").un()</code>
+        </example>
+        <example>
+          <desc>将段落的click事件取消绑定</desc>
+          <code>$("p").un( "click" )</code>
+        </example>
+      </function>
+	  <function name="trigger" return="Control">
+        <desc>手动触发事件。</desc>
+        <params name="type" type="String">
+          <desc>事件类型</desc>
+        </params>
+        <params name="e" type="Object">
+          <desc>事件对象</desc>
+        </params>
+        <example>
+          <desc>将段落的click事件执行</desc>
+          <code>$("p").trigger( "click" )</code>
+        </example>
+      </function>
+	</subcat>
+    <subcat value="事件委托">
+      <function name="delegate" return="Control">
+        <desc>JPlus 给所有匹配的元素附加一个事件处理函数，即使这个元素是以后再添加进来的也有效。</desc>
+        <longdesc>这个方法是基本是的 .bind() 方法的一个变体。使用 .bind() 时，选择器匹配的元素会附加一个事件处理函数，而以后再添加的元素则不会有。为此需要再使用一次 .bind() 才行。比如说
+
+&lt;pre&gt;&amp;lt;body&amp;gt;
+  &amp;lt;div class=&quot;clickme&quot;&amp;gt;Click here&amp;lt;/div&amp;gt;
+&amp;lt;/body&amp;gt;
+&lt;/pre&gt;
+
+可以给这个元素绑定一个简单的click事件：
+
+&lt;pre&gt;$('.clickme').bind('click', function() {
+  alert("Bound handler called.");
+});
+&lt;/pre&gt;
+
+当点击了元素，就会弹出一个警告框。然后，想象一下这之后有另一个元素添加进来了。
+
+&lt;pre&gt;$('body').append('&amp;lt;div class=&quot;clickme&quot;&amp;gt;Another target&amp;lt;/div&amp;gt;');&lt;/pre&gt;
+
+尽管这个新的元素也能够匹配选择器 ".clickme" ，但是由于这个元素是在调用 .bind() 之后添加的，所以点击这个元素不会有任何效果。
+
+.live() 就提供了对应这种情况的方法。如果我们是这样绑定click事件的：
+
+&lt;pre&gt;$('.clickme').live('click', function() {
+  alert("Live handler called."); 
+});&lt;/pre&gt;
+
+然后再添加一个新元素：
+
+&lt;pre&gt;$('body').append('&amp;lt;div class=&quot;clickme&quot;&amp;gt;Another target&amp;lt;/div&amp;gt;');&lt;/pre&gt;
+
+然后再点击新增的元素，他依然能够触发事件处理函数。
+
+'''事件委托'''
+
+.live() 方法能对一个还没有添加进DOM的元素有效，是由于使用了事件委托：绑定在祖先元素上的事件处理函数可以对在后代上触发的事件作出回应。传递给 .live() 的事件处理函数不会绑定在元素上，而是把他作为一个特殊的事件处理函数，绑定在 DOM 树的根节点上。在我们的例子中，当点击新的元素后，会依次发生下列步骤：
+
+  &lt;ol&gt;
+    &lt;li&gt;生成一个click事件传递给 &amp;lt;div&amp;gt; 来处理 &lt;/li&gt;
+    &lt;li&gt;由于没有事件处理函数直接绑定在 &amp;lt;div&amp;gt; 上，所以事件冒泡到DOM树上&lt;/li&gt;
+    &lt;li&gt;事件不断冒泡一直到DOM树的根节点，默认情况下上面绑定了这个特殊的事件处理函数。&lt;/li&gt;
+    &lt;li&gt;执行由 .live() 绑定的特殊的 click 事件处理函数。&lt;/li&gt;
+    &lt;li&gt;这个事件处理函数首先检测事件对象的 target 来确定是不是需要继续。这个测试是通过检测 $(event.target).closest('.clickme') 能否找到匹配的元素来实现的。&lt;/li&gt;
+    &lt;li&gt;如果找到了匹配的元素，那么调用原始的事件处理函数。&lt;/li&gt;
+  &lt;/ol&gt;
+
+由于只有在事件发生时才会在上面的第五步里做测试，因此在任何时候添加的元素都能够响应这个事件。
+
+'''附加说明'''
+
+.live() 虽然很有用，但由于其特殊的实现方式，所以不能简单的在任何情况下替换 .bind()。主要的不同有：
+
+&lt;ul&gt;
+	&lt;li&gt;在JPlus 1.4中，.live()方法支持自定义事件，也支持所有的 JavaScript 事件。在JPlus 1.4.1中，甚至也支持 focus 和 blue 事件了（映射到更合适，并且可以冒泡的focusin和focusout上）。另外，在JPlus 1.4.1中，也能支持hover（映射到&quot;mouseenter mouseleave&quot;）。然而在JPlus 1.3.x中，只支持支持的JavaScript事件和自定义事件：click, dblclick, keydown, keypress, keyup, mousedown, mousemove, mouseout, mouseover, 和 mouseup.&lt;/li&gt;
+	&lt;li&gt;.live() 并不完全支持通过DOM遍历的方法找到的元素。取而代之的是，应当总是在一个选择器后面直接使用 .live() 方法，正如前面例子里提到的。&lt;/li&gt;
+	&lt;li&gt;当一个事件处理函数用 .live() 绑定后，要停止执行其他的事件处理函数，那么这个函数必须返回 false。 仅仅调用 .stopPropagation() 无法实现这个目的。&lt;/li&gt;
+&lt;/ul&gt;
+
+参考 .bind() 方法可以获得更多关于事件绑定的信息。
+
+在JPlus 1.4.1中，你可以一次绑定多个事件给 .live() ，跟 .bind() 提供的功能类似。
+
+在JPlus 1.4 中，data参数可以用于把附加信息传递给事件处理函数。一个很好的用处是应付由闭包导致的问题。可以参考 .bind() 的讨论来获得更多信息。
+
+</longdesc>
+        <params name="type" type="String">
+          <desc>事件类型</desc>
+        </params>
+        <params name="data" type="Object" optional="true">
+          <desc>欲绑定的事件处理函数</desc>
+        </params>
+        <params name="fn" type="Function">
+          <desc>欲绑定的事件处理函数</desc>
+        </params>
+        <example>
+          <desc>点击生成的p依然据有同样的功能。</desc>
+          <html>&lt;p&gt;Click me!&lt;/p&gt;</html>
+          <code>$("p").live("click", function(){
+    $(this).after("&lt;p&gt;Another paragraph!&lt;/p&gt;");
+});</code>
+        </example>
+        <example>
+          <desc>阻止默认事件行为和事件冒泡，返回 false </desc>
+          <code>$("a").live("click", function() { return false; });</code>
+        </example>
+        <example>
+          <desc>仅仅阻止默认事件行为</desc>
+          <code>$("a").live("click", function(event){
+  event.preventDefault();
+});</code>
+        </example>
+      </function>
+       <function name="hover*" return="Control">
+        <desc>一个模仿悬停事件（鼠标移动到一个对象上面及移出这个对象）的方法。这是一个自定义的方法，它为频繁使用的任务提供了一种“保持在其中”的状态。</desc>
+        <longdesc>当鼠标移动到一个匹配的元素上面时，会触发指定的第一个函数。当鼠标移出这个元素时，会触发指定的第二个函数。而且，会伴随着对鼠标是否仍然处在特定元素中的检测（例如，处在div中的图像），如果是，则会继续保持“悬停”状态，而不触发移出事件（修正了使用mouseout事件的一个常见错误）。</longdesc>
+        <params name="over" type="Function">
+          <desc>鼠标移到元素上要触发的函数</desc>
+        </params>
+        <params name="out" type="Function">
+          <desc>鼠标移出元素要触发的函数</desc>
+        </params>
+        <example>
+          <desc>鼠标悬停的表格加上特定的类</desc>
+          <code>$("td").hover(
+  function () {
+    $(this).addClass("hover");
+  },
+  function () {
+    $(this).removeClass("hover");
+  }
+);</code>
+        </example>
+      </function>
+     </subcat>
+    <subcat value="事件">
+      <function name="blur" return="Control">
+        <desc>触发每一个匹配元素的blur事件。</desc>
+        <longdesc>这个函数会调用执行绑定到blur事件的所有函数，包括浏览器的默认行为。可以通过返回false来防止触发浏览器的默认行为。blur事件会在元素失去焦点的时候触发，既可以是鼠标行为，也可以是按tab键离开的</longdesc>
+        <example>
+          <desc>触发所有段落的blur事件</desc>
+          <code>$("p").blur();</code>
+        </example>
+      </function>
+      <function name="blur" return="Control">
+        <desc>在每一个匹配元素的blur事件中绑定一个处理函数。</desc>
+        <longdesc>blur事件会在元素失去焦点的时候触发，既可以是鼠标行为，也可以是按tab键离开的</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的blur事件中绑定的处理函数。</desc>
+        </params>
+        <example>
+          <desc>任何段落失去焦点时弹出一个 "Hello World!"在每一个匹配元素的blur事件中绑定的处理函数。</desc>
+          <code>$("p").blur( function () { alert("Hello World!"); } );</code>
+        </example>
+      </function>
+      <function name="change" return="Control">
+        <desc>触发每个匹配元素的change事件</desc>
+        <longdesc>这个函数会调用执行绑定到change事件的所有函数，包括浏览器的默认行为。可以通过在某个绑定的函数中返回false来防止触发浏览器的默认行为。change事件会在元素失去焦点的时候触发，也会当其值在获得焦点后改变时触发。</longdesc>
+      </function>
+      <function name="change" return="Control">
+        <desc>在每一个匹配元素的change事件中绑定一个处理函数。</desc>
+        <longdesc>change事件会在元素失去焦点的时候触发，也会当其值在获得焦点后改变时触发。</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的change事件中绑定的处理函数。</desc>
+        </params>
+        <example>
+          <desc>给所有的文本框增加输入验证</desc>
+          <code>$("input[type='text']").change( function() {
+  // 这里可以写些验证代码
+});</code>
+        </example>
+      </function>
+      <function name="click" return="Control">
+        <desc>触发每一个匹配元素的click事件。</desc>
+        <longdesc>这个函数会调用执行绑定到click事件的所有函数。</longdesc>
+        <example>
+          <desc>触发页面内所有段落的点击事件</desc>
+          <code>$("p").click();</code>
+        </example>
+      </function>
+      <function name="click" return="Control">
+        <desc>在每一个匹配元素的click事件中绑定一个处理函数。</desc>
+        <longdesc>点击事件会在你的指针设备的按钮在元素上单击时触发。单击的定义是在屏幕的同一点触发了mousedown和mouseup.几个事件触发的顺序是：mousedownmouseupclick</longdesc>
+        <params name="fn" type="Function">
+          <desc>绑定到click事件的函数</desc>
+        </params>
+        <example>
+          <desc>将页面内所有段落点击后隐藏。</desc>
+          <code>$("p").click( function () { $(this).hide(); });</code>
+        </example>
+      </function>
+      <function name="dblclick" return="Control">
+        <desc>触发每一个匹配元素的dblclick事件。</desc>
+        <longdesc>这个函数会调用执行绑定到dblclick事件的所有函数，包括浏览器的默认行为。可以通过在某个绑定的函数中返回false来防止触发浏览器的默认行为。dblclick事件会在元素的同一点双击时触发。</longdesc>
+      </function>
+      <function name="dblclick" return="Control">
+        <desc>在每一个匹配元素的dblclick事件中绑定一个处理函数。</desc>
+        <longdesc>的那个在某个元素上双击的时候就会触发dblclick事件</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的dblclick事件中绑定的处理函数。</desc>
+        </params>
+        <example>
+          <desc>给页面上每个段落的双击事件绑上 "Hello World!" 警告框</desc>
+          <code>$("p").dblclick( function () { alert("Hello World!"); });</code>
+        </example>
+      </function>
+      <function name="error" return="Control">
+        <desc>触发每一个匹配元素的error事件。</desc>
+        <longdesc>这个函数会调用所有绑定到error事件上的函数，包括在对应元素上的浏览器默认行为。可以通过在某个绑定的函数中返回false来防止触发浏览器的默认行为。error事件通常可以在元素由于点击或者tab导航失去焦点时触发。</longdesc>
+      </function>
+      <function name="error" return="Control">
+        <desc>在每一个匹配元素的error事件中绑定一个处理函数。</desc>
+        <longdesc>对于error事件，没有一个公众的标准。在大多数浏览器中，当页面的JavaScript发生错误时，window对象会触发error事件;当图像的src属性无效时，比如文件不存在或者图像数据错误时，也会触发图像对象的error事件。
+
+如果异常是由window对象抛出，事件处理函数将会被传入三个参数：
+
+1. 描述事件的信息 ("varName is not defined", "missing operator in expression", 等等.),
+
+2. 包含错误的文档的完整URL
+
+3. 异常发生的行数 如果事件处理函数返回true，则表示事件已经被处理，浏览器将认为没有异常。
+
+更多相关信息: 
+
+&lt;a href="http://msdn2.microsoft.com/en-us/library/ms536930.aspx"&gt;msdn - onerror Event&lt;/a&gt;
+
+&lt;a href="http://developer.mozilla.org/en/docs/DOM:window.onerror"&gt;Gecko DOM Reference - onerror Event&lt;/a&gt;
+
+&lt;a href="http://developer.mozilla.org/en/docs/DOM:event"&gt;Gecko DOM Reference - Event object&lt;/a&gt;
+
+&lt;a href="http://en.wikipedia.org/wiki/DOM_Events"&gt;Wikipedia: DOM Events&lt;/a&gt;</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的error事件中绑定的处理函数。</desc>
+        </params>
+        <example>
+          <desc>在服务器端记录JavaScript错误日志:</desc>
+          <code>$(window).error(function(msg, url, line){
+  JPlus.post("js_error_log.php", { msg: msg, url: url, line: line });
+});</code>
+        </example>
+        <example>
+          <desc>隐藏JavaScript错误:</desc>
+          <code>$(window).error(function(){
+  return true;
+});</code>
+        </example>
+        <example>
+          <desc>给你IE的用户隐藏无效的图像:</desc>
+          <code>$("img").error(function(){
+  $(this).hide();
+});</code>
+        </example>
+      </function>
+      <function name="focus" return="Control">
+        <desc>触发每一个匹配元素的focus事件。</desc>
+        <longdesc>这将触发所有绑定的focus函数，注意，某些对象不支持focus方法。</longdesc>
+        <example>
+          <desc>当页面加载后将 id 为 'login' 的元素设置焦点:</desc>
+          <code>$(document).ready(function(){
+  $("#login").focus();
+});</code>
+        </example>
+      </function>
+      <function name="focus" return="Control">
+        <desc>在每一个匹配元素的focus事件中绑定一个处理函数。</desc>
+        <longdesc>focus事件可以通过鼠标点击或者键盘上的TAB导航触发</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的focus事件中绑定的处理函数。</desc>
+        </params>
+        <example>
+          <desc>使人无法使用文本框:</desc>
+          <code>$("input[type=text]").focus(function(){
+  this.blur();
+});</code>
+        </example>
+      </function>
+      <function name="focusin" return="Control">
+        <desc>在每一个匹配元素的focusin事件中绑定一个处理函数。</desc>
+        <longdesc>当一个元素，或者其内部任何一个元素获得焦点的时候会触发这个事件。这跟focus事件区别在于，他可以在父元素上检测子元素获取焦点的情况。</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的focusin事件中绑定的处理函数。</desc>
+        </params>
+        <example>
+          <desc>获得焦点后会触发动画:</desc>
+		  <html>&lt;p&gt;&lt;input type=&quot;text&quot; /&gt; &lt;span&gt;focusout fire&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;input type=&quot;password&quot; /&gt; &lt;span&gt;focusout fire&lt;/span&gt;&lt;/p&gt;</html>
+          <code>$("p").focusin(function() {
+  $(this).find("span").css('display','inline').fadeOut(1000);
+});</code>
+        </example>
+      </function>
+      <function name="focusout" return="Control">
+        <desc>在每一个匹配元素的focusout事件中绑定一个处理函数。</desc>
+        <longdesc>当一个元素，或者其内部任何一个元素失去焦点的时候会触发这个事件。这跟blur事件区别在于，他可以在父元素上检测子元素失去焦点的情况。</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的focusout事件中绑定的处理函数。</desc>
+        </params>
+        <example>
+          <desc>失去焦点后会触发动画:</desc>
+		  <html>&lt;p&gt;&lt;input type=&quot;text&quot; /&gt; &lt;span&gt;focusout fire&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;input type=&quot;password&quot; /&gt; &lt;span&gt;focusout fire&lt;/span&gt;&lt;/p&gt;</html>
+          <code>$("p").focusout(function() {
+  $(this).find("span").css('display','inline').fadeOut(1000);
+});</code>
+        </example>
+      </function>
+      <function name="keydown" return="Control">
+        <desc>触发每一个匹配元素的keydown事件</desc>
+        <longdesc>这个函数会调用执行绑定到keydown事件的所有函数，包括浏览器的默认行为。可以通过在某个绑定的函数中返回false来防止触发浏览器的默认行为。keydown事件会在键盘按下时触发。</longdesc>
+      </function>
+      <function name="keydown" return="Control">
+        <desc>在每一个匹配元素的keydown事件中绑定一个处理函数。</desc>
+        <longdesc>keydown事件会在键盘按下时触发。</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的keydown事件中绑定的处理函数。</desc>
+        </params>
+        <example>
+          <desc>在页面内对键盘按键做出回应，可以使用如下代码:</desc>
+          <code>$(window).keydown(function(event){
+  switch(event.keyCode) {
+    // ...
+    // 不同的按键可以做不同的事情
+    // 不同的浏览器的keycode不同
+    // 更多详细信息:     http://unixpapa.com/js/key.html
+    // ...
+  }
+});</code>
+        </example>
+      </function>
+      <function name="keypress" return="Control">
+        <desc>触发每一个匹配元素的keypress事件</desc>
+        <longdesc>T这个函数会调用执行绑定到keydown事件的所有函数，包括浏览器的默认行为。可以通过在某个绑定的函数中返回false来防止触发浏览器的默认行为。keydown事件会在键盘按下时触发</longdesc>
+      </function>
+      <function name="keypress" return="Control">
+        <desc>在每一个匹配元素的keypress事件中绑定一个处理函数。</desc>
+        <longdesc>keypress事件会在敲击按键时触发。 敲击按键的定义为按下并抬起同一个按键。这几个事件发生的顺序是:keydown
+
+keypress
+
+keyup</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的keypress事件中绑定的处理函数。</desc>
+        </params>
+      </function>
+      <function name="keyup" return="Control">
+        <desc>触发每一个匹配元素的keyup事件</desc>
+        <longdesc>这个函数会调用执行绑定到keyup事件的所有函数，包括浏览器的默认行为。可以通过在某个绑定的函数中返回false来防止触发浏览器的默认行为。keyup事件会在按键释放时触发。</longdesc>
+      </function>
+      <function name="keyup" return="Control">
+        <desc>在每一个匹配元素的keyup事件中绑定一个处理函数。</desc>
+        <longdesc>keyup 事件会在键盘按下时触发。</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的keyup事件中绑定的处理函数。</desc>
+        </params>
+      </function>
+      <function name="load" return="Control">
+        <desc>在每一个匹配元素的load事件中绑定一个处理函数。</desc>
+        <longdesc>如果绑定给window对象，则会在所有内容加载后触发，包括窗口，框架，对象和图像。如果绑定在元素上，则当元素的内容加载完毕后触发。
+
+'''注意:'''只有当在这个元素完全加载完之前绑定load的处理函数,才会在他加载完后触发。如果之后再绑定就永远不会触发了。所以'''不要'''在$(document).ready()里绑定load事件，因为JPlus会在所有DOM加载完成后再绑定load事件。</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的load事件中绑定的处理函数。</desc>
+        </params>
+      </function>
+      <function name="mousedown" return="Control">
+        <desc>在每一个匹配元素的mousedown事件中绑定一个处理函数。</desc>
+        <longdesc>mousedown事件在鼠标在元素上点击后会触发</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的mousedown事件中绑定的处理函数。</desc>
+        </params>
+      </function>
+      <function name="mousemove" return="Control">
+        <desc>在每一个匹配元素的mousemove事件中绑定一个处理函数。</desc>
+        <longdesc>mousemove 事件通过鼠标在元素上移动来触发。事件处理函数会被传递一个变量——事件对象，其.clientX 和 .clientY 属性代表鼠标的坐标</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的mousemove事件中绑定的处理函数。</desc>
+        </params>
+      </function>
+      <function name="mouseout" return="Control">
+        <desc>在每一个匹配元素的mouseout事件中绑定一个处理函数。</desc>
+        <longdesc>mouseout事件在鼠标从元素上离开后会触发</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的mouseout事件中绑定的处理函数。</desc>
+        </params>
+      </function>
+      <function name="mouseover" return="Control">
+        <desc>在每一个匹配元素的mouseover事件中绑定一个处理函数。</desc>
+        <longdesc>mouseover事件会在鼠标移入对象时触发</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的mouseover事件中绑定的处理函数。</desc>
+        </params>
+      </function>
+      <function name="mouseup" return="Control">
+        <desc>在每一个匹配元素的mouseup事件中绑定一个处理函数。</desc>
+        <longdesc>mouseup事件会在鼠标点击对象释放时</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的mouseup事件中绑定的处理函数。</desc>
+        </params>
+      </function>
+      <function name="resize" return="Control">
+        <desc>在每一个匹配元素的resize事件中绑定一个处理函数。</desc>
+        <longdesc>当文档窗口改变大小时触发</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的resize事件中绑定的处理函数。</desc>
+        </params>
+        <example>
+          <desc>让人每次改变页面窗口的大小时很郁闷的方法:</desc>
+          <code>$(window).resize(function(){
+  alert("Stop it!");
+});</code>
+        </example>
+      </function>
+      <function name="scroll" return="Control">
+        <desc>在每一个匹配元素的scroll事件中绑定一个处理函数。</desc>
+        <longdesc>当滚动条发生变化时触发</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的resize事件中绑定的处理函数。</desc>
+        </params>
+        <example>
+          <desc>当页面滚动条变化时，执行的函数:</desc>
+          <code>$(window).scroll( function() { /* ...do something... */ } );</code>
+        </example>
+      </function>
+      <function name="select" return="Control">
+        <desc>触发每一个匹配元素的select事件</desc>
+        <longdesc>这个函数会调用执行绑定到select事件的所有函数，包括浏览器的默认行为。可以通过在某个绑定的函数中返回false来防止触发浏览器的默认行为。</longdesc>
+        <example>
+          <desc>触发所有input元素的select事件:</desc>
+          <code>$("input").select();</code>
+        </example>
+      </function>
+      <function name="select" return="Control">
+        <desc>在每一个匹配元素的select事件中绑定一个处理函数。</desc>
+        <longdesc>当用户在文本框(包括input和textarea)中选中某段文本时会触发select事件。</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的select事件中绑定的处理函数。</desc>
+        </params>
+        <example>
+          <desc>当文本框中文本被选中时执行的函数:</desc>
+          <code>$(":text").select( function () { /* ...do something... */ } );</code>
+        </example>
+      </function>
+      <function name="submit" return="Control">
+        <desc>触发每一个匹配元素的submit事件。</desc>
+        <longdesc>这个函数会调用执行绑定到submit事件的所有函数，包括浏览器的默认行为。可以通过在某个绑定的函数中返回false来防止触发浏览器的默认行为。</longdesc>
+        <example>
+          <desc>提交本页的第一个表单:</desc>
+          <code>$("form:first").submit();</code>
+        </example>
+      </function>
+      <function name="submit" return="Control">
+        <desc>在每一个匹配元素的submit事件中绑定一个处理函数。</desc>
+        <longdesc>submit事件将会在表单提交时触发</longdesc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的submit事件中绑定的处理函数</desc>
+        </params>
+        <example>
+          <desc>如果你要阻止表单提交:</desc>
+          <code>$("form").submit( function () {
+  return false;
+} );</code>
+        </example>
+      </function>
+      <function name="unload" return="Control">
+        <desc>在每一个匹配元素的unload事件中绑定一个处理函数。</desc>
+        <params name="fn" type="Function">
+          <desc>在每一个匹配元素的unload事件中绑定的处理函数。</desc>
+        </params>
+        <example>
+          <desc>页面卸载的时候弹出一个警告框:</desc>
+          <code>$(window).unload( function () { alert("Bye now!"); } );</code>
+        </example>
+      </function>
+    </subcat>
+  </cat>
+  <cat value="效果">
+    <subcat value="基本">
+      <function name="show" return="Control">
+        <desc>显示隐藏的匹配元素。</desc>
+        <longdesc>这个就是 'show( speed, [callback] )' 无动画的版本。如果选择的元素是可见的，这个方法将不会改变任何东西。无论这个元素是通过hide()方法隐藏的还是在CSS里设置了display:none;，这个方法都将有效。</longdesc>
+        <example>
+          <desc>显示所有段落</desc>
+          <html>&lt;p style="display: none"&gt;Hello&lt;/p&gt;</html>
+          <code>$("p").show()</code>
+        </example>
+      </function>
+      <function name="show" return="Control">
+        <desc>以优雅的动画显示所有匹配的元素，并在显示完成后可选地触发一个回调函数。</desc>
+        <longdesc>可以根据指定的速度动态地改变每个匹配元素的高度、宽度和不透明度。在JPlus 1.3中，padding和margin也会有动画，效果更流畅。</longdesc>
+        <params name="speed" type="String,Number">
+          <desc>三种预定速度之一的字符串("slow", "normal", or "fast")或表示动画时长的毫秒数值(如：1000)</desc>
+        </params>
+        <params name="callback" type="Function" optional="true">
+          <desc>在动画完成时执行的函数，每个元素执行一次。</desc>
+        </params>
+        <example>
+          <desc>用缓慢的动画将隐藏的段落显示出来，历时600毫秒。</desc>
+          <html>&lt;p style="display: none"&gt;Hello&lt;/p&gt;</html>
+          <code>$("p").show("slow");</code>
+        </example>
+        <example>
+          <desc>用迅速的动画将隐藏的段落显示出来，历时200毫秒。并在之后执行反馈！</desc>
+          <html>&lt;p style="display: none"&gt;Hello&lt;/p&gt;</html>
+          <code>$("p").show("fast",function(){
+   $(this).text("Animation Done!");
+ });</code>
+        </example>
+        <example>
+          <desc>将隐藏的段落用将近4秒的时间显示出来。。。并在之后执行一个反馈。。。</desc>
+          <html>&lt;p style="display: none"&gt;Hello&lt;/p&gt;</html>
+          <code>$("p").show(4000,function(){
+   $(this).text("Animation Done...");
+ });</code>
+        </example>
+      </function>
+      <function name="hide" return="Control">
+        <desc>隐藏显示的元素</desc>
+        <longdesc>这个就是 'hide( speed, [callback] )' 的无动画版。如果选择的元素是隐藏的，这个方法将不会改变任何东西。</longdesc>
+        <example>
+          <desc>隐藏所有段落</desc>
+          <code>$("p").hide()</code>
+        </example>
+      </function>
+      <function name="hide" return="Control">
+        <desc>以优雅的动画隐藏所有匹配的元素，并在显示完成后可选地触发一个回调函数。</desc>
+        <longdesc>可以根据指定的速度动态地改变每个匹配元素的高度、宽度和不透明度。在JPlus 1.3中，padding和margin也会有动画，效果更流畅。</longdesc>
+        <params name="speed" type="String,Number">
+          <desc>三种预定速度之一的字符串("slow", "normal", or "fast")或表示动画时长的毫秒数值(如：1000)</desc>
+        </params>
+        <params name="callback" type="Function" optional="true">
+          <desc>在动画完成时执行的函数，每个元素执行一次。</desc>
+        </params>
+        <example>
+          <desc>用600毫秒的时间将段落缓慢的隐藏</desc>
+          <code>$("p").hide("slow");</code>
+        </example>
+        <example>
+          <desc>用200毫秒将段落迅速隐藏，之后弹出一个对话框。</desc>
+          <code>$("p").hide("fast",function(){
+   alert("Animation Done.");
+ });</code>
+        </example>
+      </function>
+      <function name="toggle" return="Control">
+        <desc>切换元素的可见状态。</desc>
+        <longdesc>如果元素是可见的，切换为隐藏的；如果元素是隐藏的，切换为可见的。</longdesc>
+        <example>
+          <desc>切换所有段落的可见状态。</desc>
+          <html>&lt;p&gt;Hello&lt;/p&gt;&lt;p style="display: none"&gt;Hello Again&lt;/p&gt;</html>
+          <code>$("p").toggle()</code>
+          <result>&lt;p tyle="display: none"&gt;Hello&lt;/p&gt;&lt;p style="display: block"&gt;Hello Again&lt;/p&gt;</result>
+        </example>
+      </function>
+      <function name="toggle" return="Control">
+        <desc>根据switch参数切换元素的可见状态（ture为可见，false为隐藏）。</desc>
+        <longdesc>如果switch设为true，则调用show()方法来显示匹配的元素，如果switch设为false则调用hide()来隐藏元素。</longdesc>
+        <params name="switch" type="Boolean">
+          <desc>用于确定显示/隐藏的开关</desc>
+        </params>
+        <example>
+          <desc>切换所有段落的可见状态。</desc>
+          <html>&lt;p&gt;Hello&lt;/p&gt;&lt;p style="display: none"&gt;Hello Again&lt;/p&gt;</html>
+          <code>  var flip = 0;
+  $("button").click(function () {
+      $("p").toggle( flip++ % 2 == 0 );
+  });</code>
+          <result>&lt;p tyle="display: none"&gt;Hello&lt;/p&gt;&lt;p style="display: block"&gt;Hello Again&lt;/p&gt;</result>
+        </example>
+      </function>
+      <function name="toggle" return="Control">
+        <desc>以优雅的动画切换所有匹配的元素，并在显示完成后可选地触发一个回调函数。</desc>
+        <longdesc>可以根据指定的速度动态地改变每个匹配元素的高度、宽度和不透明度。在JPlus 1.3中，padding和margin也会有动画，效果更流畅。</longdesc>
+        <params name="speed" type="String,Number">
+          <desc>三种预定速度之一的字符串("slow", "normal", or "fast")或表示动画时长的毫秒数值(如：1000)</desc>
+        </params>
+        <params name="callback" type="Function" optional="true">
+          <desc>在动画完成时执行的函数，每个元素执行一次。</desc>
+        </params>
+        <example>
+          <desc>用600毫秒的时间将段落缓慢的切换显示状态</desc>
+          <code>$("p").toggle("slow");</code>
+        </example>
+        <example>
+          <desc>用200毫秒将段落迅速切换显示状态，之后弹出一个对话框。</desc>
+          <code>$("p").toggle("fast",function(){
+   alert("Animation Done.");
+ });</code>
+        </example>
+      </function>
+    </subcat>
+    <subcat value="滑动">
+      <function name="slideDown" return="Control">
+        <desc>通过高度变化（向下增大）来动态地显示所有匹配的元素，在显示完成后可选地触发一个回调函数。</desc>
+        <longdesc>这个动画效果只调整元素的高度，可以使匹配的元素以“滑动”的方式显示出来。在JPlus 1.3中，上下的padding和margin也会有动画，效果更流畅。</longdesc>
+        <params name="speed" type="String,Number">
+          <desc>三种预定速度之一的字符串("slow", "normal", or "fast")或表示动画时长的毫秒数值(如：1000)</desc>
+        </params>
+        <params name="callback" type="FunctionFunction" optional="true">
+          <desc>在动画完成时执行的函数</desc>
+        </params>
+        <example>
+          <desc>用600毫秒缓慢的将段落滑下</desc>
+          <code>$("p").slideDown("slow");</code>
+        </example>
+        <example>
+          <desc>用200毫秒快速将段落滑下，之后弹出一个对话框</desc>
+          <code>$("p").slideDown("fast",function(){
+   alert("Animation Done.");
+ });</code>
+        </example>
+      </function>
+      <function name="slideUp" return="Control">
+        <desc>通过高度变化（向上减小）来动态地隐藏所有匹配的元素，在隐藏完成后可选地触发一个回调函数。</desc>
+        <longdesc>这个动画效果只调整元素的高度，可以使匹配的元素以“滑动”的方式隐藏起来。在JPlus 1.3中，上下的padding和margin也会有动画，效果更流畅。</longdesc>
+        <params name="speed" type="String,Number">
+          <desc>三种预定速度之一的字符串("slow", "normal", or "fast")或表示动画时长的毫秒数值(如：1000)</desc>
+        </params>
+        <params name="callback" type="Function" optional="true">
+          <desc>在动画完成时执行的函数</desc>
+        </params>
+        <example>
+          <desc>用600毫秒缓慢的将段落滑上</desc>
+          <code>$("p").slideUp("slow");</code>
+        </example>
+        <example>
+          <desc>用200毫秒快速将段落滑上，之后弹出一个对话框</desc>
+          <code>$("p").slideUp("fast",function(){
+   alert("Animation Done.");
+ });</code>
+        </example>
+      </function>
+    </subcat>
+    <subcat value="淡入淡出">
+      <function name="fadeIn" return="Control">
+        <desc>通过不透明度的变化来实现所有匹配元素的淡入效果，并在动画完成后可选地触发一个回调函数。</desc>
+        <longdesc>这个动画只调整元素的不透明度，也就是说所有匹配的元素的高度和宽度不会发生变化。</longdesc>
+        <params name="speed" type="String,Number">
+          <desc>三种预定速度之一的字符串("slow", "normal", or "fast")或表示动画时长的毫秒数值(如：1000)</desc>
+        </params>
+        <params name="callback" type="Function" optional="true">
+          <desc>(Optional) 在动画完成时执行的函数</desc>
+        </params>
+        <example>
+          <desc>用600毫秒缓慢的将段落淡入</desc>
+          <code>$("p").fadeIn("slow");</code>
+        </example>
+        <example>
+          <desc>用200毫秒快速将段落淡入，之后弹出一个对话框</desc>
+          <code>$("p").fadeIn("fast",function(){
+   alert("Animation Done.");
+ });</code>
+        </example>
+      </function>
+      <function name="fadeOut" return="Control">
+        <desc>通过不透明度的变化来实现所有匹配元素的淡出效果，并在动画完成后可选地触发一个回调函数。</desc>
+        <longdesc>这个动画只调整元素的不透明度，也就是说所有匹配的元素的高度和宽度不会发生变化。</longdesc>
+        <params name="speed" type="String,Number">
+          <desc>三种预定速度之一的字符串("slow", "normal", or "fast")或表示动画时长的毫秒数值(如：1000)</desc>
+        </params>
+        <params name="callback" type="Function" optional="true">
+          <desc>在动画完成时执行的函数</desc>
+        </params>
+        <example>
+          <desc>用600毫秒缓慢的将段落淡出</desc>
+          <code>$("p").fadeOut("slow");</code>
+        </example>
+        <example>
+          <desc>用200毫秒快速将段落淡出，之后弹出一个对话框</desc>
+          <code>$("p").fadeOut("fast",function(){
+   alert("Animation Done.");
+ });</code>
+        </example>
+      </function>
+      <function name="fadeTo" return="Control">
+        <desc>把所有匹配元素的不透明度以渐进方式调整到指定的不透明度，并在动画完成后可选地触发一个回调函数。</desc>
+        <longdesc>这个动画只调整元素的不透明度，也就是说所有匹配的元素的高度和宽度不会发生变化。</longdesc>
+        <params name="speed" type="String,Number">
+          <desc>三种预定速度之一的字符串("slow", "normal", or "fast")或表示动画时长的毫秒数值(如：1000)</desc>
+        </params>
+        <params name="opacity" type="Number">
+          <desc>要调整到的不透明度值(0到1之间的数字).</desc>
+        </params>
+        <params name="callback" type="Function" optional="true">
+          <desc>在动画完成时执行的函数</desc>
+        </params>
+        <example>
+          <desc>用600毫秒缓慢的将段落的透明度调整到0.66，大约2/3的可见度</desc>
+          <code>$("p").fadeTo("slow", 0.66);$("p").fadeTo("slow", 0.66);</code>
+        </example>
+        <example>
+          <desc>用200毫秒快速将段落的透明度调整到0.25，大约1/4的可见度，之后弹出一个对话框</desc>
+          <code>$("p").fadeTo("fast", 0.25, function(){
+   alert("Animation Done.");
+ });</code>
+        </example>
+      </function>
+    </subcat>
+    <subcat value="自定义">
+      <function name="animate" return="Control">
+        <desc>用于创建自定义动画的函数。</desc>
+        <longdesc>这个函数的关键在于指定动画形式及结果样式属性对象。这个对象中每个属性都表示一个可以变化的样式属性（如“height”、“top”或“opacity”）。注意：所有指定的属性必须用骆驼形式，比如用marginLeft代替margin-left. 
+
+而每个属性的值表示这个样式属性到多少时动画结束。如果是一个数值，样式属性就会从当前的值渐变到指定的值。如果使用的是“hide”、“show”或“toggle”这样的字符串值，则会为该属性调用默认的动画形式。
+
+在 JPlus 1.2 中，你可以使用 em 和 % 单位。另外，在 JPlus 1.2 中，你可以通过在属性值前面指定 "&lt;em&gt;+=&lt;/em&gt;" 或 "&lt;em&gt;-=&lt;/em&gt;" 来让元素做相对运动。
+
+JPlus 1.3中，如果duration设为0则直接完成动画。而在以前版本中则会执行默认动画。</longdesc>
+        <params name="params" type="Options">
+          <desc>一组包含作为动画属性和终值的样式属性和及其值的集合</desc>
+        </params>
+        <params name="duration" type="String,Number" optional="true">
+          <desc>三种预定速度之一的字符串("slow", "normal", or "fast")或表示动画时长的毫秒数值(如：1000)</desc>
+        </params>
+        <params name="easing" type="String" optional="true">
+          <desc>要使用的擦除效果的名称(需要插件支持).默认JPlus提供"linear" 和 "swing".</desc>
+        </params>
+        <params name="callback" type="Function" optional="true">
+          <desc>在动画完成时执行的函数</desc>
+        </params>
+        <example>
+          <desc>点击按钮后div元素的几个不同属性一同变化</desc>
+          <html>&lt;button id="go"&gt; Run&lt;/button&gt;
+&lt;div id="block"&gt;Hello!&lt;/div&gt;</html>
+          <code>// 在一个动画中同时应用三种类型的效果
+$("#go").click(function(){
+  $("#block").animate({ 
+    width: "90%",
+    height: "100%", 
+    fontSize: "10em", 
+    borderWidth: 10
+  }, 1000 );
+});</code>
+        </example>
+        <example>
+          <desc>让指定元素左右移动</desc>
+          <html>&lt;button id="left"&gt;«&lt;/button&gt; &lt;button id="right"&gt;»&lt;/button&gt;
+&lt;div class="block"&gt;&lt;/div&gt;</html>
+          <code>$("#right").click(function(){
+  $(".block").animate({left: '+50px'}, "slow");
+});
+
+$("#left").click(function(){
+  $(".block").animate({left: '-50px'}, "slow");
+});</code>
+        </example>
+        <example>
+          <desc>在600毫秒内切换段落的高度和透明度</desc>
+          <code>$("p").animate({
+   height: 'toggle', opacity: 'toggle'
+ }, "slow");</code>
+        </example>
+        <example>
+          <desc>用500毫秒将段落移到left为50的地方并且完全清晰显示出来（透明度为1）</desc>
+          <code>$("p").animate({
+   left: 50, opacity: 'show'
+ }, 500);</code>
+        </example>
+        <example>
+          <desc>一个使用“easein”函数提供不同动画样式的例子。只有使用了插件来提供这个“easein”函数，这个参数才起作用。</desc>
+          <code>$("p").animate({
+   opacity: 'show'
+ }, "slow", "easein");</code>
+        </example>
+      </function>
+      <function name="animate" return="Control">
+        <desc>用于创建自定义动画的函数。</desc>
+        <longdesc>这个函数的关键在于指定动画形式及结果样式属性对象。这个对象中每个属性都表示一个可以变化的样式属性（如“height”、“top”或“opacity”）。注意：所有指定的属性必须用骆驼形式，比如用marginLeft代替margin-left. 
+
+而每个属性的值表示这个样式属性到多少时动画结束。如果是一个数值，样式属性就会从当前的值渐变到指定的值。如果使用的是“hide”、“show”或“toggle”这样的字符串值，则会为该属性调用默认的动画形式。
+
+在 JPlus 1.2 中，你可以使用 em 和 % 单位。另外，在 JPlus 1.2 中，你可以通过在属性值前面指定 "&lt;em&gt;+=&lt;/em&gt;" 或 "&lt;em&gt;-=&lt;/em&gt;" 来让元素做相对运动。</longdesc>
+        <params name="params" type="Options">
+          <desc>一组包含作为动画属性和终值的样式属性和及其值的集合</desc>
+        </params>
+        <params name="options" type="Options">
+          <desc>一组包含动画选项的值的集合。</desc>
+        </params>
+        <option name="duration" type="String,Number">
+          <desc>(默认值: "normal") 三种预定速度之一的字符串("slow", "normal", or "fast")或表示动画时长的毫秒数值(如：1000)</desc>
+        </option>
+        <option name="easing" type="String">
+          <desc>(默认值: "swing") 要使用的擦除效果的名称(需要插件支持).默认JPlus提供"linear" 和 "swing".</desc>
+        </option>
+        <option name="complete" type="Function">
+          <desc>在动画完成时执行的函数</desc>
+        </option>
+        <option name="step" type="Callback">
+          <desc></desc>
+        </option>
+        <option name="queue" type="Boolean">
+          <desc>(默认值: true) 设定为false将使此动画不进入动画队列 (JPlus 1.2中新增)</desc>
+        </option>
+        <example>
+          <desc>第一个按钮按了之后展示了不在队列中的动画。在div扩展到90%的同时也在增加字体，一旦字体改变完毕后，边框的动画才开始。</desc>
+          <html>&lt;button id="go1"&gt;» Animate Block1&lt;/button&gt;
+&lt;button id="go2"&gt;» Animate Block2&lt;/button&gt;
+&lt;div id="block1"&gt;Block1&lt;/div&gt;&lt;div id="block2"&gt;Block2&lt;/div&gt;</html>
+          <code>$("#go1").click(function(){
+  $("#block1").animate( { width: "90%"}, { queue: false, duration: 5000 } )
+     .animate( { fontSize: '10em' } , 1000 )
+     .animate( { borderWidth: 5 }, 1000);
+});
+
+$("#go2").click(function(){
+  $("#block2").animate( { width: "90%"}, 1000 )
+     .animate( { fontSize: '10em' } , 1000 )
+     .animate( { borderWidth: 5 }, 1000);
+});</code>
+        </example>
+        <example>
+          <desc>第二个按钮按了之后就是一个传统的链式动画，即等前一个动画完成后，后一个动画才会开始.</desc>
+          <html>&lt;button id="go1"&gt;» Animate Block1&lt;/button&gt;
+&lt;button id="go2"&gt;» Animate Block2&lt;/button&gt;
+&lt;div id="block1"&gt;Block1&lt;/div&gt;&lt;div id="block2"&gt;Block2&lt;/div&gt;</html>
+          <code>$("#go1").click(function(){
+  $("#block1").animate( { width: "90%"}, { queue: false, duration: 5000 } )
+     .animate( { fontSize: '10em' } , 1000 )
+     .animate( { borderWidth: 5 }, 1000);
+});
+
+$("#go2").click(function(){
+  $("#block2").animate( { width: "90%"}, 1000 )
+     .animate( { fontSize: '10em' } , 1000 )
+     .animate( { borderWidth: 5 }, 1000);
+});</code>
+        </example>
+        <example>
+          <desc>用600毫秒切换段落的高度和透明度</desc>
+          <code>$("p").animate({
+   height: 'toggle', opacity: 'toggle'
+ }, { duration: "slow" });</code>
+        </example>
+        <example>
+          <desc>用500毫秒将段落移到left为50的地方并且完全清晰显示出来（透明度为1）</desc>
+          <code>$("p").animate({
+   left: 50, opacity: 'show'
+ }, { duration: 500 });</code>
+        </example>
+        <example>
+          <desc>一个使用“easein”函数提供不同动画样式的例子。只有使用了插件来提供这个“easein”函数，这个参数才起作用。</desc>
+          <code>$("p").animate({
+   opacity: 'show'
+ }, { duration: "slow", easing: "easein" });</code>
+        </example>
+      </function>
+      <function name="fx" return="Control">
+        <desc>停止所有在指定元素上正在运行的动画。</desc>
+        <longdesc>如果队列中有等待执行的动画(并且clearQueue没有设为true)，他们将被马上执行</longdesc>
+        <params name="clearQueue" type="Boolean" optional="true">
+          <desc>如果设置成true，则清空队列。可以立即结束动画。</desc>
+        </params>
+        <params name="gotoEnd" type="Boolean" optional="true">
+          <desc>让当前正在执行的动画立即完成，并且重设show和hide的原始样式，调用回调函数等。</desc>
+        </params>
+        <example>
+          <desc>点击Go之后开始动画,点Stop之后会在当前位置停下来</desc>
+          <html>&lt;button id="go"&gt;Go&lt;/button&gt; &lt;button id="stop"&gt;STOP!&lt;/button&gt;
+&lt;div class="block"&gt;&lt;/div&gt;&lt;button id="go"&gt;Go&lt;/button&gt; &lt;button id="stop"&gt;STOP!&lt;/button&gt;
+&lt;div class="block"&gt;&lt;/div&gt;</html>
+          <code>// 开始动画
+$("#go").click(function(){
+  $(".block").animate({left: '+200px'}, 5000);
+});
+
+// 当点击按钮后停止动画
+$("#stop").click(function(){
+  $(".block").stop();
+});</code>
+        </example>
+      </function>
+    </subcat>
+  </cat>
+  <cat value="Ajax">
+    <subcat value="Ajax 请求">
+      <function name="new Ajax" return="Ajax">
+        <desc>通过 HTTP 请求加载远程数据。</desc>
+        <longdesc>JPlus 底层 AJAX 实现。简单易用的高层实现见 $.get, $.post 等。$.ajax() 返回其创建的 XMLHttpRequest 对象。大多数情况下你无需直接操作该函数，除非你需要操作不常用的选项，以获得更多的灵活性。
+
+最简单的情况下，$.ajax()可以不带任何参数直接使用。
+
+'''注意'''，所有的选项都可以通过$.ajaxSetup()函数来全局设置。
+
+'''回调函数'''
+
+如果要处理$.ajax()得到的数据，则需要使用回调函数。beforeSend、error、dataFilter、success、complete。
+
+&lt;ul&gt;
+    &lt;li&gt;beforeSend 在发送请求之前调用，并且传入一个XMLHttpRequest作为参数。&lt;/li&gt;
+    &lt;li&gt;error 在请求出错时调用。传入XMLHttpRequest对象，描述错误类型的字符串以及一个异常对象（如果有的话）&lt;/li&gt;
+    &lt;li&gt;dataFilter 在请求成功之后调用。传入返回的数据以及&quot;dataType&quot;参数的值。并且必须返回新的数据（可能是处理过的）传递给success回调函数。&lt;/li&gt;
+    &lt;li&gt;success 当请求之后调用。传入返回后的数据，以及包含成功代码的字符串。&lt;/li&gt;
+    &lt;li&gt;complete 当请求完成之后调用这个函数，无论成功或失败。传入XMLHttpRequest对象，以及一个包含成功或错误代码的字符串。&lt;/li&gt;
+&lt;/ul&gt;
+
+'''数据类型'''
+
+$.ajax()函数依赖服务器提供的信息来处理返回的数据。如果服务器报告说返回的数据是XML，那么返回的结果就可以用普通的XML方法或者JPlus的选择器来遍历。如果见得到其他类型，比如HTML，则数据就以文本形式来对待。
+
+通过dataType选项还可以指定其他不同数据处理方式。除了单纯的XML，还可以指定 html、json、jsonp、script或者text。
+
+其中，text和xml类型返回的数据不会经过处理。数据仅仅简单的将XMLHttpRequest的responseText或responseHTML属性传递给success回调函数，
+
+'''注意'''，我们必须确保网页服务器报告的MIME类型与我们选择的dataType所匹配。比如说，XML的话，服务器端就必须声明 text/xml 或者 application/xml 来获得一致的结果。
+
+如果指定为html类型，任何内嵌的JavaScript都会在HTML作为一个字符串返回之前执行。类似的，指定script类型的话，也会先执行服务器端生成JavaScript，然后再把脚本作为一个文本数据返回。
+
+如果指定为json类型，则会把获取到的数据作为一个JavaScript对象来解析，并且把构建好的对象作为结果返回。为了实现这个目的，他首先尝试使用JSON.parse()。如果浏览器不支持，则使用一个函数来构建。JSON数据是一种能很方便通过JavaScript解析的结构化数据。如果获取的数据文件存放在远程服务器上（域名不同，也就是跨域获取数据），则需要使用jsonp类型。使用这种类型的话，会创建一个查询字符串参数 callback=? ，这个参数会加在请求的URL后面。服务器端应当在JSON数据前加上回调函数名，以便完成一个有效的JSONP请求。如果要指定回调函数的参数名来取代默认的callback，可以通过设置$.ajax()的jsonp参数。
+
+'''注意'''，JSONP是JSON格式的扩展。他要求一些服务器端的代码来检测并处理查询字符串参数。更多信息可以参阅 &lt;a href=&quot;http://bob.pythonmac.org/archives/2005/12/05/remote-json-jsonp/&quot;&gt;最初的文章&lt;/a&gt;。
+
+如果指定了script或者jsonp类型，那么当从服务器接收到数据时，实际上是用了&amp;lt;script&amp;gt;标签而不是XMLHttpRequest对象。这种情况下，$.ajax()不再返回一个XMLHttpRequest对象，并且也不会传递事件处理函数，比如beforeSend。
+
+'''发送数据到服务器'''
+
+默认情况下，Ajax请求使用GET方法。如果要使用POST方法，可以设定type参数值。这个选项也会影响data选项中的内容如何发送到服务器。
+
+data选项既可以包含一个查询字符串，比如 key1=value1&amp;amp;key2=value2 ，也可以是一个映射，比如 {key1: 'value1', key2: 'value2'} 。如果使用了后者的形式，则数据再发送器会被转换成查询字符串。这个处理过程也可以通过设置processData选项为false来回避。如果我们希望发送一个XML对象给服务器时，这种处理可能并不合适。并且在这种情况下，我们也应当改变contentType选项的值，用其他合适的MIME类型来取代默认的  application/x-www-form-urlencoded 。
+
+'''高级选项'''
+
+global选项用于阻止响应注册的回调函数，比如.ajaxSend，或者ajaxError，以及类似的方法。这在有些时候很有用，比如发送的请求非常频繁且简短的时候，就可以在ajaxSend里禁用这个。更多关于这些方法的详细信息，请参阅下面的内容。
+
+如果服务器需要HTTP认证，可以使用用户名和密码可以通过username和password选项来设置。
+
+Ajax请求是限时的，所以错误警告被捕获并处理后，可以用来提升用户体验。请求超时这个参数通常就保留其默认值，要不就通过JPlus.ajaxSetup来全局设定，很少为特定的请求重新设置timeout选项。
+
+默认情况下，请求总会被发出去，但浏览器有可能从他的缓存中调取数据。要禁止使用缓存的结果，可以设置cache参数为false。如果希望判断数据自从上次请求后没有更改过就报告出错的话，可以设置ifModified为true。
+
+scriptCharset允许给&amp;lt;script&amp;gt;标签的请求设定一个特定的字符集，用于script或者jsonp类似的数据。当脚本和页面字符集不同时，这特别好用。
+
+Ajax的第一个字母是asynchronous的开头字母，这意味着所有的操作都是并行的，完成的顺序没有前后关系。$.ajax()的async参数总是设置成true，这标志着在请求开始后，其他代码依然能够执行。强烈不建议把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死。
+
+$.ajax函数返回他创建的XMLHttpRequest对象。通常JPlus只在内部处理并创建这个对象，但用户也可以通过xhr选项来传递一个自己创建的xhr对象。返回的对象通常已经被丢弃了，但依然提供一个底层接口来观察和操控请求。比如说，调用对象上的.abort()可以在请求完成前挂起请求。
+</longdesc>
+        <params name="options" type="Object" optional="true">
+          <desc>AJAX 请求设置。所有选项都是可选的。</desc>
+        </params>
+        <option name="async" type="Boolean">
+          <desc>(默认: true) 默认设置下，所有请求均为异步请求。如果需要发送同步请求，请将此选项设置为 false。注意，同步请求将锁住浏览器，用户其它操作必须等待请求完成才可以执行。</desc>
+        </option>
+        <option name="beforeSend(XHR)" type="Function">
+          <desc>发送请求前可修改 XMLHttpRequest 对象的函数，如添加自定义 HTTP 头。XMLHttpRequest 对象是唯一的参数。这是一个 &lt;a href="http://docs.jquery.com/Ajax_Events" title="Ajax Events"&gt;Ajax 事件&lt;/a&gt;。如果返回false可以取消本次ajax请求。
+&lt;pre&gt;function (XMLHttpRequest) {
+    this; // 调用本次AJAX请求时传递的options参数
+}&lt;/pre&gt;</desc>
+        </option>
+        <option name="cache" type="Boolean">
+          <desc>(默认: true,dataType为script和jsonp时默认为false) JPlus 1.2 新功能，设置为 false 将不缓存此页面。</desc>
+        </option>
+        <option name="complete(XHR, TS)" type="Function">
+          <desc>请求完成后回调函数 (请求成功或失败之后均调用)。参数：  XMLHttpRequest 对象和一个描述成功请求类型的字符串。 &lt;a href="http://docs.jquery.com/Ajax_Events" title="Ajax Events"&gt;Ajax 事件&lt;/a&gt;。
+&lt;pre&gt;function (XMLHttpRequest, textStatus) {
+    this; // 调用本次AJAX请求时传递的options参数
+}&lt;/pre&gt;</desc>
+        </option>
+        <option name="contentType" type="String">
+          <desc>(默认: "application/x-www-form-urlencoded") 发送信息至服务器时内容编码类型。默认值适合大多数情况。如果你明确地传递了一个content-type给 $.ajax() 那么他必定会发送给服务器（即使没有数据要发送）</desc>
+        </option>
+        <option name="context" type="Object">
+          <desc>这个对象用于设置Ajax相关回调函数的上下文。也就是说，让回调函数内this指向这个对象（如果不设定这个参数，那么this就指向调用本次AJAX请求时传递的options参数）。比如指定一个DOM元素作为context参数，这样就设置了success回调函数的上下文为这个DOM元素。就像这样： &lt;pre&gt;$.ajax({ url: &quot;test.html&quot;, context: document.body, success: function(){
+    $(this).addClass(&quot;done&quot;);
+}});&lt;/pre&gt;</desc>
+        </option>
+        <option name="data" type="Object,String">
+          <desc>发送到服务器的数据。将自动转换为请求字符串格式。GET 请求中将附加在 URL 后。查看 processData 选项说明以禁止此自动转换。必须为 Key/Value 格式。如果为数组，JPlus 将自动为不同值对应同一个名称。如 {foo:["bar1", "bar2"]} 转换为 '&amp;foo=bar1&amp;foo=bar2'。</desc>
+        </option>
+        <option name="dataFilter" type="Function">
+          <desc>给Ajax返回的原始数据的进行预处理的函数。提供data和type两个参数：data是Ajax返回的原始数据，type是调用JPlus.ajax时提供的dataType参数。函数返回的值将由JPlus进一步处理。
+&lt;pre&gt;function (data, type) {
+    // 对Ajax返回的原始数据进行预处理
+    return data  // 返回处理后的数据
+}&lt;/pre&gt;</desc>
+        </option>
+        <option name="dataType" type="String">
+          <desc>
+            &lt;p&gt;预期服务器返回的数据类型。如果不指定，JPlus 将自动根据 HTTP 包 MIME 信息来智能判断，比如XML MIME类型就被识别为XML。在1.4中，JSON就会生成一个JavaScript对象，而script则会执行这个脚本。随后服务器端返回的数据会根据这个值解析后，传递给回调函数。可用值: &lt;/p&gt;
+            &lt;p&gt;"xml": 返回 XML 文档，可用 JPlus 处理。&lt;/p&gt;
+            &lt;p&gt;"html": 返回纯文本 HTML 信息；包含的script标签会在插入dom时执行。&lt;/p&gt;
+            &lt;p&gt;"script": 返回纯文本 JavaScript 代码。不会自动缓存结果。除非设置了"cache"参数。'''注意：'''在远程请求时(不在同一个域下)，所有POST请求都将转为GET请求。(因为将使用DOM的script标签来加载)&lt;/p&gt;
+            &lt;p&gt;"json": 返回 JSON 数据 。&lt;/p&gt;
+            &lt;p&gt;"jsonp": &lt;a href="http://bob.pythonmac.org/archives/2005/12/05/remote-json-jsonp/" class="external text" title="http://bob.pythonmac.org/archives/2005/12/05/remote-json-jsonp/"&gt;JSONP&lt;/a&gt; 格式。使用 &lt;a href="http://bob.pythonmac.org/archives/2005/12/05/remote-json-jsonp/" class="external text" title="http://bob.pythonmac.org/archives/2005/12/05/remote-json-jsonp/"&gt;JSONP&lt;/a&gt; 形式调用函数时，如 "myurl?callback=?" JPlus 将自动替换 ? 为正确的函数名，以执行回调函数。&lt;/p&gt;
+            &lt;p&gt;"text": 返回纯文本字符串&lt;/p&gt;
+          </desc>
+        </option>
+        <option name="error" type="Function">
+          <desc>(默认: 自动判断 (xml 或 html)) 请求失败时调用此函数。有以下三个参数：XMLHttpRequest 对象、错误信息、（可选）捕获的异常对象。如果发生了错误，错误信息（第二个参数）除了得到null之外，还可能是"timeout", "error", "notmodified" 和 "parsererror"。&lt;a href="http://docs.jquery.com/Ajax_Events" title="Ajax Events"&gt;Ajax 事件&lt;/a&gt;。
+&lt;pre&gt;function (XMLHttpRequest, textStatus, errorThrown) {
+    // 通常 textStatus 和 errorThrown 之中
+    // 只有一个会包含信息
+    this; // 调用本次AJAX请求时传递的options参数
+}&lt;/pre&gt;</desc>
+        </option>
+        <option name="global" type="Boolean">
+          <desc>(默认: true) 是否触发全局 AJAX 事件。设置为 false 将不会触发全局 AJAX 事件，如 ajaxStart 或 ajaxStop 可用于控制不同的 &lt;a href="http://docs.jquery.com/Ajax_Events" title="Ajax Events"&gt;Ajax 事件&lt;/a&gt;。</desc>
+        </option>
+        <option name="ifModified" type="Boolean">
+          <desc>(默认: false) 仅在服务器数据改变时获取新数据。使用 HTTP 包 Last-Modified 头信息判断。在JPlus 1.4中，他也会检查服务器指定的'etag'来确定数据没有被修改过。</desc>
+        </option>
+        <option name="jsonp" type="String">
+          <desc>在一个jsonp请求中重写回调函数的名字。这个值用来替代在"callback=?"这种GET或POST请求中URL参数里的"callback"部分，比如{jsonp:'onJsonPLoad'}会导致将"onJsonPLoad=?"传给服务器。</desc>
+        </option>
+        <option name="jsonpCallback" type="String">
+          <desc>为jsonp请求指定一个回调函数名。这个值将用来取代JPlus自动生成的随机函数名。这主要用来让JPlus生成度独特的函数名，这样管理请求更容易，也能方便地提供回调函数和错误处理。你也可以在想让浏览器缓存GET请求的时候，指定这个回调函数名。</desc>
+        </option>
+        <option name="password" type="String">
+          <desc>用于响应HTTP访问认证请求的密码</desc>
+        </option>
+        <option name="processData" type="Boolean">
+          <desc>(默认: true) 默认情况下，通过data选项传递进来的数据，如果是一个对象(技术上讲只要不是字符串)，都会处理转化成一个查询字符串，以配合默认内容类型 "application/x-www-form-urlencoded"。如果要发送 DOM 树信息或其它不希望转换的信息，请设置为 false。</desc>
+        </option>
+        <option name="scriptCharset" type="String">
+          <desc>只有当请求时dataType为"jsonp"或"script"，并且type是"GET"才会用于强制修改charset。通常只在本地和远程的内容编码不同时使用。</desc>
+        </option>
+        <option name="success" type="Function">
+          <desc>请求成功后的回调函数。参数：由服务器返回，并根据dataType参数进行处理后的数据；描述状态的字符串。 &lt;a href="http://docs.jquery.com/Ajax_Events" title="Ajax Events"&gt;Ajax 事件&lt;/a&gt;。
+&lt;pre&gt;function (data, textStatus) {
+    // data 可能是 xmlDoc, jsonObj, html, text, 等等...
+    this; // 调用本次AJAX请求时传递的options参数
+}&lt;/pre&gt;</desc>
+        </option>
+        <option name="traditional" type="Boolean">
+          <desc>如果你想要用传统的方式来序列化数据，那么就设置为true。请参考工具分类下面的JPlus.param 方法。</desc>
+        </option>
+        <option name="timeout" type="Number">
+          <desc>设置请求超时时间（毫秒）。此设置将覆盖全局设置。</desc>
+        </option>
+        <option name="type" type="String">
+          <desc>(默认: "GET") 请求方式 ("POST" 或 "GET")， 默认为 "GET"。注意：其它 HTTP 请求方法，如 PUT 和 DELETE 也可以使用，但仅部分浏览器支持。</desc>
+        </option>
+        <option name="url" type="String">
+          <desc>(默认: 当前页地址) 发送请求的地址。</desc>
+        </option>
+        <option name="username" type="String">
+          <desc>用于响应HTTP访问认证请求的用户名</desc>
+        </option>
+        <option name="xhr" type="Function">
+          <desc>需要返回一个XMLHttpRequest 对象。默认在IE下是ActiveXObject 而其他情况下是XMLHttpRequest 。用于重写或者提供一个增强的XMLHttpRequest 对象。这个参数在JPlus 1.3以前不可用。</desc>
+        </option>
+        <example>
+          <desc>加载并执行一个 JS 文件。</desc>
+          <code>$.ajax({
+  type: "GET",
+  url: "test.js",
+  dataType: "script"
+});</code>
+        </example>
+        <example>
+          <desc>保存数据到服务器，成功时显示信息。</desc>
+          <code>$.ajax({
+   type: "POST",
+   url: "some.php",
+   data: "name=John&amp;location=Boston",
+   success: function(msg){
+     alert( "Data Saved: " + msg );
+   }
+});</code>
+        </example>
+        <example>
+          <desc>装入一个 HTML 网页最新版本。</desc>
+          <code>$.ajax({
+  url: "test.html",
+  cache: false,
+  success: function(html){
+    $("#results").append(html);
+  }
+});</code>
+        </example>
+        <example>
+          <desc>同步加载数据。发送请求时锁住浏览器。需要锁定用户交互操作时使用同步方式。</desc>
+          <code> var html = $.ajax({
+  url: "some.php",
+  async: false
+ }).responseText;</code>
+        </example>
+        <example>
+          <desc>发送 XML 数据至服务器。设置 processData 选项为 false，防止自动转换数据格式。</desc>
+          <code> var xmlDocument = [create xml document];
+ $.ajax({
+   url: "page.php",
+   processData: false,
+   data: xmlDocument,
+   success: handleResponse
+ });</code>
+        </example>
+      </function>
+      <function name="Ajax.get" return="Ajax">
+        <desc>通过远程 HTTP GET 请求载入信息。</desc>
+        <longdesc>这是一个简单的 GET 请求功能以取代复杂 $.ajax 。请求成功时可调用回调函数。如果需要在出错时执行函数，请使用 $.ajax。</longdesc>
+        <params name="url" type="String">
+          <desc>待载入页面的URL地址</desc>
+        </params>
+        <params name="data" type="Map" optional="true">
+          <desc>待发送 Key/value 参数。</desc>
+        </params>
+        <params name="callback" type="Function" optional="true">
+          <desc>载入成功时回调函数。</desc>
+        </params>
+        <params name="type" type="String" optional="true">
+          <desc>返回内容格式，xml, html, script, json, text, _default。</desc>
+        </params>
+        <example>
+          <desc>请求 test.php 网页，忽略返回值。</desc>
+          <code>$.get("test.php");</code>
+        </example>
+        <example>
+          <desc>请求 test.php 网页，传送2个参数，忽略返回值。</desc>
+          <code>$.get("test.php", { name: "John", time: "2pm" } );</code>
+        </example>
+        <example>
+          <desc>显示 test.php 返回值(HTML 或 XML，取决于返回值)。</desc>
+          <code>$.get("test.php", function(data){
+  alert("Data Loaded: " + data);
+});</code>
+        </example>
+        <example>
+          <desc>显示 test.cgi 返回值(HTML 或 XML，取决于返回值)，添加一组请求参数。</desc>
+          <code>$.get("test.cgi", { name: "John", time: "2pm" },
+  function(data){
+    alert("Data Loaded: " + data);
+  });</code>
+        </example>
+      </function>
+      <function name="Ajax.getJSON" return="Ajax">
+        <desc>通过 HTTP GET 请求载入 JSON 数据。</desc>
+        <longdesc>在 JPlus 1.2 中，您可以通过使用&lt;a href="http://bob.pythonmac.org/archives/2005/12/05/remote-json-jsonp/" class="external text" title="http://bob.pythonmac.org/archives/2005/12/05/remote-json-jsonp/"&gt;JSONP&lt;/a&gt; 形式的回调函数来加载其他网域的JSON数据，如 "myurl?callback=?"。JPlus 将自动替换 ? 为正确的函数名，以执行回调函数。  注意：此行以后的代码将在这个回调函数执行前执行。</longdesc>
+        <params name="url" type="String">
+          <desc>发送请求地址。</desc>
+        </params>
+        <params name="data" type="Map" optional="true">
+          <desc>待发送 Key/value 参数。</desc>
+        </params>
+        <params name="callback" type="Function" optional="true">
+          <desc>载入成功时回调函数。</desc>
+        </params>
+        <example>
+          <desc>从 Flickr JSONP API 载入 4 张最新的关于猫的图片。</desc>
+          <html>&lt;div id="images"&gt;&lt;/div&gt;</html>
+          <code>$.getJSON("http://api.flickr.com/services/feeds/photos_public.gne?tags=cat&amp;tagmode=any&amp;format=json&amp;jsoncallback=?", function(data){
+  $.each(data.items, function(i,item){
+    $("&lt;img/&gt;").attr("src", item.media.m).appendTo("#images");
+    if ( i == 3 ) return false;
+  });
+});</code>
+        </example>
+        <example>
+          <desc>从 test.js 载入 JSON 数据并显示 JSON 数据中一个 name 字段数据。</desc>
+          <code>$.getJSON("test.js", function(json){
+  alert("JSON Data: " + json.users[3].name);
+});</code>
+        </example>
+        <example>
+          <desc>从 test.js 载入 JSON 数据，附加参数，显示 JSON 数据中一个 name 字段数据。</desc>
+          <code>$.getJSON("test.js", { name: "John", time: "2pm" }, function(json){
+  alert("JSON Data: " + json.users[3].name);
+});</code>
+        </example>
+      </function>
+      <function name="Ajax.getScript*" return="Ajax">
+        <desc>通过 HTTP GET 请求载入并执行一个 JavaScript 文件。</desc>
+        <params name="url" type="String">
+          <desc>待载入 JS 文件地址。</desc>
+        </params>
+        <params name="callback" type="Function" optional="true">
+          <desc>成功载入后回调函数。</desc>
+        </params>
+        <example>
+          <desc>载入js。</desc>
+          <code>JPlus.getScript("script.js", function(){
+ 
+});</code>
+        </example>
+        <example>
+          <desc>加载并执行 test.js。</desc>
+          <code>$.getScript("test.js");</code>
+        </example>
+        <example>
+          <desc>加载并执行 test.js ，成功后显示信息。</desc>
+          <code>$.getScript("test.js", function(){
+  alert("Script loaded and executed.");
+});</code>
+        </example>
+      </function>
+      <function name="Ajax.post" return="Ajax">
+        <desc>通过远程 HTTP POST 请求载入信息。</desc>
+        <longdesc>这是一个简单的 POST 请求功能以取代复杂 $.ajax 。请求成功时可调用回调函数。如果需要在出错时执行函数，请使用 $.ajax。</longdesc>
+        <params name="url" type="String">
+          <desc>发送请求地址。</desc>
+        </params>
+        <params name="data" type="Map" optional="true">
+          <desc>待发送 Key/value 参数。</desc>
+        </params>
+        <params name="callback" type="Function" optional="true">
+          <desc>发送成功时回调函数。</desc>
+        </params>
+        <params name="type" type="String" optional="true">
+          <desc>返回内容格式，xml, html, script, json, text, _default。</desc>
+        </params>
+      </function>
+    </subcat>
+    <subcat value="Ajax 事件">
+      <function name="complete" return="Control">
+        <desc>AJAX 请求完成时执行函数。Ajax 事件。</desc>
+        <longdesc>XMLHttpRequest 对象和设置作为参数传递给回调函数。</longdesc>
+        <params name="callback" type="Function">
+          <desc>待执行函数</desc>
+        </params>
+        <example>
+          <desc>AJAX 请求完成时执行函数。</desc>
+          <code> $("#msg").ajaxComplete(function(event,request, settings){
+   $(this).append("&lt;li&gt;请求完成.&lt;/li&gt;");
+ });</code>
+        </example>
+      </function>
+      <function name="error" return="Control">
+        <desc>AJAX 请求发生错误时执行函数。Ajax 事件。</desc>
+        <longdesc>XMLHttpRequest 对象和设置作为参数传递给回调函数。捕捉到的错误可作为最后一个参数传递。</longdesc>
+        <params name="callback" type="Function">
+          <desc>待执行函数
+&lt;pre&gt;function (event, XMLHttpRequest, ajaxOptions, thrownError) {
+      // thrownError 只有当异常发生时才会被传递
+      this; // 监听的 dom 元素
+}&lt;/pre&gt;</desc>
+        </params>
+        <example>
+          <desc>AJAX 请求失败时显示信息。</desc>
+          <code>$("#msg").ajaxError(function(event,request, settings){
+     $(this).append("&lt;li&gt;出错页面:" + settings.url + "&lt;/li&gt;");
+});</code>
+        </example>
+      </function>
+      <function name="start" return="Control">
+        <desc>AJAX 请求开始时执行函数。Ajax 事件。</desc>
+        <params name="callback" type="Function">
+          <desc>待执行函数</desc>
+        </params>
+        <example>
+          <desc>AJAX 请求开始时显示信息。</desc>
+          <code> $("#loading").ajaxStart(function(){
+   $(this).show();
+ });</code>
+        </example>
+      </function>
+      <function name="timeout" return="Control">
+        <desc>AJAX 请求结束时执行函数。Ajax 事件。</desc>
+        <params name="callback" type="Function">
+          <desc>待执行函数</desc>
+        </params>
+        <example>
+          <desc>AJAX 请求结束后隐藏信息。</desc>
+          <code> $("#loading").ajaxStop(function(){
+   $(this).hide();
+ });</code>
+        </example>
+      </function>
+      <function name="success" return="Control">
+        <desc>AJAX 请求成功时执行函数。Ajax 事件。</desc>
+        <longdesc>XMLHttpRequest 对象和设置作为参数传递给回调函数。</longdesc>
+        <params name="callback" type="Function">
+          <desc>待执行函数</desc>
+        </params>
+        <example>
+          <desc>当 AJAX 请求成功后显示消息。</desc>
+          <code> $("#msg").ajaxSuccess(function(evt, request, settings){
+   $(this).append("&lt;li&gt;请求成功!&lt;/li&gt;");
+ });</code>
+        </example>
+      </function>
+    </subcat>
+  </cat>
+  <cat value="工具">
+    <subcat value="数组和对象操作">
+     <function name="Array.isArray" return="Boolean">
+        <desc>JPlus 1.3 新增。测试对象是否为数组。</desc>
+        <params name="obj" type="Object">
+          <desc>用于测试是否为数组的对象</desc>
+        </params>
+        <example>
+          <desc>检测是否为数组</desc>
+          <code>$("b").append( " + Array.isArray([]) );</code>
+          <result>&lt;b&gt;true&lt;/b&gt;</result>
+        </example>
+      </function>
+      <function name="Array.create" return="Array">
+        <desc>将类数组对象转换为数组对象。</desc>
+        <longdesc>类数组对象有 length 属性，其成员索引为 0 至 length - 1。实际中此函数在 Control 中将自动使用而无需特意转换。</longdesc>
+        <params name="obj" type="Object">
+          <desc>类数组对象。</desc>
+        </params>
+        <example>
+          <desc>过滤数组中小于 0 的元素。</desc>
+          <html>&lt;div&gt;First&lt;/div&gt;&lt;div&gt;Second&lt;/div&gt;&lt;div&gt;Third&lt;/div&gt;&lt;div&gt;Fourth&lt;/div&gt;</html>
+          <code>var arr = Array.create(document.getElementsByTagName("div"));
+arr.reverse(); // 使用数组翻转函数</code>
+          <result>Fourth
+Third
+Second
+First</result>
+        </example>
+      </function>
+      <function name="Object.each" return="Object">
+        <desc>通用例遍方法，可用于例遍对象和数组。</desc>
+        <longdesc>不同于例遍 Control 对象的 $().each() 方法，此方法可用于例遍任何对象。回调函数拥有两个参数：第一个为对象的成员或数组的索引，第二个为对应变量或内容。如果需要退出 each 循环可使回调函数返回 false，其它返回值将被忽略。</longdesc>
+        <params name="object" type="Object">
+          <desc>需要例遍的对象或数组。</desc>
+        </params>
+        <params name="callback" type="Function" optional="true">
+          <desc>每个成员/元素执行的回调函数。</desc>
+        </params>
+        <example>
+          <desc>例遍数组，同时使用元素索引和内容。</desc>
+          <code>Object.each( [0,1,2], function(i, n){
+  alert( "Item #" + i + ": " + n );
+});</code>
+        </example>
+        <example>
+          <desc>例遍对象，同时使用成员名称和变量内容。</desc>
+          <code>Object.each( { name: "John", lang: "JS" }, function(i, n){
+  alert( "Name: " + i + ", Value: " + n );
+});</code>
+        </example>
+      </function>
+      <function name="arr.indexOf" return="Number">
+        <desc>确定第一个参数在数组中的位置，从0开始计数(如果没有找到则返回 -1 )。</desc>
+        <params name="value" type="Any">
+          <desc>用于在数组中查找是否存在</desc>
+        </params>
+        <params name="array" type="Array">
+          <desc>待处理数组。</desc>
+        </params>
+        <example>
+          <desc>查看对应元素的位置</desc>
+          <code>var arr = [ 4, "Pete", 8, "John" ];
+arr.indexOf("John", );  //3
+arr.indexOf(4);  //0
+arr.indexOf("David");  //-1</code>
+        </example>
+      </function>
+      <function name="arr.unique" return="Array">
+        <desc>删除数组中重复元素。只处理删除DOM元素数组，而不能处理字符串或者数字数组。</desc>
+        <params name="array" type="Array">
+          <desc>待处理数组。</desc>
+        </params>
+        <example>
+          <desc>删除重复 div 标签。</desc>
+          <code>document.query("div").unique();</code>
+          <result>[&lt;div&gt;, &lt;div&gt;, ...]</result>
+        </example>
+      </function>
+    </subcat>
+    <subcat value="字符串操作">
+      <function name="str.trim" return="String">
+        <desc>去掉字符串起始和结尾的空格。</desc>
+        <params name="str" type="String">
+          <desc>需要处理的字符串</desc>
+        </params>
+        <example>
+          <desc>去掉字符串起始和结尾的空格。</desc>
+          <code>"  hello, how are you?  ".trim();</code>
+          <result>"hello, how are you?"</result>
+        </example>
+      </function>
+    </subcat>
+	<subcat value="函数操作">
+      <function name="Function.isFunction" return="Boolean">
+        <desc>测试对象是否为函数。</desc>
+        <params name="obj" type="Object">
+          <desc>用于测试是否为函数的对象</desc>
+        </params>
+        <example>
+          <desc>检测是否为函数</desc>
+          <code>function stub() {
+    }
+var objs = [
+            function () {},
+            { x:15, y:20 },
+            null,
+            stub,
+            "function"
+          ];
+        Control.each(objs, function (i) {
+        var isFunc = Function.isFunction(objs[i]);
+        $("span").setText(isFunc);
+      });</code>
+          <result>[ true,false,false,true,false ]</result>
+        </example>
+      </function>
+      <property name="Function.empty" return="Array">
+        <desc>一个空函数</desc>
+		<longdesc>当你仅仅想要传递一个空函数的时候，就用他吧。这对一些插件作者很有用，当插件提供了一个可选的回调函数接口，那么如果调用的时候没有传递这个回调函数，就用JPlus.noop来代替执行。</longdesc>
+      </property>
+      <function name="Function.bind" return="Boolean">
+        <desc>JPlus 1.4 新增。返回一个新函数，并且这个函数始终保持了特定的作用域。</desc>
+		<longdesc>当有事件处理函数要附加到元素上，但他们的作用域实际是指向另一个对象时，这个方法最有用了。此外，最妙的是，JPlus能够确保即便你绑定的函数是经过JPlus.proxy()处理过的函数，你依然可以传递原先的函数来准确无误地取消绑定。请参考下面的例子。
+		
+		这个函数还有另一种用法，JPlus.proxy( scope, name )。第一个参数是要设定的作用域对象。第二个参数是将要设置作用域的函数名（必须是第一个作用域对象的一个属性）。</longdesc>
+        <params name="function" type="Function">
+          <desc>将要被改变作用域的函数</desc>
+        </params>
+        <params name="scope" type="Object">
+          <desc>一个object，那个函数的作用域会被设置到这个object上来。</desc>
+        </params>
+        <example>
+          <desc>强制设置函数的作用域，让this指向obj而不是#test对象。</desc>
+		  <html>&lt;div id=&quot;test&quot;&gt;Click Here!&lt;/div&gt;</html>
+          <code>var obj = {
+  name: "John",
+  test: function() {
+    alert( this.name );
+    $("#test").unbind("click", obj.test);
+  }
+};
+
+$("#test").click( JPlus.proxy( obj, "test" ) );
+
+// 以下代码跟上面那句是等价的:
+// $("#test").click( JPlus.proxy( obj.test, obj ) );
+
+// 可以与单独执行下面这句做个比较。
+// $("#test").click( obj.test );
+</code>
+        </example>
+      </function>
+    </subcat>
+   <subcat value="浏览器及特性检测">
+      <property name="navigator.isXXX" return="Object">
+        <desc>一组用于展示不同浏览器属性集合。依据 navigator.userAgent 判断。</desc>
+        <longdesc></longdesc>
+       <example>
+          <desc>在 Microsoft's Internet Explorer 浏览器中返回 true。</desc>
+          <code>navigator.isIE</code>
+          <code>navigator.isIE6</code>
+        </example>
+      </property>
+      <property name="navigator.name" return="Map">
+        <desc>浏览器内核标识。依据 navigator.userAgent 判断。</desc>
+        <longdesc>可用值:  safari 
+
+ opera 
+
+ msie 
+
+ mozilla  此属性在 DOM 树加载完成前即有效，可用于为特定浏览器设置 ready 事件。 
+
+浏览器对象检测技术与此属性共同使用可提供可靠的浏览器检测支持。</longdesc>
+        <example>
+          <desc>在 Microsoft's Internet Explorer 浏览器中返回 true。</desc>
+          <code>navigator.name</code>
+        </example>
+        <example>
+          <desc>仅在 Safari 中提示 "this is safari!" 。</desc>
+          <code>if (navigator.isSafari) {
+   alert("this is safari!");
+}</code>
+        </example>
+      </property>
+      <property name="navigator.version" return="String">
+        <desc>浏览器渲染引擎版本号。</desc>
+        <longdesc>典型结果:  Internet Explorer: 6.0, 7.0 
+
+ Mozilla/Firefox/Flock/Camino: 1.7.12, 1.8.1.3 
+
+ Opera: 9.20 
+
+ Safari/Webkit: 312.8, 418.9</longdesc>
+        <example>
+          <desc>显示当前 IE 浏览器版本号。</desc>
+          <code>if ( navigator.msie )
+ alert( navigator.version );</code>
+        </example>
+      </property>
+    </subcat>
+    <subcat value="URL">
+      <function name="JPlus.param" return="String">
+        <desc>将表单元素数组或者对象序列化。是.serialize()的核心方法。</desc>
+		<longdesc>在JPlus 1.3中，如果传递的参数是一个函数，那么用.param()会得到这个函数的返回值，而不是把这个函数作为一个字符串来返回。
+		
+		在JPlus 1.4中，.param()会深度递归一个对象来满足现在脚本语言和框架，比如PHP， Ruby on Rails等。你可以通过JPlus.ajaxSettings.traditional = true; 来全局得禁用这个功能。
+		
+		注意：因为有些框架在解析序列化数字的时候能力有限，所以当传递一些含有嵌套对象、数组的对象作为参数时，请务必小心！
+		
+		在JPlus 1.4中，HTML5的input元素也会被序列化。</longdesc>
+        <params name="obj" type="Array&lt;Elements>, JPlus, Object">
+          <desc>数组或JPlus对象会按照name/value对进行序列化，普通对象按照key/value对进行序列化。</desc>
+        </params>
+        <params name="traditional" type="Boolean" optional="True">
+          <desc>是否使用传统的方式浅层序列化。</desc>
+        </params>
+        <example>
+          <desc>按照key/value对序列化普通对象。</desc>
+          <code>
+    var params = { width:1680, height:1050 };
+    var str = JPlus.param(params);
+    $("#results").text(str);</code>
+          <result>width=1680&amp;height=1050</result>
+        </example>
+        <example>
+          <desc>对比两种序列化方式</desc>
+          <code><![CDATA[var myObject = {
+  a: {
+    one: 1, 
+    two: 2, 
+    three: 3
+  }, 
+  b: [1,2,3]
+};
+var recursiveEncoded = $.param(myObject);
+var recursiveDecoded = decodeURIComponent($.param(myObject));
+
+alert(recursiveEncoded);
+alert(recursiveDecoded);
+//a%5Bone%5D=1&a%5Btwo%5D=2&a%5Bthree%5D=3&b%5B%5D=1&b%5B%5D=2&b%5B%5D=3
+//a[one]=1&a[two]=2&a[three]=3&b[]=1&b[]=2&b[]=3
+
+var shallowEncoded = $.param(myObject, true);
+var shallowDecoded = decodeURIComponent(shallowEncoded);
+
+alert(shallowEncoded);
+alert(shallowDecoded);
+//a=%5Bobject+Object%5D&b=1&b=2&b=3
+//a=[object+Object]&b=1&b=2&b=3
+]]></code>
+        </example>
+      </function>
+    </subcat>
+</cat>
+  <cat value="教程">
+    <subcat value="3小时上手 J+ Core">
+      <selector name="studySummary">
+        <sample>1. 简介</sample>
+        <longdesc><![CDATA[
+			J+ Core 是从 J+ UI 分离出来的 Javascript 底层开发框架。它提供了 DOM 操作、常用工具函数、AJAX、特效四方面的功能。相对于其它同类型的框架， J+ Core 具有下列特点： <br>
+			<ul>
+				<li>轻量但全能：全库普通压缩后为 64K (jQuery 为 115k, Mootools 为 92k)</li>
+				<li>无额外功能，效率高。</li>
+				<li>完全面向对象：易扩展、可读性强。为 UI 组件开发提供贴心的支持。</li>
+				<li>更贴近国内需求的接口设计。</li>
+				<li>兼容包括IE6的全浏览器，但不支持怪癖模式。</li>
+			</ul>
+		]]></longdesc>
+      </selector>
+      <selector name="studyHelloWorld">
+		<sample>2. Hello world</sample>
+        <longdesc><![CDATA[
+			<p>
+			首先下载 jplus-core.js， 并放到服务器相关目录。
+			</p>
+			
+			<p>
+			然后使用如下代码引入 JS：
+			</p>
+			
+			<pre><code>&lt;script src="path/to/jplus-core.js" type="text/javascript"&gt;&lt;/script&gt;</code></pre>
+			
+			<p>
+				然后插入如下测试代码：
+			</p>
+			
+			<pre><code>&lt;script type="text/javascript"&gt;
+	alert(typeof Dom);
+&lt;/script&gt;</code></pre>
+			
+			<p>如果输出的不是 undefined ,则说明一切正常。</p>
+		]]></longdesc>
+      </selector>
+      <selector name="studyDom">
+        <sample>3. DOM 处理</sample>
+        <longdesc><![CDATA[
+			<p>
+			 J+ 用于处理DOM元素的两大对象是 Dom 对象 和 DomList 对象。其中，Dom 对象也叫 Control 对象，它是对单一的原生DOM节点的封装，而 DomList 则是对任意个原生的DOM节点的封装。
+			</p>
+			<p>
+			 比如执行 var a = Dom.get('id'); 返回的 a 就是一个 Dom 对象。 a.dom 就是其封装的原生DOM 对象。所有的DOM处理函数都是a的成员，比如 a.addClass('cls'); ，addClass 内部会访问 a.dom.className 属性来实现它的功能。
+			</p>
+			<p>
+			 DomList 对象和 Dom 对象的方法是一样的，但它是将原生DOM对象以类似数组的方式来存储的。比如
+			 var a = Dom.query('.cls'); 返回的 a 就是一个 DomList 对象。a[0] 对应了封装的第一个原生DOM对象。调用 a.addClass('cls') 会对其每个节点都调用一次 addClass 操作。DomList 的获取和设置操作都是对全部元素有效的。当获取 DomList 的属性时，返回的是一个数组。
+			</p>
+			<p>
+			 只要掌握如何在原生的DOM节点，原生的NodeList对象，Dom 对象和 DomList 对象之间互相转换，就可以轻松驾驭DOM处理了。
+			</p>
+			<p>
+				比如： 
+			</p>
+			 <ul>
+				<li>document.body 就是一个原生的DOM对象。</li>
+				<li>document.getElementsByTagName('div') 就是一个原生的NodeList对象</li>
+				<li>调用 Dom.get() 就将任何原生DOM对象包装成 Dom 对象。</li>
+				<li>调用 Dom.query() 就可以将任何原生的NodeList对象包装成 DomList 对象。</li>
+				<li>调用 Dom.get().dom 就可以返回原生的DOM节点。</li>
+				<li>调用 Dom.query()[0] 就可以返回原生的DOM节点。</li>
+		     </ul>
+			 
+			 <p>
+				document 对象被认为是一个已经被包装过的 Dom 对象，所有和全局有关的操作都通过 document 访问。比如获取文档的大小： document.getSize();
+			 </p>
+				
+			 <p>
+				Dom.get 被缩写为 $$ , Dom.query 被缩写为 $。如果这2个符合已经被使用，而J+不会强制覆盖。
+			 </p>
+				
+			 <p>
+				根据以上总结，一个DOM处理函数最终是这个样子的：
+				<pre><code>$$('id').addClass('class-to-add').setStyle('color', 'red'); // 单一节点操作，效率最高。</code></pre>
+				<pre><code>$('div.cls').addClass('class-to-add').setStyle('color', 'red'); // 多节点同时操作，使用方便。</code></pre>
+			 </p>
+		]]></longdesc>
+      </selector>
+    </subcat>
+  </cat>
+  <cat value="关于">
+    <subcat value="关于翻译">
+      <selector name="aboutXMLDoc">
+        <sample>原文档关于</sample>
+        <longdesc><![CDATA[原文档XML文件内英文及代码部分版权归原官方wiki所有，中文部分分属<a href="http://www.cn-cuckoo.com/">为之漫笔</a>, <a href="http://shawphy.com">Shawphy</a> and <a href="http://cloudream.name">Cloudream</a>所有。欢迎转载、替换其他XSL样式或其他形式的转载，但必须保证XML文件原样转载，保留署名以及不可用于商业用途。本文档仅供参考，出于方便学习的目的而分发。使用者必须自行承担风险，因使用此文档造成的任何损失或者潜在的损失，译者均不为其负责。]]></longdesc>
+      </selector>
+    </subcat>
+    <subcat value="提交bug及获取更新">
+      <selector name="bugAndUpdate">
+        <sample>提交bug及获取更新</sample>
+        <longdesc><![CDATA[<p>如果大家使用过程中发现了什么错误，可以找到项目地址 <a href="https://github.com/weued/JPlus/issues">http://github.com/weued/JPlus</a>  来反馈。  </p>
+]]></longdesc>
+      </selector>
+    </subcat>
+  </cat>
+</docs>
+
