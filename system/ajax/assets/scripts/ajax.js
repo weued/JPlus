@@ -5,17 +5,54 @@
 
 using("System.Ajax.Request");
 
- 
 /**
  * 处理异步请求的功能。
  * @class Ajax
  */
-var Ajax = Request.extend({
+var Ajax = Object.extend(Ajax.Request.extend({
 	
-	onError: function(errorMessage){
-		this.trigger("error", errorMessage);
-	},
+	/**
+	 * 当前 AJAX 发送的地址。
+	 * @field url
+	 */
 
+	/**
+	 * 获取或设置请求类型。
+	 */
+	type: 'GET',
+	
+	/**
+	 * 获取或设置是否为异步请求。
+	 */
+	async: true,
+	
+	cache: true,
+	
+	/**
+	 * 获取请求头。
+	 */
+	headers: {
+		'X-Requested-With': 'XMLHttpRequest',
+		'Accept': 'text/javascript, text/html, application/xml, text/xml, */*'
+	},
+	
+	/**
+	 * 获取或设置是否忽略缓存。
+	 * @property disableCache=false
+	 */
+	
+	/**
+	 * 超时的时间大小。 (单位: 毫秒)
+	 * @property timeouts
+	 * @type Number
+	 */
+	 
+	 /**
+	  * 是否允许缓存。
+	  * @property enableCache
+	  * @type Boolean
+	  */
+	
 	onReadyStateChange: function(exception){
 		var me = this, xhr = me.xhr;
 			
@@ -53,41 +90,6 @@ var Ajax = Request.extend({
 	},
 	
 	/**
-	 * 获取或设置请求类型。
-	 */
-	type: 'GET',
-	
-	/**
-	 * 获取或设置是否为异步请求。
-	 */
-	async: true,
-	
-	/**
-	 * 获取请求头。
-	 */
-	headers: {
-		'X-Requested-With': 'XMLHttpRequest',
-		'Accept': 'text/javascript, text/html, application/xml, text/xml, */*'
-	},
-	
-	/**
-	 * 获取或设置是否忽略缓存。
-	 * @property disableCache=false
-	 */
-	
-	/**
-	 * 超时的时间大小。 (单位: 毫秒)
-	 * @property timeouts
-	 * @type Number
-	 */
-	 
-	 /**
-	  * 是否允许缓存。
-	  * @property enableCache
-	  * @type Boolean
-	  */
-	
-	/**
 	 * 发送请求。
 	 */
 	send: function(data) {
@@ -113,7 +115,7 @@ var Ajax = Request.extend({
 			 * 当前请求。
 			 * @type String
 			 */
-			url = me.url,  
+			url = me.url.replace(/#.*$/, ''),  
 			
 			/**
 			 * 是否异步请求。
@@ -122,13 +124,13 @@ var Ajax = Request.extend({
 			async = me.async;
 			
 		assert(url != undefined, "Ajax.prototype.send(data): 当前请求不存在 url 属性，无法提交请求。");
-		assert(["GET", "POST", "PUT", "DELETE"].indexOf(type) > -1, "Ajax.prototype.send(data): 当前请求的 {type} 不合法， type 应该是 GET POST PUT DELETE 之一(注意全大写)。", type);
+		//assert(["GET", "POST", "PUT", "DELETE"].indexOf(type) > -1, "Ajax.prototype.send(data): 当前请求的 {type} 不合法， type 应该是 GET POST PUT DELETE 之一(注意全大写)。", type);
+		
+		data = data || me.data;
 		
 		if (me.xhr && !me.delay(data)) {
 			return me;
 		}
-		
-		me.onStart(data);
 		
 		/// #region 数据
 			
@@ -136,15 +138,18 @@ var Ajax = Request.extend({
 		if(typeof data !== 'string')
 			data = me.toParam(data);
 		
+		// 预处理数据。
+		me.onStart(data);
+		
 		// get  请求
 		if (data && type == 'GET') {
 			url = me.combineUrl(url, data);
 			data = null;
 		}
 		
-		// 禁止缓存，为地址加上随机数。@AKI 禁止缓存的话，点击几次就是几个ajax请求，这个可以根据需要考虑
-		if(me.disableCache){
-			url = me.combineUrl(url, JPlus.id++);
+		// 禁止缓存，为地址加上随机数。
+		if(!me.cache){
+			url = me.combineUrl(url, '_=' +  JPlus.id++);
 		}
 		
 		/// #endregion
@@ -263,7 +268,7 @@ var Ajax = Request.extend({
 	 */
 	xType: "ajax"
 	
-});
+}), Ajax);
 
 String.map("get post", function(k) {
 	

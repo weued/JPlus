@@ -2,12 +2,14 @@
  * @fileOverview 提供最底层的 AJAX 辅助函数。
  */
 
+var Ajax = Ajax || {};
+
 /**
  * 提供一个请求的基本功能。
  * @class Request
  * @abstract
  */
-var Request = Class({
+Ajax.Request = Class({
 	
 	/**
 	 * 返回变量的地址形式。
@@ -39,6 +41,10 @@ var Request = Class({
 	
 	onSuccess: function(response){
 		this.trigger("success", response);
+	},
+	
+	onError: function(errorMessage){
+		this.trigger("error", errorMessage);
 	},
 	
 	onTimeout: function(){
