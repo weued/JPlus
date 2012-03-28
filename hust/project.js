@@ -11,5 +11,6 @@ System.copyright = 'hust';
 // 命名自己来。
 var menus = {
 	Core: 'Base',
-	Button: 'ArrowButton'
+	Button: 'ArrowButton',
+	Components:'star template'
 };
