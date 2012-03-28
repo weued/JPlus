@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>UI-星级评分系统</title>
+<style>
+.star a{ 
+	float:left; 
+	cursor:pointer; 
+	text-align:center; 
+	width:16px; 
+	height:18px; 
+	background:url(./pic/star-evluation-default.png);
+ } 
+.star a.hover{ 
+	background:url(./pic/star-evluation-happy.png);
+ } 
+.star a.hoverSad{ 
+	background:url(./pic/star-evluation-sad.png);
+ } 
+.star a.select{ 
+	background:url(./pic/star-evluation-happy.png);
+  } 
+.star a.selectSad{ 
+background:url(./pic/star-evluation-sad.png);
+} 
+</style>
+</head>
+<body>
+您给的评价是：
+<div id="target" style="margin-bottom:40px;">
+</div>
+<script>
+function addEvent(obj,evtype,fn,useCapture) {
+		if (obj.addEventListener) {
+			obj.addEventListener(evtype,fn,useCapture);
+		} else {
+			obj.attachEvent("on"+evtype,function(){return fn.call(obj)});//IE不支持事件捕获,修复ie绑定事件this指向window的bug
+		} 
+	}
+
+  (function(w){
+     w.Star=Star||{};
+	 /*
+	   @totalStar:总星级数
+	   @defaultStar:默认星级数
+	   @result:评价结果的渲染位置
+	   @boundary:评价满意时的星数
+       author:小C
+       qq:308512341
+       email:hustcoolboy@gmail.com
+	   可用接口
+	   setValue设置当前星级
+	   getValue获取当前星级
+       备注:本插件使用不需依赖任何框架
+	 */
+	 function Star(options){
+	    this.totlaStar=options.total||5;
+		this.defaultStar=options.defaultStar||4;
+        this.boundary=options.boundary||3;
+		this.target=options.target||w.body;//新建UI渲染到哪个元素中
+        this.onchange=options.onchange||function(){};
+		this.value=this.defaultStar;
+        this.able=options.able||false;
+	    this.init();
+	 }
+	 
+	 Star.prototype={
+	   init:function(){
+	      var div=document.createElement('div'),tmpa=[],select=document.createElement("select");
+				select.name="starSelect";;
+		  for(var i=0;i<this.totlaStar;i++){
+		    var a=document.createElement('a');
+			select.options.add(new Option(i+1+"星级",i+1)); 
+            a.index=i;
+			a.title=(i+1)+"星级";
+			tmpa.push(a);
+		    div.appendChild(a);
+		  };
+		  div.className="star";
+		  this.div=div;
+		  this.select=select;
+		  this.a=tmpa;
+		  this.setValue(this.defaultStar);
+		  var self=this;
+		  this._eventHandler=function(e){
+			 self.eventHandler(e);
+		  };
+		   this._selectChangeHandler=function(){
+			 self.selectChangeHandler(this.value);
+		  };
+		  addEvent(div,"mouseover",this._eventHandler);
+		  addEvent(div,"click",this._eventHandler);
+		  addEvent(div,"mouseout",this._eventHandler);
+		  addEvent(select,"change",this._selectChangeHandler);
+		  this.render();
+          if(!this.able)this.disable();
+	   },
+	   eventHandler:function(e){
+          if(!this.able)return;
+	      var e=e||window.event,target=e.target||e.srcElement,cur=1+target.index;
+		  switch(e.type){
+			  case 'mouseout':
+				this.setValue(this.value);
+				break;
+			   case 'mouseover':
+				this.setValue(cur,true);
+				break;
+			  case 'click':
+				this.setValue(cur);
+				this.onchange(cur); 
+				break;
+			  default:
+				break;
+		  }
+                 
+	   },
+	   getValue:function(){
+		  return this.value;   
+	   },
+	   setValue:function(n,m){
+		    this.select.value=n;
+		    var s=n>=this.boundary?"select":"selectSad";
+		    for(var i=0;i<this.totlaStar;i++){
+				this.a[i].className=i<n?s:"";
+				this.a[i].select=i<n?true:false;
+			}
+			if(!m){
+			  this.value=n;	
+			}
+			return this;
+	   },
+       enable:function(){
+          this.able=true;
+          this.select.disabled="";
+		  return this;
+       },
+       disable:function(){
+          this.able=false;
+          this.select.disabled="disabled";
+		  return this;
+       },
+	   selectChangeHandler:function(value){
+           if(!this.able)return;
+	       this.setValue(value);
+		   this.onchange(value); 
+	   },
+	   render:function(){
+		  this.target.appendChild(this.div);
+          this.target.appendChild(this.select);
+	   }
+	 }
+   
+  })(this);
+  var s=new Star({target:document.getElementById("target"),able:true,total:15,defaultStar:2,boundary:10,onchange:function(v){
+     alert(v);
+  }});
+</script>
+<div>
+api文档
+  <div>
+    <pre>构造器:Star(config)
+    config:{
+      totalStar:总星级数
+	  defaultStar:默认星级数
+	  result:评价结果的渲染位置
+	  boundary:评价满意时的星数
+    }</pre>
+  </div>
+  <div>getValue：获取组件当前值，返回值为int</div>
+  <div>setValue(int V):设置组件当前值,返回组件本身</div>
+  <div>enable:使组件能正常交互，返回当前组件</div>
+  <div>disable:禁止组件交互，返回当前组件</div>
+ demo代码
+ <div>
+  var s=new Star({target:document.getElementById("target"),able:true,total:15,defaultStar:2,boundary:10,onchange:function(v){
+     alert(v);
+  }});
+ </div>
+</div>
+</body>
+</html>
