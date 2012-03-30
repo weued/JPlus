@@ -3013,7 +3013,7 @@
 					
 				// 字符串，表示选择器。
 				case 'string':
-					if(/^(?:[-\w:]|[^\x00-\xa0]|\\.)+$/.test(elem)) {
+					if(/^(?:[-\w:]|[^\x00-\xa0]|\\.)+$/.test(args)) {
 						args = args.toUpperCase();
 						return function(elem) {
 							return elem.nodeType === 1 && elem.tagName === args;
