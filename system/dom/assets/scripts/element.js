@@ -554,11 +554,11 @@
 			return typeof id === "string" ?
 				(id = document.getElementById(id)) && new Dom(id) :
 				id ? 
-					id.dom ? 
-						id : 
-						typeof id.length === 'number' ? 
+					id.nodeType ? 
+						new Dom(id) :
+						id.dom ? 
+							id : 
 							Dom.get(id[0]) : 
-							new Dom(id) : 
 					null;
 			
 		},
@@ -1423,7 +1423,7 @@
 		appendTo: function(parent) {
 		
 			// parent 肯能为 true
-			(parent && parent !== true ? parent instanceof Control ? parent : Dom.get(parent): new Dom(document.body)).insertBefore(this, null);
+			parent && parent !== true ? (parent.append ? parent : Dom.get(parent)).append(this) : this.attach(document.body, null);
 
 			return this;
 	
@@ -1439,7 +1439,7 @@
 			if (arguments.length) {
 				assert(childControl && this.hasChild(childControl), 'Control.prototype.remove(childControl): {childControl} 不是当前节点的子节点', childControl);
 				this.removeChild(childControl);
-			} else if (childControl = this.parent || this.getParent()){
+			} else if (childControl = this.parentControl || this.getParent()){
 				childControl.removeChild(this);
 			}
 	
@@ -2390,6 +2390,10 @@
 		
 		match: function (selector) {
 			return Dom.match(this.dom, selector);
+		},
+		
+		isHidden: function(){
+			return Dom.isHidden(this.dom) || styleString(this.dom, 'visibility') !== 'hidden';
 		},
 		
 		/**
