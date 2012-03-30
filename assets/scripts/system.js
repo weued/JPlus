@@ -137,13 +137,14 @@
 					label.className = 'system-togglecode';
 					label.innerHTML = '<input type="checkbox" style="vertical-align: middle;" onclick="System.toggleSources(!this.checked)">隐藏源码';
 					main.insertBefore(label,  main.firstChild);
-				    window.prettyPrint && prettyPrint();
 				    
 				    if(System.getData('toggleSources') === '0') {
 				    	label.firstChild.checked = true;
 				    	System.toggleSources(false);
 				    }
 				}
+				
+				  window.prettyPrint && prettyPrint();
 			});
 
 			

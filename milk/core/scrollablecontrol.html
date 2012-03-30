@@ -19,7 +19,118 @@
 	<body>
 		<h1>Core/ScrollableControl</h1>
 		
-		<p>ScrollableControl 为 ListControl 和 ContainerControl 提供接口。
+		<p>ScrollableControl 从名字上看是一个带滚动条的组件。
+			但实际上它是一个包含很多子控件的控件。
+			ScrollableControl 并不专指容器，它是子控件管理的抽象模型。
+		</p>
+		
+		<p>子控件管理，具体指这些功能：添加子控件、删除子控件、获取第n个子控件、获取子控件的个数。</p>
+		
+		<p>
+			ScrollableControl 提供了默认的子控件管理的全部功能。 ScrollableControl 的子类可以重写相关方法实现个性化的子控件管理方式。
+		</p>
+		
+		<p>ScrollableControl 用法演示：</p>
+		
+		<pre class="prettyprint linenums lang-html">&lt;div id="container-id"&gt;&lt;/div&gt;</pre>
+		
+		<pre class="prettyprint linenums lang-js">// 创建一个新类，其代理的元素是 #container-id
+var a = new ScrollableControl('container-id');</pre>
+	<p>
+	通过这个 a 对象，可以很方便地实现 a 的子控件的管理。
+	</p>
+<p>
+	1. 添加一个新的子控件
+</p>
+<pre class="prettyprint linenums lang-js">a.controls.add('&lt;a href="#"&gt;newElem&lt;/a&gt;');</pre>
+<p>结果:</p>
+<pre class="prettyprint linenums lang-html">&lt;div id="container-id"&gt;&lt;a href="#">newElem&lt;/a&gt;&lt;/div&gt;</pre>
+<p>
+<p>
+	2. 移除子控件
+</p>
+<pre class="prettyprint linenums lang-js">a.controls.removeAt(0); // 删除第 0 个子控件。</pre>
+<p>结果:</p>
+<pre class="prettyprint linenums lang-html">&lt;div id="container-id"&gt;&lt;/div&gt;</pre>
+<p>
+	3. 查看子控件
+</p>
+<pre class="prettyprint linenums lang-js">alert( a.controls.length ); // 查看子控件的数目。</pre>
+<p>结果:</p>
+<pre class="prettyprint linenums lang-html">0</pre>
+<p>
+	a.controls 就像一个数组， a.controls[0] 表示 a 的第一个子控件。通过 a.controls，可以很方便地对 a 的子控件进行操作。
+	</p>	
+	
+	<p>
+		对于 ScrollableControl 来说，它能清除地知道子控件的增删操作，并在增删子控件时做任何操作。
+	</p>
+		
+		<p>
+			ScrollableControl 类的原型为：
+		</p>
+		
+		<pre class="prettyprint linenums lang-java">
+abstract class ScrollableControl extends Control {
+	
+	// 获取用于管理当前子控件的集合对象。
+	public ControlCollection get controls;
+	
+	// 初始化子控件。
+	protected virtual Control initItem(Object item);
+	
+	// 当子控件被添加之后，会执行这个函数。
+	// 参数是添加的新子控件，以及添加的目标位置。
+	protected virtual void onControlAdded(Control childControl, Integer index);
+	
+	// 当子控件被删除之后，会执行这个函数。
+	protected virtual void onControlRemoved(Control childControl, Integer index);
+	
+	// 创建 controls 对象。
+	protected virtual ControlCollection createControlsInstance();
+
+	// 一个管理子集合的类。
+	// 要阅读本类，必须先阅读 <a href="../../system/data/collection.html">Collection</a> 类。
+	// ControlCollection 将所有子元素的操作都转为 ScrollableControl 的方法来处理。
+	// 因此， ScrollableControl 才可以完全控制子控件。
+	class ControlCollection extends <a href="../../system/data/collection.html">Collection</a> {
+		
+		private ScrollableControl get owner;
+		
+		protected override Control initItem(Object item) {
+			return this.owner.onControlAdded(childControl, index);
+		}
+		
+		protected override void onInsert(childControl, index){
+			this.owner.onControlAdded(childControl, index);
+		}
+		
+		protected override void onRemove(childControl, index){
+			this.owner.onControlRemoved(childControl, index);
+		}
+		
+	}
+}
+
+</pre>
+	
+	<p>
+		这个类的用法如下：
+	</p>
+	
+	<pre class="prettyprint linenums lang-js">// 创建一个新的类。
+</pre>
+	
+	<p>
+		a.controls.add 做了这些事情：
+	</p>
+	
+	
+	<p>
+		这样做的目的是什么？
+	</p>
+			
+			为 ListControl 和 ContainerControl 提供接口。
 			ScrollableControl 有一个 container 控件属性，所有子元素都会添加到这个控件下，
 			默认地， container 指向控件本身。</p>
 			

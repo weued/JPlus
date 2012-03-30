@@ -27,16 +27,40 @@
 	<body>
 		<h1>Form/ComboBox</h1>
 		
+		<h2>最简单的组合框</h2>
+		
+		<input type="text" class="x-textbox" value="默认值" id="a"/>
+		<script>
+			 var a = new ComboBox("a");
+			 a.items.add("选1");
+			 a.items.add("选2");
+			 a.items.add("选3");
+		</script>
+		
+		<h3>第一步：</h3>
+		
+		<pre class="prettyprint linenums lang-html">&lt;input type="text" value="默认值" id="a"&gt;</pre>
+		
+		<h3>第二步：</h3>
+		
+		<pre class="prettyprint linenums lang-js">var a = new ComboBox("a");
+a.items.add("选1");
+a.items.add("选2");
+a.items.add("选3");
+</pre>
+
+<hr>
+		
 		<section class="system-control">
-			<span class="x-combinedtextbox" id="a">
-				<input type="text" class="x-textbox" type="text" value="文本框"/>
+			<span class="x-combinedtextbox" id="c">
+				<input type="text" class="x-textbox" value="文本框"/>
 				<button class="x-button"><span class="x-button-menu"></span></button>
 			</span>
 			<script>
-				 var a = new ComboBox("a");
-				 a.items.add("选1");
-				 a.items.add("选2");
-				 a.items.add("选3");
+				 var c = new ComboBox("c");
+				 c.items.add("选1");
+				 c.items.add("选2");
+				 c.items.add("选3");
 			</script>
    		</section>
 		
