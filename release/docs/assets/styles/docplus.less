@@ -1,0 +1,39 @@
+
+/**
+ * @author 
+ */
+
+
+@import "../../../../milk/core/assets/styles/mixins.less";
+
+#header {
+  #gradient > .vertical(#074E7C, #095F93);
+}
+
+#navbar {
+   
+}
+
+#navbar a{
+  color: #fff;
+  font-weight: bold;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
+  text-decoration: none;
+  font-size: 13px;
+  line-height: 13px;
+  padding: 7px 15px;
+  display: inline-block;
+  .ie7-inline-block(); 
+  .border-radius(5px 5px 0 0);
+  #gradient > .vertical(#00B0D8, #0088C4);
+  border: 1px solid #64D0E7;
+  text-align: center;
+  
+  &.selected {
+    background: #FFFFFF;
+    color: #656565;
+    text-shadow: none;
+    border-bottom-color: @white;
+    // #gradient > .vertical(#0088C4, #11C1E9);
+  }
+}
