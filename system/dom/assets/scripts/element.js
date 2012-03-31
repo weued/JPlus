@@ -643,7 +643,14 @@
 	 	 * @return {Node} 元素。
 		 */
 		getNode: function (id) {
-			return typeof id === "string" ? document.getElementById(id): (id && id.dom || id);
+			return typeof id === "string" ?
+				document.getElementById(id) :
+				id ? 
+					id.nodeType ? 
+						id :
+						id.dom || Dom.getNode(id[0]) : 
+					null;
+			
 		},
 
 		/**
@@ -2767,7 +2774,7 @@
 	/// #endif
 
 	Control.addEvents
-		("mousewheel blur focus focusin focusout scroll change select submit resize error load unload touchstart touchmove touchend", initUIEvent)
+		("mousewheel blur focus focusin focusout scroll change select submit resize error load unload touchstart touchmove touchend hashchange", initUIEvent)
 		("click dblclick DOMMouseScroll mousedown mouseup mouseover mouseenter mousemove mouseleave mouseout contextmenu selectstart selectend", initMouseEvent)
 		("keydown keypress keyup", initKeyboardEvent);
 
