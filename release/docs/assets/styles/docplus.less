@@ -8,13 +8,22 @@
 
 #header {
   #gradient > .vertical(#074E7C, #095F93);
+  
+  h1 {
+    color: #ffffff; 
+  }
+}
+
+#navbar, #tabs {
+  display: inline-block;
+  .ie7-inline-block(); 
 }
 
 #navbar {
-   
+  margin-right: 20px; 
 }
 
-#navbar a{
+.tab a{
   color: #fff;
   font-weight: bold;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
@@ -36,4 +45,10 @@
     border-bottom-color: @white;
     // #gradient > .vertical(#0088C4, #11C1E9);
   }
+}
+
+
+#sidebar {
+  background: #F8F8F8;
+  width: 200px; 
 }
