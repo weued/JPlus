@@ -7,44 +7,121 @@
 		<link href="assets/styles/docplus.less" rel="stylesheet/less" type="text/css" />
 		<script src="assets/scripts/jplus.js" type="text/javascript"></script>
 		<script src="assets/scripts/docplus.js" type="text/javascript"></script>
-		
 		<script src="../../assets/libs/less/less.min.js" type="text/javascript"></script>
 	</head>
 	<body>
-		<div id="topbar">
-			
-	   </div>
-	    <div id="main">
-		    <div id="header">
-		    	<h1>J+ UI Library</h1>
-		    	
-		    	<div id="navbar" class="tab">
-		    		<a href="" title="首页"><span class="x-icon x-icon-white x-icon-home"></span></a>
-		    		<a href="#" class="selected" title="API 文档">API</a>
-		    		<a href="#">示例</a>
-		    		<a href="#">教程</a>
-		    		<a href="#">社区</a>
-		    	</div>
-		    	
-		    	<div id="tabs" class="tab">
-		    		<a href="" title="首页">AAA</a>
-		    		<a href="#" class="selected" title="API 文档">BBB</a>
-		    		<a href="#">CCC</a>
-		    		<a href="#">DDD</a>
-		    	</div>
-		    </div>
-		    <div id="body">
-		    	<div id="sidebar">
-		    		sidebar
-		    	</div>
-		    	<div id="content">
-		    		content
-		    	</div>
-		    </div>
-			<div id="footer">
-					
+		<div id="main">
+			<div id="header">
+				<div id="logo-container">
+					<div id="toolbar">
+						AA
+					</div>
+					<h1><a href="#">wend Library</a></h1>
+				</div>
+				<div id="tab-container">
+					<ul id="navbar">
+						<li>
+							<a href="" title="首页"><span class="x-icon x-icon-home"></span></a>
+						</li>
+						<li class="selected">
+							<a href="#" title="API 文档">中文</a>
+						</li>
+						<li>
+							<a href="#">中文</a>
+						</li>
+						<li>
+							<a href="#">中文</a>
+						</li>
+						<li>
+							<a href="#">中文</a>
+						</li>
+					</ul>
+					<div id="tab-container-split"></div>
+					<ul id="tabs">
+						<li>
+							<a href="" title="首页">AAA</a><a class="x-closebutton" href="#">×</a>
+						</li>
+						<li class="selected">
+							<a href="#" title="API 文档"> BBBBBBBBBBBB </a>
+							<a class="x-closebutton" href="#">×</a>
+						</li>
+						<li>
+							<a href="#">CCC</a><a class="x-closebutton" href="#">×</a>
+						</li>
+						<li>
+							<a href="#">DDD</a><a class="x-closebutton" href="#">×</a>
+						</li>
+					</ul>
+					<div id="tabs-more">
+						<a href="#"> <i class="x-icon x-icon-white x-icon-plus"></i> </a>
+						<a href="#"> <i class="x-icon x-icon-white x-icon-star"></i> </a>
+						<a href="#"> <i class="x-icon x-icon-white x-icon-list"></i> </a>
+					</div>
+				</div>
 			</div>
-		
-	    </div>
+			<div id="body" style="height: 400px;">
+				<div id="sidebar" style="width: 200px;">
+					<div id="doctree" style="overflow:auto; height: 380px;">
+						sidebar <div style="height: 1000px;"></div>
+					</div>
+					<div id="sidebar-bottom">
+						toolbar
+						<br>
+						Copyright <a href="#">Author</a>
+					</div>
+				</div>
+				<div id="content" style="width: 800px;">
+					<!-- <iframe id="content-iframe" src="content/index.html"></iframe> -->
+					<div id="doc">
+						<div id="doc-func">
+							AAA
+						</div>
+						<h1>Class</h1>
+						<hr>
+						<p>
+							summary
+						</p>
+						
+						<h3>属性</h3>
+						
+						<table class="x-table doc-members">
+							<thead>
+								<tr>
+									<th></th>
+									<th>名称 </th>
+									<th>说明</th>
+									<th>继承</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td> 1 </td>
+									<td> Td 1 </td>
+									<td> Td 2 </td>
+									<td> Td 3 </td>
+								</tr>
+								<tr>
+									<td> 2 </td>
+									<td> Td 1 </td>
+									<td> Td 2 </td>
+									<td> Td 3 </td>
+								</tr>
+							</tbody>
+						</table>
+						
+						<h3>备注</h3>
+						
+						<p>
+							使用由 Data 属性返回的 System.Collections  对象来存储和检索与异常相关的补充信息。 
+							
+							信息的形式为任意数目的用户定义的键/值对。键/值对中的键通常是一个标识字符串，而键/值对中的值则可以是任何对象类型。
+						</p>
+						
+						<h5>诶住</h5>
+						<p>aaa</p>
+					</div>
+				</div>
+			</div>
+		</div>
 	</body>
 </html>

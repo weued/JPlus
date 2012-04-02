@@ -6,49 +6,140 @@
 
 @import "../../../../milk/core/assets/styles/mixins.less";
 
+// Scaffolding
+//----------------
+
+@bg: #F8F8F8;
+
+// Header
+
 #header {
-  #gradient > .vertical(#074E7C, #095F93);
+  #gradient > .vertical(#103E68, #085D91);
+  padding: 10px 5px 0;
+}
+
+#logo-container {
+  color: #ffffff; 
   
   h1 {
-    color: #ffffff; 
+    margin: 0 0 8px;
+	line-height: 18px;
+    font-size: 18px;
   }
-}
-
-#navbar, #tabs {
-  display: inline-block;
-  .ie7-inline-block(); 
-}
-
-#navbar {
-  margin-right: 20px; 
-}
-
-.tab a{
-  color: #fff;
-  font-weight: bold;
-  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
-  text-decoration: none;
-  font-size: 13px;
-  line-height: 13px;
-  padding: 7px 15px;
-  display: inline-block;
-  .ie7-inline-block(); 
-  .border-radius(5px 5px 0 0);
-  #gradient > .vertical(#00B0D8, #0088C4);
-  border: 1px solid #64D0E7;
-  text-align: center;
   
-  &.selected {
-    background: #FFFFFF;
-    color: #656565;
-    text-shadow: none;
-    border-bottom-color: @white;
-    // #gradient > .vertical(#0088C4, #11C1E9);
+  a {
+    color: #ffffff; 
+	text-decoration: none;
   }
 }
 
+#toolbar {
+	float: right;
+}
+
+#tab-container {
+   height: 29px;
+	   
+	li{
+	  float: left;
+	  .border-radius(5px 5px 0 0);
+	  #gradient > .vertical(#FFFFFF, #DCEBF4);
+	  border: 1px solid #7CA1D2;
+	  text-align: center;
+	  margin-right: -1px;
+	  
+	  &.selected {
+		background: @white;
+	  }
+	}
+	
+	a {
+	  font-size: 13px;
+	  line-height: 13px;
+	  height: 13px;
+	  display: inline-block;
+	  .ie7-inline-block(); 
+	  padding: 7px 15px;
+	  color: #656565;
+	  font-weight: bold;
+	  text-decoration: none;
+	}
+	
+	.x-closebutton {
+		padding: 7px 5px;
+		margin-left: -10px;
+	}
+}
+
+#tabs li.selected{
+	border-bottom-color: @white;
+}
+
+#tab-container-split {
+	float: left;
+	width: 10px;
+	height: 100%;
+}
+
+#tabs-more {
+	float: right;
+	
+	a {
+		padding: 7px 5px;
+	}
+}
+
+// Body
+
+#sidebar, #content {
+  float: left;
+  height: 100%;
+  padding: 5px;
+}
 
 #sidebar {
-  background: #F8F8F8;
-  width: 200px; 
+  background: @bg;
+  border-right: 1px solid @grayBorder;
 }
+
+#doctree {
+  
+}
+
+#content-iframe {
+	border: 0;
+}
+
+// API Document
+//----------------
+#doc {
+
+	padding: 10px;
+	
+	h1 {
+		color: #66AB16;
+		font-family: 'Arial'
+	}
+	
+	h3 {
+		color: #250C58;
+	}
+
+}
+
+
+#doc-func {
+	float: right;
+	margin-top: 10px;
+}
+
+.doc-members {
+	width: auto;
+	
+	th {
+		background: #f1f1f1;
+		padding: 3px 8px;
+	}
+}
+
+
