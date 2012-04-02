@@ -1088,12 +1088,47 @@
 
 	})(navigator.userAgent));
 
+	applyIf(window, {
+
+		/// #if CompactMode
+		
+		/**
+		 * 初始化一个 XMLHttpRequest 对象。
+		 * @constructor
+		 * @class XMLHttpRequest
+		 * @return {XMLHttpRequest} 请求的对象。
+		 */
+		XMLHttpRequest: function() {
+			return new ActiveXObject("Microsoft.XMLHTTP");
+		},
+
+		/// #endif
+		
+		/**
+		 * 在全局作用域运行一个字符串内的代码。
+		 * @param {String} statement Javascript 语句。
+		 * @example <code>
+		 * execScript('alert("hello")');
+		 * </code>
+		 */
+		execScript: function(statements) {
+
+			// 如果正常浏览器，使用 window.eval 。
+			window["eval"].call( window, statements );
+
+        }
+		
+	});
+	
 	/// #endregion
+	
+    // 将以下成员赋予 window ，这些成员是全局成员。
+    String.map('undefined Class', p, window);
 
 	/// #region Methods
 	
 	// 把所有内建对象本地化 。
-	each.call([String, Array, Function, Date, Number], p.Native);
+	each.call([String, Array, Function, Date], p.Native);
 
 	/**
 	 * xType。
@@ -1599,44 +1634,6 @@
 	});
 
 	/// #endregion
-
-	/// #if CompactMode
-
-	if (!window.XMLHttpRequest) {
-		
-		/**
-		 * 初始化一个 XMLHttpRequest 对象。
-		 * @constructor
-		 * @class XMLHttpRequest
-		 * @return {XMLHttpRequest} 请求的对象。
-		 */
-		window.XMLHttpRequest = function() {
-			return new ActiveXObject("Microsoft.XMLHTTP");
-		};
-	}
-
-	/// #endif
-	
-	if (!window.execScript) {
-
-		/**
-		 * 在全局作用域运行一个字符串内的代码。
-		 * @param {String} statement Javascript 语句。
-		 * @example <code>
-		 * execScript('alert("hello")');
-		 * </code>
-		 */
-		window.execScript = function(statements) {
-
-			// 如果正常浏览器，使用 window.eval 。
-			window["eval"].call( window, statements );
-
-        };
-        
-	}
-
-    // 将以下成员赋予 window ，这些成员是全局成员。
-    String.map('undefined Class', p, window);
 
 	/// #region Private Functions
 
