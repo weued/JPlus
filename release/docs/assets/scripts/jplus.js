@@ -1,5 +1,5 @@
 ﻿/*
- * This file is created by a tool at 2012/04/04 20:41:17
+ * This file is created by a tool at 2012/04/04 21:44:08
  */
 
 
@@ -8455,6 +8455,166 @@ var IInput = {
  * Milk.Form.Form
  ************************************/
 /************************************
+ * Milk.Form.ListBox
+ ************************************/
+var ListBox = ListControl.extend(IInput).implement({
+	
+	xType: 'listbox',
+	
+	/**
+	 * 当用户点击一项时触发。
+	 */
+	onItemClick: function (item) {
+		return this.trigger('itemclick', item);
+	},
+	
+	/**
+	 * 当一个选项被选中时触发。
+	 */
+	onSelect: function(item){
+		
+		// 如果存在代理元素，则同步更新代理元素的值。
+		if(this.formProxy)
+			this.formProxy.value = this.baseGetValue(item);
+			
+		return this.trigger('select', item);
+	},
+	
+	/**
+	 * 点击时触发。
+	 */
+	onClick: function (e) {
+		
+		// 如果无法更改值，则直接忽略。
+		if(this.getDisabled() || this.getReadOnly())
+			return;
+			
+		//获取当前项。
+		var item = this.getItemOf(e.target);
+		if(item && !this.clickItem(item)){
+			e.stop();
+		}
+	},
+	
+	/**
+	 * 模拟点击一项。
+	 */
+	clickItem: function(item){
+		if(this.onItemClick(item)){
+			this.toggleItem(item);
+			return true;
+		}
+		
+		return false;
+	},
+	
+	init: function(options){
+		var t;
+		if(this.dom.tagName === 'SELECT'){
+			t = this.dom;
+			this.dom = this.create(options);
+			t.parentNode.replaceChild(this.dom, t);
+		}
+		
+		this.base('init');
+			
+		this.on('click', this.onClick);
+		
+		if(t)
+			this.copyItemsFromSelect(t);
+		
+	},
+	
+	setName: function (value) {
+		if(!this.formProxy){
+			this.formProxy = Dom.parseNode('<input type="hidden">');
+			this.formProxy.value = this.getValue();
+			this.dom.appendChild(this.formProxy);
+		}
+		
+		this.formProxy.name = value;
+		return this;
+		
+	},
+	
+	getName: function () {
+		return this.formProxy && this.formProxy.name;
+	},
+	
+	/**
+	 * 底层获取一项的值。
+	 */
+	baseGetValue: function(item){
+		return item ? item.value !== undefined ? item.value : item.getText() : null;
+	},
+	
+	/**
+	 * 获取选中项的值，如果每天项被选中，则返回 null 。
+	 */
+	getValue: function(){
+		var selectedItem = this.getSelectedItem();
+		return selectedItem ? this.baseGetValue(selectedItem) : this.formProxy ? this.formProxy.value : null;
+	},
+	
+	/**
+	 * 查找并选中指定值内容的项。如果没有项的值和当前项相同，则清空选择状态。
+	 */
+	setValue: function(value){
+		
+		// 默认设置为值。
+		if(this.formProxy)
+			this.formProxy.value = value;
+			
+		var t;
+		
+		this.controls.each(function(item){
+			if(this.baseGetValue(item) === value){
+				t = item;
+				return false;
+			}
+		}, this);
+		
+		return this.setSelectedItem(t);
+	},
+	
+	getForm: function () {
+		return Dom.get(this.formProxy && this.formProxy.form);
+	},
+	
+	/**
+	 * 反选择一项。
+	 */
+	clear: function () {
+		return  this.setSelectedItem(null);
+	},
+	
+	copyItemsFromSelect: function(select){
+		if(select.name){
+			this.setName(select.name);
+			select.name = '';
+		}
+		for(var node = select.firstChild; node; node = node.nextSibling) {
+			if(node.tagName  === 'OPTION') {
+				var item = this.controls.add(Dom.getText(node));
+					
+				item.value = node.value;
+				if(node.selected){
+					this.setSelectedItem(item);
+				}
+			}
+		}
+		
+		if(select.onclick)
+			this.dom.onclick = select.onclick;
+		
+		if(select.onchange)
+			this.on('change', select.onchange);
+		
+	}
+	
+});
+
+/************************************
  * Milk.Form.TextBox
  ************************************/
 var TextBox = Control.extend({
@@ -8742,166 +8902,6 @@ var ComboBox = CombinedTextBox.extend(IDropDownMenuContainer).implement({
 /************************************
  * Milk.Form.RadioButton
  ************************************/
-/************************************
- * Milk.Form.ListBox
- ************************************/
-var ListBox = ListControl.extend(IInput).implement({
-	
-	xType: 'listbox',
-	
-	/**
-	 * 当用户点击一项时触发。
-	 */
-	onItemClick: function (item) {
-		return this.trigger('itemclick', item);
-	},
-	
-	/**
-	 * 当一个选项被选中时触发。
-	 */
-	onSelect: function(item){
-		
-		// 如果存在代理元素，则同步更新代理元素的值。
-		if(this.formProxy)
-			this.formProxy.value = this.baseGetValue(item);
-			
-		return this.trigger('select', item);
-	},
-	
-	/**
-	 * 点击时触发。
-	 */
-	onClick: function (e) {
-		
-		// 如果无法更改值，则直接忽略。
-		if(this.getDisabled() || this.getReadOnly())
-			return;
-			
-		//获取当前项。
-		var item = this.getItemOf(e.target);
-		if(item && !this.clickItem(item)){
-			e.stop();
-		}
-	},
-	
-	/**
-	 * 模拟点击一项。
-	 */
-	clickItem: function(item){
-		if(this.onItemClick(item)){
-			this.toggleItem(item);
-			return true;
-		}
-		
-		return false;
-	},
-	
-	init: function(options){
-		var t;
-		if(this.dom.tagName === 'SELECT'){
-			t = this.dom;
-			this.dom = this.create(options);
-			t.parentNode.replaceChild(this.dom, t);
-		}
-		
-		this.base('init');
-			
-		this.on('click', this.onClick);
-		
-		if(t)
-			this.copyItemsFromSelect(t);
-		
-	},
-	
-	setName: function (value) {
-		if(!this.formProxy){
-			this.formProxy = Dom.parseNode('<input type="hidden">');
-			this.formProxy.value = this.getValue();
-			this.dom.appendChild(this.formProxy);
-		}
-		
-		this.formProxy.name = value;
-		return this;
-		
-	},
-	
-	getName: function () {
-		return this.formProxy && this.formProxy.name;
-	},
-	
-	/**
-	 * 底层获取一项的值。
-	 */
-	baseGetValue: function(item){
-		return item ? item.value !== undefined ? item.value : item.getText() : null;
-	},
-	
-	/**
-	 * 获取选中项的值，如果每天项被选中，则返回 null 。
-	 */
-	getValue: function(){
-		var selectedItem = this.getSelectedItem();
-		return selectedItem ? this.baseGetValue(selectedItem) : this.formProxy ? this.formProxy.value : null;
-	},
-	
-	/**
-	 * 查找并选中指定值内容的项。如果没有项的值和当前项相同，则清空选择状态。
-	 */
-	setValue: function(value){
-		
-		// 默认设置为值。
-		if(this.formProxy)
-			this.formProxy.value = value;
-			
-		var t;
-		
-		this.controls.each(function(item){
-			if(this.baseGetValue(item) === value){
-				t = item;
-				return false;
-			}
-		}, this);
-		
-		return this.setSelectedItem(t);
-	},
-	
-	getForm: function () {
-		return Dom.get(this.formProxy && this.formProxy.form);
-	},
-	
-	/**
-	 * 反选择一项。
-	 */
-	clear: function () {
-		return  this.setSelectedItem(null);
-	},
-	
-	copyItemsFromSelect: function(select){
-		if(select.name){
-			this.setName(select.name);
-			select.name = '';
-		}
-		for(var node = select.firstChild; node; node = node.nextSibling) {
-			if(node.tagName  === 'OPTION') {
-				var item = this.controls.add(Dom.getText(node));
-					
-				item.value = node.value;
-				if(node.selected){
-					this.setSelectedItem(item);
-				}
-			}
-		}
-		
-		if(select.onclick)
-			this.dom.onclick = select.onclick;
-		
-		if(select.onchange)
-			this.on('change', select.onchange);
-		
-	}
-	
-});
-
 /************************************
  * Milk.Form.Suggest
  ************************************/

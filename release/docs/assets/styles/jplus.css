@@ -1,5 +1,5 @@
 ﻿/*
- * This file is created by a tool at 2012/04/04 20:41:17
+ * This file is created by a tool at 2012/04/04 21:44:08
  */
 
 
@@ -1011,6 +1011,61 @@ input.x-button-small {
   margin-left: 0;
 }
 /************************************
+ * Milk.Form.ListBox
+ ************************************/
+.x-listbox {
+  display: inline-block;
+  background-color: white;
+  border-color: #cccccc;
+  border-color: rgba(0, 0, 0, 0.2);
+  border-style: solid;
+  border-width: 1px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  *display: inline;
+  *zoom: 1;
+  min-width: 140px;
+  _zoom: 0;
+  _display: block;
+  _width: 160px;
+}
+.x-listbox-content {
+  display: block;
+  padding: 3px 10px;
+  color: #555555;
+  white-space: nowrap;
+  cursor: default;
+  _width: 100%;
+}
+.x-listbox-container {
+  padding: 4px 0;
+  margin: 0;
+  list-style: none;
+  _width: 100%;
+  _overflow: hidden;
+}
+.x-listbox-content:hover,
+.x-dropdownmenu .x-listbox-selected {
+  background-color: #0088cc;
+}
+.x-listbox-content a {
+  color: #333333;
+}
+.x-listbox-selected {
+  background-color: #005580;
+}
+.x-listbox-content:hover,
+.x-listbox-selected {
+  color: white;
+}
+.x-listbox-content:hover a,
+.x-listbox-selected a {
+  color: white;
+  text-decoration: none;
+  cursor: default;
+}
+/************************************
  * Milk.Form.TextBox
  ************************************/
 .x-textbox {
@@ -1194,61 +1249,6 @@ textarea.x-textbox {
 
 .x-radiobutton {
   margin: 0px 4px 2px;
-}
-/************************************
- * Milk.Form.ListBox
- ************************************/
-.x-listbox {
-  display: inline-block;
-  background-color: white;
-  border-color: #cccccc;
-  border-color: rgba(0, 0, 0, 0.2);
-  border-style: solid;
-  border-width: 1px;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
-  *display: inline;
-  *zoom: 1;
-  min-width: 140px;
-  _zoom: 0;
-  _display: block;
-  _width: 160px;
-}
-.x-listbox-content {
-  display: block;
-  padding: 3px 10px;
-  color: #555555;
-  white-space: nowrap;
-  cursor: default;
-  _width: 100%;
-}
-.x-listbox-container {
-  padding: 4px 0;
-  margin: 0;
-  list-style: none;
-  _width: 100%;
-  _overflow: hidden;
-}
-.x-listbox-content:hover,
-.x-dropdownmenu .x-listbox-selected {
-  background-color: #0088cc;
-}
-.x-listbox-content a {
-  color: #333333;
-}
-.x-listbox-selected {
-  background-color: #005580;
-}
-.x-listbox-content:hover,
-.x-listbox-selected {
-  color: white;
-}
-.x-listbox-content:hover a,
-.x-listbox-selected a {
-  color: white;
-  text-decoration: none;
-  cursor: default;
 }
 /************************************
  * Milk.Form.Suggest
