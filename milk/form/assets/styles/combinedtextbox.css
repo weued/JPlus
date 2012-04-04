@@ -35,3 +35,7 @@
 .x-textbox:focus + .x-button {
   border-color: rgba(82, 168, 236, 0.8);
 }
+.x-combinedtextbox .x-button .x-icon {
+  margin-left: 2px;
+  margin-right: -2px;
+}

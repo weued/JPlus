@@ -62,7 +62,85 @@
 			<div id="body" style="height: 400px;">
 				<div id="sidebar" style="width: 200px;">
 					<div id="doctree" style="overflow:auto; height: 380px;">
-						sidebar <div style="height: 1000px;"></div>
+						<div class="x-treeview x-treeview-plain">
+	        <ul class="x-treeview-container">
+	            <li class="x-treeview-content">
+	                <div class="x-treenode">
+	                    <span class="x-treenode-space x-treenode-plus">
+	                    </span>
+	                    <span>菜单</span>
+	                </div>
+	                <ul class="x-treeview-container">
+	                    <li class="x-treeview-content">
+	                        <div class="x-treenode">
+	                            <span class="x-treenode-space x-treenode-line">
+	                            </span>
+	                            <span class="x-treenode-space x-treenode-normal">
+	                            </span>
+	                            <span>菜单</span>
+	                        </div>
+	                    </li>
+	                    <li class="x-treeview-content">
+	                        <div class="x-treenode x-treenode-selected x-treenode-last">
+	                            <span class="x-treenode-space x-treenode-line">
+	                            </span>
+	                            <span class="x-treenode-space x-treenode-line">
+	                            </span>
+	                            <span>菜单</span>
+	                        </div>
+	                    </li>
+	                </ul>
+	            </li>
+	            <li class="x-treeview-content">
+	                <div class="x-treenode">
+	                    <span class="x-treenode-space x-treenode-normal">
+	                    </span>
+	                    <span>菜单</span>
+	                </div>
+	            </li>
+	            <li class="x-treeview-content">
+	                <div class="x-treenode">
+	                    <span class="x-treenode-space x-treenode-plus">
+	                    </span>
+	                    <span>菜单</span>
+	                </div>
+	                <ul class="x-treeview-container">
+	                    <li class="x-treeview-content">
+	                        <div class="x-treenode">
+	                            <span class="x-treenode-space x-treenode-space">
+	                            </span>
+	                            <span class="x-treenode-space x-treenode-minus">
+	                            </span>
+	                            <span>菜单</span>
+	                        </div>
+	                    </li>
+	                    <li class="x-treeview-content">
+	                        <div class="x-treenode x-treenode-last">
+	                            <span class="x-treenode-space x-treenode-space">
+	                            </span>
+	                            <span class="x-treenode-space x-treenode-normal">
+	                            </span>
+	                            <span>菜单</span>
+	                        </div>
+	                    </li>
+	                </ul>
+	            </li>
+	            <li class="x-treeview-content">
+	                <div class="x-treenode">
+	                    <span class="x-treenode-space x-treenode-normal">
+	                    </span>
+	                    <span>菜单</span>
+	                </div>
+	            </li>
+	            <li class="x-treeview-content">
+	                <div class="x-treenode x-treenode-last">
+	                    <span class="x-treenode-space x-treenode-plus">
+	                    </span>
+	                    <span>菜单</span>
+	                </div>
+	            </li>
+	        </ul>
+		</div>
 					</div>
 					<div id="sidebar-bottom">
 						toolbar
@@ -71,15 +149,33 @@
 					</div>
 				</div>
 				<div id="content" style="width: 800px;">
-					<!-- <iframe id="content-iframe" src="content/index.html"></iframe> -->
-					<div id="doc">
+					<!-- <iframe id="doc-container-iframe" src="content/index.html"></iframe> -->
+					<div id="doc-container">
+						<div id="doc">
 						<div id="doc-func">
-							AAA
+							<a type="button" id="a" href="#" class="x-button x-button-plain x-menubutton">
+显示
+<span class="x-button-menu x-button-menu-down">
+</span>
+</a>
+							
 						</div>
-						<h1>Class</h1>
+						<h1>Class 类<small>System.Dom.Element</small></h1>
 						<hr>
+						<div id="doc-attrs">
+							<dl>
+								<dt>定义:</dt>
+								<dd><a href="#">aaa.js</a></dd>
+								<dd><a href="#">aaa.js</a></dd>
+								<dd><a href="#">aaa.js</a></dd>
+								<dt>版本:</dt>
+								<dd>1.0</dd>
+							</dl>
+						</div>
 						<p>
 							summary
+							
+							<pre><ol><li>代码 pre</li><li>pre</li><li>ol</li></ol></pre>
 						</p>
 						
 						<h3>属性</h3>
@@ -119,6 +215,7 @@
 						
 						<h5>诶住</h5>
 						<p>aaa</p>
+						</div>
 					</div>
 				</div>
 			</div>

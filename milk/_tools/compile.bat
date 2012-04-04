@@ -72,6 +72,7 @@
 
 :: DataView
 "../../assets/tools/dotless/dotless.Compiler.exe" ../dataview/assets/styles/table.less
+"../../assets/tools/dotless/dotless.Compiler.exe" ../dataview/assets/styles/treeview.less
 
 
 

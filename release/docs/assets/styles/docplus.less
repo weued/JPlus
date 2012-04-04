@@ -11,6 +11,10 @@
 
 @bg: #F8F8F8;
 
+body {
+	overflow: hidden;
+}
+
 // Header
 
 #header {
@@ -106,8 +110,13 @@
   
 }
 
-#content-iframe {
+#doc-container-iframe {
 	border: 0;
+}
+
+#doc-container {
+	height: 100%;
+	overflow: auto;
 }
 
 // API Document
@@ -118,19 +127,43 @@
 	
 	h1 {
 		color: #66AB16;
-		font-family: 'Arial'
+		font-family: 'Arial';
+		
+		small {
+			font-size: 12px;
+			margin-left: 10px;
+		}
 	}
 	
 	h3 {
 		color: #250C58;
 	}
 
+	pre {
+		overflow-x: auto;
+	}
+	
 }
 
 
 #doc-func {
 	float: right;
 	margin-top: 10px;
+	
+	a {
+		color: #333333;
+	}
+}
+
+#doc-attrs {
+	float: right;
+	background: #F7F7F7;
+	.border-radius(5px);
+	padding: 0 20px 0 10px;
+	border: 1px solid @grayBorder;
+	color: @gray;
+	margin-left: 20px;
+	margin-bottom: 20px;
 }
 
 .doc-members {
@@ -140,6 +173,10 @@
 		background: #f1f1f1;
 		padding: 3px 8px;
 	}
+}
+
+#doc-attr {
+	
 }
 
 

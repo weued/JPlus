@@ -1,5 +1,5 @@
 ﻿/*
- * This file is created by a tool at 2012/03/26 20:28:31
+ * This file is created by a tool at 2012/04/04 20:41:17
  */
 
 
@@ -1084,12 +1084,47 @@
 
 	})(navigator.userAgent));
 
+	applyIf(window, {
+
+		/// #if CompactMode
+		
+		/**
+		 * 初始化一个 XMLHttpRequest 对象。
+		 * @constructor
+		 * @class XMLHttpRequest
+		 * @return {XMLHttpRequest} 请求的对象。
+		 */
+		XMLHttpRequest: function() {
+			return new ActiveXObject("Microsoft.XMLHTTP");
+		},
+
+		/// #endif
+		
+		/**
+		 * 在全局作用域运行一个字符串内的代码。
+		 * @param {String} statement Javascript 语句。
+		 * @example <code>
+		 * execScript('alert("hello")');
+		 * </code>
+		 */
+		execScript: function(statements) {
+
+			// 如果正常浏览器，使用 window.eval 。
+			window["eval"].call( window, statements );
+
+        }
+		
+	});
+	
 	/// #endregion
+	
+    // 将以下成员赋予 window ，这些成员是全局成员。
+    String.map('undefined Class', p, window);
 
 	/// #region Methods
 	
 	// 把所有内建对象本地化 。
-	each.call([String, Array, Function, Date, Number], p.Native);
+	each.call([String, Array, Function, Date], p.Native);
 
 	/**
 	 * xType。
@@ -1595,44 +1630,6 @@
 	});
 
 	/// #endregion
-
-	/// #if CompactMode
-
-	if (!window.XMLHttpRequest) {
-		
-		/**
-		 * 初始化一个 XMLHttpRequest 对象。
-		 * @constructor
-		 * @class XMLHttpRequest
-		 * @return {XMLHttpRequest} 请求的对象。
-		 */
-		window.XMLHttpRequest = function() {
-			return new ActiveXObject("Microsoft.XMLHTTP");
-		};
-	}
-
-	/// #endif
-	
-	if (!window.execScript) {
-
-		/**
-		 * 在全局作用域运行一个字符串内的代码。
-		 * @param {String} statement Javascript 语句。
-		 * @example <code>
-		 * execScript('alert("hello")');
-		 * </code>
-		 */
-		window.execScript = function(statements) {
-
-			// 如果正常浏览器，使用 window.eval 。
-			window["eval"].call( window, statements );
-
-        };
-        
-	}
-
-    // 将以下成员赋予 window ，这些成员是全局成员。
-    String.map('undefined Class', p, window);
 
 	/// #region Private Functions
 
@@ -3383,11 +3380,11 @@ JPlus.resolveNamespace = function(ns, isStyle){
 			return typeof id === "string" ?
 				(id = document.getElementById(id)) && new Dom(id) :
 				id ? 
-					id.dom ? 
-						id : 
-						id instanceof DomList ? 
-							id[0] ? new Dom(id[0]) : null : 
-							new Dom(id) : 
+					id.nodeType ? 
+						new Dom(id) :
+						id.dom ? 
+							id : 
+							Dom.get(id[0]) : 
 					null;
 			
 		},
@@ -3404,13 +3401,18 @@ JPlus.resolveNamespace = function(ns, isStyle){
 			return selector ? 
 				typeof selector === 'string' ? 
 					document.query(selector) :
-					selector instanceof DomList ?
-						selector :
+					typeof selector.length === 'number' ? 
+						selector instanceof DomList ?
+							selector :
+							new DomList(selector) :
 						new DomList([Dom.get(selector)]) :
 				new DomList;
 			
 		},
 		
+		/**
+		 * 判断一个元素是否符合一个选择器。
+		 */
 		match: function (elem, selector) {
 			assert.isString(selector, "Control.prototype.find(selector): selector ~。");
 			
@@ -3467,7 +3469,14 @@ JPlus.resolveNamespace = function(ns, isStyle){
 	 	 * @return {Node} 元素。
 		 */
 		getNode: function (id) {
-			return typeof id === "string" ? document.getElementById(id): (id && id.dom || id);
+			return typeof id === "string" ?
+				document.getElementById(id) :
+				id ? 
+					id.nodeType ? 
+						id :
+						id.dom || Dom.getNode(id[0]) : 
+					null;
+			
 		},
 
 		/**
@@ -4247,7 +4256,7 @@ JPlus.resolveNamespace = function(ns, isStyle){
 		appendTo: function(parent) {
 		
 			// parent 肯能为 true
-			(parent && parent !== true ? parent instanceof Control ? parent : Dom.get(parent): new Dom(document.body)).insertBefore(this, null);
+			parent && parent !== true ? (parent.append ? parent : Dom.get(parent)).append(this) : this.attach(document.body, null);
 
 			return this;
 	
@@ -4263,7 +4272,7 @@ JPlus.resolveNamespace = function(ns, isStyle){
 			if (arguments.length) {
 				assert(childControl && this.hasChild(childControl), 'Control.prototype.remove(childControl): {childControl} 不是当前节点的子节点', childControl);
 				this.removeChild(childControl);
-			} else if (childControl = this.parent || this.getParent()){
+			} else if (childControl = this.parentControl || this.getParent()){
 				childControl.removeChild(this);
 			}
 	
@@ -5216,6 +5225,10 @@ JPlus.resolveNamespace = function(ns, isStyle){
 			return Dom.match(this.dom, selector);
 		},
 		
+		isHidden: function(){
+			return Dom.isHidden(this.dom) || styleString(this.dom, 'visibility') !== 'hidden';
+		},
+		
 		/**
 		 * 判断一个节点是否包含一个节点。 一个节点包含自身。
 		 * @param {Element} control 子节点。
@@ -5587,7 +5600,7 @@ JPlus.resolveNamespace = function(ns, isStyle){
 	/// #endif
 
 	Control.addEvents
-		("mousewheel blur focus focusin focusout scroll change select submit resize error load unload touchstart touchmove touchend", initUIEvent)
+		("mousewheel blur focus focusin focusout scroll change select submit resize error load unload touchstart touchmove touchend hashchange", initUIEvent)
 		("click dblclick DOMMouseScroll mousedown mouseup mouseover mouseenter mousemove mouseleave mouseout contextmenu selectstart selectend", initMouseEvent)
 		("keydown keypress keyup", initKeyboardEvent);
 
@@ -5837,7 +5850,13 @@ JPlus.resolveNamespace = function(ns, isStyle){
 					
 				// 字符串，表示选择器。
 				case 'string':
-					return function(elem) {
+					if(/^(?:[-\w:]|[^\x00-\xa0]|\\.)+$/.test(args)) {
+						args = args.toUpperCase();
+						return function(elem) {
+							return elem.nodeType === 1 && elem.tagName === args;
+						};
+					}
+					return args === '*' ? isElement : function(elem) {
 						return elem.nodeType === 1 && Dom.match(elem, args);
 					};
 					
@@ -6011,7 +6030,18 @@ JPlus.resolveNamespace = function(ns, isStyle){
 	}
 
 	function match(dom, selector){
-		return new Dom(dom.parentNode).query(selector).indexOf(dom) >= 0;
+		var r, i = -1;
+		try{
+			r = dom.parentNode.querySelectorAll(selector);
+		} catch(e){
+			r = query(selector, new Dom(dom.parentNode));
+		}
+		
+		while(r[++i])
+			if(r[i] === dom)
+				return true;
+		
+		return false;
 	}
 
 	/**
@@ -6076,7 +6106,7 @@ JPlus.resolveNamespace = function(ns, isStyle){
 			// ‘a>b’ ‘a+b’ ‘a~b’ ‘a b’ ‘a *’
 			} else if(m = /^\s*([\s>+~])\s*(\*|(?:[-\w*]|[^\x00-\xa0]|\\.)*)/.exec(selector)) {
 				selector = RegExp.rightContext;
-				result = result[Dom.combinators[m[1]] || throwError(m[1])](m[2].replace(rBackslash, "").toUpperCase());
+				result = result[Dom.combinators[m[1]] || throwError(m[1])](m[2].replace(rBackslash, ""));
 
 				// ‘a>b’: m = ['>', 'b']
 				// ‘a>.b’: m = ['>', '']
@@ -6226,7 +6256,14 @@ JPlus.resolveNamespace = function(ns, isStyle){
 /************************************
  * System.Fx.Base
  ************************************/
-(function(){
+var Fx = Fx || {};
+
+/**
+ * 实现特效。
+ * @class Fx.Base
+ * @abstract
+ */
+Fx.Base = (function(){
 	
 	
 	/// #region interval
@@ -6247,282 +6284,273 @@ JPlus.resolveNamespace = function(ns, isStyle){
 	/**
 	 * @namespace Fx
 	 */
-	JPlus.namespace("Fx", {
+	return Class({
+	
+		/**
+		 * 每秒的运行帧次。
+		 * @type {Number}
+		 */
+		fps: 50,
 		
 		/**
-		 * 实现特效。
-		 * @class Fx.Base
-	 	 * @abstract
+		 * 总运行时间。 (单位:  毫秒)
+		 * @type {Number}
 		 */
-		Base: Class({
+		duration: 500,
 		
-			/**
-			 * 每秒的运行帧次。
-			 * @type {Number}
-			 */
-			fps: 50,
-			
-			/**
-			 * 总运行时间。 (单位:  毫秒)
-			 * @type {Number}
-			 */
-			duration: 500,
-			
-			/**
-			 * 在特效运行时，第二个特效的执行方式。 可以为 'ignore' 'cancel' 'wait' 'restart' 'replace'
-			 * @type {String}
-			 */
-			link: 'ignore',
-			
-			/**
-			 * xType
-			 * @type {String}
-			 */
-			xType: 'fx',
-			
-			/**
-			 * 初始化当前特效。
-			 * @param {Object} options 选项。
-			 */
-			constructor: function() {
-				this._competeListeners = [];
-			},
-			
-			/**
-			 * 实现变化。
-			 * @param {Object} p 值。
-			 * @return {Object} p 变化值。
-			 */
-			transition: function(p) {
-				return -(Math.cos(Math.PI * p) - 1) / 2;
-			},
-			
-			/**
-			 * 当被子类重写时，实现生成当前变化所进行的初始状态。
-			 * @param {Object} from 开始位置。
-			 * @param {Object} to 结束位置。
-			 * @return {Base} this
-			 */
-			compile: function(from, to) {
-				var me = this;
-				me.from = from;
-				me.to = to;
-				return me;
-			},
-			
-			/**
-			 * 进入变换的下步。
-			 */
-			step: function() {
-				var me = this, time = Date.now() - me.time;
-				if (time < me.duration) {
-					me.set(me.transition(time / me.duration));
-				}  else {
-					me.set(1);
-					me.complete();
-				}
-			},
-			
-			/**
-			 * @event step 当进度改变时触发。
-			 * @param {Number} value 当前进度值。
-			 */
-			
-			/**
-			 * 根据指定变化量设置值。
-			 * @param {Number} delta 变化量。 0 - 1 。
-			 * @abstract
-			 */
-			set: function(value){
-				this.trigger('step', Fx.compute(this.from, this.to, value));
-			},
-			
-			/**
-			 * 增加完成后的回调工具。
-			 * @param {Function} fn 回调函数。
-			 */
-			ready: function(fn){
-				assert.isFunction(fn, "Fx.Base.prototype.ready(fn): 参数 {fn} ~。    ");
-				this._competeListeners.unshift(fn);	
-				return this;
-			},
-			
-			/**
-			 * 检查当前的运行状态。
-			 * @param {Object} from 开始位置。
-			 * @param {Object} to 结束位置。
-			 * @param {Number} duration=-1 变化的时间。
-			 * @param {Function} [onStop] 停止回调。
-			 * @param {Function} [onStart] 开始回调。
-			 * @param {String} link='wait' 变化串联的方法。 可以为 wait, 等待当前队列完成。 restart 柔和转换为目前渐变。 cancel 强制关掉已有渐变。 ignore 忽视当前的效果。
-			 * @return {Boolean} 是否可发。
-			 */
-			delay: function() {
-				var me = this, args = arguments;
-				
-				//如正在运行。
-				if(me.timer){
-					switch (args[5] || me.link) {
-						
-						// 链式。
-						case 'wait':
-							this._competeListeners.unshift(function() {
-								
-								this.start.apply(this, args);
-								return false;
-							});
-							
-							//  如当前fx完成， 会执行 _competeListeners 。
-							
-							//  [新任务开始2, 新任务开始1]
-							
-							//  [新任务开始2, 回调函数] 
-							
-							//  [新任务开始2]
-							
-							//  []
-							
-							return false;
-							
-						case 'restart':
-							me.pause();
-							while(me._competeListeners.pop());
-							break;
-							
-						// 停掉目前项。
-						case 'cancel':
-							me.stop();
-							break;
-							
-						case 'replace':
-							me.pause();
-							break;
-							
-						// 忽视新项。
-						default:
-							return false;
-					}
-				}
-				
-				return true;
-			},
-			
-			/**
-			 * 开始运行特效。
-			 * @param {Object} from 开始位置。
-			 * @param {Object} to 结束位置。
-			 * @param {Number} duration=-1 变化的时间。
-			 * @param {Function} [onStop] 停止回调。
-			 * @param {Function} [onStart] 开始回调。
-			 * @param {String} link='wait' 变化串联的方法。 可以为 wait, 等待当前队列完成。 restart 柔和转换为目前渐变。 cancel 强制关掉已有渐变。 ignore 忽视当前的效果。
-			 * @return {Base} this
-			 */
-			start: function() {
-				var me = this, args = arguments;
-				
-				if (!me.timer || me.delay.apply(me, args)) {
-					
-					// 如果 duration > 0  更新。
-					if (args[2] > 0) this.duration = args[2];
-					else if(args[2] < -1) this.duration /= -args[2];
-					
-					// 存储 onStop
-					if (args[3]) {
-						assert.isFunction(args[3], "Fx.Base.prototype.start(from, to, duration, onStop, onStart, link): 参数 {callback} ~。      ");
-						me._competeListeners.push(args[3]);
-					}
-					
-					// 执行 onStart
-					if (args[4] && args[4].apply(me, args) === false) {
-						return me.complete();
-					}
-				
-					// 设置时间
-					me.time = 0;
-					
-					me.compile(args[0], args[1]).set(0);
-					me.resume();
-				}
-				return me;
-			},
-			
-			/**
-			 * 完成当前效果。
-			 */
-			complete: function() {
-				var me = this;
-				me.pause();
-				var handlers = me._competeListeners;
-				while(handlers.length)  {
-					if(handlers.pop().call(me) === false)
-						return me;
-				}
-				
-				return me;
-			},
-			
-			/**
-			 * 中断当前效果。
-			 */
-			stop: function() {
-				var me = this;
+		/**
+		 * 在特效运行时，第二个特效的执行方式。 可以为 'ignore' 'cancel' 'wait' 'restart' 'replace'
+		 * @type {String}
+		 */
+		link: 'ignore',
+		
+		/**
+		 * xType
+		 * @type {String}
+		 */
+		xType: 'fx',
+		
+		/**
+		 * 初始化当前特效。
+		 * @param {Object} options 选项。
+		 */
+		constructor: function() {
+			this._competeListeners = [];
+		},
+		
+		/**
+		 * 实现变化。
+		 * @param {Object} p 值。
+		 * @return {Object} p 变化值。
+		 */
+		transition: function(p) {
+			return -(Math.cos(Math.PI * p) - 1) / 2;
+		},
+		
+		/**
+		 * 当被子类重写时，实现生成当前变化所进行的初始状态。
+		 * @param {Object} from 开始位置。
+		 * @param {Object} to 结束位置。
+		 * @return {Base} this
+		 */
+		compile: function(from, to) {
+			var me = this;
+			me.from = from;
+			me.to = to;
+			return me;
+		},
+		
+		/**
+		 * 进入变换的下步。
+		 */
+		step: function() {
+			var me = this, time = Date.now() - me.time;
+			if (time < me.duration) {
+				me.set(me.transition(time / me.duration));
+			}  else {
 				me.set(1);
-				me.pause();
-				return me;
-			},
+				me.complete();
+			}
+		},
+		
+		/**
+		 * @event step 当进度改变时触发。
+		 * @param {Number} value 当前进度值。
+		 */
+		
+		/**
+		 * 根据指定变化量设置值。
+		 * @param {Number} delta 变化量。 0 - 1 。
+		 * @abstract
+		 */
+		set: function(value){
+			this.trigger('step', Fx.compute(this.from, this.to, value));
+		},
+		
+		/**
+		 * 增加完成后的回调工具。
+		 * @param {Function} fn 回调函数。
+		 */
+		ready: function(fn){
+			assert.isFunction(fn, "Fx.Base.prototype.ready(fn): 参数 {fn} ~。    ");
+			this._competeListeners.unshift(fn);	
+			return this;
+		},
+		
+		/**
+		 * 检查当前的运行状态。
+		 * @param {Object} from 开始位置。
+		 * @param {Object} to 结束位置。
+		 * @param {Number} duration=-1 变化的时间。
+		 * @param {Function} [onStop] 停止回调。
+		 * @param {Function} [onStart] 开始回调。
+		 * @param {String} link='wait' 变化串联的方法。 可以为 wait, 等待当前队列完成。 reset 柔和转换为目前渐变。 cancel 强制关掉已有渐变。 ignore 忽视当前的效果。 replace 直接替换成新的渐变。
+		 * @return {Boolean} 是否可发。
+		 */
+		delay: function() {
+			var me = this, args = arguments;
 			
-			/**
-			 * 暂停当前效果。
-			 */
-			pause: function() {
-				var me = this;
-				if (me.timer) {
-					me.time = Date.now() - me.time;
-					var fps = me.fps, value = cache[fps];
-					value.remove(me);
-					if (value.length === 0) {
-						clearInterval(me.timer);
-						delete cache[fps];
-					}
-					me.timer = undefined;
+			//如正在运行。
+			if(me.timer){
+				switch (args[5] || me.link) {
+					
+					// 链式。
+					case 'wait':
+						this._competeListeners.unshift(function() {
+							
+							this.start.apply(this, args);
+							return false;
+						});
+						
+						//  如当前fx完成， 会执行 _competeListeners 。
+						
+						//  [新任务开始2, 新任务开始1]
+						
+						//  [新任务开始2, 回调函数] 
+						
+						//  [新任务开始2]
+						
+						//  []
+						
+						return false;
+						
+					case 'reset':
+						me.pause();
+						while(me._competeListeners.pop());
+						break;
+						
+					// 停掉目前项。
+					case 'cancel':
+						me.stop();
+						break;
+						
+					case 'replace':
+						me.pause();
+						break;
+						
+					// 忽视新项。
+					default:
+						return false;
 				}
-				return me;
-			},
-			
-			/**
-			 * 恢复当前效果。
-			 */
-			resume: function() {
-				var me = this;
-				if (!me.timer) {
-					me.time = Date.now() - me.time;
-					var fps = me.fps, value = cache[fps];
-					if(value){
-						value.push(me);
-						me.timer = value[0].timer;
-					}else{
-						me.timer = setInterval(Function.bind(interval, cache[fps] = [me]), Math.round(1000 / fps ));
-					}
-				}
-				return me;
 			}
 			
-		}),
+			return true;
+		},
 		
 		/**
-		 * 常用计算。
-		 * @param {Object} from 开始。
-		 * @param {Object} to 结束。
-		 * @param {Object} delta 变化。
+		 * 开始运行特效。
+		 * @param {Object} from 开始位置。
+		 * @param {Object} to 结束位置。
+		 * @param {Number} duration=-1 变化的时间。
+		 * @param {Function} [onStop] 停止回调。
+		 * @param {Function} [onStart] 开始回调。
+		 * @param {String} link='wait' 变化串联的方法。 可以为 wait, 等待当前队列完成。 restart 柔和转换为目前渐变。 cancel 强制关掉已有渐变。 ignore 忽视当前的效果。
+		 * @return {Base} this
 		 */
-		compute: function(from, to, delta){
-			return (to - from) * delta + from;
+		start: function() {
+			var me = this, args = arguments;
+			
+			if (!me.timer || me.delay.apply(me, args)) {
+				
+				// 如果 duration > 0  更新。
+				if (args[2] > 0) this.duration = args[2];
+				else if(args[2] < -1) this.duration /= -args[2];
+				
+				// 存储 onStop
+				if (args[3]) {
+					assert.isFunction(args[3], "Fx.Base.prototype.start(from, to, duration, onStop, onStart, link): 参数 {callback} ~。      ");
+					me._competeListeners.push(args[3]);
+				}
+				
+				// 执行 onStart
+				if (args[4] && args[4].apply(me, args) === false) {
+					return me.complete();
+				}
+			
+				// 设置时间
+				me.time = 0;
+				
+				me.compile(args[0], args[1]).set(0);
+				me.resume();
+			}
+			return me;
+		},
+		
+		/**
+		 * 完成当前效果。
+		 */
+		complete: function() {
+			var me = this;
+			me.pause();
+			var handlers = me._competeListeners;
+			while(handlers.length)  {
+				if(handlers.pop().call(me) === false)
+					return me;
+			}
+			
+			return me;
+		},
+		
+		/**
+		 * 中断当前效果。
+		 */
+		stop: function() {
+			var me = this;
+			me.set(1);
+			me.pause();
+			return me;
+		},
+		
+		/**
+		 * 暂停当前效果。
+		 */
+		pause: function() {
+			var me = this;
+			if (me.timer) {
+				me.time = Date.now() - me.time;
+				var fps = me.fps, value = cache[fps];
+				value.remove(me);
+				if (value.length === 0) {
+					clearInterval(me.timer);
+					delete cache[fps];
+				}
+				me.timer = undefined;
+			}
+			return me;
+		},
+		
+		/**
+		 * 恢复当前效果。
+		 */
+		resume: function() {
+			var me = this;
+			if (!me.timer) {
+				me.time = Date.now() - me.time;
+				var fps = me.fps, value = cache[fps];
+				if(value){
+					value.push(me);
+					me.timer = value[0].timer;
+				}else{
+					me.timer = setInterval(Function.bind(interval, cache[fps] = [me]), Math.round(1000 / fps ));
+				}
+			}
+			return me;
 		}
-	
+		
 	});
 	
 
 })();
+
+/**
+ * 常用计算。
+ * @param {Object} from 开始。
+ * @param {Object} to 结束。
+ * @param {Object} delta 变化。
+ */
+Fx.compute = function(from, to, delta){
+	return (to - from) * delta + from;
+};
 /************************************
  * System.Fx.Animate
  ************************************/
@@ -7437,10 +7465,10 @@ ScrollableControl.ControlCollection = Collection.extend({
 	onInsert: function(childControl, index){
 		
 		// 如果控件已经有父控件。
-		if(childControl.parent) {
-			childControl.parent.controls.remove(childControl);
+		if(childControl.parentControl) {
+			childControl.parentControl.controls.remove(childControl);
 		}
-		childControl.parent = this.owner;
+		childControl.parentControl = this.owner;
 		
 		// 执行控件添加函数。
 		this.owner.onControlAdded(childControl, index);
@@ -7453,7 +7481,7 @@ ScrollableControl.ControlCollection = Collection.extend({
 	 */
 	onRemove: function(childControl, index){
 		this.owner.onControlRemoved(childControl, index);
-		childControl.parent = null;
+		childControl.parentControl = null;
 	}
 	
 });
@@ -8184,7 +8212,7 @@ var MenuItem = ContentControl.extend({
 	onMouseEnter: function(){
 		
 		// 使用父菜单打开本菜单，显示子菜单。
-		this.parent && this.parent.showSub(this);
+		this.parentControl && this.parentControl.showSub(this);
 
 	},
 	
@@ -8458,14 +8486,14 @@ var CombinedTextBox = TextBox.extend({
 	
 	tpl: '<span class="x-combinedtextbox">\
 			<input type="text" class="x-textbox" type="text"/>\
-			<button class="x-button"><span class="x-button-menu x-button-menu-down"></span></button>\
+			<button class="x-button"><span class="x-button-menu"></span></button>\
 		</span>',
 	
 	/**
 	 * @protected
 	 */
 	setMenuType: function(type){
-		this.menuButton.find('.x-button-menu').dom.className = 'x-button-menu x-button-menu-' + type;
+		this.menuButton.find('.x-button-menu').dom.className = 'x-icon x-icon-' + type;
 		return this;
 	},
 	
@@ -8607,8 +8635,10 @@ var ComboBox = CombinedTextBox.extend(IDropDownMenuContainer).implement({
 		// 初始化文本框
 		this.base('init');
 		
-		// 设置下拉菜单样式。
-		this.setMenuType('down');
+		if(this.textBox.dom.name){
+			this.setName(this.textBox.dom.name);
+			this.textBox.dom.name = '';
+		}
 		
 		// 4. 绑定事件
 		
@@ -8658,6 +8688,10 @@ var ComboBox = CombinedTextBox.extend(IDropDownMenuContainer).implement({
 		
 		this.dropDownMenu.setValue(value);
 		
+		if(this.formProxy) {
+			this.formProxy.value = value;
+		}
+		
 		var t = this.dropDownMenu.getSelectedItem();
 		
 		// 如果选择的项，则表示 value 设置成功。
@@ -8678,14 +8712,9 @@ var ComboBox = CombinedTextBox.extend(IDropDownMenuContainer).implement({
 		return this.dropDownMenu.setText(this.getText());
 	},
 	
-	setName: function(value) {
-		this.dropDownMenu.setName(value);
-		return this;
-	},
+	setName: ListBox.prototype.setName,
 	
-	getName: function() {
-		return this.dropDownMenu.getName();
-	},
+	getName: ListBox.prototype.getName,
 	
 	setSelectedItem: function(value){
 		this.setValue(this.dropDownMenu.baseGetValue(value));
@@ -9091,7 +9120,7 @@ Accordion.TabPage = ContainerControl.extend({
 	init: function(){
 		var me = this;
 		me.header = me.find('.x-accordion-header').on('click', function(e){
-			this.parent.setActivedTab(this);
+			this.parentControl.setActivedTab(this);
 		}, me);
 		
 		me.container = me.find('.x-accordion-body');
@@ -9454,3 +9483,246 @@ BalloonTip.show = function(ctrl, text, offsetY, offsetX){
 /************************************
  * Milk.Display.Line
  ************************************/
+/************************************
+ * Milk.DataView.TreeView
+ ************************************/
+var TreeNode = ScrollableControl.extend(ICollapsable).implement({
+	
+	/**
+	 * 更新节点前面的占位符状态。
+	 */
+	_updateSpan: function(){
+		
+		var span = this.getSpan(0), current = this;
+		
+		while((current = current.parent) && (span = span.getPrevious())){
+			
+			span.dom.className = current.isLastNode() ? 'x-treenode-space x-treenode-none' : 'x-treenode-space';
+		
+		}
+		
+		this.updateNodeType();
+	},
+	
+	/**
+	 * 更新一个节点前面指定的占位符的类名。
+	 */
+	_setSpan: function(depth, className){
+		
+		this.nodes.each(function(node){
+			var first = node.getFirst(depth).dom;
+			if(first.tagName == 'SPAN')
+				first.className = className;
+			node._setSpan(depth, className);
+		});
+		
+	},
+	
+	_markAsLastNode: function(){
+		this.addClass('x-treenode-last');
+		this._setSpan(this.depth - 1, 'x-treenode-space x-treenode-none');
+	},
+	
+	_clearMarkAsLastNode: function(){
+		this.removeClass('x-treenode-last');
+		this._setSpan(this.depth - 1, 'x-treenode-space');
+	},
+	
+	_initContainer: function(childControl){
+		var me = this, li = Dom.create('li', 'x-list-content');
+		li.append(childControl);
+		
+		// 如果 子节点有子节点，那么插入子节点的子节点。
+		if(childControl.container){
+			li.append(childControl.container);
+		}
+		
+		if(childControl.duration === -1){
+			childControl.duration = me.duration;
+		}
+		
+		return li;
+	},
+	
+	updateNodeType: function(){
+		this.setNodeType(this.nodes.length === 0 ? 'normal' : this.isCollapsed() ? 'plus' : 'minus');
+	},
+	
+	xType: 'treenode',
+		   
+	depth: 0,
+	
+	create: function(){
+		var div = Dom.create('div', 'x-' + this.xType);
+		div.append(Dom.create('span', ''));
+		return div.dom;
+	},
+	
+	init: function(options){
+		this.content = this.getLast();
+		this.initChildren('nodes');
+	},
+	
+	initChild: function(childControl){
+		if(!(childControl instanceof TreeNode)) {
+			var t = childControl;
+			childControl = new TreeNode();
+			if(typeof t === 'string')
+				childControl.setText(t);
+			else
+				Dom.get(childControl).append(t);
+		} else if(childControl.parentControl)
+			childControl.parentControl.remove(childControl);    //   如果有指定父元素， 删除。
+		childControl.parentControl = this;
+		return childControl;
+	},
+	
+	onControlAdded: function(childControl, index){
+		var me = this,
+			t = this.initContainer(childControl),
+			re = this.controls[index];
+		
+		this.container.insertBefore(t, re && re.getParent());
+		
+		// 只有 已经更新过 才去更新。
+		if(this.depth || this instanceof TreeView){
+			childControl.setDepth(this.depth + 1);
+		}
+		
+		me.update();
+	},
+	
+	onControlRemoved: function(childControl, index){
+		this.container.removeChild(childControl.getParent());
+		childControl.parent = null;
+		this.update();
+	},
+	
+	initContainer: function(childControl){
+		
+		// 第一次执行创建容器。
+		this.container = Dom.create('ul', 'x-list-container x-treeview-container');
+		
+		if(this instanceof TreeView){
+			this.dom.appendChild(this.container.dom);	
+		} else if(this.dom.parentNode){
+			this.dom.parentNode.appendChild(this.container.dom);	
+		}
+		
+		this.initContainer = this._initContainer;
+		
+		return this.initContainer (childControl);
+		
+	},
+	
+	// 由于子节点的改变刷新本节点和子节点状态。
+	update: function(){
+		
+		// 更新图标。
+		this.updateNodeType();
+		
+		// 更新 lastNode
+		if(this.nodes.length){
+			var currentLastNode = this.nodes[this.nodes.length - 1],
+				lastNode = this.lastNode;
+			if (lastNode !== currentLastNode) {
+				currentLastNode._markAsLastNode();
+				this.lastNode = currentLastNode;
+				if (lastNode) lastNode._clearMarkAsLastNode();
+			}
+		}
+		
+	},
+	
+	setNodeType: function(type){
+		var handle = this.getSpan(0);
+		if(handle) {
+			handle.dom.className = 'x-treenode-space x-treenode-' + type;
+		}
+	},
+	
+	expandAll: function(){
+		if (this.container) {
+			this.expand();
+			this.nodes.invoke('expandAll', []);
+		}
+	},
+	
+	collapseAll: function(){
+		if (this.container) {
+			this.nodes.invoke('collapseAll', []);
+			this.collapse();
+		}
+	},
+	
+	isLastNode: function(){
+		return this.parent &&  this.parent.lastNode === this;
+	},
+	
+	onToggleCollapse: function(value){
+		this.setNodeType(this.nodes.length === 0 ? 'normal' : value ? 'plus' : 'minus');
+		if(!value && (value = this.getNext('ul'))){
+			value.dom.style.height = 'auto';
+		}
+	},
+	
+	// 获取当前节点的占位 span 。 最靠近右的是 index == 0
+	getSpan: function(index){
+		return this.content.getPrevious(index);
+	},
+
+	// 设置当前节点的深度。
+	setDepth: function(value){
+		
+	
+		var currentDepth = this.depth, span, elem = this.dom;
+		
+		assert(value >= 0, "value 非法。 value = {0}", value);
+		
+		// 删除已经存在的占位符。
+		
+		while(currentDepth > value){
+			elem.removeChild(elem.firstChild);
+			currentDepth--;
+		}
+	
+		// 重新生成占位符。
+	
+		while(currentDepth < value){
+			span = document.createElement('span');
+			span.className ='x-treenode-space';
+			elem.insertBefore(span, elem.firstChild);
+			currentDepth++;
+		}
+		
+		if(elem.lastChild.previousSibling)
+			elem.lastChild.previousSibling.onclick = Function.bind(this.toggleCollapse, this);
+		
+		// 更新深度。
+		
+		this.depth = value;
+		
+		this._updateSpan();
+		
+		// 对子节点设置深度+1
+		this.nodes.invoke('setDepth', [value + 1]);
+	},
+	
+	toString: function(){
+		return String.format("{0}#{1}", this.getText(), this.depth);
+	}
+
+});
+
+
+Control.delegate
+	(TreeNode, 'content', 'setHtml setText')
+	(TreeNode, 'content', 'getHtml getText', true);
+
+var TreeView = TreeNode.extend({
+	
+	xType: 'treeview'
+	
+});
+
+

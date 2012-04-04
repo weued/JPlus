@@ -1,14 +1,10 @@
 .x-button-menu {
   display: inline-block;
-  width: 8px;
-  height: 8px;
   vertical-align: middle;
   opacity: 0.3;
   filter: alpha(opacity=30);
   content: "\2193";
   font-size: 0;
-}
-.x-button-menu-down {
   width: 0;
   height: 0;
   border-left: 4px solid transparent;

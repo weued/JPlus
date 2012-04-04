@@ -1,5 +1,5 @@
 ﻿/*
- * This file is created by a tool at 2012/03/26 20:28:31
+ * This file is created by a tool at 2012/04/04 20:41:17
  */
 
 
@@ -772,15 +772,11 @@ input.x-button-small {
  ************************************/
 .x-button-menu {
   display: inline-block;
-  width: 8px;
-  height: 8px;
   vertical-align: middle;
   opacity: 0.3;
   filter: alpha(opacity=30);
   content: "\2193";
   font-size: 0;
-}
-.x-button-menu-down {
   width: 0;
   height: 0;
   border-left: 4px solid transparent;
@@ -1138,6 +1134,10 @@ textarea.x-textbox {
 }
 .x-textbox:focus + .x-button {
   border-color: rgba(82, 168, 236, 0.8);
+}
+.x-combinedtextbox .x-button .x-icon {
+  margin-left: 2px;
+  margin-right: -2px;
 }
 /************************************
  * Milk.Form.ComboBox
@@ -2733,4 +2733,96 @@ div.x-tipbox {
 }
 .x-line-dashed {
   border-style: dashed;
+}
+/************************************
+ * Milk.DataView.TreeView
+ ************************************/
+/**
+ * @author 
+ */
+
+/**
+ * @author 
+ */
+
+/* Tree */
+
+.x-treeview {
+  padding: 3px 0;
+  overflow: auto;
+  border: 1px solid #cccccc;
+  cursor: default;
+  overflow: auto;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+.x-treeview-plain {
+  border: 0;
+}
+.x-treeview-plain {
+  border: none;
+}
+.x-treeview-container,
+.x-treeview-content {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.x-treenode,
+.x-treeview a,
+.x-treenode-space {
+  height: 20px;
+}
+.x-treenode {
+  overflow: hidden;
+  cursor: pointer;
+}
+.x-treenode-space {
+  float: left;
+  display: block;
+  width: 19px;
+  background-repeat: no-repeat;
+  cursor: default;
+}
+.x-treeview a,
+.x-treeview a:hover {
+  text-decoration: none;
+}
+.x-treenode {
+  color: #183152;
+  font-size: 14px;
+}
+.x-treenode-space {
+  background-image: url(../images/dataview/treeview.gif);
+}
+.x-treeview.x-treeview-clearlines .x-treenode-space {
+  background-image: url(../images/dataview/treeview-nl.gif);
+}
+.x-treenode-none {
+  background-position: 99px 0;
+}
+.x-treenode-normal {
+  background-position: 0 -30px;
+}
+.x-treenode-plus {
+  background-position: 0 -60px;
+}
+.x-treenode-minus {
+  background-position: 0 -90px;
+}
+.x-treenode-last .x-treenode-normal {
+  background-position: 0 -120px;
+}
+.x-treenode-last .x-treenode-plus {
+  background-position: 0 -150px;
+}
+.x-treenode-last .x-treenode-minus {
+  background-position: 0 -180px;
+}
+.x-treenode-selected {
+  background-color: #d9e8fb;
+}
+.x-treenode:hover {
+  background-color: #eeeeee;
 }

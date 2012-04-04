@@ -4,3 +4,115 @@
 
 
 
+/**
+ * @author 
+ */
+
+
+@import "../../../core/assets/styles/mixins.less";
+
+
+/* Tree */ 
+
+
+
+.x-treeview {
+	padding: 3px 0;
+	overflow: auto;    
+	border: 1px solid #CCCCCC;
+    cursor: default;
+    overflow: auto;
+	.border-radius();
+}
+
+.x-treeview-plain {
+	border: 0;
+}
+
+.x-treeview-plain {
+	border: none;
+}
+
+.x-treeview-container, .x-treeview-content {
+	list-style: none;
+	padding: 0;	
+	margin: 0;
+}
+
+.x-treenode, .x-treeview a, .x-treenode-space {
+    height: 20px;
+}
+
+
+.x-treenode {
+    overflow: hidden;
+	cursor: pointer;
+}
+
+
+
+
+.x-treenode-space {
+    float: left;
+    display: block;
+    width: 19px;
+	background-repeat: no-repeat;
+	cursor: default;
+}
+
+
+
+.x-treeview a, .x-treeview a:hover {
+    text-decoration: none;
+}
+
+.x-treenode{
+	color: #183152;
+	font-size: @baseFontSize + 2;
+}
+
+.x-treenode-space{
+	background-image:url(../images/treeview.gif);
+}
+
+.x-treeview.x-treeview-clearlines .x-treenode-space{
+	background-image:url(../images/treeview-nl.gif);
+}
+
+.x-treenode-none {
+	background-position: 99px 0;
+}
+
+.x-treenode-normal {
+	background-position: 0 -30px;
+}
+
+.x-treenode-plus {
+    background-position: 0 -60px;
+}
+
+.x-treenode-minus {
+    background-position: 0 -90px;
+}
+
+.x-treenode-last .x-treenode-normal {
+    background-position: 0 -120px;
+}
+
+.x-treenode-last .x-treenode-plus {
+    background-position: 0 -150px;
+}
+
+.x-treenode-last .x-treenode-minus {
+    background-position: 0 -180px;
+}
+
+
+
+.x-treenode-selected{
+	background-color: #D9E8FB;
+}
+
+.x-treenode:hover{
+	background-color: #EEEEEE;
+}
