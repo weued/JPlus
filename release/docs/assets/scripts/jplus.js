@@ -1,5 +1,5 @@
 ﻿/*
- * This file is created by a tool at 2012/04/04 21:44:08
+ * This file is created by a tool at 2012/04/05 11:18:20
  */
 
 
@@ -9558,9 +9558,17 @@ var TreeNode = ScrollableControl.extend(ICollapsable).implement({
 		return div.dom;
 	},
 	
+	onDblClick: function(e){
+		this.toggleCollapse();
+		e.stop();
+	},
+	
 	init: function(options){
 		this.content = this.getLast();
-		this.initChildren('nodes');
+		this.setUnselectable();
+		this.on('dblclick', this.onDblClick, this);
+		this.nodes = this.controls;
+		this.container = null;
 	},
 	
 	initChild: function(childControl){
@@ -9571,9 +9579,7 @@ var TreeNode = ScrollableControl.extend(ICollapsable).implement({
 				childControl.setText(t);
 			else
 				Dom.get(childControl).append(t);
-		} else if(childControl.parentControl)
-			childControl.parentControl.remove(childControl);    //   如果有指定父元素， 删除。
-		childControl.parentControl = this;
+		}
 		return childControl;
 	},
 	

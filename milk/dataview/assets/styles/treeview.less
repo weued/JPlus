@@ -20,8 +20,8 @@
 	padding: 3px 0;
 	overflow: auto;    
 	border: 1px solid #CCCCCC;
-    cursor: default;
-    overflow: auto;
+  cursor: default;
+  overflow: auto;
 	.border-radius();
 }
 
@@ -29,38 +29,26 @@
 	border: 0;
 }
 
-.x-treeview-plain {
-	border: none;
-}
-
-.x-treeview-container, .x-treeview-content {
-	list-style: none;
-	padding: 0;	
-	margin: 0;
-}
-
 .x-treenode, .x-treeview a, .x-treenode-space {
     height: 20px;
 }
 
-
 .x-treenode {
-    overflow: hidden;
-	cursor: pointer;
+  overflow: hidden;
+  cursor: pointer;
+  
+  a {
+    color: @textColor; 
+  }
 }
 
-
-
-
 .x-treenode-space {
-    float: left;
-    display: block;
-    width: 19px;
+  float: left;
+  display: block;
+  width: 19px;
 	background-repeat: no-repeat;
 	cursor: default;
 }
-
-
 
 .x-treeview a, .x-treeview a:hover {
     text-decoration: none;
@@ -71,43 +59,9 @@
 	font-size: @baseFontSize + 2;
 }
 
-.x-treenode-space{
-	background-image:url(../images/treeview.gif);
-}
-
-.x-treeview.x-treeview-clearlines .x-treenode-space{
-	background-image:url(../images/treeview-nl.gif);
-}
-
 .x-treenode-none {
-	background-position: 99px 0;
+   background-image: none!important;
 }
-
-.x-treenode-normal {
-	background-position: 0 -30px;
-}
-
-.x-treenode-plus {
-    background-position: 0 -60px;
-}
-
-.x-treenode-minus {
-    background-position: 0 -90px;
-}
-
-.x-treenode-last .x-treenode-normal {
-    background-position: 0 -120px;
-}
-
-.x-treenode-last .x-treenode-plus {
-    background-position: 0 -150px;
-}
-
-.x-treenode-last .x-treenode-minus {
-    background-position: 0 -180px;
-}
-
-
 
 .x-treenode-selected{
 	background-color: #D9E8FB;
@@ -116,3 +70,53 @@
 .x-treenode:hover{
 	background-color: #EEEEEE;
 }
+
+
+.x-treenode-space {
+  background-image:url(../images/treeview.gif);
+}
+
+.x-treenode-plus {
+    background-position: 0 -30px;
+}
+
+.x-treenode-minus {
+    background-position: 0 -60px;
+}
+
+.x-treenode-plus:hover {
+    background-position: -30px -30px;
+}
+
+.x-treenode-minus:hover {
+    background-position: -30px -60px;
+}
+
+.x-treeview-alt {
+  .x-treenode-space {
+    background-image:url(../images/treeview-alt.gif);
+  }
+  
+  .x-treenode-normal {
+      background-position: 0 -90px;
+  }
+  
+  .x-treenode-last  {
+  
+    .x-treenode-plus {
+      background-position: 0 -120px;
+    }
+  
+    .x-treenode-minus {
+      background-position: 0 -150px;
+    }
+    
+    .x-treenode-normal {
+      background-position: 0 -180px;
+    }
+    
+  }
+
+}
+
+

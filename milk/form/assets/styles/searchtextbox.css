@@ -10,3 +10,25 @@
   -moz-border-radius: 14px;
   border-radius: 14px;
 }
+.x-searchtextbox-search {
+  padding-left: 10px;
+  padding-right: 20px;
+  margin-left: 0;
+  *margin-top: 1px;
+  *padding: 3px 6px 3px 2px;
+  position: absolute;
+  -webkit-border-radius: 0 4px 4px 0;
+  -moz-border-radius: 0 4px 4px 0;
+  border-radius: 0 4px 4px 0;
+  right: 0;
+  top: 0;
+  _padding-bottom: 1px;
+  _margin-right: -1px;
+  background: url(../../assets/images/searchtextbox.gif) center center no-repeat;
+  border: none;
+  height: 28px;
+}
+.x-searchtextbox-search:active {
+  right: -1px;
+  top: 1px;
+}

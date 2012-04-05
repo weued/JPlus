@@ -1,5 +1,5 @@
 ﻿/*
- * This file is created by a tool at 2012/03/26 20:28:31
+ * This file is created by a tool at 2012/04/05 10:49:04
  */
 
 
@@ -772,15 +772,11 @@ input.x-button-small {
  ************************************/
 .x-button-menu {
   display: inline-block;
-  width: 8px;
-  height: 8px;
   vertical-align: middle;
   opacity: 0.3;
   filter: alpha(opacity=30);
   content: "\2193";
   font-size: 0;
-}
-.x-button-menu-down {
   width: 0;
   height: 0;
   border-left: 4px solid transparent;
@@ -960,7 +956,6 @@ input.x-button-small {
 .x-menuitem:hover,
 .x-menuitem-selected {
   background-color: #0088cc;
-  background-position: 100% -33px;
 }
 .x-menuitem:hover,
 .x-menuitem-selected,
@@ -1139,6 +1134,10 @@ textarea.x-textbox {
 .x-textbox:focus + .x-button {
   border-color: rgba(82, 168, 236, 0.8);
 }
+.x-combinedtextbox .x-button .x-icon {
+  margin-left: 2px;
+  margin-right: -2px;
+}
 /************************************
  * Milk.Form.ComboBox
  ************************************/
@@ -1262,6 +1261,51 @@ textarea.x-textbox {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
+}
+/************************************
+ * Milk.Form.Validator
+ ************************************/
+/**
+ * @author 
+ */
+
+.x-counter {
+  color: #ff6600;
+}
+.x-counter-error {
+  color: red;
+}
+.x-placeholder {
+  color: #999999;
+  position: absolute;
+  line-height: 28px;
+  cursor: text;
+}
+/************************************
+ * Milk.Form.TagPicker
+ ************************************/
+/**
+ * @author 
+ */
+
+.x-tagpicker {
+  display: inline-block;
+  padding: 3px 8px;
+  text-decoration: none;
+  color: #23589a;
+  vertical-align: middle;
+  line-height: 18px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  text-decoration: none;
+}
+.x-tagpicker-selected,
+.x-tagpicker:hover {
+  background-color: #3079d5;
+  background-position: 8px -23px;
+  color: white;
+  text-decoration: none;
 }
 /************************************
  * Milk.Container.Tabbable
@@ -1452,6 +1496,55 @@ textarea.x-textbox {
 .x-panel-collapsed .x-panel-header {
   border-bottom: 0;
   border-radius: 4px;
+}
+/************************************
+ * Milk.Container.Dialog
+ ************************************/
+/**
+ * @author 
+ */
+
+.x-dialog {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1050;
+  overflow: auto;
+  width: 560px;
+  margin-left: -280px;
+  background-color: white;
+  border: 1px solid #999999;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  *border: 1px solid #999999;
+  /* IE6-7 */
+
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  border-radius: 6px;
+  -webkit-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  -webkit-background-clip: padding-box;
+  -moz-background-clip: padding-box;
+  background-clip: padding-box;
+}
+.x-dialog-header {
+  padding: 7px 10px;
+  border-bottom: 1px solid #d9d9d9;
+  background-color: #f2f2f2;
+  background-image: -moz-linear-gradient(center top, #f8f8f8, #f0f0f0);
+}
+.x-dialog-header h2,
+.x-dialog-header h3,
+.x-dialog-header h4 {
+  margin: 0;
+}
+.x-dialog-body {
+  overflow: hidden;
+}
+.x-dialog-container {
+  padding: 10px;
+  overflow-y: auto;
 }
 /************************************
  * Milk.DataView.Table
@@ -1885,6 +1978,9 @@ a.x-thumbnail:hover {
 }
 .x-icon:last-child {
   *margin-left: 0;
+}
+.x-icon-none {
+  background-image: none;
 }
 .x-icon-white {
   background-image: url(../images/display/glyphicons-halflings-white.png);

@@ -53,7 +53,6 @@
 .x-menuitem:hover,
 .x-menuitem-selected {
   background-color: #0088cc;
-  background-position: 100% -33px;
 }
 .x-menuitem:hover,
 .x-menuitem-selected,
