@@ -14,7 +14,9 @@
 			<div id="header">
 				<div id="logo-container">
 					<div id="toolbar">
-						AA
+						<span class="x-combinedtextbox" id="a">
+							<input type="text" class="x-textbox x-searchtextbox" placeholder="搜索 类名/函数名" type="text" onfocus="this.select()" id="id"/><button class="x-searchtextbox-search"></button>
+						</span>
 					</div>
 					<h1><a href="#">wend Library</a></h1>
 				</div>
@@ -24,32 +26,27 @@
 							<a href="" title="首页"><span class="x-icon x-icon-home"></span></a>
 						</li>
 						<li class="selected">
-							<a href="#" title="API 文档">中文</a>
+							<a href="#a" title="API 文档">中文</a>
 						</li>
 						<li>
-							<a href="#">中文</a>
+							<a href="#b">中文</a>
 						</li>
 						<li>
-							<a href="#">中文</a>
+							<a href="#c">中文</a>
 						</li>
 						<li>
-							<a href="#">中文</a>
+							<a href="#d">中文</a>
 						</li>
 					</ul>
 					<div id="tab-container-split"></div>
 					<ul id="tabs">
-						<li>
-							<a href="" title="首页">AAA</a><a class="x-closebutton" href="#">×</a>
-						</li>
-						<li class="selected">
-							<a href="#" title="API 文档"> BBBBBBBBBBBB </a>
+						<li onclick="Application.openTab('asdasd',{})">
 							<a class="x-closebutton" href="#">×</a>
+							<a href="#" title="首页">AAA</a>
 						</li>
-						<li>
-							<a href="#">CCC</a><a class="x-closebutton" href="#">×</a>
-						</li>
-						<li>
-							<a href="#">DDD</a><a class="x-closebutton" href="#">×</a>
+						<li class="selected" onclick="Application.openTab('asdas34d',{})">
+							<a class="x-closebutton" href="#">×</a>
+							<a href="#" title="API 文档"> BBBBBBBBBBBB </a>
 						</li>
 					</ul>
 					<div id="tabs-more">
@@ -59,206 +56,193 @@
 					</div>
 				</div>
 			</div>
-			<div id="body" style="height: 400px;">
-				<div id="sidebar" style="width: 200px;">
-					<div id="doctree" style="overflow:auto; height: 380px;">
-						<div class="x-treeview x-treeview-plain">
-	        <ul class="x-treeview-container">
-	            <li class="x-treeview-content">
-	                <div class="x-treenode">
-	                    <span class="x-treenode-space x-treenode-plus">
-	                    </span>
-	                    <span>菜单</span>
-	                </div>
-	                <ul class="x-treeview-container">
-	                    <li class="x-treeview-content">
-	                        <div class="x-treenode">
-	                            <span class="x-treenode-space x-treenode-line">
-	                            </span>
-	                            <span class="x-treenode-space x-treenode-normal">
-	                            </span>
-	                            <span>菜单</span>
-	                        </div>
-	                    </li>
-	                    <li class="x-treeview-content">
-	                        <div class="x-treenode x-treenode-selected x-treenode-last">
-	                            <span class="x-treenode-space x-treenode-line">
-	                            </span>
-	                            <span class="x-treenode-space x-treenode-line">
-	                            </span>
-	                            <span>菜单</span>
-	                        </div>
-	                    </li>
-	                </ul>
-	            </li>
-	            <li class="x-treeview-content">
-	                <div class="x-treenode">
-	                    <span class="x-treenode-space x-treenode-normal">
-	                    </span>
-	                    <span>菜单</span>
-	                </div>
-	            </li>
-	            <li class="x-treeview-content">
-	                <div class="x-treenode">
-	                    <span class="x-treenode-space x-treenode-plus">
-	                    </span>
-	                    <span>菜单</span>
-	                </div>
-	                <ul class="x-treeview-container">
-	                    <li class="x-treeview-content">
-	                        <div class="x-treenode">
-	                            <span class="x-treenode-space x-treenode-space">
-	                            </span>
-	                            <span class="x-treenode-space x-treenode-minus">
-	                            </span>
-	                            <span>菜单</span>
-	                        </div>
-	                    </li>
-	                    <li class="x-treeview-content">
-	                        <div class="x-treenode x-treenode-last">
-	                            <span class="x-treenode-space x-treenode-space">
-	                            </span>
-	                            <span class="x-treenode-space x-treenode-normal">
-	                            </span>
-	                            <span>菜单</span>
-	                        </div>
-	                    </li>
-	                </ul>
-	            </li>
-	            <li class="x-treeview-content">
-	                <div class="x-treenode">
-	                    <span class="x-treenode-space x-treenode-normal">
-	                    </span>
-	                    <span>菜单</span>
-	                </div>
-	            </li>
-	            <li class="x-treeview-content">
-	                <div class="x-treenode x-treenode-last">
-	                    <span class="x-treenode-space x-treenode-plus">
-	                    </span>
-	                    <span>菜单</span>
-	                </div>
-	            </li>
-	        </ul>
-		</div>
+			<div id="body">
+				<div id="sidebar">
+					<div class="x-treeview x-treeview-plain" id="doctree">
+						<ul class="x-treeview-container">
+							<li class="x-treeview-content">
+								<div class="x-treenode">
+									<span class="x-treenode-space x-treenode-plus"> </span>
+									<span>菜单</span>
+								</div>
+								<ul class="x-treeview-container">
+									<li class="x-treeview-content">
+										<div class="x-treenode">
+											<span class="x-treenode-space x-treenode-line"> </span>
+											<span class="x-treenode-space x-treenode-normal"> </span>
+											<span>菜单</span>
+										</div>
+									</li>
+									<li class="x-treeview-content">
+										<div class="x-treenode x-treenode-selected x-treenode-last">
+											<span class="x-treenode-space x-treenode-line"> </span>
+											<span class="x-treenode-space x-treenode-line"> </span>
+											<span>菜单</span>
+										</div>
+									</li>
+								</ul>
+							</li>
+							<li class="x-treeview-content">
+								<div class="x-treenode">
+									<span class="x-treenode-space x-treenode-normal"> </span>
+									<span>菜单</span>
+								</div>
+							</li>
+							<li class="x-treeview-content">
+								<div class="x-treenode">
+									<span class="x-treenode-space x-treenode-plus"> </span>
+									<span>菜单</span>
+								</div>
+								<ul class="x-treeview-container">
+									<li class="x-treeview-content">
+										<div class="x-treenode">
+											<span class="x-treenode-space x-treenode-space"> </span>
+											<span class="x-treenode-space x-treenode-minus"> </span>
+											<span>菜单</span>
+										</div>
+									</li>
+									<li class="x-treeview-content">
+										<div class="x-treenode x-treenode-last">
+											<span class="x-treenode-space x-treenode-space"> </span>
+											<span class="x-treenode-space x-treenode-normal"> </span>
+											<span>菜单</span>
+										</div>
+									</li>
+								</ul>
+							</li>
+							<li class="x-treeview-content">
+								<div class="x-treenode">
+									<span class="x-treenode-space x-treenode-normal"> </span>
+									<span>菜单</span>
+								</div>
+							</li>
+							<li class="x-treeview-content">
+								<div class="x-treenode x-treenode-last">
+									<span class="x-treenode-space x-treenode-plus"> </span>
+									<span>菜单</span>
+								</div>
+							</li>
+						</ul>
 					</div>
-					<div id="sidebar-bottom">
+					<div id="sidebar-toolbar">
 						toolbar
 						<br>
 						Copyright <a href="#">Author</a>
 					</div>
 				</div>
-				<div id="content" style="width: 800px;">
-					<!-- <iframe id="doc-container-iframe" src="content/index.html"></iframe> -->
-					<div id="doc-container">
-						<div id="doc">
-						<div id="doc-func">
-							<a type="button" id="a" href="#" class="x-button x-button-plain x-menubutton">
-显示
-<span class="x-button-menu x-button-menu-down">
-</span>
-</a>
-							
+				<div id="splitter" class="x-splitter x-splitter-left"></div>
+				<div id="content">
+						<!-- <iframe class="content" id="doc-container-iframe" src="content/index.html"></iframe> -->
+					<div class="content">
+						<div class="doc">
+							<div class="doc-func">
+								<a type="button" id="a" href="#" class="x-button x-button-plain x-menubutton"> 显示 <span class="x-button-menu x-button-menu-down"> </span> </a>
+							</div>
+							<h1>Class 类<small>System.Dom.Element</small></h1>
+							<hr>
+							<div class="doc-attrs">
+								<dl>
+									<dt>
+										继承关系:
+									</dt>
+									<dd class="x-clear">
+										<a href="#">JPlus.Object</a>
+									</dd>
+									<dd class="x-treenode-last x-clear">
+										<span class="x-treenode-space x-treenode-normal"> </span>
+										<a href="#">JPlus.Control</a>
+									</dd>
+									<dd>
+										<span class="x-treenode-space"> </span>
+										<span class="x-treenode-space x-treenode-normal x-clear"> </span>
+										<a href="#">JPlus.ScrollableControl</a>
+									</dd>
+									<dd class="x-treenode-last">
+										<span class="x-treenode-space x-treenode-normal"> </span>
+										<a href="#">JPlus.ContentControl</a>
+									</dd>
+									<dt>
+										定义:
+									</dt>
+									<dd>
+										<a href="#">aaa.js</a>
+									</dd>
+									<dd>
+										<a href="#">aaa.js</a>
+									</dd>
+									<dd>
+										<a href="#">aaa.js</a>
+									</dd>
+									<dt>
+										版本:
+									</dt>
+									<dd>
+										1.0
+									</dd>
+								</dl>
+							</div>
+							<p>
+								summary 								<pre><ol><li>代码 pre</li><li>pre</li><li>ol</li></ol></pre>
+							</p>
+							<h3>属性</h3>
+							<table class="x-table doc-members">
+								<thead>
+									<tr>
+										<th></th>
+										<th>名称 </th>
+										<th>说明</th>
+										<th>继承</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td> 1 </td>
+										<td> Td 1 </td>
+										<td> Td 2 </td>
+										<td> Td 3 </td>
+									</tr>
+									<tr>
+										<td> 2 </td>
+										<td> Td 1 </td>
+										<td> Td 2 </td>
+										<td> Td 3 </td>
+									</tr>
+								</tbody>
+							</table>
+							<h3>备注</h3>
+							<p>
+								使用由 Data 属性返回的 System.Collections  对象来存储和检索与异常相关的补充信息。
+
+								信息的形式为任意数目的用户定义的键/值对。键/值对中的键通常是一个标识字符串，而键/值对中的值则可以是任何对象类型。
+							</p>
+							<h5>诶住</h5>
+							<p>
+								aaa
+							</p>
+							<div class="x-bubble">
+								<h4>注意:</h4>
+								<div>
+									aaaaaaaa
+								</div>
+							</div>
+							<div class="x-panel">
+								<div class="x-panel-header">
+									<h4>注意:</h4>
+								</div>
+								<div class="x-panel-body">
+									AAAA
+								</div>
+							</div>
+							<h3>社区</h3>
+							<textarea class="x-textbox"></textarea>
+<br>							<input type="submit" class="x-button" value="提交">
+							<br>
+							<br>
+							<br>
+							<br>
+							<br>
+							<br>
 						</div>
-						<h1>Class 类<small>System.Dom.Element</small></h1>
-						<hr>
-						<div id="doc-attrs">
-							<dl>
-								<dt>继承关系:</dt>
-								<dd class="x-clear">
-									<a href="#">JPlus.Object</a>
-								</dd>
-								<dd class="x-treenode-last x-clear">
-									<span class="x-treenode-space x-treenode-normal">
-	                    </span>
-									<a href="#">JPlus.Control</a>
-								</dd>
-								<dd>
-									<span class="x-treenode-space">
-	                            </span>
-									<span class="x-treenode-space x-treenode-normal x-clear">
-	                    </span>
-									<a href="#">JPlus.ScrollableControl</a>
-								</dd>
-								<dd class="x-treenode-last">
-									<span class="x-treenode-space x-treenode-normal">
-	                    </span>
-									<a href="#">JPlus.ContentControl</a>
-								</dd>
-								<dt>定义:</dt>
-								<dd><a href="#">aaa.js</a></dd>
-								<dd><a href="#">aaa.js</a></dd>
-								<dd><a href="#">aaa.js</a></dd>
-								<dt>版本:</dt>
-								<dd>1.0</dd>
-							</dl>
-						</div>
-						<p>
-							summary
-							
-							<pre><ol><li>代码 pre</li><li>pre</li><li>ol</li></ol></pre>
-						</p>
-						
-						<h3>属性</h3>
-						
-						<table class="x-table doc-members">
-							<thead>
-								<tr>
-									<th></th>
-									<th>名称 </th>
-									<th>说明</th>
-									<th>继承</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td> 1 </td>
-									<td> Td 1 </td>
-									<td> Td 2 </td>
-									<td> Td 3 </td>
-								</tr>
-								<tr>
-									<td> 2 </td>
-									<td> Td 1 </td>
-									<td> Td 2 </td>
-									<td> Td 3 </td>
-								</tr>
-							</tbody>
-						</table>
-						
-						<h3>备注</h3>
-						
-						<p>
-							使用由 Data 属性返回的 System.Collections  对象来存储和检索与异常相关的补充信息。 
-							
-							信息的形式为任意数目的用户定义的键/值对。键/值对中的键通常是一个标识字符串，而键/值对中的值则可以是任何对象类型。
-						</p>
-						
-						<h5>诶住</h5>
-						<p>aaa</p>
-						
-						<div class="x-bubble">
-							<h4>注意:</h4>
-							<div>aaaaaaaa</div>
-						</div>
-						
-						<div class="x-panel">
-							<div class="x-panel-header"><h4>注意:</h4></div>
-							<div class="x-panel-body">AAAA</div>
-						</div>
-						
-						<h3>社区</h3>
-						<textarea class="x-textbox"></textarea><br>
-						<input type="submit" class="x-button" value="提交">
-						
-						<br>
-						<br>
-						<br>
-						<br>
-						<br>
-						<br>
-						
-						<!--  1. 树   2.继承关系  3. 搜索框     -->
 						</div>
 					</div>
 				</div>

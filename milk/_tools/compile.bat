@@ -61,6 +61,7 @@
 "../../assets/tools/dotless/dotless.Compiler.exe" ../button/assets/styles/closebutton.less
 "../../assets/tools/dotless/dotless.Compiler.exe" ../button/assets/styles/linkbutton.less
 "../../assets/tools/dotless/dotless.Compiler.exe" ../button/assets/styles/menu.less
+"../../assets/tools/dotless/dotless.Compiler.exe" ../button/assets/styles/menu-alt.less
 "../../assets/tools/dotless/dotless.Compiler.exe" ../button/assets/styles/contextmenu.less
 
 :: Container

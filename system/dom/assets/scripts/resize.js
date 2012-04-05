@@ -5,23 +5,26 @@ using("System.Dom.Element");
 
 Dom.resize = (function(){
 	
-	var resize = JPlus.Events.control.resize,
-		add = resize.add,
-		remove = resize.remove,
+	var controlEvent = JPlus.Events.control,
+		oldResize = controlEvent.resize,
 		timer,
 		win = new Dom(window);
 		
-	Object.extend(resize, {
+	controlEvent.resize = {
 		
 		add: function(ctrl, type, fn){
-			add(ctrl, type, resizeProxy);
+			oldResize.add(ctrl, type, resizeProxy);
 		},
 		
 		remove: function(ctrl, type, fn){
-			remove(ctrl, type, resizeProxy);
-		}
+			oldResize.remove(ctrl, type, resizeProxy);
+		},
 		
-	});
+		trigger: oldResize.trigger,
+		
+		initEvent: oldResize.initEvent
+		
+	};
 		
 	function resizeProxy(e){
 		if(timer)

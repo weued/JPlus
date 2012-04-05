@@ -1,5 +1,5 @@
 ﻿/*
- * This file is created by a tool at 2012/04/05 13:06:52
+ * This file is created by a tool at 2012/04/05 17:16:51
  */
 
 
@@ -7234,6 +7234,582 @@ Control.implement((function(){
 })());
 
 /************************************
+ * System.Dom.Drag
+ ************************************/
+var Draggable = Class({
+	
+	initEvent: function (e) {
+		e.draggable = this;
+		e.dragTarget = this.target;
+	},
+	
+	/**
+	 * 触发 dragstart 事件。
+	 * @param {Event} e 原生的 mousemove 事件。
+	 */
+	onDragStart: function(e){
+		this.initEvent(e);
+		// 如果都正常。
+		return this.target.trigger('dragstart', e);
+	},
+	
+	/**
+	 * 触发 drag 事件。
+	 * @param {Event} e 原生的 mousemove 事件。
+	 */
+	onDrag: function(e){
+		this.initEvent(e);
+		this.target.trigger('drag', e);
+	},
+	
+	/**
+	 * 触发 dragend 事件。
+	 * @param {Event} e 原生的 mouseup 事件。
+	 */
+	onDragEnd: function(e){
+		this.initEvent(e);
+		return this.target.trigger('dragend', e);
+	},
+	
+	/**
+	 * 处理 mousedown 事件。
+	 * 初始化拖动，当单击时，执行这个函数，但不执行 doDragStart。
+	 * 只有鼠标移动时才会继续执行doDragStart。
+	 * @param {Event} e 事件参数。
+	 */
+	initDrag: function(e){
+
+		// 左键才继续
+		if(e.which !== 1)
+			return;
+		
+		if(Draggable.current) {
+			Draggable.current.stopDrag(e);
+		}
+		
+		e.preventDefault();
+		
+		var me = this;
+		
+		me.from = new Point(e.pageX, e.pageY);
+		me.to = new Point(e.pageX, e.pageY);
+		
+		// 设置当前处理  mousemove 的方法。
+		// 初始需设置 onDrag
+		// 由 onDrag 设置为    onDrag
+		me.handler = me.startDrag;
+		
+		me.timer = setTimeout(function(){
+			me.startDrag(e);
+		}, me.dragDelay);
+		
+		// 设置文档  mouseup 和   mousemove
+		Dom.getDocument(me.handle.dom).on('mouseup', me.stopDrag, me).on('mousemove', me.handleDrag, me);
+	
+	},
+	
+	/**
+	 * 处理 mousemove 事件。
+	 * @param {Event} e 事件参数。
+	 */
+	handleDrag: function(e){
+		
+		e.preventDefault();
+		
+		this.to.x = e.pageX;
+		this.to.y = e.pageY;
+		
+		// 调用函数处理。
+		this.handler(e);
+	},
+	
+	/**
+	 * 处理 mousedown 或 mousemove 事件。开始准备拖动。
+	 * @param {Event} e 事件。
+	 * 这个函数调用 onDragStart 和 beforeDrag
+	 */
+	startDrag: function (e) {
+		
+		var me = this;
+		
+		//   清空计时器。
+		clearTimeout(me.timer);
+		
+		Draggable.current = me;
+		
+		// 设置句柄。
+		me.handler = me.drag;
+		
+		// 开始拖动事件，如果这个事件 return false，  就完全停止拖动。
+		if (me.onDragStart(e)) {
+			me.beforeDrag(e);
+			me.drag(e);
+		} else {
+			// 停止。
+			me.stopDragging();
+		}
+	},
+	
+	/**
+	 * 处理 mousemove 事件。处理拖动。
+	 * @param {Event} e 事件参数。
+	 * 这个函数调用 onDrag 和 doDrag
+	 */
+	drag: function(e){
+		this.onDrag(e);
+		this.doDrag(e);
+	},
+	
+	/**
+	 * 处理 mouseup 事件。
+	 * @param {Event} e 事件参数。
+	 * 这个函数调用 onDragEnd 和 afterDrag
+	 */
+	stopDrag: function (e) {
+		
+		// 只有鼠标左键松开， 才认为是停止拖动。
+		if(e.which !== 1)
+			return;
+		
+		e.preventDefault();
+		
+		// 检查是否拖动。
+		// 有些浏览器效率较低，肯能出现这个函数多次被调用。
+		// 为了安全起见，检查 current 变量。
+		if (Draggable.current === this) {
+			
+			this.stopDragging();
+			
+			this.onDragEnd(e);
+
+			// 改变结束的鼠标类型，一般这个函数将恢复鼠标样式。
+			this.afterDrag(e);
+		
+		} else {
+
+			this.stopDragging();
+			
+		}
+	},
+	
+	beforeDrag: function(e){
+		this.offset = this.proxy.getOffset();
+		this.cursor = document.getStyle('cursor');
+		document.setStyle('cursor', this.target.getStyle('cursor'));
+	},
+	
+	doDrag: function(e){
+		var me = this;
+		me.proxy.setOffset({
+			x: me.offset.x + me.to.x - me.from.x,
+			y: me.offset.y + me.to.y - me.from.y
+		});
+	},
+	
+	afterDrag: function(){
+		document.setStyle('cursor', this.cursor);
+		this.offset = this.cursor = null;
+	},
+	
+	dragDelay: 500,
+	
+	constructor: function(dom, handle){
+		this.proxy = this.target = dom;
+		this.handle = handle || dom;
+		this.setDraggable();
+	},
+
+	/**
+	 * 停止当前对象的拖动。
+	 */
+	stopDragging: function(){
+		Dom.getDocument(this.handle.dom).un('mousemove', this.handleDrag).un('mouseup', this.stopDrag);
+		clearTimeout(this.timer);
+		Draggable.current = null;
+	},
+	
+	setDraggable: function(value){
+		this.handle[value !== false ? 'on' : 'un']('mousedown', this.initDrag, this);
+	}
+	
+});
+
+/// #endregion
+
+/// #region Element
+
+/**
+ * @class Element
+ */
+Control.implement({
+	
+	/**
+	 * 使当前元素支持拖动。
+	 * @param {Element} [handle] 拖动句柄。
+	 * @return this
+	 */
+	setDraggable: function(handle) {
+		var draggable = JPlus.getData(this, 'draggable');
+		if(handle !== false) {
+			if (handle === true) handle = null;
+			if(draggable) {
+				assert(!handle || draggable.handle.target === handle.target, "Control.prototype.setDraggable(handle): 无法重复设置 {handle}, 如果希望重新设置handle，使用以下代码：dom.setDraggable(false);JPlus.removeData(dom, 'draggable');dom.setDraggable(handle) 。", handle);
+				draggable.setDraggable();
+			} else  {
+				Dom.movable(this.dom);
+				draggable = JPlus.setData(this, 'draggable', new Draggable(this, handle));
+			}
+			
+			
+		} else if(draggable)
+			draggable.setDraggable(false);
+		return this;
+	}
+	
+});
+
+/// #endregion
+	
+
+/************************************
+ * System.Dom.Resize
+ ************************************/
+Dom.resize = (function(){
+	
+	var controlEvent = JPlus.Events.control,
+		oldResize = controlEvent.resize,
+		timer,
+		win = new Dom(window);
+		
+	controlEvent.resize = {
+		
+		add: function(ctrl, type, fn){
+			oldResize.add(ctrl, type, resizeProxy);
+		},
+		
+		remove: function(ctrl, type, fn){
+			oldResize.remove(ctrl, type, resizeProxy);
+		},
+		
+		trigger: oldResize.trigger,
+		
+		initEvent: oldResize.initEvent
+		
+	};
+		
+	function resizeProxy(e){
+		if(timer)
+			clearTimeout(timer);
+		
+		timer = setTimeout(function (){
+			timer = 0;
+			win.trigger('resize', e);
+		}, 100);
+	}
+	
+	
+	
+	return function(fn){
+		win[Function.isFunction(fn) ? 'on' : 'trigger']('resize', fn);
+	}
+
+	
+})();
+/************************************
+ * System.Dom.HashChange
+ ************************************/
+String.htmlEncode = (function() {
+    var entities = {
+        '&': '&amp;',
+        '>': '&gt;',
+        '<': '&lt;',
+        '"': '&quot;'
+    };
+    
+    function match(match, capture){
+    	return entities[capture];
+    }
+    
+    return function(value) {
+        return value ? value.replace(/[&><"]/g, match) : '';
+    };
+})();
+
+location.getHash = function() {
+	var href = location.href,
+	i = href.indexOf("#");
+
+	return i >= 0 ? href.substr(i + 1) : '';
+};
+
+
+(function() {
+
+	var hashchange = 'hashchange',
+		document = window.document,
+		win = new Dom(window),
+		getHash = location.getHash;
+
+	/**
+	 * 当 hashchange 事件发生时，执行函数。
+	 */
+	Dom[hashchange] = function(fn) {
+		fn ? win.on(hashchange, fn) && fn.call(win) : win.trigger(hashchange);
+	};
+	
+	// 并不是所有浏览器都支持 hashchange 事件，
+	// 当浏览器不支持的时候，使用自定义的监视器，每隔50ms监听当前hash是否被修改。
+	if ('on' + hashchange in window && !(document.documentMode < 8)) return;
+
+	var currentHash, 
+	
+		timer, 
+		
+		onChange = function() {
+			win.trigger(hashchange);
+		},
+		
+		poll = function() {
+			var newToken = getHash();
+	
+			if (currentHash !== newToken) {
+				currentHash = newToken;
+				onChange();
+			}
+			timer = setTimeout(poll, 50);
+	
+		},
+		
+		start = function() {
+			currentHash = getHash();
+			timer = setTimeout(poll, 50);
+		},
+		
+		stop = function() {
+			clearTimeout(timer);
+		};
+		
+	// 如果是 IE6/7，使用 iframe 模拟成历史记录。
+	if (navigator.isQuirks) {
+
+		var iframe;
+
+		// 初始化的时候，同时创建 iframe
+		start = function() {
+			if (!iframe) {
+				Dom.ready(function(){
+					iframe = Dom.parse('<iframe style="display: none" height="0" width="0" tabindex="-1" title="empty"/>');
+					iframe.one('load', function() {
+						
+						// 绑定当 iframe 内容被重写后处理。
+						this.on("load", function() {
+							// iframe 的 load 载入有 2 个原因：
+							//	1. hashchange 重写 iframe
+							//	2. 用户点击后退按钮
+							
+							// 获取当前保存的 hash
+							var newHash = iframe.contentWindow.document.body.innerText,
+								oldHash = getHash();
+							
+							
+							// 如果是用户点击后退按钮导致的iframe load， 则 oldHash !== newHash
+							if (oldHash != newHash) {
+								
+								// 将当前的 hash 更新为旧的 newHash
+								location.hash = currentHash = newHash;
+								
+								// 手动触发 hashchange 事件。
+								win.trigger(hashchange);
+							}
+							
+						});
+						
+						// 首次执行，先保存状态。
+						currentHash = getHash();
+						poll();
+					});
+					
+					iframe = iframe.dom;
+					document.dom.appendChild(iframe);
+					
+				});
+			} else {
+				
+				// 开始监听。
+				currentHash = getHash();
+				poll();
+			}
+
+		};
+		// iframe: onChange 时，保存状态到 iframe 。
+		onChange = function() {
+
+			var hash = getHash();
+			
+			// 将历史记录存到 iframe 。
+			var html = "<html><body>" + String.htmlEncode(hash) + "</body></html>";
+
+			try {
+				var doc = iframe.contentWindow.document;
+				doc.open();
+				doc.write(html);
+				doc.close();
+			} catch(e) {}
+
+			win.trigger(hashchange);
+		};
+		
+	}
+
+	Control.addEvents({
+		hashchange: {
+			add: start,
+
+			remove: stop
+
+		}
+	});
+
+})();
+/************************************
+ * System.Utils.JSON
+ ************************************/
+var JSON = JSON || {};
+	
+Object.extend(JSON, {
+	
+	specialChars: {'\b': '\\b', '\t': '\\t', '\n': '\\n', '\f': '\\f', '\r': '\\r', '"' : '\\"', '\\': '\\\\'},
+
+	replaceChars: function(chr){
+		return JSON.specialChars[chr] || '\\u00' + Math.floor(chr.charCodeAt() / 16).toString(16) + (chr.charCodeAt() % 16).toString(16);
+	},
+
+	encode: JSON.stringify || function(obj){
+		switch (Object.type(obj)){
+			case 'string':
+				return '"' + obj.replace(/[\x00-\x1f\\"]/g, JSON.replaceChars) + '"';
+			case 'array':
+				return '[' + String(Object.update(obj, JSON.encode, [])) + ']';
+			case 'object':
+				var string = [];
+				for(var key in obj) {
+					string.push(JSON.encode(key) + ':' + JSON.encode(obj[key]));
+				}
+				return '{' + string + '}';
+			default:
+				return String(obj);
+		}
+	},
+
+	decode: function(string){
+		if (typeof string != 'string' || !string.length) return null;
+		
+		if (JSON.parse)
+			return JSON.parse(string);
+		
+		// 摘自 json2.js
+		if (/^[\],:{}\s]*$/
+                    .test(string.replace(/\\(?:["\\\/bfnrt]|u[\da-fA-F]{4})/g, '@')
+                        .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
+                        .replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
+
+        	return new Function('return ' + string)();
+        	
+        }
+        
+        throw new SyntaxError('JSON.parse: unexpected character\n' + value);
+	}
+
+});
+
+
+
+
+
+/************************************
+ * System.Browser.Cookies
+ ************************************/
+var Cookies = {
+	
+	/**
+	 * 获取 Cookies 。
+	 * @param {String} name 名字。
+	 * @param {String} 值。
+	 */
+	get: function(name){
+		
+		assert.isString(name, "Cookies.get(name): 参数 name ~。");
+		
+		name = encodeURIComponent(name);
+		
+		var matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([-.*+?^${}()|[\]\/\\])/g, '\\$1') + "=([^;]*)"));
+		return matches ? decodeURIComponent(matches[1]) : undefined;
+	},
+	
+	/**
+	 * 设置 Cookies 。
+	 * @param {String} name 名字。
+	 * @param {String} value 值。
+	 * @param {Number} expires 有效天数。天。-1表示无限。
+	 * @param {Object} props 其它属性。如 domain, path, secure    。
+	 */
+	set: function(name, value, expires, props){
+		var e = encodeURIComponent,
+		    updatedCookie = e(name) + "=" + e(value),
+		    t;
+		    
+		    assert(updatedCookie.length < 4096, "Cookies.set(name, value, expires, props): 参数  value 内容过长，无法存储。");
+		
+		if(expires == undefined)
+			expires = value === null ? -1 : 1000;
+		   
+		if(expires) {
+			t = new Date();
+			t.setHours(t.getHours() + expires * 24);
+			updatedCookie += '; expires=' + t.toGMTString();
+		}
+		    
+		for(t in props){
+			updatedCookie = String.concat(updatedCookie, "; " + t, "=",  e(props[t])) ;
+		}
+		
+		document.cookie = updatedCookie;
+	}
+};
+
+
+/************************************
+ * System.Browser.LocalStorage
+ ************************************/
+var LocalStorage = LocalStorage || {};
+
+Object.extend(LocalStorage, {
+	
+	set: window.localStorage ? function(name, value){
+		localStorage[name] = value;
+	} : Cookies.set,
+	
+	get: window.localStorage ? function(name){
+		return localStorage[name];
+	} : Cookies.get,
+	
+	setJSON: function(name, value){
+		LocalStorage.set(name, JSON.encode(value));
+	},
+	
+	getJSON: function(name){
+		name = LocalStorage.get(name);
+		if(name)
+			try{
+				return JSON.decode(name);
+			}catch(e){}
+			
+		
+		return null;
+	}
+	
+});
+/************************************
  * System.Data.Collection
  ************************************/
 var Collection = Class({
@@ -8165,13 +8741,13 @@ var SplitButton = MenuButton.extend({
  * Milk.Button.LinkButton
  ************************************/
 /************************************
- * Milk.Button.Menu
+ * Milk.Button.Menu-Alt
  ************************************/
 var MenuItem = ContentControl.extend({
 	
 	xType: 'menuitem',
 	
-	tpl: '<a class="x-menuitem"></a>',
+	tpl: '<a class="x-menuitem"><span class="x-icon x-icon-none"></span></a>',
 	
 	subMenu: null,
 	
@@ -8243,19 +8819,37 @@ var MenuItem = ContentControl.extend({
 		if(!this.subMenu)
 			 this.setSelected(false);
 			 
+	},
+	
+	setSelected: function(value){
+		this.getParent().toggleClass('x-menuitem-selected', value);
+		this.toggleClass('x-menuitem-selected', value);
+		return this;
+	},
+	
+	getSelected: function(){
+		return this.hasClass('x-menuitem x-menuitem-selected');
+	},
+	
+	setChecked: function(value){
+		this.find('.x-icon').dom.className = 'x-icon x-icon-' + (value === false ? 'unchecked' : value !== null ? 'checked' : 'none');
+		return this;
+	},
+	
+	getChecked: function(){
+		return this.hasClass('x-menuitem x-menuitem-checked');
+	},
+	
+	setDisabled: function(value){
+		this.getParent().toggleClass('x-menuitem-disabled', value);
+		this.toggleClass('x-menuitem-disabled', value);
+		return this;
+	},
+	
+	getDisabled: function(){
+		return this.hasClass('x-menuitem x-menuitem-disabled');
 	}
 
-});
-
-String.map("Selected Checked Disabled", function(key){
-	var p = MenuItem.prototype, c = 'x-menuitem-' + key.toLowerCase();
-	p['set' + key] = function(value){
-		return this.toggleClass(c, value);
-	};
-	
-	p['get' + key] = function(){
-		return this.hasClass(c);
-	};
 });
 
 var MenuSeperator = Control.extend({
@@ -8404,6 +8998,30 @@ var Menu = ListControl.extend({
 
 
 
+/************************************
+ * Milk.Button.ContextMenu
+ ************************************/
+var ContextMenu = Menu.extend({
+	
+	floating: true,
+	
+	setControl: function(ctrl){
+		ctrl.on('contextmenu', this.onContextMenu, this);
+		
+		return this;
+	},
+	
+	setDisbale: function(disbale){
+		this.disabled = disbale;
+	},
+	
+	onContextMenu: function(e){ 
+		if(!this.disabled)
+			this.showAt(e.pageX === undefined ? event.x : e.pageX, e.pageY === undefined ? event.y : e.pageY);
+		e.stop();
+	}
+	
+});
 /************************************
  * Milk.Form.IInput
  ************************************/
