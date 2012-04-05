@@ -12,7 +12,7 @@ var menus = {
 	Form: '+IInput +Form +TextBox +TextArea +CombinedTextBox +ComboBox +Select +CheckBox +RadioButton +ListBox +Suggest +Validator +TagPicker +MonthCalender +DatePicker +FileUpload +SearchTextBox',
 	Button: '+Button +MenuButton +SplitButton +ButtonGroup +CloseButton +LinkButton +Menu +Menu-Alt +ContextMenu -ToolBar',
 	Container: '+Tabbable +Stackable *TabControl +Accordion +Panel +Dialog -MessageBox',
-	DataView: '+Table *TreeView',
+	DataView: '+Table +TreeView',
 	Test: '+Vertical-Align'
 };
 
