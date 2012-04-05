@@ -39,5 +39,21 @@
             </li>
           </ul>
          </div>
+         <script>
+			//  var a = new Menu('a');
+			 var a = new Menu();
+			 a.items.add('bbb');
+			 a.items.add('-');
+			 a.items.add('aaa');
+			 a.appendTo();
+			 a.show();
+			 
+			  var b = new Menu();
+			 b.items.add('bbb');
+			 b.items.add('-');
+			b.items.add('aaa');
+			
+			a.items[0].setSubMenu(b);
+		</script>
 	</body>
 </html>

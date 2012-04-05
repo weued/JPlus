@@ -1,5 +1,5 @@
 ﻿/*
- * This file is created by a tool at 2012/04/05 11:18:20
+ * This file is created by a tool at 2012/04/05 13:06:52
  */
 
 
@@ -7917,18 +7917,18 @@ var ICollapsable = {
 		this.onToggleCollapse(false);
 	},
 	
-	collapse: function(){
+	collapse: function(duration){
 		var me = this;
-		me.container && me.container.hide(me.collapseDuration, function(){
+		me.container && me.container.hide(duration === undefined ? me.collapseDuration : duration, function(){
 			me.addClass('x-' + me.xType + '-collapsed');
 			me.onCollapse();
 		}  , 'height');
 		return this;
 	},
 	
-	expand: function(){
+	expand: function(duration){
 		this.removeClass('x-' + this.xType + '-collapsed');
-		this.container && this.container.show(this.collapseDuration, Function.bind(this.onExpand, this), 'height');
+		this.container && this.container.show(duration === undefined ? this.collapseDuration : duration, Function.bind(this.onExpand, this), 'height');
 		return this;
 	},
 	
@@ -7937,8 +7937,8 @@ var ICollapsable = {
 	 * @method toggleCollapse
 	 * @param {Number} collapseDuration 时间。
 	 */
-	toggleCollapse: function() {
-		return this.isCollapsed() ? this.expand() : this.collapse();
+	toggleCollapse: function(duration) {
+		return this.isCollapsed() ? this.expand(duration) : this.collapse(duration);
 	}
 	
 };
@@ -8041,6 +8041,9 @@ var IDropDownMenuContainer = {
 	}
 	
 };
+/************************************
+ * Milk.Core.Splitter
+ ************************************/
 /************************************
  * Milk.Button.Button
  ************************************/
@@ -8903,6 +8906,26 @@ var ComboBox = CombinedTextBox.extend(IDropDownMenuContainer).implement({
  * Milk.Form.RadioButton
  ************************************/
 /************************************
+ * Milk.Form.SearchTextBox
+ ************************************/
+var SearchTextBox = CombinedTextBox.extend({
+	
+	xType: 'searchtextbox',
+	
+	tpl: '<span class="x-combinedtextbox">\
+				<input type="text" class="x-textbox x-searchtextbox" type="text" value="文本框" id="id"/><button class="x-searchtextbox-search"></button>\
+			</span>',
+	
+	init: function(){
+		this.base('init');
+		this.textBox.on('focus', this.textBox.select);
+	}
+});
+
+
+
+
+/************************************
  * Milk.Form.Suggest
  ************************************/
 var Suggest = Control.extend({
@@ -9645,20 +9668,23 @@ var TreeNode = ScrollableControl.extend(ICollapsable).implement({
 		if(handle) {
 			handle.dom.className = 'x-treenode-space x-treenode-' + type;
 		}
+		return this;
 	},
 	
-	expandAll: function(){
-		if (this.container) {
-			this.expand();
-			this.nodes.invoke('expandAll', []);
+	expandAll: function(duration, maxDepth){
+		if (this.container && maxDepth !== 0) {
+			this.expand(duration);
+			this.nodes.invoke('expandAll', [duration, --maxDepth]);
 		}
+		return this;
 	},
 	
-	collapseAll: function(){
-		if (this.container) {
-			this.nodes.invoke('collapseAll', []);
-			this.collapse();
+	collapseAll: function(duration, maxDepth){
+		if (this.container && maxDepth !== 0) {
+			this.nodes.invoke('collapseAll', [duration, --maxDepth]);
+			this.collapse(duration);
 		}
+		return this;
 	},
 	
 	isLastNode: function(){
@@ -9727,7 +9753,23 @@ Control.delegate
 
 var TreeView = TreeNode.extend({
 	
-	xType: 'treeview'
+	xType: 'treeview',
+	
+	isCollapsed: function () {
+		return this.nodes.each(function(value){return value.isCollapsed();});
+	},
+	
+	collapse: function () {
+		this.nodes.invoke('collapse', arguments);
+		this.onCollapse();
+		return this;
+	},
+	
+	expand: function (duration) {
+		this.nodes.invoke('expand', arguments);
+		this.onExpand();
+		return this;
+	}
 	
 });
 

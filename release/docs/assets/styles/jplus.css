@@ -1,5 +1,5 @@
 ﻿/*
- * This file is created by a tool at 2012/04/05 11:18:20
+ * This file is created by a tool at 2012/04/05 13:06:52
  */
 
 
@@ -468,6 +468,40 @@ blockquote.x-right small {
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   position: absolute;
   z-index: 1000;
+}
+/************************************
+ * Milk.Core.Splitter
+ ************************************/
+/**
+ * @author 
+ */
+
+.x-splitter {
+  z-index: 100;
+  overflow: hidden;
+  position: absolute;
+}
+.x-splitter-proxy {
+  position: absolute;
+  overflow: hidden;
+  background: none repeat scroll 0 0 #cccccc;
+  z-index: 1040;
+}
+.x-splitter-left,
+.x-splitter-right {
+  cursor: e-resize;
+  cursor: col-resize;
+  width: 6px;
+  height: 100%;
+  top: 0;
+}
+.x-splitter-top,
+.x-splitter-bottom {
+  cursor: n-resize;
+  cursor: row-resize;
+  width: 100%;
+  height: 6px;
+  left: 0;
 }
 /************************************
  * Milk.Button.Button
@@ -1248,6 +1282,43 @@ textarea.x-textbox {
 
 .x-radiobutton {
   margin: 0px 4px 2px;
+}
+/************************************
+ * Milk.Form.SearchTextBox
+ ************************************/
+/**
+ * @author 
+ */
+
+.x-searchtextbox {
+  padding-left: 14px;
+  padding-right: 14px;
+  margin-bottom: 0;
+  -webkit-border-radius: 14px;
+  -moz-border-radius: 14px;
+  border-radius: 14px;
+}
+.x-searchtextbox-search {
+  padding-left: 10px;
+  padding-right: 20px;
+  margin-left: 0;
+  *margin-top: 1px;
+  *padding: 3px 6px 3px 2px;
+  position: absolute;
+  -webkit-border-radius: 0 4px 4px 0;
+  -moz-border-radius: 0 4px 4px 0;
+  border-radius: 0 4px 4px 0;
+  right: 0;
+  top: 0;
+  _padding-bottom: 1px;
+  _margin-right: -1px;
+  background: url(../images/form/searchtextbox.gif) center center no-repeat;
+  border: none;
+  height: 28px;
+}
+.x-searchtextbox-search:active {
+  right: -1px;
+  top: 1px;
 }
 /************************************
  * Milk.Form.Suggest

@@ -9,6 +9,7 @@
 "../../assets/tools/dotless/dotless.Compiler.exe" ../core/assets/styles/contentcontrol.less
 "../../assets/tools/dotless/dotless.Compiler.exe" ../core/assets/styles/icollapsable.less
 "../../assets/tools/dotless/dotless.Compiler.exe" ../core/assets/styles/idropdownmenucontainer.less
+"../../assets/tools/dotless/dotless.Compiler.exe" ../core/assets/styles/splitter.less
 
 ::Page
 "../../assets/tools/dotless/dotless.Compiler.exe" ../page/assets/styles/scaffolding.less
