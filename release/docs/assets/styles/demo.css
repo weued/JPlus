@@ -4,7 +4,7 @@
 
 /*********************************** 全局 *******************************************/
 
-article.demo, aside.demo, details.demo, footer.demo, header.demo, hgroup.demo, nav.demo, section.demo, details.demo, summary.demo {
+article.demo, aside.demo, footer.demo, header.demo, hgroup.demo, nav.demo, section.demo {
 	display: block;
 }
 
@@ -18,6 +18,14 @@ aside.demo {
 
 section.demo {
 	margin-bottom: 20px;
+}
+
+a.demo {
+	text-decoration: none;
+}
+
+a.demo:hover {
+	text-decoration: underline;
 }
 
 h1.demo, h2.demo, h3.demo, h4.demo, h5.demo, h6.demo {
@@ -34,7 +42,6 @@ h4.demo, h5.demo, h6.demo {
 }
  
 h1.demo {
-	color: #66AB16;
 	font-size: 30px;
     line-height: 30px;
     font-family: 'Arial';
@@ -43,10 +50,6 @@ h1.demo {
 h1.demo small{
 	font-size: 12px;
 	margin-left: 10px;
-}
-
-h2.demo, h3.demo {
-	color: #250C58;
 }
 
 h2.demo {
@@ -184,19 +187,6 @@ code.demo {
 	border: 1px solid #e1e1e8;
 }
 
-details.demo {
-	margin-bottom: 20px;	
-}
-
-summary.demo {
-	cursor: pointer;
-	color: #4975BB;
-}
-
-summary.demo:hover {
-	color: #245C99;
-}
-
 input.demo {
 	vertical-align: middle;	
 }
@@ -215,16 +205,6 @@ blockquote.demo {
     margin: 10px;
 }
 
-a.demo {
-	color: #4975BB;	
-	text-decoration: none;	
-}
-
-a.demo:hover {
-	color: #245C99;
-	text-decoration: underline;	
-}
-
 /*********************************** 页面 *******************************************/
 
 .demo-control-toolbar {
@@ -232,9 +212,14 @@ a.demo:hover {
 	font-size: 12px;
 }
 
+.demo-control-viewsource {
+	margin-bottom: 20px;
+}
+
 .demo-control-arrow {
 	font-size: 20px;
 	float: left;
+	line-height: 16px;
 }
 
 /*.demo-testcasegroup {
@@ -451,6 +436,19 @@ a.demo:hover {
 	background: #fff;
 }
 
+.demo-disabled{
+	color: gray!important;
+}
+
+.demo-italic{
+	font-style: italic!important;
+}
+
+.demo-removed{
+	color: gray!important;
+	text-decoration: line-through;
+}
+
 /************************* Prettify ********************/
 
 pre.demo .com { color: #93a1a1; }
@@ -483,4 +481,200 @@ pre.demo ol.linenums li {
   color: #bebec5;
   line-height: 18px;
   text-shadow: 0 1px 0 #fff;
+}
+
+
+/*********************************** 风格 *******************************************/
+
+a.demo {
+	color: #4975BB;	
+}
+
+a.demo:hover {
+	color: #245C99;
+}
+
+h1.demo {
+	color: #66AB16;
+}
+
+h2.demo, h3.demo {
+	color: #250C58;
+}
+
+h1.demo small{
+	color: #999;
+	font-weight: normal;
+}
+
+/*********************************** 风格 *******************************************/
+
+a.demo {
+	color: #d26000;
+}
+
+a.demo:hover {
+	color: #F4C369;
+}
+
+p.demo {
+	color: #555555;
+}
+
+h1.demo {
+	color: #333333;
+}
+
+h1.demo small{
+	color: #999;
+	font-weight: normal;
+}
+
+h4.demo, h5.demo {
+	color: #666666;
+}
+
+h2.demo, h3.demo {
+	color: #E27B00;
+}
+
+
+/*********************************** 网页 *******************************************/
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #F9F9F9;
+	font-size: 12px;
+}
+
+#demo-main{
+	width: 980px;
+	margin: 0px auto;
+}
+
+#demo-header {
+	border-bottom: 1px solid #DDDDDD;
+	padding-bottom: 10px;
+	margin-bottom: 10px;
+}
+
+#demo-header h1{
+	color: #E27B00;
+	font-size: 30px;
+	line-height: 40px;
+	margin: 10px 0 0;
+	font-family: Helvetica, sans-serif;
+}
+
+#demo-header h2{
+	color: #999999;	
+	font-size: 14px;
+	font-style: italic;
+	font-weight: normal;
+	margin: 0;
+	font-family: '隶书';
+}
+
+#demo-header nav {
+	float: right;
+	margin: 10px;
+	line-height: 18px;
+}
+
+#demo-header, #demo-sidebar, #demo-footer {
+	font-family: 'Microsoft YaHei';	
+}
+
+#demo-header nav a {
+	display: inline-block;
+	padding: 6px 15px;
+	text-align: center;
+	text-decoration: none;
+	border-right: 1px solid #DDDDDD;
+	font-size: 16px;
+}
+
+#demo-header a.demo-page-last {
+	border-right: none;
+}
+
+#demo-sidebar {
+	width: 200px;
+	padding: 0 10px 10px;
+	background: #F3F3F3;
+	border: 1px solid #DDDDDD;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	float: right;
+}
+
+#demo-sidebar h2{
+	margin: 0 0 -10px;
+	font-size: 16px;
+	line-height: 36px;
+	clear: left;
+	color: #666666;
+}
+
+#demo-sidebar small, #demo-sidebar h6{
+	color: #999;
+	font-size: 12px;
+	font-weight: normal;
+}
+
+#demo-sidebar ul {
+	margin: 0;
+	padding: 0;
+}
+
+#demo-sidebar li {
+	list-style: none;
+	line-height: 18px;
+	padding: 2px 4px 2px 10px;
+}
+
+#demo-sidebar .demo-page-float li {
+	float: left;
+}
+
+#demo-sidebar a {
+	text-decoration: underline;	
+}
+
+#demo-sidebar h6{
+	clear: left;
+	text-align: right;
+	margin: 0;
+}
+
+#demo-body {
+	display: block;
+	width: 750px;
+	padding: 0;
+	float:left;
+}
+
+#demo-main.demo-page-clean {
+	width: auto;	
+}
+
+.demo-page-clean #demo-header, .demo-page-clean #demo-sidebar, .demo-page-clean #demo-footer{
+	display: none;
+}
+
+.demo-page-clean #demo-body{
+	width: auto;
+	float: none;
+}
+
+#demo-footer {
+	border-top: 1px solid #DDDDDD;
+	text-align: center;
+	padding: 10px;
+	margin-top: 10px;
+	clear: both;
+	color: #555555;
+	font-size: 12px;
 }

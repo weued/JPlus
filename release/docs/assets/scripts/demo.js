@@ -31,9 +31,182 @@
 // 	
 	
 	if(eval("!-[1,]"))
-		forEach('article section header footer nav aside details summary'.split(' '), document.createElement, document);
+		forEach('article section header footer nav aside details summary menu'.split(' '), document.createElement, document);
 	
 	window.Demo = window.Demo || {};
+	
+	apply(Demo, {
+			
+		/**
+		 * 获取 Cookies 。
+		 * @param {String} name 名字。
+		 * @param {String} 值。
+		 */
+		getCookie: function(name){
+			
+			name = encodeURIComponent(name);
+			
+			var matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([-.*+?^${}()|[\]\/\\])/g, '\\$1') + "=([^;]*)"));
+			return matches ? decodeURIComponent(matches[1]) : undefined;
+		},
+		
+		/**
+		 * 设置 Cookies 。
+		 * @param {String} name 名字。
+		 * @param {String} value 值。
+		 * @param {Number} expires 有效天数。天。-1表示无限。
+		 * @param {Object} props 其它属性。如 domain, path, secure    。
+		 */
+		setCookie: function(name, value, expires, props){
+			var e = encodeURIComponent,
+			    updatedCookie = e(name) + "=" + e(value),
+			    t;
+			    
+			    assert(updatedCookie.length < 4096, "Cookies.set(name, value, expires, props): 参数  value 内容过长，无法存储。");
+			
+			if(expires == undefined)
+				expires = value === null ? -1 : 1000;
+			   
+			if(expires) {
+				t = new Date();
+				t.setHours(t.getHours() + expires * 24);
+				updatedCookie += '; expires=' + t.toGMTString();
+			}
+			    
+			for(t in props){
+				updatedCookie = String.concat(updatedCookie, "; " + t, "=",  e(props[t])) ;
+			}
+			
+			document.cookie = updatedCookie;
+		},
+		
+		getData: function(dataName){
+			if(window.localStorage){
+				return localStorage[dataName];
+			}
+			
+			return System.getCookie(dataName);
+		},
+		
+		setData: function(dataName, value){
+			if(window.localStorage){
+				localStorage[dataName] = value;
+				return ;
+			}
+			
+			System.setCookie(dataName, value);
+		},
+		
+		copyText: (function(){
+		    if (window.clipboardData) {
+				return function(content){
+					window.clipboardData.clearData();
+					window.clipboardData.setData("Text", content);
+					return true;
+				};
+			} else if (navigator.isOpera) {
+				return function(content){
+					window.location = content;
+					return true;
+				}
+			} else if (window.netscape) {
+				// try {
+					// netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+				// } catch (e) {
+					// return function(){
+						// return false;
+					// };
+				// }
+				
+				
+				return function(content){
+					try {
+						var clip = Components.classes['@mozilla.org/widget/clipboard;1'].createInstance(Components.interfaces.nsIClipboard);
+						if (!clip) return false;
+						var trans = Components.classes['@mozilla.org/widget/transferable;1'].createInstance(Components.interfaces.nsITransferable);
+						if (!trans) return false;
+						trans.addDataFlavor('text/unicode');
+						var str = Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString);
+						str.data = content;
+						trans.setTransferData("text/unicode", str, content.length * 2);
+						var clipid = Components.interfaces.nsIClipboard;
+						if (!clipid) return false;
+						clip.setData(trans, null, clipid.kGlobalClipboard);
+						return true;
+					} catch (e) {
+						return false;
+					}
+				}
+			}
+		
+		})(),
+		
+		formatHTML: function (html) {
+			return new HtmlFormater().parse(html); //wrapping functions HtmlFormater
+		},
+		
+		formatJS: js_beautify,
+		
+		createViewSource: function(autoOpen){
+			var viewSource = document.createElement('div');
+			viewSource.className = 'demo-control-viewsource';
+			viewSource.innerHTML = '<a class="demo" href="javascript://查看用于创建上文组件的所有源码;" onclick="Demo.toggleSource(this)"><span class="demo-control-arrow">▸</span>查看源码</a>';
+			return viewSource;
+		},
+		
+		initSource: function(targetNode){
+			targetNode = targetNode.parentNode;
+			var sourceNode = Demo.getPreviousElement(targetNode);
+			if(sourceNode.className === 'demo'){
+				var code = document.createElement('pre');
+				code.className = "demo";
+				code.innerText = code.textContent = Demo.formatHTML(sourceNode.innerHTML || '');
+				code.ondblclick = function(){
+					Demo.copyText(code.innerText || code.textContent);
+					return false;
+				};
+				targetNode.appendChild(code);
+				code.innerHTML = window.prettyPrintOne && prettyPrintOne(code.innerHTML, 'html', 1);
+			}
+			
+		},
+		
+		getPreviousElement: function(node){
+			do {
+				node = node.previousSibling;
+			}while(node && node.nodeType !== 1);
+			
+			return node;
+		},
+		
+		getNextElement: function(node){
+			do {
+				node = node.nextSibling;
+			}while(node && node.nodeType !== 1);
+			
+			return node;
+		},
+		
+		getElementsBy: function(tagName, className){
+			var elems = document.getElementsByTagName(tagName);
+			return elems;
+		},
+		
+		toggleSource: function(targetNode){
+			var nextNode = Demo.getNextElement(targetNode), newValue;
+			
+			if(nextNode){
+				newValue = nextNode.style.display === 'none';
+				nextNode.style.display = newValue ? '' : 'none';
+			} else {
+				newValue = true;
+				this.initSource(targetNode);
+			}
+			
+			targetNode.firstChild.innerHTML = newValue ? '▾' : '▸';
+		}
+		
+	});
 	
 	apply(Demo, {
 		
@@ -504,116 +677,6 @@
 				}	
 			}
 		},
-			
-		/**
-		 * 获取 Cookies 。
-		 * @param {String} name 名字。
-		 * @param {String} 值。
-		 */
-		getCookie: function(name){
-			
-			name = encodeURIComponent(name);
-			
-			var matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([-.*+?^${}()|[\]\/\\])/g, '\\$1') + "=([^;]*)"));
-			return matches ? decodeURIComponent(matches[1]) : undefined;
-		},
-		
-		/**
-		 * 设置 Cookies 。
-		 * @param {String} name 名字。
-		 * @param {String} value 值。
-		 * @param {Number} expires 有效天数。天。-1表示无限。
-		 * @param {Object} props 其它属性。如 domain, path, secure    。
-		 */
-		setCookie: function(name, value, expires, props){
-			var e = encodeURIComponent,
-			    updatedCookie = e(name) + "=" + e(value),
-			    t;
-			    
-			    assert(updatedCookie.length < 4096, "Cookies.set(name, value, expires, props): 参数  value 内容过长，无法存储。");
-			
-			if(expires == undefined)
-				expires = value === null ? -1 : 1000;
-			   
-			if(expires) {
-				t = new Date();
-				t.setHours(t.getHours() + expires * 24);
-				updatedCookie += '; expires=' + t.toGMTString();
-			}
-			    
-			for(t in props){
-				updatedCookie = String.concat(updatedCookie, "; " + t, "=",  e(props[t])) ;
-			}
-			
-			document.cookie = updatedCookie;
-		},
-		
-		getData: function(dataName){
-			if(window.localStorage){
-				return localStorage[dataName];
-			}
-			
-			return System.getCookie(dataName);
-		},
-		
-		setData: function(dataName, value){
-			if(window.localStorage){
-				localStorage[dataName] = value;
-				return ;
-			}
-			
-			System.setCookie(dataName, value);
-		},
-		
-		copyText: (function(){
-		    if (window.clipboardData) {
-				return function(content){
-					window.clipboardData.clearData();
-					window.clipboardData.setData("Text", content);
-					return true;
-				};
-			} else if (navigator.isOpera) {
-				return function(content){
-					window.location = content;
-					return true;
-				}
-			} else if (window.netscape) {
-				// try {
-					// netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
-				// } catch (e) {
-					// return function(){
-						// return false;
-					// };
-				// }
-				
-				
-				return function(content){
-					try {
-						var clip = Components.classes['@mozilla.org/widget/clipboard;1'].createInstance(Components.interfaces.nsIClipboard);
-						if (!clip) return false;
-						var trans = Components.classes['@mozilla.org/widget/transferable;1'].createInstance(Components.interfaces.nsITransferable);
-						if (!trans) return false;
-						trans.addDataFlavor('text/unicode');
-						var str = Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString);
-						str.data = content;
-						trans.setTransferData("text/unicode", str, content.length * 2);
-						var clipid = Components.interfaces.nsIClipboard;
-						if (!clipid) return false;
-						clip.setData(trans, null, clipid.kGlobalClipboard);
-						return true;
-					} catch (e) {
-						return false;
-					}
-				}
-			}
-		
-		})(),
-		
-		formatHTML: function (html) {
-			return new HtmlFormater().parse(html); //wrapping functions HtmlFormater
-		},
-		
-		formatJS: js_beautify,
 		
 		getValueOf: function (v) {
 		   return function(){
@@ -905,7 +968,6 @@
 		};
 
 	};
-	
 	
 	HtmlFormater.prototype = {
 
@@ -1288,13 +1350,12 @@
 		}
 	};
 	
-	
 	function getRoot() { 
 		var b = document.getElementsByTagName("script");
 		b = b[b.length - 1];
 		return (!-[1, ] && !document.createTextNode('').constructor ? b.getAttribute('src', 5) : b.src).replace(/assets\/scripts\/.*$/, '');
 	}
-		
+	
 	function getElementsByClassName(parentNode, className) {
 		var r = [], i;
 		for(i = parentNode.firstChild; i; i = i.nextSibling) {
