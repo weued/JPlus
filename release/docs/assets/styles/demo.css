@@ -1,0 +1,486 @@
+/**
+ * @fileOverview Demo Page
+ */
+
+/*********************************** 全局 *******************************************/
+
+article.demo, aside.demo, details.demo, footer.demo, header.demo, hgroup.demo, nav.demo, section.demo, details.demo, summary.demo {
+	display: block;
+}
+
+article.demo {
+	padding: 10px;
+}
+
+aside.demo {
+	margin-bottom: 10px;
+}
+
+section.demo {
+	margin-bottom: 20px;
+}
+
+h1.demo, h2.demo, h3.demo, h4.demo, h5.demo, h6.demo {
+  font-weight: bold;
+  color: #333333;
+}
+
+h1.demo, h2.demo, h3.demo {
+  margin: 10px 0;
+}
+
+h4.demo, h5.demo, h6.demo {
+  margin: 0;
+}
+ 
+h1.demo {
+	color: #66AB16;
+	font-size: 30px;
+    line-height: 30px;
+    font-family: 'Arial';
+}
+
+h1.demo small{
+	font-size: 12px;
+	margin-left: 10px;
+}
+
+h2.demo, h3.demo {
+	color: #250C58;
+}
+
+h2.demo {
+  font-size: 24px;
+  line-height: 24px;
+}
+
+h3.demo {
+  line-height: 18px;
+  font-size: 18px;
+}
+
+h4.demo {
+  font-size: 14px;
+}
+h5.demo {
+  font-size: 12px;
+}
+
+h6.demo {
+  font-size: 10px;
+}
+
+hr.demo {
+	-moz-border-bottom-colors: none;
+    -moz-border-image: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-color: #E5E5E5 -moz-use-text-color -moz-use-text-color;
+    border-right: 0 none;
+    border-style: solid none none;
+    border-width: 1px 0 0;
+    clear: both;
+    display: block;
+    float: none;
+    font-size: 0;
+    height: 0;
+    line-height: 0;
+    margin: 12px 0;
+}
+
+p.demo {
+  margin: 8px 0 16px;
+  text-indent: 2em;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+dl.demo {
+  margin-bottom: 18px;
+}
+
+dt.demo {
+  font-weight: bold;
+  margin-top: 9px;
+}
+
+dd.demo {
+  margin-left: 18px;
+}
+
+ol.demo, ul.demo {
+  margin: 0 0 9px 25px;
+  padding: 0;
+}
+
+ul.demo li{
+  list-style-type: disc;
+}
+
+ol.demo li  {
+  list-style-type: decimal;
+}
+
+table.demo {
+	border-collapse: collapse;
+	empty-cells: show;
+	min-width: 300px;	
+}
+
+table.demo th, table.demo td {
+	border: 1px solid #ddd;
+	padding: 5px;
+}
+
+textarea.demo {
+	width: 500px;
+	height: 136px;	
+}
+
+pre.demo, code.demo {
+	padding: 0 3px 2px;
+	font-family: "Courier New", Menlo, Monaco, monospace;
+	color: #333333;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
+
+pre.demo  {
+	display: block;
+	padding: 8.5px;
+	margin: 9px 0;
+	background-color: whitesmoke;
+	border: 1px solid #cccccc;
+	border: 1px solid rgba(0, 0, 0, 0.15);
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	white-space: pre;
+	white-space: pre-wrap;
+	word-break: break-all;
+	box-shadow: 40px 0 0 #fbfbfc inset, 41px 0 0 #ececf0 inset;
+	-moz-box-shadow: 40px 0 0 #fbfbfc inset, 41px 0 0 #ececf0 inset;
+}
+
+pre.demo ol {
+  margin: 0 0 0 33px;
+}
+
+pre.demo li {
+  padding-left: 12px;
+}
+
+pre.demo code {
+  padding: 0;
+  background-color: transparent;
+}
+
+code.demo {
+	padding: 0 4px;
+	color: #1e347b;
+	background-color: #f7f7f9;
+	border: 1px solid #e1e1e8;
+}
+
+details.demo {
+	margin-bottom: 20px;	
+}
+
+summary.demo {
+	cursor: pointer;
+	color: #4975BB;
+}
+
+summary.demo:hover {
+	color: #245C99;
+}
+
+input.demo {
+	vertical-align: middle;	
+}
+
+img.demo {
+	text-align: center;
+}
+
+a img.demo {
+	border: 0;
+}
+
+blockquote.demo {
+	border: 2px solid #ddd;
+    padding: 10px;
+    margin: 10px;
+}
+
+a.demo {
+	color: #4975BB;	
+	text-decoration: none;	
+}
+
+a.demo:hover {
+	color: #245C99;
+	text-decoration: underline;	
+}
+
+/*********************************** 页面 *******************************************/
+
+.demo-control-toolbar {
+	float: right;
+	font-size: 12px;
+}
+
+.demo-control-arrow {
+	font-size: 20px;
+	float: left;
+}
+
+/*.demo-testcasegroup {
+	border-bottom: 1px solid #DDDDDD;
+	margin: 13px 2px 2px;
+	text-indent: 15px;
+	font-size: 20px;
+}*/
+
+.demo-tip span{
+	float: right;
+	display: none;
+	margin-right: 20px;
+}
+
+.demo-tip, .demo-tip-error, .demo-tip-warning, .demo-tip-success {
+	padding: 2px 10px;
+	line-height:16px;
+	border: 2px solid #F9F9F9;
+	margin: 2px 0;
+}
+
+.demo-tip-error {
+	background:#FBE3E4;
+	color:#8a1f11;
+	border-color:#FBC2C4;
+}
+
+.demo-tip-warning {
+	background:#FFF6BF;
+	color:#514721;
+	border-color:#FFD324;
+}
+
+.demo-tip-success {
+	background:#E6EFC2;
+	color:#264409;
+	border-color:#C6D880;
+}
+
+.demo-tip-error a {
+	color:#8a1f11;
+}
+ 	
+.demo-tip-warning a {
+	color:#514721;
+}
+
+.demo-tip-success a {
+	color:#264409;
+}
+
+.demo-tip-selected {
+	background: #eee;	
+}
+
+.demo-tip-selected span {
+	display: block;
+	font-size:12px;
+}
+
+/*********************************** 工具 *******************************************/
+
+.demo-large {
+	font-size:x-large;
+}
+
+.demo-small {
+	font-size:x-small;
+}
+
+.demo-left {
+	float: left;
+}
+
+.demo-right {
+	float: right;
+}
+
+.demo-center {
+	margin-left:auto;
+	margin-right:auto;
+	text-align: center;
+}
+
+.demo-strong {
+	font-weight: bold;
+}
+
+.demo-italic {
+	font-style: italic;
+}
+
+.demo-clear {
+  *zoom: 1;
+}
+
+.demo-clear:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+
+.demo-block {
+	display: block;
+}
+
+.demo-inline-block {
+	display: inline-block;
+	*display: inline;
+	*zoom: 1;
+}
+
+.demo-hide {
+	display: none;
+}
+
+.demo-absolute {
+	position: absolute;
+}
+
+.demo-relative {
+	position: relative;
+}
+
+.demo-box, .demo-box-small, .demo-box-large {
+	position:relative;
+	width: 80px;
+	height: 80px;
+	margin-right: 10px;
+	padding: 10px;
+	text-align: center;
+	line-height: 80px;
+	display: inline-block;
+	*display: inline;
+	*zoom: 1;
+	background-color: #E95C41;
+	color: #ffffff;
+}
+
+.demo-box-small {
+	height: 40px;
+	width: 40px;
+	line-height: 40px;
+}
+
+.demo-box-large {
+	height: 200px;
+	width: 200px;
+	line-height: 200px;
+}
+
+.demo-container {
+	position: relative;
+	border: 1px solid #ddd;
+	height: 250px;
+	width: 400px;
+}
+
+.demo-highlight {
+	color: #FF6600;	
+}
+
+.demo-white {
+	background-color: #ffffff;
+	color: #000000;
+}
+
+.demo-gray{
+	background-color: #F3F3F3;
+	color: #000000;
+}
+
+.demo-yellow {
+	background-color: #ffc40d;
+}
+
+.demo-orange {
+	background-color: #f89406;
+	color: #000000;
+}
+
+.demo-red {
+	background-color: #9d261d;
+}
+
+.demo-green {
+	background-color: #B4B900;
+}
+
+.demo-indigo {
+	background-color: #90D9E8;
+	color: #000000;
+}
+
+.demo-blue {
+	background-color: #285A8F;
+}
+
+.demo-purple {
+	background-color: #B05A89;
+}
+
+.demo-black {
+	background-color: #000000;
+}
+
+.demo-blank {
+	height: 10px;
+	display: block;
+	visibility: hidden;
+	background: #fff;
+}
+
+/************************* Prettify ********************/
+
+pre.demo .com { color: #93a1a1; }
+pre.demo .lit { color: #195f91; }
+pre.demo .pun, pre.demo .opn,pre.demo .clo { color: #93a1a1; }
+pre.demo .fun { color: #dc322f; }
+pre.demo .str, pre.demo .atv { color: #D14; }
+pre.demo.kwd, pre.demo .linenums .tag { color: #1e347b; }
+pre.demo.typ,pre.demo .atn, pre.demo .dec, .var { color: teal; }
+pre.demo .pln { color: #48484c; }
+
+pre.demo .prettyprint {
+  padding: 8px;
+  background-color: #f7f7f9;
+  border: 1px solid #e1e1e8;
+}
+pre.demo .prettyprint.linenums {
+  -webkit-box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
+     -moz-box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
+          box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
+}
+
+/* Specify class=linenums on a pre to get line numbering */
+pre.demo ol.linenums {
+  margin: 0 0 0 33px; /* IE indents via margin-left */
+ padding-left: 0;
+} 
+pre.demo ol.linenums li {
+  padding-left: 12px;
+  color: #bebec5;
+  line-height: 18px;
+  text-shadow: 0 1px 0 #fff;
+}

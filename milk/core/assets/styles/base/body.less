@@ -30,7 +30,6 @@ a:focus {
 // --------
 
 h1, h2, h3, h4, h5, h6 {
-  margin: 10px 0;
   font-weight: bold;
   color: @grayDark;
   text-rendering: optimizelegibility; // Fix the character spacing for headings
@@ -38,6 +37,14 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: normal;
     color: @grayLight;
   }
+}
+
+h1, h2, h3 {
+  margin: 10px 0;
+}
+
+h4, h5, h6 {
+  margin: 0;
 }
 
 h1 {
@@ -59,10 +66,6 @@ h2 {
 h3 {
   line-height: 18px;
   font-size: 18px;
-}
-
-h4, h5, h6 {
-  margin: 0;
 }
 
 h4, h3 small {

@@ -1,5 +1,5 @@
 ﻿/*
- * This file is created by a tool at 2012/04/05 17:16:51
+ * This file is created by a tool at 2012/04/06 16:32:06
  */
 
 
@@ -7396,6 +7396,7 @@ var Draggable = Class({
 		this.offset = this.proxy.getOffset();
 		this.cursor = document.getStyle('cursor');
 		document.setStyle('cursor', this.target.getStyle('cursor'));
+		Dom.get(document.body).setStyle('pointer-events', 'none');
 	},
 	
 	doDrag: function(e){
@@ -7407,6 +7408,7 @@ var Draggable = Class({
 	},
 	
 	afterDrag: function(){
+		Dom.get(document.body).setStyle('pointer-events', '');
 		document.setStyle('cursor', this.cursor);
 		this.offset = this.cursor = null;
 	},
