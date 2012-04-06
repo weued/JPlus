@@ -165,9 +165,11 @@ var Draggable = Class({
 	
 	beforeDrag: function(e){
 		this.offset = this.proxy.getOffset();
-		this.cursor = document.getStyle('cursor');
-		document.setStyle('cursor', this.target.getStyle('cursor'));
-		Dom.get(document.body).setStyle('pointer-events', 'none');
+		document.body.style.cursor = this.target.getStyle('cursor');
+		if(document.body.setCapture)
+			document.body.setCapture();
+		else
+			document.body.style.pointerEvents = 'none';
 	},
 	
 	doDrag: function(e){
@@ -179,9 +181,12 @@ var Draggable = Class({
 	},
 	
 	afterDrag: function(){
-		Dom.get(document.body).setStyle('pointer-events', '');
-		document.setStyle('cursor', this.cursor);
-		this.offset = this.cursor = null;
+		if(document.body.releaseCapture)
+			document.body.releaseCapture();
+		else
+			document.body.style.pointerEvents = '';
+		document.body.style.cursor = '';
+		this.offset = null;
 	},
 	
 	dragDelay: 500,

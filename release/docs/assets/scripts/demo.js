@@ -3,37 +3,39 @@
  */
 
 (function(){
-		return;
-	var root = getRoot(),
-		moduleName = location.href.replace(root, '') + '/',
-		current = {},
-		defaultTimes = getMinTimesFor1ms (),
-		params = [
-		     '', '0', 'null', 'NaN', '""', '"<div />"', '[]', '{a:1}', 'false', 'document.body', 'function(){return false}',
-		     '0, 0', 'null, null', '[], []', '{}, {}',
-		     '1, "1", true, {}'
-		];
-		
-	moduleName = moduleName.substring(0, moduleName.indexOf('/'));
+		// return;
+	// var root = getRoot(),
+		// moduleName = location.href.replace(root, '') + '/',
+		// current = {},
+		// defaultTimes = getMinTimesFor1ms (),
+		// params = [
+		     // '', '0', 'null', 'NaN', '""', '"<div />"', '[]', '{a:1}', 'false', 'document.body', 'function(){return false}',
+		     // '0, 0', 'null, null', '[], []', '{}, {}',
+		     // '1, "1", true, {}'
+		// ];
+// 		
+	// moduleName = moduleName.substring(0, moduleName.indexOf('/'));
+// 	
+	// document.write('<link type="text/css" rel="stylesheet" href="' + root + 'assets/styles/system.css" />');
+	// //document.write('<link type="text/css" rel="stylesheet" href="' + root + 'assets/libs/google-code-prettify/prettify.css" />');
+	// if(!window.console || !window.console.groupEnd)
+		// document.write('<script type="text/javascript" src="' + root + 'assets/libs/firebug-lite/build/firebug-lite.js"></script>');
+// 	
+	// document.write('<script type="text/javascript" src="' + root + 'assets/libs/google-code-prettify/prettify.js"></script>');
+// 	
+// 	
+// 	
+	// if(moduleName.indexOf('.') == -1)
+		// document.write('<script type="text/javascript" src="' + root + moduleName + '/project.js"></script>');
+	// document.write('<script type="text/javascript" src="' + root + 'assets/scripts/project.js"></script>');
+// 	
 	
-	document.write('<link type="text/css" rel="stylesheet" href="' + root + 'assets/styles/system.css" />');
-	//document.write('<link type="text/css" rel="stylesheet" href="' + root + 'assets/libs/google-code-prettify/prettify.css" />');
-	if(!window.console || !window.console.groupEnd)
-		document.write('<script type="text/javascript" src="' + root + 'assets/libs/firebug-lite/build/firebug-lite.js"></script>');
+	if(eval("!-[1,]"))
+		forEach('article section header footer nav aside details summary'.split(' '), document.createElement, document);
 	
-	document.write('<script type="text/javascript" src="' + root + 'assets/libs/google-code-prettify/prettify.js"></script>');
+	window.Demo = window.Demo || {};
 	
-	
-	
-	if(moduleName.indexOf('.') == -1)
-		document.write('<script type="text/javascript" src="' + root + moduleName + '/project.js"></script>');
-	document.write('<script type="text/javascript" src="' + root + 'assets/scripts/project.js"></script>');
-	
-	document.createElement('section');
-	
-	window.System = window.System || {};
-	
-	apply(System, {
+	apply(Demo, {
 		
 		title: 'J+ Library',
 		

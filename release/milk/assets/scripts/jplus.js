@@ -1,5 +1,5 @@
 ﻿/*
- * This file is created by a tool at 2012/04/05 10:49:04
+ * This file is created by a tool at 2012/04/06 16:32:06
  */
 
 
@@ -7234,6 +7234,584 @@ Control.implement((function(){
 })());
 
 /************************************
+ * System.Dom.Drag
+ ************************************/
+var Draggable = Class({
+	
+	initEvent: function (e) {
+		e.draggable = this;
+		e.dragTarget = this.target;
+	},
+	
+	/**
+	 * 触发 dragstart 事件。
+	 * @param {Event} e 原生的 mousemove 事件。
+	 */
+	onDragStart: function(e){
+		this.initEvent(e);
+		// 如果都正常。
+		return this.target.trigger('dragstart', e);
+	},
+	
+	/**
+	 * 触发 drag 事件。
+	 * @param {Event} e 原生的 mousemove 事件。
+	 */
+	onDrag: function(e){
+		this.initEvent(e);
+		this.target.trigger('drag', e);
+	},
+	
+	/**
+	 * 触发 dragend 事件。
+	 * @param {Event} e 原生的 mouseup 事件。
+	 */
+	onDragEnd: function(e){
+		this.initEvent(e);
+		return this.target.trigger('dragend', e);
+	},
+	
+	/**
+	 * 处理 mousedown 事件。
+	 * 初始化拖动，当单击时，执行这个函数，但不执行 doDragStart。
+	 * 只有鼠标移动时才会继续执行doDragStart。
+	 * @param {Event} e 事件参数。
+	 */
+	initDrag: function(e){
+
+		// 左键才继续
+		if(e.which !== 1)
+			return;
+		
+		if(Draggable.current) {
+			Draggable.current.stopDrag(e);
+		}
+		
+		e.preventDefault();
+		
+		var me = this;
+		
+		me.from = new Point(e.pageX, e.pageY);
+		me.to = new Point(e.pageX, e.pageY);
+		
+		// 设置当前处理  mousemove 的方法。
+		// 初始需设置 onDrag
+		// 由 onDrag 设置为    onDrag
+		me.handler = me.startDrag;
+		
+		me.timer = setTimeout(function(){
+			me.startDrag(e);
+		}, me.dragDelay);
+		
+		// 设置文档  mouseup 和   mousemove
+		Dom.getDocument(me.handle.dom).on('mouseup', me.stopDrag, me).on('mousemove', me.handleDrag, me);
+	
+	},
+	
+	/**
+	 * 处理 mousemove 事件。
+	 * @param {Event} e 事件参数。
+	 */
+	handleDrag: function(e){
+		
+		e.preventDefault();
+		
+		this.to.x = e.pageX;
+		this.to.y = e.pageY;
+		
+		// 调用函数处理。
+		this.handler(e);
+	},
+	
+	/**
+	 * 处理 mousedown 或 mousemove 事件。开始准备拖动。
+	 * @param {Event} e 事件。
+	 * 这个函数调用 onDragStart 和 beforeDrag
+	 */
+	startDrag: function (e) {
+		
+		var me = this;
+		
+		//   清空计时器。
+		clearTimeout(me.timer);
+		
+		Draggable.current = me;
+		
+		// 设置句柄。
+		me.handler = me.drag;
+		
+		// 开始拖动事件，如果这个事件 return false，  就完全停止拖动。
+		if (me.onDragStart(e)) {
+			me.beforeDrag(e);
+			me.drag(e);
+		} else {
+			// 停止。
+			me.stopDragging();
+		}
+	},
+	
+	/**
+	 * 处理 mousemove 事件。处理拖动。
+	 * @param {Event} e 事件参数。
+	 * 这个函数调用 onDrag 和 doDrag
+	 */
+	drag: function(e){
+		this.onDrag(e);
+		this.doDrag(e);
+	},
+	
+	/**
+	 * 处理 mouseup 事件。
+	 * @param {Event} e 事件参数。
+	 * 这个函数调用 onDragEnd 和 afterDrag
+	 */
+	stopDrag: function (e) {
+		
+		// 只有鼠标左键松开， 才认为是停止拖动。
+		if(e.which !== 1)
+			return;
+		
+		e.preventDefault();
+		
+		// 检查是否拖动。
+		// 有些浏览器效率较低，肯能出现这个函数多次被调用。
+		// 为了安全起见，检查 current 变量。
+		if (Draggable.current === this) {
+			
+			this.stopDragging();
+			
+			this.onDragEnd(e);
+
+			// 改变结束的鼠标类型，一般这个函数将恢复鼠标样式。
+			this.afterDrag(e);
+		
+		} else {
+
+			this.stopDragging();
+			
+		}
+	},
+	
+	beforeDrag: function(e){
+		this.offset = this.proxy.getOffset();
+		this.cursor = document.getStyle('cursor');
+		document.setStyle('cursor', this.target.getStyle('cursor'));
+		Dom.get(document.body).setStyle('pointer-events', 'none');
+	},
+	
+	doDrag: function(e){
+		var me = this;
+		me.proxy.setOffset({
+			x: me.offset.x + me.to.x - me.from.x,
+			y: me.offset.y + me.to.y - me.from.y
+		});
+	},
+	
+	afterDrag: function(){
+		Dom.get(document.body).setStyle('pointer-events', '');
+		document.setStyle('cursor', this.cursor);
+		this.offset = this.cursor = null;
+	},
+	
+	dragDelay: 500,
+	
+	constructor: function(dom, handle){
+		this.proxy = this.target = dom;
+		this.handle = handle || dom;
+		this.setDraggable();
+	},
+
+	/**
+	 * 停止当前对象的拖动。
+	 */
+	stopDragging: function(){
+		Dom.getDocument(this.handle.dom).un('mousemove', this.handleDrag).un('mouseup', this.stopDrag);
+		clearTimeout(this.timer);
+		Draggable.current = null;
+	},
+	
+	setDraggable: function(value){
+		this.handle[value !== false ? 'on' : 'un']('mousedown', this.initDrag, this);
+	}
+	
+});
+
+/// #endregion
+
+/// #region Element
+
+/**
+ * @class Element
+ */
+Control.implement({
+	
+	/**
+	 * 使当前元素支持拖动。
+	 * @param {Element} [handle] 拖动句柄。
+	 * @return this
+	 */
+	setDraggable: function(handle) {
+		var draggable = JPlus.getData(this, 'draggable');
+		if(handle !== false) {
+			if (handle === true) handle = null;
+			if(draggable) {
+				assert(!handle || draggable.handle.target === handle.target, "Control.prototype.setDraggable(handle): 无法重复设置 {handle}, 如果希望重新设置handle，使用以下代码：dom.setDraggable(false);JPlus.removeData(dom, 'draggable');dom.setDraggable(handle) 。", handle);
+				draggable.setDraggable();
+			} else  {
+				Dom.movable(this.dom);
+				draggable = JPlus.setData(this, 'draggable', new Draggable(this, handle));
+			}
+			
+			
+		} else if(draggable)
+			draggable.setDraggable(false);
+		return this;
+	}
+	
+});
+
+/// #endregion
+	
+
+/************************************
+ * System.Dom.Resize
+ ************************************/
+Dom.resize = (function(){
+	
+	var controlEvent = JPlus.Events.control,
+		oldResize = controlEvent.resize,
+		timer,
+		win = new Dom(window);
+		
+	controlEvent.resize = {
+		
+		add: function(ctrl, type, fn){
+			oldResize.add(ctrl, type, resizeProxy);
+		},
+		
+		remove: function(ctrl, type, fn){
+			oldResize.remove(ctrl, type, resizeProxy);
+		},
+		
+		trigger: oldResize.trigger,
+		
+		initEvent: oldResize.initEvent
+		
+	};
+		
+	function resizeProxy(e){
+		if(timer)
+			clearTimeout(timer);
+		
+		timer = setTimeout(function (){
+			timer = 0;
+			win.trigger('resize', e);
+		}, 100);
+	}
+	
+	
+	
+	return function(fn){
+		win[Function.isFunction(fn) ? 'on' : 'trigger']('resize', fn);
+	}
+
+	
+})();
+/************************************
+ * System.Dom.HashChange
+ ************************************/
+String.htmlEncode = (function() {
+    var entities = {
+        '&': '&amp;',
+        '>': '&gt;',
+        '<': '&lt;',
+        '"': '&quot;'
+    };
+    
+    function match(match, capture){
+    	return entities[capture];
+    }
+    
+    return function(value) {
+        return value ? value.replace(/[&><"]/g, match) : '';
+    };
+})();
+
+location.getHash = function() {
+	var href = location.href,
+	i = href.indexOf("#");
+
+	return i >= 0 ? href.substr(i + 1) : '';
+};
+
+
+(function() {
+
+	var hashchange = 'hashchange',
+		document = window.document,
+		win = new Dom(window),
+		getHash = location.getHash;
+
+	/**
+	 * 当 hashchange 事件发生时，执行函数。
+	 */
+	Dom[hashchange] = function(fn) {
+		fn ? win.on(hashchange, fn) && fn.call(win) : win.trigger(hashchange);
+	};
+	
+	// 并不是所有浏览器都支持 hashchange 事件，
+	// 当浏览器不支持的时候，使用自定义的监视器，每隔50ms监听当前hash是否被修改。
+	if ('on' + hashchange in window && !(document.documentMode < 8)) return;
+
+	var currentHash, 
+	
+		timer, 
+		
+		onChange = function() {
+			win.trigger(hashchange);
+		},
+		
+		poll = function() {
+			var newToken = getHash();
+	
+			if (currentHash !== newToken) {
+				currentHash = newToken;
+				onChange();
+			}
+			timer = setTimeout(poll, 50);
+	
+		},
+		
+		start = function() {
+			currentHash = getHash();
+			timer = setTimeout(poll, 50);
+		},
+		
+		stop = function() {
+			clearTimeout(timer);
+		};
+		
+	// 如果是 IE6/7，使用 iframe 模拟成历史记录。
+	if (navigator.isQuirks) {
+
+		var iframe;
+
+		// 初始化的时候，同时创建 iframe
+		start = function() {
+			if (!iframe) {
+				Dom.ready(function(){
+					iframe = Dom.parse('<iframe style="display: none" height="0" width="0" tabindex="-1" title="empty"/>');
+					iframe.one('load', function() {
+						
+						// 绑定当 iframe 内容被重写后处理。
+						this.on("load", function() {
+							// iframe 的 load 载入有 2 个原因：
+							//	1. hashchange 重写 iframe
+							//	2. 用户点击后退按钮
+							
+							// 获取当前保存的 hash
+							var newHash = iframe.contentWindow.document.body.innerText,
+								oldHash = getHash();
+							
+							
+							// 如果是用户点击后退按钮导致的iframe load， 则 oldHash !== newHash
+							if (oldHash != newHash) {
+								
+								// 将当前的 hash 更新为旧的 newHash
+								location.hash = currentHash = newHash;
+								
+								// 手动触发 hashchange 事件。
+								win.trigger(hashchange);
+							}
+							
+						});
+						
+						// 首次执行，先保存状态。
+						currentHash = getHash();
+						poll();
+					});
+					
+					iframe = iframe.dom;
+					document.dom.appendChild(iframe);
+					
+				});
+			} else {
+				
+				// 开始监听。
+				currentHash = getHash();
+				poll();
+			}
+
+		};
+		// iframe: onChange 时，保存状态到 iframe 。
+		onChange = function() {
+
+			var hash = getHash();
+			
+			// 将历史记录存到 iframe 。
+			var html = "<html><body>" + String.htmlEncode(hash) + "</body></html>";
+
+			try {
+				var doc = iframe.contentWindow.document;
+				doc.open();
+				doc.write(html);
+				doc.close();
+			} catch(e) {}
+
+			win.trigger(hashchange);
+		};
+		
+	}
+
+	Control.addEvents({
+		hashchange: {
+			add: start,
+
+			remove: stop
+
+		}
+	});
+
+})();
+/************************************
+ * System.Utils.JSON
+ ************************************/
+var JSON = JSON || {};
+	
+Object.extend(JSON, {
+	
+	specialChars: {'\b': '\\b', '\t': '\\t', '\n': '\\n', '\f': '\\f', '\r': '\\r', '"' : '\\"', '\\': '\\\\'},
+
+	replaceChars: function(chr){
+		return JSON.specialChars[chr] || '\\u00' + Math.floor(chr.charCodeAt() / 16).toString(16) + (chr.charCodeAt() % 16).toString(16);
+	},
+
+	encode: JSON.stringify || function(obj){
+		switch (Object.type(obj)){
+			case 'string':
+				return '"' + obj.replace(/[\x00-\x1f\\"]/g, JSON.replaceChars) + '"';
+			case 'array':
+				return '[' + String(Object.update(obj, JSON.encode, [])) + ']';
+			case 'object':
+				var string = [];
+				for(var key in obj) {
+					string.push(JSON.encode(key) + ':' + JSON.encode(obj[key]));
+				}
+				return '{' + string + '}';
+			default:
+				return String(obj);
+		}
+	},
+
+	decode: function(string){
+		if (typeof string != 'string' || !string.length) return null;
+		
+		if (JSON.parse)
+			return JSON.parse(string);
+		
+		// 摘自 json2.js
+		if (/^[\],:{}\s]*$/
+                    .test(string.replace(/\\(?:["\\\/bfnrt]|u[\da-fA-F]{4})/g, '@')
+                        .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
+                        .replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
+
+        	return new Function('return ' + string)();
+        	
+        }
+        
+        throw new SyntaxError('JSON.parse: unexpected character\n' + value);
+	}
+
+});
+
+
+
+
+
+/************************************
+ * System.Browser.Cookies
+ ************************************/
+var Cookies = {
+	
+	/**
+	 * 获取 Cookies 。
+	 * @param {String} name 名字。
+	 * @param {String} 值。
+	 */
+	get: function(name){
+		
+		assert.isString(name, "Cookies.get(name): 参数 name ~。");
+		
+		name = encodeURIComponent(name);
+		
+		var matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([-.*+?^${}()|[\]\/\\])/g, '\\$1') + "=([^;]*)"));
+		return matches ? decodeURIComponent(matches[1]) : undefined;
+	},
+	
+	/**
+	 * 设置 Cookies 。
+	 * @param {String} name 名字。
+	 * @param {String} value 值。
+	 * @param {Number} expires 有效天数。天。-1表示无限。
+	 * @param {Object} props 其它属性。如 domain, path, secure    。
+	 */
+	set: function(name, value, expires, props){
+		var e = encodeURIComponent,
+		    updatedCookie = e(name) + "=" + e(value),
+		    t;
+		    
+		    assert(updatedCookie.length < 4096, "Cookies.set(name, value, expires, props): 参数  value 内容过长，无法存储。");
+		
+		if(expires == undefined)
+			expires = value === null ? -1 : 1000;
+		   
+		if(expires) {
+			t = new Date();
+			t.setHours(t.getHours() + expires * 24);
+			updatedCookie += '; expires=' + t.toGMTString();
+		}
+		    
+		for(t in props){
+			updatedCookie = String.concat(updatedCookie, "; " + t, "=",  e(props[t])) ;
+		}
+		
+		document.cookie = updatedCookie;
+	}
+};
+
+
+/************************************
+ * System.Browser.LocalStorage
+ ************************************/
+var LocalStorage = LocalStorage || {};
+
+Object.extend(LocalStorage, {
+	
+	set: window.localStorage ? function(name, value){
+		localStorage[name] = value;
+	} : Cookies.set,
+	
+	get: window.localStorage ? function(name){
+		return localStorage[name];
+	} : Cookies.get,
+	
+	setJSON: function(name, value){
+		LocalStorage.set(name, JSON.encode(value));
+	},
+	
+	getJSON: function(name){
+		name = LocalStorage.get(name);
+		if(name)
+			try{
+				return JSON.decode(name);
+			}catch(e){}
+			
+		
+		return null;
+	}
+	
+});
+/************************************
  * System.Data.Collection
  ************************************/
 var Collection = Class({
@@ -7917,18 +8495,18 @@ var ICollapsable = {
 		this.onToggleCollapse(false);
 	},
 	
-	collapse: function(){
+	collapse: function(duration){
 		var me = this;
-		me.container && me.container.hide(me.collapseDuration, function(){
+		me.container && me.container.hide(duration === undefined ? me.collapseDuration : duration, function(){
 			me.addClass('x-' + me.xType + '-collapsed');
 			me.onCollapse();
 		}  , 'height');
 		return this;
 	},
 	
-	expand: function(){
+	expand: function(duration){
 		this.removeClass('x-' + this.xType + '-collapsed');
-		this.container && this.container.show(this.collapseDuration, Function.bind(this.onExpand, this), 'height');
+		this.container && this.container.show(duration === undefined ? this.collapseDuration : duration, Function.bind(this.onExpand, this), 'height');
 		return this;
 	},
 	
@@ -7937,8 +8515,8 @@ var ICollapsable = {
 	 * @method toggleCollapse
 	 * @param {Number} collapseDuration 时间。
 	 */
-	toggleCollapse: function() {
-		return this.isCollapsed() ? this.expand() : this.collapse();
+	toggleCollapse: function(duration) {
+		return this.isCollapsed() ? this.expand(duration) : this.collapse(duration);
 	}
 	
 };
@@ -8041,6 +8619,9 @@ var IDropDownMenuContainer = {
 	}
 	
 };
+/************************************
+ * Milk.Core.Splitter
+ ************************************/
 /************************************
  * Milk.Button.Button
  ************************************/
@@ -8162,13 +8743,13 @@ var SplitButton = MenuButton.extend({
  * Milk.Button.LinkButton
  ************************************/
 /************************************
- * Milk.Button.Menu
+ * Milk.Button.Menu-Alt
  ************************************/
 var MenuItem = ContentControl.extend({
 	
 	xType: 'menuitem',
 	
-	tpl: '<a class="x-menuitem"></a>',
+	tpl: '<a class="x-menuitem"><span class="x-icon x-icon-none"></span></a>',
 	
 	subMenu: null,
 	
@@ -8240,19 +8821,37 @@ var MenuItem = ContentControl.extend({
 		if(!this.subMenu)
 			 this.setSelected(false);
 			 
+	},
+	
+	setSelected: function(value){
+		this.getParent().toggleClass('x-menuitem-selected', value);
+		this.toggleClass('x-menuitem-selected', value);
+		return this;
+	},
+	
+	getSelected: function(){
+		return this.hasClass('x-menuitem x-menuitem-selected');
+	},
+	
+	setChecked: function(value){
+		this.find('.x-icon').dom.className = 'x-icon x-icon-' + (value === false ? 'unchecked' : value !== null ? 'checked' : 'none');
+		return this;
+	},
+	
+	getChecked: function(){
+		return this.hasClass('x-menuitem x-menuitem-checked');
+	},
+	
+	setDisabled: function(value){
+		this.getParent().toggleClass('x-menuitem-disabled', value);
+		this.toggleClass('x-menuitem-disabled', value);
+		return this;
+	},
+	
+	getDisabled: function(){
+		return this.hasClass('x-menuitem x-menuitem-disabled');
 	}
 
-});
-
-String.map("Selected Checked Disabled", function(key){
-	var p = MenuItem.prototype, c = 'x-menuitem-' + key.toLowerCase();
-	p['set' + key] = function(value){
-		return this.toggleClass(c, value);
-	};
-	
-	p['get' + key] = function(){
-		return this.hasClass(c);
-	};
 });
 
 var MenuSeperator = Control.extend({
@@ -8402,6 +9001,30 @@ var Menu = ListControl.extend({
 
 
 /************************************
+ * Milk.Button.ContextMenu
+ ************************************/
+var ContextMenu = Menu.extend({
+	
+	floating: true,
+	
+	setControl: function(ctrl){
+		ctrl.on('contextmenu', this.onContextMenu, this);
+		
+		return this;
+	},
+	
+	setDisbale: function(disbale){
+		this.disabled = disbale;
+	},
+	
+	onContextMenu: function(e){ 
+		if(!this.disabled)
+			this.showAt(e.pageX === undefined ? event.x : e.pageX, e.pageY === undefined ? event.y : e.pageY);
+		e.stop();
+	}
+	
+});
+/************************************
  * Milk.Form.IInput
  ************************************/
 var IInput = {
@@ -8454,6 +9077,166 @@ var IInput = {
 /************************************
  * Milk.Form.Form
  ************************************/
+/************************************
+ * Milk.Form.ListBox
+ ************************************/
+var ListBox = ListControl.extend(IInput).implement({
+	
+	xType: 'listbox',
+	
+	/**
+	 * 当用户点击一项时触发。
+	 */
+	onItemClick: function (item) {
+		return this.trigger('itemclick', item);
+	},
+	
+	/**
+	 * 当一个选项被选中时触发。
+	 */
+	onSelect: function(item){
+		
+		// 如果存在代理元素，则同步更新代理元素的值。
+		if(this.formProxy)
+			this.formProxy.value = this.baseGetValue(item);
+			
+		return this.trigger('select', item);
+	},
+	
+	/**
+	 * 点击时触发。
+	 */
+	onClick: function (e) {
+		
+		// 如果无法更改值，则直接忽略。
+		if(this.getDisabled() || this.getReadOnly())
+			return;
+			
+		//获取当前项。
+		var item = this.getItemOf(e.target);
+		if(item && !this.clickItem(item)){
+			e.stop();
+		}
+	},
+	
+	/**
+	 * 模拟点击一项。
+	 */
+	clickItem: function(item){
+		if(this.onItemClick(item)){
+			this.toggleItem(item);
+			return true;
+		}
+		
+		return false;
+	},
+	
+	init: function(options){
+		var t;
+		if(this.dom.tagName === 'SELECT'){
+			t = this.dom;
+			this.dom = this.create(options);
+			t.parentNode.replaceChild(this.dom, t);
+		}
+		
+		this.base('init');
+			
+		this.on('click', this.onClick);
+		
+		if(t)
+			this.copyItemsFromSelect(t);
+		
+	},
+	
+	setName: function (value) {
+		if(!this.formProxy){
+			this.formProxy = Dom.parseNode('<input type="hidden">');
+			this.formProxy.value = this.getValue();
+			this.dom.appendChild(this.formProxy);
+		}
+		
+		this.formProxy.name = value;
+		return this;
+		
+	},
+	
+	getName: function () {
+		return this.formProxy && this.formProxy.name;
+	},
+	
+	/**
+	 * 底层获取一项的值。
+	 */
+	baseGetValue: function(item){
+		return item ? item.value !== undefined ? item.value : item.getText() : null;
+	},
+	
+	/**
+	 * 获取选中项的值，如果每天项被选中，则返回 null 。
+	 */
+	getValue: function(){
+		var selectedItem = this.getSelectedItem();
+		return selectedItem ? this.baseGetValue(selectedItem) : this.formProxy ? this.formProxy.value : null;
+	},
+	
+	/**
+	 * 查找并选中指定值内容的项。如果没有项的值和当前项相同，则清空选择状态。
+	 */
+	setValue: function(value){
+		
+		// 默认设置为值。
+		if(this.formProxy)
+			this.formProxy.value = value;
+			
+		var t;
+		
+		this.controls.each(function(item){
+			if(this.baseGetValue(item) === value){
+				t = item;
+				return false;
+			}
+		}, this);
+		
+		return this.setSelectedItem(t);
+	},
+	
+	getForm: function () {
+		return Dom.get(this.formProxy && this.formProxy.form);
+	},
+	
+	/**
+	 * 反选择一项。
+	 */
+	clear: function () {
+		return  this.setSelectedItem(null);
+	},
+	
+	copyItemsFromSelect: function(select){
+		if(select.name){
+			this.setName(select.name);
+			select.name = '';
+		}
+		for(var node = select.firstChild; node; node = node.nextSibling) {
+			if(node.tagName  === 'OPTION') {
+				var item = this.controls.add(Dom.getText(node));
+					
+				item.value = node.value;
+				if(node.selected){
+					this.setSelectedItem(item);
+				}
+			}
+		}
+		
+		if(select.onclick)
+			this.dom.onclick = select.onclick;
+		
+		if(select.onchange)
+			this.on('change', select.onchange);
+		
+	}
+	
+});
+
 /************************************
  * Milk.Form.TextBox
  ************************************/
@@ -8743,164 +9526,24 @@ var ComboBox = CombinedTextBox.extend(IDropDownMenuContainer).implement({
  * Milk.Form.RadioButton
  ************************************/
 /************************************
- * Milk.Form.ListBox
+ * Milk.Form.SearchTextBox
  ************************************/
-var ListBox = ListControl.extend(IInput).implement({
+var SearchTextBox = CombinedTextBox.extend({
 	
-	xType: 'listbox',
+	xType: 'searchtextbox',
 	
-	/**
-	 * 当用户点击一项时触发。
-	 */
-	onItemClick: function (item) {
-		return this.trigger('itemclick', item);
-	},
+	tpl: '<span class="x-combinedtextbox">\
+				<input type="text" class="x-textbox x-searchtextbox" type="text" value="文本框" id="id"/><button class="x-searchtextbox-search"></button>\
+			</span>',
 	
-	/**
-	 * 当一个选项被选中时触发。
-	 */
-	onSelect: function(item){
-		
-		// 如果存在代理元素，则同步更新代理元素的值。
-		if(this.formProxy)
-			this.formProxy.value = this.baseGetValue(item);
-			
-		return this.trigger('select', item);
-	},
-	
-	/**
-	 * 点击时触发。
-	 */
-	onClick: function (e) {
-		
-		// 如果无法更改值，则直接忽略。
-		if(this.getDisabled() || this.getReadOnly())
-			return;
-			
-		//获取当前项。
-		var item = this.getItemOf(e.target);
-		if(item && !this.clickItem(item)){
-			e.stop();
-		}
-	},
-	
-	/**
-	 * 模拟点击一项。
-	 */
-	clickItem: function(item){
-		if(this.onItemClick(item)){
-			this.toggleItem(item);
-			return true;
-		}
-		
-		return false;
-	},
-	
-	init: function(options){
-		var t;
-		if(this.dom.tagName === 'SELECT'){
-			t = this.dom;
-			this.dom = this.create(options);
-			t.parentNode.replaceChild(this.dom, t);
-		}
-		
+	init: function(){
 		this.base('init');
-			
-		this.on('click', this.onClick);
-		
-		if(t)
-			this.copyItemsFromSelect(t);
-		
-	},
-	
-	setName: function (value) {
-		if(!this.formProxy){
-			this.formProxy = Dom.parseNode('<input type="hidden">');
-			this.formProxy.value = this.getValue();
-			this.dom.appendChild(this.formProxy);
-		}
-		
-		this.formProxy.name = value;
-		return this;
-		
-	},
-	
-	getName: function () {
-		return this.formProxy && this.formProxy.name;
-	},
-	
-	/**
-	 * 底层获取一项的值。
-	 */
-	baseGetValue: function(item){
-		return item ? item.value !== undefined ? item.value : item.getText() : null;
-	},
-	
-	/**
-	 * 获取选中项的值，如果每天项被选中，则返回 null 。
-	 */
-	getValue: function(){
-		var selectedItem = this.getSelectedItem();
-		return selectedItem ? this.baseGetValue(selectedItem) : this.formProxy ? this.formProxy.value : null;
-	},
-	
-	/**
-	 * 查找并选中指定值内容的项。如果没有项的值和当前项相同，则清空选择状态。
-	 */
-	setValue: function(value){
-		
-		// 默认设置为值。
-		if(this.formProxy)
-			this.formProxy.value = value;
-			
-		var t;
-		
-		this.controls.each(function(item){
-			if(this.baseGetValue(item) === value){
-				t = item;
-				return false;
-			}
-		}, this);
-		
-		return this.setSelectedItem(t);
-	},
-	
-	getForm: function () {
-		return Dom.get(this.formProxy && this.formProxy.form);
-	},
-	
-	/**
-	 * 反选择一项。
-	 */
-	clear: function () {
-		return  this.setSelectedItem(null);
-	},
-	
-	copyItemsFromSelect: function(select){
-		if(select.name){
-			this.setName(select.name);
-			select.name = '';
-		}
-		for(var node = select.firstChild; node; node = node.nextSibling) {
-			if(node.tagName  === 'OPTION') {
-				var item = this.controls.add(Dom.getText(node));
-					
-				item.value = node.value;
-				if(node.selected){
-					this.setSelectedItem(item);
-				}
-			}
-		}
-		
-		if(select.onclick)
-			this.dom.onclick = select.onclick;
-		
-		if(select.onchange)
-			this.on('change', select.onchange);
-		
+		this.textBox.on('focus', this.textBox.select);
 	}
-	
 });
+
+
+
 
 /************************************
  * Milk.Form.Suggest
@@ -9022,443 +9665,6 @@ var Suggest = Control.extend({
 	// xType: 'suggest'
 // 	
 // });
-/************************************
- * Milk.Form.Validator
- ************************************/
-Object.extend(Validator, {
-	
-	initTarget: (function(){
-		
-		var duration = 100;
-		
-		function getContainer(type, validator){
-			type += 'Container';
-			var id = validator.target.getAttr(type);
-			id = id && Dom.get(id);
-			if(id)
-				return id;
-			
-			id = validator.target.getAttr('id');
-			return id && Dom.get(id + '.' + type);
-		}
-		
-		function initFunction(validator, attrName){
-			var val = validator.target.getAttr('onvalidate' + attrName);
-			
-			if(val == undefined)
-				return;
-				
-			val = new Function('event', val);
-			
-			validator.on(attrName, val, validator.target.dom);
-		}
-		
-		function initRegExp(validator, attrName){
-			var val = validator.target.getAttr(attrName);
-			if(val == undefined)
-				return ;
-				
-			validator.target.setAttr(attrName, null);
-			
-			val = new RegExp(val);
-		
-			validator.set(attrName, val, validator.target.getAttr('msg-' + attrName));
-		}
-		
-		function getAttrNumber(validator, attrName){
-			var val = validator.target.getAttr(attrName);
-			if(val == undefined)
-				return -1;
-			
-			if(typeof val !== 'number') {
-				val = +val;
-				if(isNaN(val)) {
-					return -1;
-				}
-			}
-			
-			return val;
-		}
-		
-		function initNumber(validator, attrName){
-			var val = getAttrNumber(validator, attrName);
-			if(val >= 0) {
-				validator.target.setAttr(attrName, null);
-				validator.set(attrName, val, validator.target.getAttr('msg-' + attrName));
-			}
-		}
-		
-		function initBoolean(validator, attrName){
-			var val = validator.target.getAttr(attrName);
-			if(val == undefined)
-				return ;
-				
-			validator.target.setAttr(attrName, null);
-			
-			if(typeof val !== 'boolean') {
-				val = val && !/^false$/i.test(val);
-			}
-		
-			validator.set(attrName, val, validator.target.getAttr('msg-' + attrName));
-		}
-	
-		function initCounter(validator){
-			var counter = getContainer('counter', validator),
-				maxLength;
-			if(counter){
-				maxLength = getAttrNumber(validator, 'maxLength') || -1;
-				validator.target.on('change', updateCounter).on('keyup', updateCounter);
-				updateCounter();
-			}
-			
-			function updateCounter(){
-				var len = validator.target.getText().length;
-				if(maxLength !== -1 && len > maxLength){
-					counter.setHtml(String.format(Validator.messages.counterError, maxLength, maxLength - len, len, len - maxLength));	
-				} else {
-					counter.setHtml(String.format(Validator.messages.counterSuccess, maxLength, maxLength - len, len, len - maxLength));	
-				}
-			}
-		}
-		
-		function initPlaceholder(validator){
-			var placeholderContainer = getContainer('placeholder', validator);
-			var placeholder = validator.target.getAttr('placeholder');
-			
-			if(!placeholderContainer) {
-				if(!placeholder)
-					return;
-				
-				// 生成自定义的 placeholderContainer 。
-				var newId = 'placeholderContainer-' + JPlus.id++;
-				validator.target.setAttr('placeholderContainer', newId);
-				placeholderContainer = Dom.create('span', 'x-placeholder');
-				placeholderContainer.setAttr('id', newId);
-				
-				// var tid = validator.target.getAttr('id');
-				// if(!tid) {
-					// tid = 'placeholder-' + JPlus.id++;
-					// validator.target.setAttr('id', tid);
-				// }
-				// placeholderContainer.setAttr('for', tid);
-				
-				var p = validator.target.getParent().dom;
-				
-				Dom.movable(p);
-				
-				validator.target.insert('afterEnd', placeholderContainer);
-				placeholderContainer.setOffset(validator.target.getOffset().add(Dom.calc(validator.target.dom, '{x:ml + pl + bl, y:mt}')));
-			}
-			
-			if(placeholder){
-				validator.target.setAttr('placeholder', null);
-				placeholderContainer.setHtml(placeholder);
-			}
-			
-			validator.showPlaceholder = showPlaceholderContainer;
-			validator.hidePlaceholder = hidePlaceholderContainer;
-			validator.resetPlaceholder = showPlaceholderContainer;
-			
-			validator.target.on('focus', hidePlaceholderContainer, validator).on('blur', showPlaceholderContainer, validator);
-			
-			placeholderContainer.on(navigator.isIE6 ? 'click' : 'mousedown', clickPlaceholderContainer, validator.target);
-			
-			validator.resetPlaceholder();
-		}
-		
-		function clickPlaceholderContainer (e){
-			try{
-				e.stop();
-				this.focus();
-			}catch(e) {
-				
-			}
-		}
-		
-		function hidePlaceholderContainer() {
-			if(this.target.getAttr('readonly') && !this.getText())
-				return;
-			getContainer('placeholder', this).hide();
-		}
-		
-		function showPlaceholderContainer() {
-			var placeholderContainer = getContainer('placeholder', this);
-			if(this.getText()){
-				placeholderContainer.hide();
-			} else {
-				placeholderContainer.show();
-			}
-		}
-		
-		function showTip(result){
-			var tip = getContainer('tip', this);
-			if(tip){
-				if(result){
-					tip.show(duration, null, 'opacity');
-					tip.setHtml(result).removeClass('x-tipbox-success x-tipbox-plain').addClass('x-tipbox x-tipbox-error');
-					updateControl(false, this);
-				} else {
-					var msgSuccess = this.target.getAttr('msg-success');
-					if(msgSuccess) {
-						tip.show(duration, null, 'opacity');
-						tip.setHtml(msgSuccess).removeClass('x-tipbox-error x-tipbox-plain').addClass('x-tipbox x-tipbox-success');
-					} else if(msgSuccess !== ''){
-						tip.show(duration, null, 'opacity');
-						tip.setHtml('&nbsp;').removeClass('x-tipbox-error').addClass('x-tipbox x-tipbox-success x-tipbox-plain');
-					} else {
-						tip.setHtml('&nbsp;').removeClass('x-tipbox-error').addClass('x-tipbox x-tipbox-success x-tipbox-plain');
-						tip.hide();
-					}
-					updateControl(true, this);
-				}
-			}
-		}
-		
-		function updateControl(success, validator){
-			
-			if(validator.target.hasClass('x-textbox')) {
-				if(success) {
-					validator.target.removeClass('x-textbox-error');
-				} else {
-					validator.target.addClass('x-textbox-error');
-				}
-			}
-		}
-		    
-	    function createFormValidator(formElement){
-	    	var group = new Validator.Group();
-	    	group.target = Dom.get(formElement);
-	    	
-	    	initFunction(group, 'success');
-	    	initFunction(group, 'error');
-	    	initFunction(group, 'complete');
-	    	
-	    	group.target.on('submit', function(e){
-	    	
-	    		if(!group.validate())
-	    			e.preventDefault();
-	    	});
-	    	
-	    	
-	    	return group;
-	    }
-	    
-		function initForm (validator){
-			var formElement = validator.target.dom.form;
-			if(!formElement){
-				return;
-			}
-			
-			var formValidator = JPlus.getData(formElement, 'validatorGroup') || JPlus.setData(formElement, 'validatorGroup', createFormValidator(formElement))
-			
-			formValidator.push(validator);
-			
-		};
-			
-		Object.extend(Validator.messages, {
-			
-			counterSuccess: '还可以输入<span class="x-counter-success"> {1} </span> 个字',
-			
-			counterError: '已超过<span class="x-counter-error"> {3} </span>个字'
-			
-		});
-	
-		return function(dom){
-			var validator = new Validator(dom);
-			
-			// counter
-			initCounter(validator);
-			
-			// 基本的验证支持。
-			initBoolean(validator, 'required');
-			initNumber(validator, 'maxLength');
-			initNumber(validator, 'minLength');
-			initRegExp(validator, 'pattern');
-			
-			if(validator.target.getAttr('dataType')){
-				validator.set('dataType', validator.target.getAttr('dataType'), validator.target.getAttr('msg-error'));
-			}
-			
-			// 重置提示。
-			validator.on('reset', function(updateUI){
-				var tip = getContainer('tip', this);
-				if(tip){
-					if(updateUI !== false) {
-						tip.hide(duration, null, 'opacity');
-					} else {
-						tip[tip.getText() ? 'show' : 'hide']();
-					}
-				}
-			});
-			
-			validator.showTip = showTip;
-			
-			// placeholder
-			initPlaceholder(validator);
-			
-			// 绑定错误和成功后的提示。
-			validator.on('complete', showTip);
-			
-			// 事件函数
-			initFunction(validator, 'error');
-			initFunction(validator, 'success');
-			initFunction(validator, 'complete');
-			initFunction(validator, 'reset');
-			initFunction(validator, 'async');
-			
-			// 特殊的验证函数。
-			var validate = validator.target.getAttr('onvalidate');
-			
-			if(validate){
-				
-				// 根据  validate 属性动态生成一个验证函数。 
-				validator.validators.push(Function.bind(new Function('event', validate), validator.target.dom));
-			}
-			
-			// 验证类型。
-			var validateType = validator.target.getAttr('validateType') || 'keyup';
-			
-			if(validateType !== 'none') {
-				validator.target.on(validateType, validator.validate, validator);
-			
-				if(validateType === 'keyup') {
-					validator.target.on('blur', validator.validate, validator);
-				}
-			}
-			
-			// 如果缓存了值，则立即执行一次验证。
-			if(validator.getText())
-				validator.validate();
-			else
-				validator.reset(false);
-			
-			initForm(validator);
-			
-			JPlus.setData(validator.target, 'validator', validator);
-			
-			return validator;
-		};
-	
-	})(),
-	
-	Group: Class({
-		
-		length: 0,
-		
-		push: Array.prototype.push,
-		
-		isValidateNeeded: function(validator){
-			return !validator.isValidated;
-		},
-		
-		validate: function(){
-			var errorFields = [];
-	        
-	        for(var i = 0; i < this.length; i++){
-	            if(this.isValidateNeeded(this[i]) && !this[i].validate()) {
-	               errorFields.push(this[i]);
-	            }
-	        }
-	        
-	        if(!errorFields.length) {
-	        	this.onSuccess(errorFields);
-	        } else {
-	        	this.onError(errorFields);	
-	        }
-	        
-	        this.onComplete(errorFields);
-	        
-	        return errorFields.length === 0;
-		},
-		
-		onSuccess: function(result){
-			return this.trigger('success', result);
-		},
-		
-		onError: function(result){
-			if(result.length > 0) {
-				result[0].target.scrollIntoView();
-			}
-			return this.trigger('error', result);
-		},
-		
-		onComplete: function(result){
-			return this.trigger('complete', result);
-		}
-		
-	}),
-
-	init: function(target){
-		target = Dom.get(target) || document.body;
-		
-		target.query(':input').each(Validator.initTarget, Validator);
-		
-		if(/^(input|select|textarea)$/i.test(target.dom.tagName)){
-			Validator.initTarget(dom);
-		}
-	},
-	
-	getValidatorGroup: function(dom){
-		dom = Dom.get(dom);
-		assert(dom, "Validator.getFormValidator(dom): {dom} 不是合法的节点。", dom);
-		return JPlus.getData(dom.dom.form || dom.dom, 'validatorGroup');
-	},
-	
-	getValidator: function(dom){
-		assert(Dom.get(dom), "Validator.getValidator(dom): {dom} 不是合法的节点。", dom);
-		return JPlus.getData(Dom.get(dom), 'validator') || Validator.initTarget(dom);
-	}
-	
-});
-
-/************************************
- * Milk.Form.TagPicker
- ************************************/
-var TagPicker = Control.extend({
-	
-	xType: 'tagpicker',
-	
-	onChange: function(){
-		var content = ' ' + this.getText() + ' ';
-		
-		this.targets.each(function(value){
-			value = Dom.get(value);
-			value.toggleClass('x-tagpicker-selected', content.indexOf(' ' + value.getText().substr(2) + ' ') > -1);
-		});
-		
-	},
-	
-	init: function(options){
-		
-		var me = this;
-			
-		me.targets = options.targets.on('click', function(){
-			var value = me.getText(), newValue = this.getText().substr(2);
-			if(this.hasClass('x-tagpicker-selected')) {
-				me.setText((' ' + value + ' ').replace(' ' + newValue + ' ', ' ').trim());
-				this.removeClass('x-tagpicker-selected');
-			} else if((' ' + value + ' ').indexOf(' ' + newValue + ' ') === -1) {
-				this.addClass('x-tagpicker-selected');
-				me.setText(  (value ? value + ' ' : value) + newValue);
-			} else {
-				this.addClass('x-tagpicker-selected');
-			}
-		});
-		
-		me.targets.each(function(value){
-			var node = Dom.get(value);
-			node.setText('✚ ' + node.getText());	
-		});
-		
-		delete options.targets;
-		
-		this.on('keyup', this.onChange);
-		
-		this.onChange();
-		
-	}
-
-});
 /************************************
  * Milk.Container.Tabbable
  ************************************/
@@ -9589,177 +9795,6 @@ var Panel = ContainerControl.extend({
 	
 }).implement(ICollapsable);
 
-
-/************************************
- * Milk.Container.Dialog
- ************************************/
-var Dialog =  ContainerControl.extend({
-	
-	xType: 'dialog',
-	
-	resizable: true,
-	
-	draggable: true,
-	
-	options: {
-		
-		resizable: true,
-		
-		draggable: true
-		
-	},
-	
-	tpl: '<div class="x-dialog">\
-				<div class="x-dialog-body">\
-				</div>\
-			</div>',
-	
-	initHeader: function(header){
-		Dom.get(this.dom).insert('afterBegin', header);
-		header.setHtml('<a class="x-closebutton">×</a><h3></h3>');
-		header.find('.x-closebutton').on('click', this.close, this);
-	},
-	
-	onClosing: function () {
-		return this.trigger('closing');
-	},
-	
-	onClose: function () {
-		this.trigger('close');
-	},
-	
-	init: function(options){
-		
-		var t ;
-		
-		// 允许直接传入一个节点。
-		if(!this.hasClass('x-dialog')){
-			
-			// 判断节点是否已渲染过。
-			//var p = this.getParent();
-			//if(p && p.hasClass('x-facedialog-body'))
-			
-			// 保存当前节点。
-			t = this.dom;
-			this.dom = this.create(options);
-		}
-
-		this.setStyle('display', 'none');
-		
-		this.header = this.find('.x-dialog-header');
-		this.container = this.find('.x-dialog-body');
-		
-		// 移除 script 脚本。
-		this.query('script').remove();
-		
-		if(t){
-			this.container.dom.appendChild(t);
-		}
-
-	},
-	
-	showMask: function(opacity){
-		var mask = this.mask || (this.mask = document.find('.x-mask-dialog') || Dom.create('div', 'x-mask x-mask-dialog').appendTo());
-	
-		mask.setSize(document.getScrollSize());
-		
-		if(opacity != null)
-			mask.setOpacity(opacity);
-			
-		mask.show();
-		return this;
-	},
-	
-	setOffset: function(p){
-		if(p.x != null) {
-			this._autoCenterType &= ~2;
-			this.setStyle('margin-left', 0);
-		}
-		
-		if(p.y != null) {
-			this._autoCenterType &= ~1;
-			this.setStyle('margin-top', 0);
-		}
-		
-		return this.base('setOffset');
-	},
-	
-	setWidth: function(){
-		return this.base('setWidth').center();
-	},
-	
-	setHeight: function(){
-		return this.base('setHeight').center();
-	},
-	
-	setHtml: function(){
-		return this.base('setHtml').center();
-	},
-	
-	setText: function(){
-		return this.base('setText').center();
-	},
-	
-	_autoCenterType: 1 | 2,
-	
-	/**
-	 * 刷新当前对话框的位置以确保居中。
-	 */
-	center: function(){
-		if(this._autoCenterType & 1)
-			this.setStyle('margin-top', - this.getHeight() / 2 + document.getScroll().y);
-			
-		if(this._autoCenterType & 2)
-			this.setStyle('margin-left', - this.getWidth() / 2 + document.getScroll().x);
-			
-		return this;
-	},
-
-	show: function(){
-		
-		if(!this.getParent('body')){
-			this.appendTo();	
-		}
-		
-		return this.base('show').center();
-	},
-	
-	showDialog: function(callback){
-		return    this.showMask().show(this.fadeInDuration, callback);
-	},
-	
-	hide: function(){
-		this.base('hide');
-		if(this.mask) this.mask.hide();
-		return this;
-	},
-	
-	dispose: function(){
-		var me = this;
-		this.onClose();
-		if(this.mask) this.mask.remove();
-	},
-	
-	setContentSize: function(x, y){
-		this.setWidth('auto');
-		this.container.setWidth(x).setHeight(y);
-		this.center();
-		return this;
-	},
-	
-	fadeInDuration: 300,
-	
-	close: function(){
-		if(this.onClosing())
-			this.hide(this.fadeInDuration, Function.bind(this.onClose, this));
-	},
-	
-	hideCloseButton: function(){
-		this.find('.x-closebutton').remove();
-		return this;
-	}
-	
-});
 
 /************************************
  * Milk.DataView.Table
@@ -10091,3 +10126,271 @@ BalloonTip.show = function(ctrl, text, offsetY, offsetX){
 /************************************
  * Milk.Display.Line
  ************************************/
+/************************************
+ * Milk.DataView.TreeView
+ ************************************/
+var TreeNode = ScrollableControl.extend(ICollapsable).implement({
+	
+	/**
+	 * 更新节点前面的占位符状态。
+	 */
+	_updateSpan: function(){
+		
+		var span = this.getSpan(0), current = this;
+		
+		while((current = current.parent) && (span = span.getPrevious())){
+			
+			span.dom.className = current.isLastNode() ? 'x-treenode-space x-treenode-none' : 'x-treenode-space';
+		
+		}
+		
+		this.updateNodeType();
+	},
+	
+	/**
+	 * 更新一个节点前面指定的占位符的类名。
+	 */
+	_setSpan: function(depth, className){
+		
+		this.nodes.each(function(node){
+			var first = node.getFirst(depth).dom;
+			if(first.tagName == 'SPAN')
+				first.className = className;
+			node._setSpan(depth, className);
+		});
+		
+	},
+	
+	_markAsLastNode: function(){
+		this.addClass('x-treenode-last');
+		this._setSpan(this.depth - 1, 'x-treenode-space x-treenode-none');
+	},
+	
+	_clearMarkAsLastNode: function(){
+		this.removeClass('x-treenode-last');
+		this._setSpan(this.depth - 1, 'x-treenode-space');
+	},
+	
+	_initContainer: function(childControl){
+		var me = this, li = Dom.create('li', 'x-list-content');
+		li.append(childControl);
+		
+		// 如果 子节点有子节点，那么插入子节点的子节点。
+		if(childControl.container){
+			li.append(childControl.container);
+		}
+		
+		if(childControl.duration === -1){
+			childControl.duration = me.duration;
+		}
+		
+		return li;
+	},
+	
+	updateNodeType: function(){
+		this.setNodeType(this.nodes.length === 0 ? 'normal' : this.isCollapsed() ? 'plus' : 'minus');
+	},
+	
+	xType: 'treenode',
+		   
+	depth: 0,
+	
+	create: function(){
+		var div = Dom.create('div', 'x-' + this.xType);
+		div.append(Dom.create('span', ''));
+		return div.dom;
+	},
+	
+	onDblClick: function(e){
+		this.toggleCollapse();
+		e.stop();
+	},
+	
+	init: function(options){
+		this.content = this.getLast();
+		this.setUnselectable();
+		this.on('dblclick', this.onDblClick, this);
+		this.nodes = this.controls;
+		this.container = null;
+	},
+	
+	initChild: function(childControl){
+		if(!(childControl instanceof TreeNode)) {
+			var t = childControl;
+			childControl = new TreeNode();
+			if(typeof t === 'string')
+				childControl.setText(t);
+			else
+				Dom.get(childControl).append(t);
+		}
+		return childControl;
+	},
+	
+	onControlAdded: function(childControl, index){
+		var me = this,
+			t = this.initContainer(childControl),
+			re = this.controls[index];
+		
+		this.container.insertBefore(t, re && re.getParent());
+		
+		// 只有 已经更新过 才去更新。
+		if(this.depth || this instanceof TreeView){
+			childControl.setDepth(this.depth + 1);
+		}
+		
+		me.update();
+	},
+	
+	onControlRemoved: function(childControl, index){
+		this.container.removeChild(childControl.getParent());
+		childControl.parent = null;
+		this.update();
+	},
+	
+	initContainer: function(childControl){
+		
+		// 第一次执行创建容器。
+		this.container = Dom.create('ul', 'x-list-container x-treeview-container');
+		
+		if(this instanceof TreeView){
+			this.dom.appendChild(this.container.dom);	
+		} else if(this.dom.parentNode){
+			this.dom.parentNode.appendChild(this.container.dom);	
+		}
+		
+		this.initContainer = this._initContainer;
+		
+		return this.initContainer (childControl);
+		
+	},
+	
+	// 由于子节点的改变刷新本节点和子节点状态。
+	update: function(){
+		
+		// 更新图标。
+		this.updateNodeType();
+		
+		// 更新 lastNode
+		if(this.nodes.length){
+			var currentLastNode = this.nodes[this.nodes.length - 1],
+				lastNode = this.lastNode;
+			if (lastNode !== currentLastNode) {
+				currentLastNode._markAsLastNode();
+				this.lastNode = currentLastNode;
+				if (lastNode) lastNode._clearMarkAsLastNode();
+			}
+		}
+		
+	},
+	
+	setNodeType: function(type){
+		var handle = this.getSpan(0);
+		if(handle) {
+			handle.dom.className = 'x-treenode-space x-treenode-' + type;
+		}
+		return this;
+	},
+	
+	expandAll: function(duration, maxDepth){
+		if (this.container && maxDepth !== 0) {
+			this.expand(duration);
+			this.nodes.invoke('expandAll', [duration, --maxDepth]);
+		}
+		return this;
+	},
+	
+	collapseAll: function(duration, maxDepth){
+		if (this.container && maxDepth !== 0) {
+			this.nodes.invoke('collapseAll', [duration, --maxDepth]);
+			this.collapse(duration);
+		}
+		return this;
+	},
+	
+	isLastNode: function(){
+		return this.parent &&  this.parent.lastNode === this;
+	},
+	
+	onToggleCollapse: function(value){
+		this.setNodeType(this.nodes.length === 0 ? 'normal' : value ? 'plus' : 'minus');
+		if(!value && (value = this.getNext('ul'))){
+			value.dom.style.height = 'auto';
+		}
+	},
+	
+	// 获取当前节点的占位 span 。 最靠近右的是 index == 0
+	getSpan: function(index){
+		return this.content.getPrevious(index);
+	},
+
+	// 设置当前节点的深度。
+	setDepth: function(value){
+		
+	
+		var currentDepth = this.depth, span, elem = this.dom;
+		
+		assert(value >= 0, "value 非法。 value = {0}", value);
+		
+		// 删除已经存在的占位符。
+		
+		while(currentDepth > value){
+			elem.removeChild(elem.firstChild);
+			currentDepth--;
+		}
+	
+		// 重新生成占位符。
+	
+		while(currentDepth < value){
+			span = document.createElement('span');
+			span.className ='x-treenode-space';
+			elem.insertBefore(span, elem.firstChild);
+			currentDepth++;
+		}
+		
+		if(elem.lastChild.previousSibling)
+			elem.lastChild.previousSibling.onclick = Function.bind(this.toggleCollapse, this);
+		
+		// 更新深度。
+		
+		this.depth = value;
+		
+		this._updateSpan();
+		
+		// 对子节点设置深度+1
+		this.nodes.invoke('setDepth', [value + 1]);
+	},
+	
+	toString: function(){
+		return String.format("{0}#{1}", this.getText(), this.depth);
+	}
+
+});
+
+
+Control.delegate
+	(TreeNode, 'content', 'setHtml setText')
+	(TreeNode, 'content', 'getHtml getText', true);
+
+var TreeView = TreeNode.extend({
+	
+	xType: 'treeview',
+	
+	isCollapsed: function () {
+		return this.nodes.each(function(value){return value.isCollapsed();});
+	},
+	
+	collapse: function () {
+		this.nodes.invoke('collapse', arguments);
+		this.onCollapse();
+		return this;
+	},
+	
+	expand: function (duration) {
+		this.nodes.invoke('expand', arguments);
+		this.onExpand();
+		return this;
+	}
+	
+});
+
+

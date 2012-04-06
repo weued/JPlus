@@ -1,5 +1,5 @@
 ﻿/*
- * This file is created by a tool at 2012/04/06 16:32:06
+ * This file is created by a tool at 2012/04/06 20:45:30
  */
 
 
@@ -1117,9 +1117,6 @@
 	});
 	
 	/// #endregion
-	
-    // 将以下成员赋予 window ，这些成员是全局成员。
-    String.map('undefined Class', p, window);
 
 	/// #region Methods
 	
@@ -1630,6 +1627,9 @@
 	});
 
 	/// #endregion
+	
+    // 将以下成员赋予 window ，这些成员是全局成员。
+    String.map('undefined Class', p, window);
 
 	/// #region Private Functions
 
@@ -5454,7 +5454,16 @@ JPlus.resolveNamespace = function(ns, isStyle){
 			 */
 			trigger: function(ctrl, type, fn, e) {
 				ctrl = ctrl.dom;
-				return fn( e = new Dom.Event(ctrl, type, e)) && (!ctrl[ type = 'on' + type] || ctrl[type](e) !== false);
+				
+				// IE 8- 在处理原生事件时肯能出现错误。
+				try{
+					if(!e.type){
+						e = new Dom.Event(ctrl, type, e);
+					}
+				}catch(ex){
+					e = new Dom.Event(ctrl, type);
+				}
+				return fn(e) && (!ctrl[ type = 'on' + type] || ctrl[type](e) !== false);
 			},
 			
 			/**
@@ -7394,9 +7403,11 @@ var Draggable = Class({
 	
 	beforeDrag: function(e){
 		this.offset = this.proxy.getOffset();
-		this.cursor = document.getStyle('cursor');
-		document.setStyle('cursor', this.target.getStyle('cursor'));
-		Dom.get(document.body).setStyle('pointer-events', 'none');
+		document.body.style.cursor = this.target.getStyle('cursor');
+		if(document.body.setCapture)
+			document.body.setCapture();
+		else
+			document.body.style.pointerEvents = 'none';
 	},
 	
 	doDrag: function(e){
@@ -7408,9 +7419,12 @@ var Draggable = Class({
 	},
 	
 	afterDrag: function(){
-		Dom.get(document.body).setStyle('pointer-events', '');
-		document.setStyle('cursor', this.cursor);
-		this.offset = this.cursor = null;
+		if(document.body.releaseCapture)
+			document.body.releaseCapture();
+		else
+			document.body.style.pointerEvents = '';
+		document.body.style.cursor = '';
+		this.offset = null;
 	},
 	
 	dragDelay: 500,

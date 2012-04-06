@@ -1121,9 +1121,6 @@
 	});
 	
 	/// #endregion
-	
-    // 将以下成员赋予 window ，这些成员是全局成员。
-    String.map('undefined Class', p, window);
 
 	/// #region Methods
 	
@@ -1634,6 +1631,9 @@
 	});
 
 	/// #endregion
+	
+    // 将以下成员赋予 window ，这些成员是全局成员。
+    String.map('undefined Class', p, window);
 
 	/// #region Private Functions
 

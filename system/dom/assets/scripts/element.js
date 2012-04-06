@@ -2628,7 +2628,16 @@
 			 */
 			trigger: function(ctrl, type, fn, e) {
 				ctrl = ctrl.dom;
-				return fn( e = new Dom.Event(ctrl, type, e)) && (!ctrl[ type = 'on' + type] || ctrl[type](e) !== false);
+				
+				// IE 8- 在处理原生事件时肯能出现错误。
+				try{
+					if(!e.type){
+						e = new Dom.Event(ctrl, type, e);
+					}
+				}catch(ex){
+					e = new Dom.Event(ctrl, type);
+				}
+				return fn(e) && (!ctrl[ type = 'on' + type] || ctrl[type](e) !== false);
 			},
 			
 			/**
