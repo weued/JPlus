@@ -1629,31 +1629,31 @@
 	
 })();
 
-Demo.init = function(){
-
-	Demo.rootPath = getRoot();
+Demo.init = function(nav){
 	
-	var tmp = location.href.replace(Demo.rootPath, '').split('/');
+	// 搜索文件位置。
+	
+	var root = Demo.rootPath = getRoot(),
+		tmp = location.href.replace(root, '').split('/');
 	
 	Demo.moduleName = tmp[0];
 	
 	Demo.categoryName = tmp[1];
 	
-	Demo.pageName = tmp[2];
+	Demo.pageName = tmp[2] && tmp[2].match(/(.*)\./)[1];
 	
-	// document.write('<link type="text/css" rel="stylesheet" href="' + root + 'assets/styles/system.css" />');
-	// //document.write('<link type="text/css" rel="stylesheet" href="' + root + 'assets/libs/google-code-prettify/prettify.css" />');
-	// if(!window.console || !window.console.groupEnd)
-		// document.write('<script type="text/javascript" src="' + root + 'assets/libs/firebug-lite/build/firebug-lite.js"></script>');
-// 	
-	// document.write('<script type="text/javascript" src="' + root + 'assets/libs/google-code-prettify/prettify.js"></script>');
-// 	
-// 	
-// 	
-	// if(moduleName.indexOf('.') == -1)
-		// document.write('<script type="text/javascript" src="' + root + moduleName + '/project.js"></script>');
+	// 载入相关文件。
+	
+	document.write('<link type="text/css" rel="stylesheet" href="' + root + 'assets/styles/demo.css" />');
+	//document.write('<link type="text/css" rel="stylesheet" href="' + root + 'assets/libs/google-code-prettify/prettify.css" />');
+	if(!window.console || !window.console.groupEnd)
+		document.write('<script type="text/javascript" src="' + root + 'assets/libs/firebug-lite/build/firebug-lite.js"></script>');
+
+	document.write('<script type="text/javascript" src="' + root + 'assets/libs/google-code-prettify/prettify.js"></script>');
+	
+	if(Demo.moduleName)
+		document.write('<script type="text/javascript" src="' + root + Demo.moduleName + '/project.js"></script>');
 	// document.write('<script type="text/javascript" src="' + root + 'assets/scripts/project.js"></script>');
-// 	
 
 	function getRoot() { 
 		var b = document.getElementsByTagName("script");
@@ -1661,38 +1661,38 @@ Demo.init = function(){
 		return (!-[1, ] && !document.createTextNode('').constructor ? b.getAttribute('src', 5) : b.src).replace(/assets\/scripts\/.*$/, '');
 	}
 
+	// 载入内容。
+	
 };
 
-Demo.init();
-
-Demo.initPage = function (navs) {
+Demo.initPage = function (navs, title, subtitle, copyright) {
 	var result = [];
 	for(var nav in navs){
-		result.push('<a href="' + root + navs[nav] +'">' + nav + '</a>');
+		result.push('<a class="demo" href="' + Demo.rootPath + nav +'/index.html">' + (nav === Demo.moduleName ? '<strong>' + navs[nav] + '</strong>' : navs[nav]) + '</a>');
 	}
 	
-	result[result.length - 1] = result[result.length - 1].replace('<a href="', '<a class="system-last" href="');
+	result[result.length - 1] = result[result.length - 1].replace(' class="demo"', ' class="demo demo-page-last"');
 	navs =  result.join('\r\n');
 	
 	document.write('\
-		<div id="system-main" style="visibility: visible">\
-			<div id="system-header" class="system">\
-				<h1>' + System.title + '</h1>\
-				<em>' + System.subtitle + '</em>\
-				<div id="system-navbar">' + 
+		<div id="demo-main">\
+			<header id="demo-header">\
+				<nav>' + 
 				navs +	
-				'</div>\
-			</div>\
-			<div id="system-body">\
-				<div id="system-container">\
+				'</nav>\
+				<h1>' + title + '</h1>\
+				<h2>' + subtitle + '</h2>\
+			</header>\
+			<article id="demo-body">\
+				<div id="demo-loading">\
 				正在载入...\
 				</div>\
-			</div>\
-			<div id="system-footer" class="system">' + 
-				System.copyright + 
-			'</div>\
+			</article>\
+			<footer id="demo-footer">' + 
+				copyright + 
+			'</footer>\
 		</div>');
-	
+	return;
 	try{
 		document.body.style.visibility = 'hidden';
 	}catch(e){
@@ -1775,7 +1775,7 @@ Demo.initPage = function (navs) {
 	
 };
 
-Demo.showMenu = function (menus){
+Demo.initMenu = function (menus){
 			var sidebar = document.getElementById('system-sidebar');
 			if(!sidebar){
 				sidebar = document.getElementById('system-body').appendChild(document.createElement('div'));
@@ -1881,3 +1881,15 @@ Demo.showMenu = function (menus){
 			
 		};	
 
+Demo.init();
+
+Demo.initPage({
+	'system': '核心',
+	'aqua': 'Aqua',
+	'blue knight': '蓝色骑士',
+	'milk': 'Milk',
+	'hust': 'hust',
+	'wplus': 'wplus',
+	'codeBase': 'CodeBase',
+	'resources': '资源'
+});

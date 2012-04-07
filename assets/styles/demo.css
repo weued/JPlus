@@ -680,6 +680,10 @@ body {
 	float:left;
 }
 
+#demo-loading {
+	padding-bottom: 10px;
+}
+
 #demo-main.demo-page-clean {
 	width: auto;	
 }
