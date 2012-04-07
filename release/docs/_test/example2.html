@@ -27,8 +27,8 @@
 				<header class="demo">
 					
 					<div class="demo-control-toolbar">
-						<a href="" class="demo">♦ 隐藏源码</a>♢
-						<a href="#" class="demo">❒ 新窗口打开</a>
+						<a href="javascript://切换显示页面上的全部显示源码的功能" class="demo" onclick="Demo.toggleViewSource(this)">♦ 隐藏源码</a>
+						<a href="javascript://切换显示外围框架" class="demo" onclick="Demo.toggleView(this)">❒ 全屏视图</a>
 					</div>
 					
 					<h1 class="demo">Example <small>Page</small></h1>
@@ -37,6 +37,72 @@
 				</header>
 				
 				<section class="demo">
+					
+					<script>
+						
+						
+						Demo.writeQuestions({
+							'语言 javascript 的原名是什么?': [
+								'java',
+								'jscript',
+								'@livescript',
+								'ecmascript'
+							],
+							
+							'语言 javascript 的原名是什22么?': [
+								'java',
+								'jscript',
+								'@livescript',
+								'ecmascript'
+							]});
+						
+						Demo.writeTreeView({
+							'图表': {
+									'jsDraw2D - jsFiction公司提供的第一个产品，他们计划创造各种各样的革命性的JavaScript库和应用，来帮助JavaScript 开发者，Web开发者以及Web站长扩展JavaScript的内涵和功能': 'http://jsdraw2d.jsfiction.com/',
+									'CamanJS - HTML5 Canvas 和 JavaScript 实现的用来对图像进行处理的 JavaScript库，提供一些易用接口来对图像进行处理，例如加亮等等': 'http://camanjs.com/',
+									'#JsMath - 在网页中显示数学公式的方法，通过解析 TeX 代码，结合 JavaScript 和 CSS 以及 unicode 字体 来显示数学公式，支持多浏览器和平台，无需 MathML 支持': 'http://www.oschina.net/p/jsmath',
+									'Raphaël - 小型的 JavaScript 库，用来简化在页面上显示向量图的工作。你可以用它在页面上绘制各种图表、并进行图片的剪切、旋转等操作': 'http://raphaeljs.com/'
+								}
+							});
+							
+						var testcases = {
+							
+							// 分组
+							'分组': '-',
+							
+							// 自定义的函数
+							'测试自定义函数': function(){
+								document.getElementById('aa');
+							},
+							
+							// 自定义的函数2
+							'测试自定义函数3': function(){
+								a.show()
+							},
+							
+							// 简单函数调用，直接写成字符串。
+							// 字符串内的 ~表示前面的函数名。
+							'简单版的自定义函数': 'a.show()',
+							
+							// JSON 对象。表示单元测试。
+							'Object.type': {
+								
+								// 返回一个指定的值。
+								//'~(1)': 'number',
+								
+								// 不进行测试。
+								'2': '-',
+								
+								// 测试返回值是否符合某个自定义条件。
+								'3': function (value) {
+									
+								}
+							}
+						};
+						
+						Demo.writeTestCases(testcases);
+						
+					</script>
 					
 					<h3 class="demo">测试</h3>
 					

@@ -6,7 +6,7 @@
 		// return;
 	// var root = getRoot(),
 		// moduleName = location.href.replace(root, '') + '/',
-		// current = {},
+			current = {};
 		// defaultTimes = getMinTimesFor1ms (),
 		// params = [
 		     // '', '0', 'null', 'NaN', '""', '"<div />"', '[]', '{a:1}', 'false', 'document.body', 'function(){return false}',
@@ -147,11 +147,71 @@
 		
 		formatJS: js_beautify,
 		
-		createViewSource: function(autoOpen){
+		getPreviousElement: function(node){
+			do {
+				node = node.previousSibling;
+			}while(node && node.nodeType !== 1);
+			
+			return node;
+		},
+		
+		getNextElement: function(node){
+			do {
+				node = node.nextSibling;
+			}while(node && node.nodeType !== 1);
+			
+			return node;
+		},
+		
+		getLastElement: function(node){
+			node = node.lastChild;
+			while(node && node.nodeType !== 1) {
+				node = node.previousSibling;
+			}
+			
+			return node;
+		},
+		
+		getElementsByClassName: document.getElementsByClassName ? function (className) {
+			return document.getElementsByClassName(className);
+		} : function(className){
+			var elems = document.getElementsByTagName("*"), r = [];
+			for(var i = 0; elems[i]; i++){
+				if(elems[i].className === className){
+					r.push(elems[i]);
+				}
+			}
+				
+				
+			return r;
+		},
+		
+		createViewSource: function(){
 			var viewSource = document.createElement('div');
 			viewSource.className = 'demo-control-viewsource';
 			viewSource.innerHTML = '<a class="demo" href="javascript://查看用于创建上文组件的所有源码;" onclick="Demo.toggleSource(this)"><span class="demo-control-arrow">▸</span>查看源码</a>';
 			return viewSource;
+		},
+		
+		initViewSource: function(){
+			
+		},
+		
+		toggleViewSource: function(targetNode){
+			if(Demo.viewSourceState === undefined){
+				Demo.initViewSource();
+				Demo.viewSourceState = false;
+			} 
+
+			var newValue = Demo.viewSourceState = !Demo.viewSourceState, elems = Demo.getElementsByClassName('demo-control-viewsource');
+			targetNode.innerHTML = newValue ? '♦ 隐藏源码' : '♢ 显示源码';
+			newValue = newValue ? '' : 'none';
+			for(var i = 0; elems[i]; i++){
+				elems[i].style.display = newValue;
+			}
+			
+			
+			Demo.setData('demo_source', newValue ? 'true' : '');
 		},
 		
 		initSource: function(targetNode){
@@ -171,27 +231,6 @@
 			
 		},
 		
-		getPreviousElement: function(node){
-			do {
-				node = node.previousSibling;
-			}while(node && node.nodeType !== 1);
-			
-			return node;
-		},
-		
-		getNextElement: function(node){
-			do {
-				node = node.nextSibling;
-			}while(node && node.nodeType !== 1);
-			
-			return node;
-		},
-		
-		getElementsBy: function(tagName, className){
-			var elems = document.getElementsByTagName(tagName);
-			return elems;
-		},
-		
 		toggleSource: function(targetNode){
 			var nextNode = Demo.getNextElement(targetNode), newValue;
 			
@@ -204,6 +243,15 @@
 			}
 			
 			targetNode.firstChild.innerHTML = newValue ? '▾' : '▸';
+		},
+		
+		toggleView: function (targetNode) {
+			var main = document.getElementById('demo-main'),
+				newValue = main.className === 'demo-page-clean';
+			main.className = newValue ? '' : 'demo-page-clean';
+			
+			targetNode.innerHTML = newValue ? '❒ 全屏视图' : '❑ 标准视图';
+			Demo.setData('demo_view', newValue ? 'true' : '');
 		}
 		
 	});
@@ -332,7 +380,7 @@
 		/**
 		 * 初始化右边的菜单。
 		 */
-		initMenu: function (menus){
+		showMenu: function (menus){
 			var sidebar = document.getElementById('system-sidebar');
 			if(!sidebar){
 				sidebar = document.getElementById('system-body').appendChild(document.createElement('div'));
@@ -441,149 +489,217 @@
 		/**
 		 * 初始化测试用例。
 		 */
-		initTestCases: function (testcases, dftOptions) {
-			document.write('<div class="system system-right system-small"><a href="javascript:;" onclick="System.doRunAll();">全部测试</a> | <a href="javascript:;" onclick="System.doTimeAll();">全部时间</a> | <a href="javascript:;" onclick="System.doTestAll();">全部自测</a></div>');
+		writeTestCases: function (testcases, dftOptions) {
+			document.write('<div id="demo-testcases" class="demo-clear">');
 			
-			document.write('<div id="system-testcases" class="system system-clear">');
+			document.write('<div class="demo-right demo-small"><a class="demo" href="javascript://按顺序执行全部函数;" onclick="Demo.runTestAll();">全部测试</a> | <a class="demo" href="javascript:;" onclick="Demo.speedTestAll();">全部效率</a></div>');
 			
-			current.testCases = {};
+			current.testCases = testcases;
 			
 			for(var name in testcases){
-				var testcase = testcases[name], type = typeof testcase;
+				var testcase = testcases[name];
 				
-				if(type === 'string' || type === 'function') {
-					if(testcase === '-'){
-						document.write('<h2 class="system-testcasegroup">' + encodeHTML(name) + '</h2>');
-						continue ;
-					}
-					
-					testcase = {tests: testcase};
+				if(testcase === '-'){
+					document.write('<h2>' + encodeHTML(name) + '</h2>');
+					continue ;
 				}
 				
-				if(dftOptions)
-					apply(testcase, dftOptions);
+				var encodedName = encodeHTML(name);
 				
-				current.testCases[name] = new TestCase(testcase, name);
-				document.write(current.testCases[name].toHTML());
+				document.write([
+				    '<div title="',
+				    encodedName,
+				    '" id="demo-testcases-',
+				    name,
+				    '" class="demo-tip" onmouseover="this.className += \' demo-tip-selected\'" onmouseout="this.className = this.className.replace(\' demo-tip-selected\', \'\');">\
+					<span class="demo-control-toolbar">\
+						<a class="demo" href="javascript://执行函数" onclick="Demo.runTestCase(\'', name, '\');">测试</a> | \
+						<a class="demo" href="javascript://测试函数执行的速度" onclick="Demo.speedTest(\'', name, '\');">效率</a> | \
+						<a class="demo" href="javascript://查看函数源码" onclick="Demo.viewSource(\'', name, '\');">查看源码</a>\
+					</span>\
+				    <a class="demo" href="javascript://',
+				    typeof testcase === 'object' ? '单元测试: ' + encodedName : encodeHTML(testcase.toString()),
+				    '" onclick="Demo.runTestCase(\'', name, '\')">', 
+				    encodedName,
+				    '</a>\
+				    </div>'
+				].join(''));
+				
 			}
 			
 			document.write('</div>');
 		},
 		
-		initTreeView: function (list){
-			document.write('<ul>');
-			for(var item in list) {
-				document.write('<li>');
-				if(typeof list[item] === 'string'){
-					document.write('<a href="' + list[item] + '" target="_blank">');
-					item = item.split(/\s*-\s*/);
-					if(item[0].charAt(0) === '#') {
-						document.write('<b>');
-						document.write(item[0].substring(1));
-						document.write('</b>');
-					} else {
-						document.write(item[0]);
+		/**
+		 * 执行一个单元测试。
+		 */
+		runTestCase: function (name){
+
+			var info = current.testCases[name];
+			
+			if(info) {
+				
+				assert.reset();
+				
+				var ret, displayName, isTestCase;
+				
+				switch(typeof info){
+					
+					// 字符串: 转函数。
+					case 'string':
+						displayName = info.replace(/~/g, name);
+						info = function(){
+							return eval(displayName);	
+						};
+						
+					// fall through
+					// 函数: 直接执行。
+					case 'function':
+						try{
+							ret = info();
+						}catch(e){
+							if(info)
+								reportError(name, e.message, displayName || info.toString());
+							break;
+						}
+						
+						console.info('[' + name + '] ' , displayName || info.toString(), ' =>', ret);	
+						break;
+						
+					// 测试用例: 先处理。
+					case 'object':
+						isTestCase = true;
+						runTestCase(info, name);
+				}
+				
+				document.getElementById('demo-testcases-' + name).className = assert.hasError === true ? 'demo-tip demo-tip-error' : !isTestCase ? 'demo-tip' : assert.hasError === false ? 'demo-tip demo-tip-success' : 'demo-tip demo-tip-warning';
+				
+			}
+		},
+
+		speedTest: function (name){
+			var info = current.testCases[name];
+			
+			if(info) {
+				
+				switch(typeof info){
+					
+					// 字符串: 转函数。
+					case 'string':
+						info = new Function(info.replace(/~/g, name));
+						break;
+						
+					// 测试用例: 先处理。
+					case 'object':
+						info = complieTestCase(info, name);
+						break;
+				}
+				
+				var time = 0, maxTime = 0, base = 100, start = +new Date(), past;
+				
+				do{
+					
+					maxTime += base;
+					
+					while(time++ < maxTime){
+						info();
 					}
 					
-					document.write('</a>');
-					if(item[1]) {
-						document.write('<span> - <i>');
-						document.write(item[1]);
-						document.write('</i></span>');
-					}
-				} else {
-					document.write(item);
-					System.initTreeView(list[item]);
-				}
-				document.write('</li>');
-			}
-			document.write('</ul>');
-		},
-		
-		doRun: function (name, showSuccess){
-
-			var info = current.testCases[name];
-			
-			if(info) {
+					past = +new Date() - start;
+					
+					base *= 2;
+					
+				} while(past < 200);
 				
-				info = runFn(new Function(info.toRun()));
-				
-				document.getElementById('system-testcase-' + name).className = assert.hasError === true ? 'system-testcase system-error' : showSuccess === false ? 'system-testcase' : assert.hasError === false ? 'system-testcase system-success' : 'system-testcase system-warn';
-				
-				return  info;
-			
-			}
-		},
-
-		doTime: function (name){
-			var info = current.testCases[name];
-			
-			if(info) {
-				return runFn(new Function(info.toTime()));
-			
+				start = past * 1000 / time;
+				console.log('[' + name + '] ', start, 'ms/k');
 			}
 			
-		},
-
-		doTest: function (name){
-			var info = current.testCases[name];
-			
-			if(info) {
-				return runFn(new Function(info.toTest()));
-			
-			}
 		},
 		
 		viewSource: function(name){
 			var info = current.testCases[name];
 			
 			if(info) {
-				name = eval(info.member).toString();
-				if(String.decodeUTF8)
-					name = String.decodeUTF8(name);
-				return console.info(name);
+				
+				switch(typeof info){
+					
+					// 字符串: 转函数。
+					case 'string':
+						info = info.replace(/~/g, name);
+						break;
+						
+					// fall through
+					// 函数: 直接执行。
+					case 'function':
+						info = info.toString();
+						if(String.decodeUTF8)
+							info = String.decodeUTF8(info);
+						break;
+				}
+				return console.info('[' + name + ']', info);
 			
 			}
 		},
 		
-		doRunAll: function(){
+		runTestAll: function(){
 			for(var name in current.testCases) {
-				this.doRun(name, true);
+				this.runTestCase(name);
 			}
 		},
 		
-		doTimeAll: function(){
+		speedTestAll: function(){
 			for(var name in current.testCases) {
-				this.doTime(name);
+				this.speedTest(name);
 			}
 		},
 		
-		doTestAll: function(){
-			for(var name in current.testCases) {
-				this.doTest(name);
+		writeTreeView: function (list){
+			document.write('<ul class="demo">');
+			for(var item in list) {
+				document.write('<li>');
+				if(typeof list[item] === 'string'){
+					document.write('<a class="demo" href="' + list[item] + '" target="_blank">');
+					item = item.split(/\s*-\s*/);
+					if(item[0].charAt(0) === '#') {
+						document.write('<strong>');
+						document.write(item[0].substring(1));
+						document.write('</strong>');
+					} else {
+						document.write(item[0]);
+					}
+					
+					document.write('</a>');
+					if(item[1]) {
+						document.write('<span> - <span class="demo-hint">');
+						document.write(item[1]);
+						document.write('</span></span>');
+					}
+				} else {
+					document.write(item);
+					Demo.writeTreeView(list[item]);
+				}
+				document.write('</li>');
 			}
-		},
-		
-		doLog: function(value){
-			console.log(typeof value === 'string' ? "'" + encodeJs(value) + "'" : value);
+			document.write('</ul>');
 		},
 
-		initQuestions: function (questions,  result) {
+		writeQuestions: function (questions) {
 			
 			var i = 1;
-			current.result = result;
 			current.answers = [''];
+			document.write('<article id="demo-questions">');
 			for(var question in questions) {
 				var answers = questions[question];
-				document.write('<div class="system system-testcase" id="system-qd');
+				document.write('<section class="demo demo-tip" id="demo-questions-qd');
 				document.write(i);
 				document.write('">\r\n');
-				document.write('<div class="system-questions">\r\n');
+				document.write('<h4 class="demo-plain">\r\n');
 				document.write(i);
 				document.write('. ');
 				document.write(encodeHTML(question));
-				document.write('\r\n</div>\r\n');
-				document.write('<div class="system-note">\r\n');
+				document.write('\r\n</h4>\r\n');
+				document.write('<menu>\r\n');
 				
 				for(var j = 0; j < answers.length; j++) {
 					if(answers[j].charAt(0) === '@') {
@@ -591,29 +707,29 @@
 						answers[j] = answers[j].substr(1);
 					}
 					
-					document.write('<input type="radio" name="q');
+					document.write('<input type="radio" name="demo-questions-q');
 					document.write(i);
-					document.write('" id="system-q');
+					document.write('" id="demo-questions-q');
 					document.write(i);
 					document.write(j);
-					document.write('"><label for="system-q');
+					document.write('"><label for="demo-questions-q');
 					document.write(i);
 					document.write(j);
 					document.write('">');
 					document.write(encodeHTML(answers[j]));
 					document.write('</label><br>\r\n');
 				}
-				document.write('\r\n</div>\r\n');
-				document.write('\r\n</div>\r\n');
+				document.write('\r\n</menu>\r\n');
+				document.write('\r\n</section>\r\n');
 				
 				i++;
 				
 				
 			}
 			
-			document.write('<input type="button" onclick="System.checkAnswers()" value="验证">');
-			document.write('<div id="system-info"></div>');
-			
+			document.write('<input type="button" onclick="Demo.checkAnswers()" value="验证">');
+			document.write('<div id="demo-questions-info"></div>');
+			document.write('</article>');
 		},
 		
 		checkAnswers: function (){
@@ -621,67 +737,41 @@
 			for(var i = 1; i <= total; i++){
 				if(current.answers[i] === undefined) 
 					continue;
-				if(!document.getElementById('system-q' + i + current.answers[i]).checked){
+				var qd = document.getElementById('demo-questions-qd' + i);
+				if(!document.getElementById('demo-questions-q' + i + current.answers[i]).checked){
+					var allButtons = document.getElementsByName('demo-questions-q' + i);
 					errorCount++;
-					document.getElementById('system-qd' + i).className = 'system system-error';
+					qd.className = 'demo demo-tip demo-tip-warning';
+					for(var j = 0; allButtons[j]; j++){
+						if(allButtons[j].checked) {
+							qd.className = 'demo demo-tip demo-tip-error';
+							break;
+						}
+					}
 				} else {
-					document.getElementById('system-qd' + i).className = 'system system-testcase';
+					qd.className = 'demo demo-tip';
 				}
 			}
 			
-			var r = (total - errorCount) * 100 / total;
-			for(var key in current.result){
-				if(parseFloat(key) <= r){
-					document.getElementById('system-info').innerHTML = '答对 ' + (total - errorCount) + '/' + total + ' &nbsp;' +  current.result[key];
-					document.getElementById('system-info').className = 'system system-success';
-					return;
-				}
-			}
+			var r = (total - errorCount) * 100 / total,
+				className;
 			
-			document.getElementById('system-info').innerHTML = '要认真哦';
-			document.getElementById('system-info').className = 'system system-error';
+			if(r == 100){
+				innerHTML = '全对了!';
+				className = 'demo-tip demo-tip-success';	
+			} else if(r > 60){
+				innerHTML = '';
+				className = 'demo-tip demo-tip-warning';
+			} else {
+				innerHTML = r == 0 ? '没有一题是正确的...你在干吗?' : '不及格哦亲';
+				className = 'demo-tip demo-tip-error';
+			}
+
+			var t = document.getElementById('demo-questions-info');
+			
+			t.innerHTML = '答对' + (total - errorCount) + '/' + total + '题(' + r + '%) ' + innerHTML;
+			t.className = className;
 					
-		},
-		
-		createTestCases: function (obj){
-			var r = [], value = eval(obj), tabs = "\t\t\t\t";
-			for(var i in value){
-				if(value.hasOwnProperty(i) && typeof value[i] == 'function' && value[i].toString().indexOf('[native code]') == -1){
-					r.push(format(i));
-				}
-			}
-			
-			for(var i in value.prototype){
-				if(value.prototype.hasOwnProperty(i) && typeof value.prototype[i] == 'function' && value.prototype[i].toString().indexOf('[native code]') == -1){
-					r.push(format("prototype." + i));
-				}
-			}
-			
-			r = tabs + r.join(",\n" + tabs);
-			
-			return r;
-			
-			function format(name){
-				var d = obj+ "." + name;
-				return "'" + d +"': ''";
-			}
-		},
-		
-		toggleSources: function (value) {
-			var pres = document.getElementsByTagName('pre');
-			System.setData('toggleSources', value ? 1 : 0);
-			value = value ? '' : 'none';
-			for(var i = 0; pres[i]; i++){
-				if(pres[i].className.indexOf('system-code') >= 0){
-					pres[i].style.display = value;
-				}	
-			}
-		},
-		
-		getValueOf: function (v) {
-		   return function(){
-		   		return v;
-		   }
 		}
 	
 	});
@@ -729,235 +819,43 @@
 	
 	});
 	
-	// '@me = this; 1 => 2; 2, a => 3'
-	
-	function TestCase(info, name) {
-		this.prefix = ''; 
-		this.member = name;
-		
-		apply(this, info);
-		
-		this.id = name;
-		
-		if(typeof this.tests === 'function') {
-			window.TestCases = window.TestCases || {};
-			window.TestCases[name] = this.tests;
-			this.member = 'TestCases["' + encodeJs(name) + '"]';
-			this.tests = null;
+	function complieTestCase(info, name) {
+		var fn, ret = [];
+
+		for(var test in info) {
+			ret.push(test.replace(/~/g, name));
 		}
 		
-		var tests = (this.tests || "").split(';');
-		if(/^\s*@/.test(tests[0])){
-			var t = name.indexOf('.prototype.');
-			
-			if(t !== -1) {
-				this.member = name.substr(t + '.prototype.'.length);
-			}
-			
-			t = tests[0].substr(1).split(/\s*=\s*/);
-			if(t[1]) {
-				this.prefix = 'var ' +  t[0] + ' = ' + t[1] + ';\r\n';
-				this.memberName = t[1] + this.member;
-			}
-			
-			this.member = t[0] + '.' + this.member;
-			
-			
-			tests.splice(0, 1);
-		}
-		
-		if(this.method === false) {
-			this.member = 'System.getValueOf(' + this.member + ')';
-		}
-		
-		if(!this.memberName){
-			this.memberName =   this.member;
-		}
-		
-		this.tests = {};
-		
-		if(!tests.length) tests.push('');
-		
-		forEach(tests, function(value){
-			value = value.split('=>');
-			
-			if(value[1] && !/assert/.test(value[1])) {
-				value[1] = 'assert.areEqual(value, ' + value[1] + ');';
-			}
-			
-			this.tests[value[0].replace(/^\s+|\s+$/g, "")] = value[1];
-			
-		}, this);
+		return new Function(ret.join(';'));
 	}
+	
+	function runTestCase(info, name) {
+		var fn, ret;
 
-	TestCase.prototype = {
+		for(var test in info) {
+			assert.clearLog();
 			
-		toHTML: function(){
-			for(var p in this.tests) {
-				break;
+			test = test.replace(/~/g, name);
+			
+			try{
+				ret = eval(test);
+			}catch(e){
+				reportError(name, e.message, test);
+				continue;
 			}
 			
-			return [
-			    '<div id="system-testcase-',
-			    this.id,
-			    '" class="system-testcase" onmouseover="this.className += \' system-testcase-actived\'" onmouseout="this.className = this.className.replace(\' system-testcase-actived\', \'\');">',
-			     '<span><a href="javascript://',
-			    encodeHTML(this.member),
-			    '" onclick="System.doRun(\'',
-			    this.id,
-			    '\');">测试</a> | <a href="javascript://测试速度" onclick="System.doTime(\'',
-			    this.id,
-			    '\');">执行   ',
-			    this.times || defaultTimes,
-			    ' 次</a> | <a href="javascript://使用多个不同类型的参数进行测试" onclick="System.doTest(\'',
-			    this.id,
-			    '\');">自测</a> | <a href="javascript://查看函数源码" onclick="System.viewSource(\'',
-			    this.id,
-			    '\');">查看源码</a></span>',
-			    '<a href="javascript://',
-			    encodeHTML(this.member), '(', encodeHTML(p || ''), ')',
-			    encodeHTML(this.tests[p] ? ' => ' + this.tests[p] : ''),
-			    '" onclick="System.doRun(\'', 
-			    this.id,
-			    '\', false)">', encodeHTML(this.name || this.id),
-			    '</a>',
-			    this.summary ? '&nbsp;&nbsp;&nbsp;&nbsp;' + encodeHTML(this.summary) : '',
-			    '</div>'
-			].join('');
+			console.info('[' + name + '] ' , test, ' =>', ret);
 			
-		},
-		
-		toRun: function(){
-			var r = [];
-			
-			
-			if(this.init) {
-				r.push(this.init);
-				r.push('\r\n');
-			}
-
-			r.push('assert.reset();\r\n');
-			r.push('var value;\r\n');
-			for(var override in this.tests) {
-				r.push(this.prefix);
-				r.push('assert.clearLog();\r\n');
-				r.push('console.log("');
-				r.push(this.memberName.replace(/\\/g, '\\\\').replace(/"/g, '\\\"'));
-				r.push('(');
-				r.push(override.replace(/\\/g, '\\\\').replace(/"/g, "\\\""));
-				r.push(') => ", ');
-				r.push('value = ');
-				r.push(this.member);
-				r.push('(');
-				r.push(override);
-				r.push(')');
-				r.push(');\r\n');
-				
-				if(this.tests[override]) {
-					
-					r.push(this.tests[override]);
-					r.push('\r\n');
-					
+			if(info[test] !== '-') {
+				if(typeof info[test] !== 'function'){
+					assert.areEqual(ret, info[test]);
+				} else if(info[test].call(ret, ret) === false)  {
+					assert.hasError = true;
 				}
-				
-			}
-				
-			if(this.uninit) {
-				r.push(this.uninit);
-				r.push('\r\n');
 			}
 			
-			r.push('return value;');
-			
-			
-			return r.join('');  
-			
-		},
-		
-		toTime: function(){
-			var r = [null];
-			
-			
-			if(this.init) {
-				r.push(this.init);
-				r.push('\r\n');
-			}
-			
-			var times = this.times || defaultTimes, c = 0;
-			r.push(this.prefix);
-			r.push('console.time("');
-			r.push(this.name || this.id);
-			r.push('");\r\n');
-			r.push('while(i-- > 0) {\r\n');
-
-			for(var override in this.tests) {
-				c++;
-				r.push(this.member);
-				r.push('(');
-				r.push(override);
-				r.push(');\r\n');
-				
-			}
-			
-			r.push('}\r\n');
-			r.push('console.timeEnd("');
-			r.push(this.name || this.id);
-			r.push('");\r\n');
-			
-			r[0] = 'var i = ' + ((times / c) || 0) + ';\r\n';
-				
-			if(this.uninit) {
-				r.push(this.uninit);
-				r.push('\r\n');
-			}
-			
-			return r.join('');
-		},
-		
-		toTest: function(){
-			var r = [];
-			
-			if(this.init) {
-				r.push(this.init);
-				r.push('\r\n');
-			}
-
-			forEach('params' in this ? this.params : params, function(param) {
-				r.push(this.prefix);
-				r.push('try {\r\n');
-				r.push('console.log("');
-				r.push(this.member);
-				r.push('(');
-				r.push(param.replace(/\"/g, "\\\""));
-				r.push(') => ", ');
-				r.push(this.member);
-				r.push('(');
-				r.push(param);
-				r.push(')');
-				r.push(');\r\n');
-				r.push('} catch(e) {\r\n');
-				r.push('assert.hasError = true;\r\n');
-				r.push('console.error("');
-				r.push(this.member);
-				r.push('(');
-				r.push(param.replace(/\"/g, "\\\""));
-				r.push(') 抛出了异常 ", e.message);\r\n');
-				r.push('}\r\n');
-				
-				
-			}, this);
-				
-			if(this.uninit) {
-				r.push(this.uninit);
-				r.push('\r\n');
-			}
-			
-			
-			return r.join('');  
 		}
-			
-			
-	};
+	}
 	
 	function HtmlFormater() {
 
@@ -1406,7 +1304,7 @@
 				console.error([].slice.call(arguments, 1).join('     '));
 			}
 		} else {
-		   assert.hasError  = false;	
+		   assert.hasError  = false;
 		}
 	}
 	
@@ -1423,15 +1321,24 @@
 		}
 	}
 	
-	function runFn(fn){
+	function runFn(fn, name){
 		try{
 			return    fn();
 		}catch(e){
 			assert.hasError    = true;
-			console.error(e.message);
-			console.info(fn.toString());
+			
+			try{
+				console.error(name, ' ', e.message);
+				console.info(fn.toString());
+			}catch(e){}
 		}
 		
+	}
+	
+	function reportError(name, message, debugInfo){
+		assert.hasError    = true;
+		
+		console.error('[' + name + '] ' , debugInfo, '=>', message);
 	}
 	
 	function getMinTimesFor1ms () {

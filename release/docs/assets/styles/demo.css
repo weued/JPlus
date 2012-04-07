@@ -115,6 +115,7 @@ dd.demo {
 ol.demo, ul.demo {
   margin: 0 0 9px 25px;
   padding: 0;
+  line-height: 18px;
 }
 
 ul.demo li{
@@ -207,6 +208,44 @@ blockquote.demo {
 
 /*********************************** 页面 *******************************************/
 
+.demo-tip, .demo-tip-error, .demo-tip-warning, .demo-tip-success {
+	padding: 2px 10px;
+	margin: 2px 0;
+	line-height:16px;
+	border: 2px solid transparent;
+	*border: 2px solid #F9F9F9;
+}
+
+.demo-tip-error, .demo-tip-error a.demo {
+	background:#FBE3E4;
+	color:#8a1f11;
+	border-color:#FBC2C4;
+}
+
+.demo-tip-warning, .demo-tip-warning a.demo {
+	background:#FFF6BF;
+	color:#514721;
+	border-color:#FFD324;
+}
+
+.demo-tip-success, .demo-tip-success a.demo {
+	background:#E6EFC2;
+	color:#264409;
+	border-color:#C6D880;
+}
+
+.demo-tip .demo-control-toolbar {
+	display: none;
+}
+
+.demo-tip-selected {
+	background: #eee;	
+}
+
+.demo-tip-selected .demo-control-toolbar {
+	display: block;
+}
+
 .demo-control-toolbar {
 	float: right;
 	font-size: 12px;
@@ -220,65 +259,6 @@ blockquote.demo {
 	font-size: 20px;
 	float: left;
 	line-height: 16px;
-}
-
-/*.demo-testcasegroup {
-	border-bottom: 1px solid #DDDDDD;
-	margin: 13px 2px 2px;
-	text-indent: 15px;
-	font-size: 20px;
-}*/
-
-.demo-tip span{
-	float: right;
-	display: none;
-	margin-right: 20px;
-}
-
-.demo-tip, .demo-tip-error, .demo-tip-warning, .demo-tip-success {
-	padding: 2px 10px;
-	line-height:16px;
-	border: 2px solid #F9F9F9;
-	margin: 2px 0;
-}
-
-.demo-tip-error {
-	background:#FBE3E4;
-	color:#8a1f11;
-	border-color:#FBC2C4;
-}
-
-.demo-tip-warning {
-	background:#FFF6BF;
-	color:#514721;
-	border-color:#FFD324;
-}
-
-.demo-tip-success {
-	background:#E6EFC2;
-	color:#264409;
-	border-color:#C6D880;
-}
-
-.demo-tip-error a {
-	color:#8a1f11;
-}
- 	
-.demo-tip-warning a {
-	color:#514721;
-}
-
-.demo-tip-success a {
-	color:#264409;
-}
-
-.demo-tip-selected {
-	background: #eee;	
-}
-
-.demo-tip-selected span {
-	display: block;
-	font-size:12px;
 }
 
 /*********************************** 工具 *******************************************/
@@ -381,6 +361,10 @@ blockquote.demo {
 	width: 400px;
 }
 
+.demo-hint {
+	color: #999999;	
+}
+
 .demo-highlight {
 	color: #FF6600;	
 }
@@ -436,6 +420,10 @@ blockquote.demo {
 	background: #fff;
 }
 
+.demo-row {
+	margin-bottom: 10px;	
+}
+
 .demo-disabled{
 	color: gray!important;
 }
@@ -448,6 +436,30 @@ blockquote.demo {
 	color: gray!important;
 	text-decoration: line-through;
 }
+
+.demo-plain {
+	margin: 0;
+	padding: 0;	
+}
+
+/*********************************** 功能 *******************************************/
+
+#demo-questions input{
+	vertical-align: -3px;
+}
+
+#demo-questions menu {
+	padding-left: 15px;
+	margin: 0;
+}
+
+#demo-testcases h2{
+	border-bottom: 1px solid #DDDDDD;
+	margin: 13px 2px 2px;
+	text-indent: 15px;
+	font-size: 20px;
+}
+
 
 /************************* Prettify ********************/
 
@@ -582,7 +594,7 @@ body {
 	line-height: 18px;
 }
 
-#demo-header, #demo-sidebar, #demo-footer {
+#demo-header, #demo-sidebar, #demo-footer, #demo-testcases {
 	font-family: 'Microsoft YaHei';	
 }
 
@@ -660,7 +672,8 @@ body {
 	width: auto;	
 }
 
-.demo-page-clean #demo-header, .demo-page-clean #demo-sidebar, .demo-page-clean #demo-footer{
+.demo-page-clean #demo-header, .demo-page-clean #demo-sidebar, .demo-page-clean #demo-footer,
+.demo-page-clean h1.demo, .demo-page-clean header.demo hr.demo{
 	display: none;
 }
 
