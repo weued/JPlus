@@ -50,7 +50,7 @@ var menus = {
 	},
 	
 	'API': {
-		'dom 部分 api': 'resources/api/jplusdomapi/jplusdomapi.xml'
+		'dom 部分 api': 'resources/api/jplus-core-api/jplus-core-api.xml'
 	},
 	
 	'这不是浪漫': {

@@ -1,0 +1,322 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>系统构架 - 项目 - J+ 文档库</title>
+		<script type="text/javascript" src="../../../assets/scripts/system.js" ></script>
+	</head>
+	<body class="system">
+		<h1>
+    J+ 测试系统
+</h1>
+<h2>
+    介绍
+</h2>
+<p>
+    J+ 测试系统是 J+ 组件开发支持系统。包含现在所见到的顶部导航和侧边栏导航都是测试系统自动生成的。
+</p>
+
+<p>
+	测试系统提供了以下主要功能：
+</p>
+<ul>
+    <li>
+       组件列表管理
+    </li>
+    <li>
+        简单的单元测试
+    </li>
+    <li>
+       用于示例的工具函数
+    </li>
+    <li>
+        其它辅助功能
+    </li>
+</ul>
+<h2>
+    载入测试系统
+</h2>
+
+<p>测试系统所有文件被放在 assets/ 目录。要使用测试系统，只需引入 assets/scripts/demo.js 文件即可。</p>
+
+
+<pre>
+	&lt;script src="../../assets/scripts/demo.js" type="text/javascript"&gt;&lt;/script&gt;
+</pre>
+
+<h2>
+    组件库列表管理
+</h2>
+<p>
+	组件库列表即全站的导航菜单，它在 assets/scripts/project.js 文件定义，这个文件的内容如下：
+</p>
+
+<pre>
+	Demo.libs = {
+		组件库文件夹1: '组件库名',
+		组件库文件夹2: '组件库名'
+	};
+	
+	Demo.initPage();
+</pre>
+
+<h2>
+    组件列表管理
+</h2>
+<p>
+    组件列表就是在组件展示页右边的列表导航菜单，通过这个菜单可以方便查看有哪些组件，每个组件的进度如何。
+</p>
+<p>
+    组件列表被保存到组件库跟目录的 project.js 文件，这个文件的内容如下：
+</p>
+
+<pre>
+	Demo.items = {
+		分类1: '组件名1 组件名2 组件名3',
+		分类2: '组件名4 组件名5'
+	};
+</pre>
+
+	<p>其中，每个组件之间用空格分开。</p>
+	
+	<p>如 milk/project.js 文件内容如下：</p>
+
+<pre>
+	Demo.items = {
+		Core: 'Base Common',
+		Page: 'Scaffolding'
+	};
+</pre>
+
+	<p>页面上出现对应菜单，点击 Scaffolding 将链接到这个文件:  跟目录/milk/page/scaffolding.html </p>
+
+	<p>在组件名后添加^，将在新窗口打开页面。</p>
+
+	<p>在组件名后可添加:开头的注释，如 组件名1:这是组件的注释。</p>
+	
+	<p>在组件名前可添加前缀表示组件的开发进度：</p>
+	
+	<table>
+		<tr>
+			<th>前缀</th>
+			<th>意义</th>
+		</tr>
+		<tr>
+			<td>无前缀</td>
+			<td>组件未完成</td>
+		</tr>
+		<tr>
+			<td>+</td>
+			<td>组件已完成</td>
+		</tr>
+		<tr>
+			<td>*</td>
+			<td>组件已完成了一部分</td>
+		</tr>
+		<tr>
+			<td>-</td>
+			<td>组件暂时先放弃不做</td>
+		</tr>
+		<tr>
+			<td>#</td>
+			<td>高亮此组件</td>
+		</tr>
+	</table>
+	
+	<p>综上所述，最终菜单将是如下效果：</p>
+
+<pre>
+	Demo.items = {
+		Core: '+Base:基础组件 +Common:公共组件 -Resizable Spliiter',
+		Page: 'Scaffolding +Grid^:布局'
+	};
+</pre>
+
+	<h2>显示文档</h2>
+	
+	<p>在组件的演示界面，肯能经常需要显示一些文档说明，为了更好的视觉体验，为所有元素添加 class="demo" 。如：</p>
+	
+<pre>
+	&lt;h2 class="demo"&gt;标题&lt;/h2&gt;
+	&lt;p class="demo"&gt;内容&lt;/p&gt;
+</pre>
+
+	<p>如果为每个元素增加 class="demo" 比较麻烦，可以统一在上级元素使用 class="demo-doc"。即：</p>
+	
+<pre>
+&lt;div class="demo-doc"&gt;
+	&lt;h2&gt;标题&lt;/h2&gt;
+	&lt;p&gt;内容&lt;/p&gt;
+&lt;/div&gt;
+</pre>
+
+	<h2>显示代码</h2>
+
+	<p>在示例页中不免要显示一些代码，添加代码的方式如下：</p>
+<pre>
+&lt;pre class="demo"&gt;
+	/*这里放代码*/
+&lt;/pre&gt;
+</pre>
+
+<p>如果添加 lang-html 或 lang-js ，系统还可以先执行代码格式。</p>
+
+<pre>
+&lt;pre class="demo lang-js"&gt;
+	/*这里放代码*/
+&lt;/pre&gt;
+</pre>
+
+	<h2>添加 查看源码 按钮</h2>
+	
+	<p>在示例上有很多组件，用户只需直接拷贝其html源码即可使用组件。为方便用户操作，可以在页面上添加 查看源码的按钮。方法如下： </p>
+	
+	<pre>
+&lt;aside class="demo"&gt;
+	这里放组件源码
+&lt;/aside&gt;
+	</pre>
+	
+	<p>
+		默认地，查看源码将向用户显示 aside 标签的 innerHTML 。有些组件肯能是动态生成的，这时就需要自定义查看源码时显示的内容了。使用如下方式：
+	</p>
+	<pre>
+&lt;aside class="demo"&gt;
+	这里放组件源码
+&lt;/aside&gt;
+&lt;pre class="demo"&gt;
+	这里放查看源码时，向用户展示的源码
+&lt;/pre&gt;
+	</pre>
+	
+	<h2>为不同的组件分类</h2>
+	
+	<p>一个标准的组件示例页面应该按照如下结构：</p>
+	
+	<pre>
+	&lt;section class="demo"&gt;
+		&lt;h3&gt;组件示例种类1&lt;/h3&gt;
+		&lt;aside class="demo"&gt;
+			组件源码1
+		&lt;/aside&gt;
+		&lt;aside class="demo"&gt;
+			组件源码2
+		&lt;/aside&gt;
+	&lt;/section&gt;
+	
+	
+	&lt;section class="demo"&gt;
+		&lt;h3&gt;组件示例种类2&lt;/h3&gt;
+		&lt;aside class="demo"&gt;
+			组件源码3
+		&lt;/aside&gt;
+		&lt;aside class="demo"&gt;
+			组件源码4
+		&lt;/aside&gt;
+	&lt;/section&gt;
+	</pre>
+	
+
+	<h2>单元测试</h2>
+	
+	<p>测试系统内提供了简单的单元测试功能。在页面内添加如下代码即可：</p>
+	
+	<pre>
+		Demo.showTestCases({
+			
+			// 情况1： 后面是 ‘-’
+			
+			'分组': '-', // 表示这是一个分组信息。
+			
+			// 情况2： 后面是一个函数。
+			
+			'普通的测试': function(){
+				// 点击之后执行此函数。	
+			},
+			
+			// 情况3：后面是一个字符串。
+			
+			'简单版的测试': 'alert(3)', // 如果函数比较短，可以写成字符串形式。
+			
+			'Object.type': '~(3)', // 在字符串形式中，~会被替换为测试用例的名字。本例中，~(3)会理解成 Object.type(3)
+			
+			// 情况4：后面是一个对象。
+			
+			'完整的测试': {
+				'执行的函数1': 期望的返回值,  // 执行的函数1中的 ~ 也会被替换为测试用例的名字。
+				'执行的函数2': function(value){
+					// 手动判断 执行的函数2的返回值(即 value) 是否合法，如果不合法，此函数返回 false 。
+				},
+				'执行的函数1': '-' // 仅仅执行函数，不进行测试。
+			}
+			
+		})
+	</pre>
+	
+	<p>示例如下：</p>
+	
+	<pre>
+		Demo.showTestCases({
+			
+			'alert 分类': '-',
+			
+			'alert - 函数': function(){
+				alert('执行了alert');
+			},
+			
+			'alert - 简单版': 'alert("执行了 alert")',
+			
+			'alert': '~("执行了 alert")',
+			
+			'alert': {
+				'~("执行了 alert")': undefined,
+				'~("执行了 alert - 函数")': function(value){
+					return value === undefined;
+				},
+				'~("执行了 alert - 仅仅是执行")': '-'
+			}
+			
+		})
+	</pre>
+	
+	<p>注意，一个页面最多只能有一个单元测试</p>
+	
+	<h2>在网页中显示列表：</h2>
+	
+	<p>使用如下代码，可以将JSON对象显示成列表：</p>
+	
+	<pre>
+		Demo.showTreeView({
+			'分类1': {
+				'子分类1 - 注释': 'http://地址'	
+			}
+		});
+	</pre>
+	
+	<h2>在网页中显示问答：</h2>
+	
+	<p>使用如下代码，可以显示一个问答效果：</p>
+	
+	<pre>
+		Demo.showQuestions({
+			'问题1': [
+				'答案1',
+				'@答案2',   // 正确答案前加 @
+				'答案3',
+				'答案4'
+			]
+		});
+	</pre>
+	
+	<h2>测试用样式</h2>
+	
+	<p>测试系统提供了很多 demo- 开头的css样式，可直接使用。  </p>
+	
+	<h3>示例块</h3>
+	
+	
+	
+	
+
+	</body>
+</html>
