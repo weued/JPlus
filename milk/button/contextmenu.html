@@ -15,25 +15,31 @@
 		<script src="assets/scripts/contextmenu.js" type="text/javascript"></script>
 		
 		<script src="../../assets/libs/less/less.min.js" type="text/javascript"></script>
-		<script src="../../assets/scripts/system.js" type="text/javascript"></script>
+		<script src="../../assets/scripts/demo.js" type="text/javascript"></script>
 	</head>
 	<body>
 		
-		<div id="a">右击我</div>
-		
-		
-		<script>
-			var a = Dom.get('a');
+		<aside class="demo">
 			
-			var c = new ContextMenu();
-			
-			c.items.add('aa').on('click', function(){trace(this.getText())});
+			<div id="a">右击我</div>
 			
 			
-			c.setControl(a);
+			<script>
+				var a = Dom.get('a');
+				
+				// 创建一个新的菜单。
+				var c = new ContextMenu();
+				
+				// 添加一个新的 MenuItem，并绑定点击事件。
+				c.items.add('aa').on('click', function(){trace(this.getText())});
+				
+				// 应用当前菜单到节点 a 。
+				c.setControl(a);
+				
+				
+			</script>
 			
-			
-		</script>
+		</aside>
 		
 		
 	</body>

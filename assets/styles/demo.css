@@ -680,6 +680,7 @@ body {
 
 .demo-page-current {
 	text-shadow: 0 0 1px #D26000;
+	font-weight: bold;
 }
 
 #demo-body {
