@@ -7,7 +7,7 @@
 		<script src="../../system/core/assets/scripts/system.js" type="text/javascript"></script>
 		<script src="assets/scripts/json3.js" type="text/javascript"></script>
 		
-		<script src="../../assets/scripts/system.js" type="text/javascript"></script>
+		<script src="../../assets/scripts/demo.js" type="text/javascript"></script>
 	</head>
 	<body>
 		  <script>
@@ -17,7 +17,7 @@
 				'JSON.parse': '"[{\\\"a\\\":true}]" => [{a:true}]'
 			};
 			
-			System.initTestCases(testcases);
+			Demo.writeTestCases(testcases);
 			
 			function parseDate(key, value) {
                 var d;

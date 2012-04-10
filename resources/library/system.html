@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<title>测试系统 - 项目 - J+ 文档库</title>
-		<script type="text/javascript" src="../../assets/scripts/system.js" ></script>
+		<script type="text/javascript" src="../../assets/scripts/demo.js" ></script>
 	</head>
 	<body class="system">
 		<h2>测试系统</h2>
@@ -16,7 +16,7 @@
 			测试系统的功能为： 文档展示、函数测试、功能演示、项目进度管理。
 		</p>
 		<p class="content">
-			测试系统所需用的文件都在 assets 目录。其核心文件为 <a href="../../assets/scripts/system.js" target="_blank">assets/scripts/system.js</a>
+			测试系统所需用的文件都在 assets 目录。其核心文件为 <a href="../../assets/scripts/demo.js" target="_blank">assets/scripts/system.js</a>
 		</p>
 		<h4>文档展示</h4>
 		<p class="content">
@@ -81,7 +81,7 @@ var testcases = {
 	'Array.prototype.push': '@me = []; 1 =&gt; assert.<br>areEqual(value[0], 1), assert.areEqual(value.length, 1)'
 };
 
-System.initTestCases(testcases);	
+Demo.writeTestCases(testcases);	
 			</code></pre>
 		解读下上面的例子。
 		<p class="content">

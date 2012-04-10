@@ -611,7 +611,7 @@
         document.createElement(tagName);
     });
 
-    apply(window.assert = window.assert || assert, {
+    apply(assert, {
 
         /**
          * 确认 2 个值是一致的。

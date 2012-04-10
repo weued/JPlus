@@ -14,7 +14,7 @@
 		<script src="assets/scripts/scrollablecontrol.js" type="text/javascript"></script>
 		
 		<script src="../../assets/libs/less/less.min.js" type="text/javascript"></script>
-		<script src="../../assets/scripts/system.js" type="text/javascript"></script>
+		<script src="../../assets/scripts/demo.js" type="text/javascript"></script>
 	</head>
 	<body>
 		<h1>Core/ScrollableControl</h1>
@@ -32,9 +32,9 @@
 		
 		<p>ScrollableControl 用法演示：</p>
 		
-		<pre class="prettyprint linenums lang-html">&lt;div id="container-id"&gt;&lt;/div&gt;</pre>
+		<pre class="demo prettyprint linenums lang-html">&lt;div id="container-id"&gt;&lt;/div&gt;</pre>
 		
-		<pre class="prettyprint linenums lang-js">// 创建一个新类，其代理的元素是 #container-id
+		<pre class="demo prettyprint linenums lang-js">// 创建一个新类，其代理的元素是 #container-id
 var a = new ScrollableControl('container-id');</pre>
 	<p>
 	通过这个 a 对象，可以很方便地实现 a 的子控件的管理。
@@ -42,22 +42,22 @@ var a = new ScrollableControl('container-id');</pre>
 <p>
 	1. 添加一个新的子控件
 </p>
-<pre class="prettyprint linenums lang-js">a.controls.add('&lt;a href="#"&gt;newElem&lt;/a&gt;');</pre>
+<pre class="demo prettyprint linenums lang-js">a.controls.add('&lt;a href="#"&gt;newElem&lt;/a&gt;');</pre>
 <p>结果:</p>
-<pre class="prettyprint linenums lang-html">&lt;div id="container-id"&gt;&lt;a href="#">newElem&lt;/a&gt;&lt;/div&gt;</pre>
+<pre class="demo prettyprint linenums lang-html">&lt;div id="container-id"&gt;&lt;a href="#">newElem&lt;/a&gt;&lt;/div&gt;</pre>
 <p>
 <p>
 	2. 移除子控件
 </p>
-<pre class="prettyprint linenums lang-js">a.controls.removeAt(0); // 删除第 0 个子控件。</pre>
+<pre class="demo prettyprint linenums lang-js">a.controls.removeAt(0); // 删除第 0 个子控件。</pre>
 <p>结果:</p>
-<pre class="prettyprint linenums lang-html">&lt;div id="container-id"&gt;&lt;/div&gt;</pre>
+<pre class="demo prettyprint linenums lang-html">&lt;div id="container-id"&gt;&lt;/div&gt;</pre>
 <p>
 	3. 查看子控件
 </p>
-<pre class="prettyprint linenums lang-js">alert( a.controls.length ); // 查看子控件的数目。</pre>
+<pre class="demo prettyprint linenums lang-js">alert( a.controls.length ); // 查看子控件的数目。</pre>
 <p>结果:</p>
-<pre class="prettyprint linenums lang-html">0</pre>
+<pre class="demo prettyprint linenums lang-html">0</pre>
 <p>
 	a.controls 就像一个数组， a.controls[0] 表示 a 的第一个子控件。通过 a.controls，可以很方便地对 a 的子控件进行操作。
 	</p>	
@@ -70,7 +70,7 @@ var a = new ScrollableControl('container-id');</pre>
 			ScrollableControl 类的原型为：
 		</p>
 		
-		<pre class="prettyprint linenums lang-java">
+		<pre class="demo prettyprint linenums lang-java">
 abstract class ScrollableControl extends Control {
 	
 	// 获取用于管理当前子控件的集合对象。
@@ -118,7 +118,7 @@ abstract class ScrollableControl extends Control {
 		这个类的用法如下：
 	</p>
 	
-	<pre class="prettyprint linenums lang-js">// 创建一个新的类。
+	<pre class="demo prettyprint linenums lang-js">// 创建一个新的类。
 </pre>
 	
 	<p>
@@ -152,7 +152,7 @@ abstract class ScrollableControl extends Control {
 				'ScrollableControl.prototype.controls.removeAt': '@a; 0'
 			};
 			
-			System.initTestCases(testcases);
+			Demo.writeTestCases(testcases);
 		</script>
 		
 		

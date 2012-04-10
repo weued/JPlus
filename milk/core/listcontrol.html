@@ -14,14 +14,14 @@
 		<script src="assets/scripts/listcontrol.js" type="text/javascript"></script>
 		
 		<script src="../../assets/libs/less/less.min.js" type="text/javascript"></script>
-		<script src="../../assets/scripts/system.js" type="text/javascript"></script>
+		<script src="../../assets/scripts/demo.js" type="text/javascript"></script>
 	</head>
 	<body>
 		<h1>Core/ListControl</h1>
 		
 		<p>ListControl 封装了列表性质的控件。一个列表性质的控件肯定包含一个 ul 标签，其格式如:</p>
 		
-		<section class="system-control">
+		<aside class="demo">
 			<div class="x-listcontrol">
 				<ul class="x-listcontrol-container">
 					<li class="x-listcontrol-content">选项1</li>
@@ -30,7 +30,7 @@
 					<li class="x-listcontrol-content">选项4</li>
 				</ul>
 			</div>
-		</section>
+		</aside>
 		
 		<div id="ct">
 			<ul>
@@ -40,7 +40,7 @@
 		<div id="d">#d</div>
 		<div id="e">#e</div>
 		
-		<script class="system-control">
+		<script class="demo">
 		
 			// 创建一个容器对象。
 			var a = new ListControl('ct');
@@ -71,7 +71,7 @@
 				'ListControl.prototype.items.removeAt': "@c; 0"
 			};
 			
-			System.initTestCases(testcases);
+			Demo.writeTestCases(testcases);
 			
 			
 			

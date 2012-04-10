@@ -5,7 +5,7 @@
 		<title>J+ Core Library</title>
 		<script type="text/javascript" src="../../assets/libs/jquery/jquery.js" ></script>
 		<script type="text/javascript" src="../../src/jquery-adapter.js" ></script>
-		<script type='text/javascript' src='../../assets/scripts/system.js' ></script>
+		<script type='text/javascript' src='../../assets/scripts/demo.js' ></script>
 		<style>
 			#a {
 				background: #DCDCDC; margin: 4px; padding: 8px;
@@ -53,7 +53,7 @@
 				'Control.prototype.toggleClass': '@a; "light" => assert.areEqual(a.hasClass("light"), true)'
 			};
 			
-			System.initTestCases(testcases);
+			Demo.writeTestCases(testcases);
 			
 		</script>
 	</body>
