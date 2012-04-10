@@ -267,6 +267,10 @@ blockquote.demo {
 	margin-bottom: 20px;
 }
 
+.demo-control-viewsource pre.demo {
+	margin-bottom: 30px;
+}
+
 .demo-control-arrow {
 	font-size: 20px;
 	float: left;
@@ -446,7 +450,7 @@ blockquote.demo {
 
 .demo-removed{
 	color: gray!important;
-	text-decoration: line-through;
+	text-decoration: line-through!important;
 }
 
 .demo-plain {
@@ -480,8 +484,8 @@ pre.demo .lit { color: #195f91; }
 pre.demo .pun, pre.demo .opn,pre.demo .clo { color: #93a1a1; }
 pre.demo .fun { color: #dc322f; }
 pre.demo .str, pre.demo .atv { color: #D14; }
-pre.demo.kwd, pre.demo .linenums .tag { color: #1e347b; }
-pre.demo.typ,pre.demo .atn, pre.demo .dec, .var { color: teal; }
+pre.demo .kwd, pre.demo .tag { color: #1e347b; }
+pre.demo .typ,pre.demo .atn, pre.demo .dec,pre.demo .var { color: teal; }
 pre.demo .pln { color: #48484c; }
 
 pre.demo .prettyprint {
@@ -600,17 +604,17 @@ body {
 	font-family: '隶书';
 }
 
-#demo-header nav {
+#demo-header, #demo-sidebar, #demo-footer, #demo-testcases {
+	font-family: 'Microsoft YaHei';	
+}
+
+#demo-navbar {
 	float: right;
 	margin: 10px;
 	line-height: 18px;
 }
 
-#demo-header, #demo-sidebar, #demo-footer, #demo-testcases {
-	font-family: 'Microsoft YaHei';	
-}
-
-#demo-header nav a {
+#demo-navbar a {
 	display: inline-block;
 	padding: 6px 15px;
 	text-align: center;
@@ -632,6 +636,7 @@ body {
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
 	float: right;
+	margin-bottom: 10px;
 }
 
 #demo-sidebar h2{
@@ -673,15 +678,16 @@ body {
 	margin: 0;
 }
 
+.demo-page-current {
+	text-shadow: 0 0 1px #D26000;
+}
+
 #demo-body {
 	display: block;
 	width: 750px;
 	padding: 0;
 	float:left;
-}
-
-#demo-loading {
-	padding-bottom: 10px;
+	margin-bottom: 10px;
 }
 
 #demo-main.demo-page-clean {
@@ -689,11 +695,15 @@ body {
 }
 
 .demo-page-clean #demo-header, .demo-page-clean #demo-sidebar, .demo-page-clean #demo-footer,
-.demo-page-clean h1.demo, .demo-page-clean header.demo hr.demo{
+.demo-page-clean h1.demo, .demo-page-clean #demo-title hr.demo{
 	display: none;
 }
 
-.demo-page-clean #demo-body{
+.demo-page-clean #demo-title .demo-control-toolbar {
+	padding: 10px;	
+}
+
+.demo-page-clean #demo-body, #demo-body.demo-page-nosidebar{
 	width: auto;
 	float: none;
 }
@@ -702,7 +712,6 @@ body {
 	border-top: 1px solid #DDDDDD;
 	text-align: center;
 	padding: 10px;
-	margin-top: 10px;
 	clear: both;
 	color: #555555;
 	font-size: 12px;
