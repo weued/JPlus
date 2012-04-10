@@ -21,113 +21,122 @@
 	</head>
 	<body>
 		
-		<h1>Form/Form</h1>
-		
 		<p>Form/Form 定义了常见的三种表单布局。</p>
 		
-		<h2>水平表单</h2>
-		<section class="system-control system-block">
-			<form class="x-form">
-				<div class="x-formfield">
-					<label class="x-formfield-label">名字:</label>
-					<div class="x-formfield-container">
-						<input type="text" class="x-textbox"> <span class="x-tipbox x-tipbox-error">AAA</span> 
+		<section class="demo" id="horizonal">
+			<h3 class="demo">水平表单</h3>
+			
+			<aside class="demo">
+				<form class="x-form">
+					<div class="x-formfield">
+						<label class="x-formfield-label">名字:</label>
+						<div class="x-formfield-container">
+							<input type="text" class="x-textbox"> <span class="x-tipbox x-tipbox-error">AAA</span> 
+						</div>
 					</div>
-				</div>
-				<div class="x-formfield">
-					<label class="x-formfield-label">内容:</label>
-					<div class="x-formfield-container">
-						<input type="text" class="x-textbox"> <span class="x-tipbox x-tipbox-success x-tipbox-plain">&nbsp;</span> 
+					<div class="x-formfield">
+						<label class="x-formfield-label">内容:</label>
+						<div class="x-formfield-container">
+							<input type="text" class="x-textbox"> <span class="x-tipbox x-tipbox-success x-tipbox-plain">&nbsp;</span> 
+						</div>
 					</div>
-				</div>
-				<div class="x-formfield">
-					<label class="x-formfield-label">(选填)最后:</label>
-					<div class="x-formfield-container">
-						<input type="text" class="x-textbox"> &nbsp; <span class="x-hint">如：hello world</span> 
+					<div class="x-formfield">
+						<label class="x-formfield-label">(选填)最后:</label>
+						<div class="x-formfield-container">
+							<input type="text" class="x-textbox"> &nbsp; <span class="x-hint">如：hello world</span> 
+						</div>
 					</div>
-				</div>
-				<div class="x-formfield">
-					<label class="x-formfield-label">内容:</label> 
-					<div class="x-formfield-container">
-						<input type="text" class="x-textbox"> <label><input type="radio" name="wtype" checked="checked" class="x-radiobutton">value</label>  <label><input type="radio" name="wtype" class="x-radiobutton">value</label>  &nbsp;
+					<div class="x-formfield">
+						<label class="x-formfield-label">内容:</label> 
+						<div class="x-formfield-container">
+							<input type="text" class="x-textbox"> <label><input type="radio" name="wtype" checked="checked" class="x-radiobutton">value</label>  <label><input type="radio" name="wtype" class="x-radiobutton">value</label>  &nbsp;
+						</div>
 					</div>
-				</div>
-				<div class="x-formfield">
-					<label class="x-formfield-label">内容:</label> 
-					<div class="x-formfield-container">
-						<input type="text" class="x-textbox"> <br>
-						<input type="text" class="x-textbox">
+					<div class="x-formfield">
+						<label class="x-formfield-label">内容:</label> 
+						<div class="x-formfield-container">
+							<input type="text" class="x-textbox"> <br>
+							<input type="text" class="x-textbox">
+						</div>
 					</div>
-				</div>
-				<div class="x-formfield">
-					<label class="x-formfield-label">内容:</label> 
-					<textarea class="x-textbox"></textarea>
-				</div>
-				<div class="x-formfield">
-					<div class="x-formfield-container">
-						<button type="submit" class="x-button">确定</button>
+					<div class="x-formfield">
+						<label class="x-formfield-label">内容:</label> 
+						<textarea class="x-textbox"></textarea>
 					</div>
-				</div>
-			</form>
-		</aside>
+					<div class="x-formfield">
+						<div class="x-formfield-container">
+							<button type="submit" class="x-button">确定</button>
+						</div>
+					</div>
+				</form>
+			</aside>
+		</section>
 		
-		<h2>垂直表单</h2>
-		<section class="system-control system-block">
-			<form class="x-form x-form-vertical">
-				<div class="x-formfield">
-					<label class="x-formfield-label">名字:</label>
-					<div class="x-formfield-container">
-						<input type="text" class="x-textbox"> <span class="x-tipbox x-tipbox-error">AAA</span> 
-					</div>
-				</div>
-				<div class="x-formfield">
-					<label class="x-formfield-label">内容:</label>
-					<div class="x-formfield-container">
-						<input type="text" class="x-textbox"> <span class="x-tipbox x-tipbox-success x-tipbox-plain">&nbsp;</span> 
-					</div>
-				</div>
-				<div class="x-formfield">
-					<label class="x-formfield-label">(选填)最后:</label>
-					<div class="x-formfield-container">
-						<input type="text" class="x-textbox"> &nbsp; <span class="x-hint">如：hello world</span> 
-					</div>
-				</div>
-				<div class="x-formfield">
-					<label class="x-formfield-label">内容:</label> 
-					<div class="x-formfield-container">
-						<input type="text" class="x-textbox"> <label><input class="x-radiobutton" type="radio" name="wtype" checked="checked"> value </label>  <label><input class="x-radiobutton" type="radio" name="wtype"> value </label>  &nbsp;
-					</div>
-				</div>
-				<div class="x-formfield">
-					<label class="x-formfield-label">内容:</label> 
-					<div class="x-formfield-container">
-						<input type="text" class="x-textbox"> <br>
-						<input type="text" class="x-textbox">
-					</div>
-				</div>
-				<div class="x-formfield">
-					<label class="x-formfield-label">内容:</label> 
-					<textarea class="x-textbox"></textarea>
-				</div>
-				<div class="x-formfield">
-					<div class="x-formfield-container">
-						<button type="submit" class="x-button">确定</button>
-					</div>
-				</div>
-			</form>
-		</aside>
+		<hr class="demo">
 		
-		<h2>内联表单</h2>
-		<section class="system-control system-block">
-		    <form class="x-form x-form-inline">
-			    <input type="text" class="x-textbox" placeholder="Email">
-			    <input type="password" class="x-textbox" placeholder="Password">
-			    <label>
-		          <input type="checkbox" class="x-checkbox"> Remember?
-		        </label>
-			    <button type="submit" class="x-button">Go</button>
-		    </form>
-	    </aside>
+		<section class="demo" id="vertical">
+			<h3 class="demo">垂直表单</h3>
+			<aside class="demo">
+				<form class="x-form x-form-vertical">
+					<div class="x-formfield">
+						<label class="x-formfield-label">名字:</label>
+						<div class="x-formfield-container">
+							<input type="text" class="x-textbox"> <span class="x-tipbox x-tipbox-error">AAA</span> 
+						</div>
+					</div>
+					<div class="x-formfield">
+						<label class="x-formfield-label">内容:</label>
+						<div class="x-formfield-container">
+							<input type="text" class="x-textbox"> <span class="x-tipbox x-tipbox-success x-tipbox-plain">&nbsp;</span> 
+						</div>
+					</div>
+					<div class="x-formfield">
+						<label class="x-formfield-label">(选填)最后:</label>
+						<div class="x-formfield-container">
+							<input type="text" class="x-textbox"> &nbsp; <span class="x-hint">如：hello world</span> 
+						</div>
+					</div>
+					<div class="x-formfield">
+						<label class="x-formfield-label">内容:</label> 
+						<div class="x-formfield-container">
+							<input type="text" class="x-textbox"> <label><input class="x-radiobutton" type="radio" name="wtype" checked="checked"> value </label>  <label><input class="x-radiobutton" type="radio" name="wtype"> value </label>  &nbsp;
+						</div>
+					</div>
+					<div class="x-formfield">
+						<label class="x-formfield-label">内容:</label> 
+						<div class="x-formfield-container">
+							<input type="text" class="x-textbox"> <br>
+							<input type="text" class="x-textbox">
+						</div>
+					</div>
+					<div class="x-formfield">
+						<label class="x-formfield-label">内容:</label> 
+						<textarea class="x-textbox"></textarea>
+					</div>
+					<div class="x-formfield">
+						<div class="x-formfield-container">
+							<button type="submit" class="x-button">确定</button>
+						</div>
+					</div>
+				</form>
+			</aside>
+		</section>
+		
+		<hr class="demo">
+		
+		<section class="demo" id="inline">
+			<h3 class="demo">内联表单</h3>
+			<aside class="demo">
+			    <form class="x-form x-form-inline">
+				    <input type="text" class="x-textbox" placeholder="用户名">
+				    <input type="password" class="x-textbox" placeholder="密码">
+				    <label>
+			          <input type="checkbox" class="x-checkbox">记住密码
+			        </label>
+				    <button type="submit" class="x-button">登陆</button>
+			    </form>
+	    	</aside>
+	    </section>
 		
 	</body>
 </html>

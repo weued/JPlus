@@ -4016,7 +4016,11 @@ Demo.showMenu = function (menus) {
         sidebar.id = 'demo-sidebar';
         document.getElementById('demo-main').insertBefore(sidebar, document.getElementById('demo-footer'));
     }
-    var result = [];
+    var result = [], url = location.href;
+    
+    if(url.indexOf('#') > -1){
+    	url = url.substring(0, url.indexOf('#'));
+    }
 
     var allTotal = 0,
         allFinished = 0,
@@ -4039,32 +4043,32 @@ Demo.showMenu = function (menus) {
 
                 // 处理前缀
                 switch (value.charAt(0)) {
-                case '+':
-                    clazz = '';
-                    value = value.substring(1);
-                    total++;
-                    finished++;
-                    break;
-                case '-':
-                    clazz = ' demo-removed';
-                    value = value.substring(1);
-                    allSkipped++;
-                    break;
-                case '#':
-                    clazz = ' demo-strong';
-                    value = value.substring(1);
-                    total++;
-                    finished++;
-                    break;
-                case '*':
-                    clazz = ' demo-italic';
-                    value = value.substring(1);
-                    total++;
-                    break;
-                default:
-                    clazz = ' demo-disabled';
-                    total++;
-                    break;
+	                case '+':
+	                    clazz = '';
+	                    value = value.substring(1);
+	                    total++;
+	                    finished++;
+	                    break;
+	                case '-':
+	                    clazz = ' demo-removed';
+	                    value = value.substring(1);
+	                    allSkipped++;
+	                    break;
+	                case '#':
+	                    clazz = ' demo-strong';
+	                    value = value.substring(1);
+	                    total++;
+	                    finished++;
+	                    break;
+	                case '*':
+	                    clazz = ' demo-italic';
+	                    value = value.substring(1);
+	                    total++;
+	                    break;
+	                default:
+	                    clazz = ' demo-disabled';
+	                    total++;
+	                    break;
                 }
 
                 // 处理后缀
@@ -4088,7 +4092,7 @@ Demo.showMenu = function (menus) {
                 src = Demo.rootPath + Demo.moduleName + '/' + group.toLowerCase() + '/' + value.toLowerCase() + '.html';
                 name = Demo.encodeHTML(name);
 
-                if (location.href === src) {
+                if (url === src) {
                     currentInfo = [group, value, name];
                     result.push('<li class="demo-page-current">');
                 } else {
