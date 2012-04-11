@@ -17,11 +17,35 @@
 	</head>
 	<body>
 		
+		<aside class="demo">
+			
+			<input type="text" class="x-textbox" value="2012/12/30" id="a" />
+			
+			
+			<script>
+				
+				var a =  new DatePicker("a");
+			</script>
+			
+		</aside>
 		
+		<script class="demo" type="text/html">
+			
+			<input type="text" class="x-textbox" value="2012/12/30" id="a" />
+			
+			
+			<script>
+				
+				var a =  new DatePicker("a");
+			<\/script>
+			
+		</script>
 		
 		<script>
-			
-			var a =  new DatePicker().appendTo();
+			Demo.writeTestCases({
+				'更改时间格式': 'a.format = "yyyy 年 MM 月 dd 日"'
+				
+			});
 		</script>
 		
 	</body>

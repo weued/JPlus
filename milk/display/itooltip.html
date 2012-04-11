@@ -16,23 +16,26 @@
 		<script src="../../assets/scripts/demo.js" type="text/javascript"></script>
 	</head>
 	<body>
-		<h1>Page/IToolTip</h1>
 		
-		<span id="a">Node</span>
-		
-		<div id="tooltip" style="position: absolute"></div>
-		
-		<script class="demo">
+		<aside class="demo">
 			
+			<span id="a">Node</span>
 			
-			var a = Dom.get('tooltip');
+			<div id="tooltip" style="position: absolute"></div>
 			
-			// 拷贝 IToolTip 方法。
-			Object.extend(a, IToolTip);
+			<script>
+				
+				
+				var a = Dom.get('tooltip');
+				
+				// 拷贝 IToolTip 方法。
+				Object.extend(a, IToolTip);
+				
+				// 设置。
+				a.setToolTip(Dom.get('a'), 'ToolTip');
+			</script>
 			
-			// 设置。
-			a.setToolTip(Dom.get('a'), 'ToolTip');
-		</script>
+		</aside>
 		
 		
 	</body>

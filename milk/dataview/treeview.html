@@ -20,6 +20,39 @@
 	</head>
 	<body>
 		
+		<div id="ct"></div>
+		
+		<aside class="demo">
+	
+		
+		<script>
+			
+			var a = new TreeView().appendTo('ct');
+			
+			var b = new TreeNode();
+			b.setText("1");
+			a.nodes.add(b);
+			
+			var c = new TreeNode();
+			c.setText("1-1");
+			b.nodes.add(c);
+			
+			var d = new TreeNode();
+			d.setText("1-2");
+			b.nodes.add(d);
+			
+			var e = new TreeNode();
+			e.setText("2");
+			a.nodes.add(e);
+			
+		</script>
+		</aside>
+		
+		<section class="demo-test">
+			
+			<hr>
+			
+				
 		<div class="x-treeview">
 	        <ul class="x-treeview-container">
 	            <li class="x-treeview-content">
@@ -100,26 +133,6 @@
 	        </ul>
 		</div>
 		
-		<script>
-			
-			var a = new TreeView().appendTo();
-			
-			var b = new TreeNode();
-			b.setText("1");
-			a.nodes.add(b);
-			
-			var c = new TreeNode();
-			c.setText("1-1");
-			b.nodes.add(c);
-			
-			var d = new TreeNode();
-			d.setText("1-2");
-			b.nodes.add(d);
-			
-			var e = new TreeNode();
-			e.setText("2");
-			a.nodes.add(e);
-			
-		</script>
+		</section>
 	</body>
 </html>

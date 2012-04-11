@@ -219,6 +219,7 @@
         },
 
         getCode: function (sourceCode, type) {
+        	sourceCode = sourceCode.replace(/<\\\/script>/g, "</script>");
             if (type === 'text/html') {
                 sourceCode = Demo.formatHTML(sourceCode);
                 type = 'html';
@@ -3926,7 +3927,7 @@ Demo.showPage = function (options) {
         result.push('<a class="demo' + (nav === Demo.moduleName ? " demo-page-current" : "") + '" href="' + Demo.rootPath + nav + '/index.html">' + options.projects[nav] + '</a>');
     }
 
-    result[result.length - 1] = result[result.length - 1].replace(' class="demo"', ' class="demo demo-page-last"');
+    result[result.length - 1] = result[result.length - 1].replace(' class="demo', ' class="demo demo-page-last');
 
     if (eval("-[1,]")) {
 

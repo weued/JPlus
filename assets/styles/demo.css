@@ -214,6 +214,7 @@ blockquote.demo {
 	line-height:16px;
 	border: 2px solid transparent;
 	*border: 2px solid #F9F9F9;
+	clear: both;
 }
 
 .demo-tip-error {
@@ -456,6 +457,10 @@ blockquote.demo {
 .demo-plain {
 	margin: 0;
 	padding: 0;	
+}
+
+.demo-test {
+	position:relative;	
 }
 
 /*********************************** 功能 *******************************************/

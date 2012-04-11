@@ -19,7 +19,6 @@
 		<script src="../../assets/scripts/demo.js" type="text/javascript"></script>
 	</head>
 	<body>
-		<h1>Button/SplitButton</h1>
 		
 		<aside class="demo">
    			<span class="x-splitbutton x-buttongroup" id="a">
@@ -32,6 +31,18 @@
 	   		</script>
 	   		
    		</aside>
+		
+		<script class="demo" type="text/html">
+			<span class="x-splitbutton x-buttongroup" id="a">
+				<a href="#" class="x-button">按钮button</a>
+				<a href="#" class="x-button"><span class="x-button-menu x-button-menu-down"></span></a>
+			</span>
+			<script>
+	   			var a = new SplitButton('a');
+	   			a.items.add('aa');
+	   		<\/script>
+	   		
+		</script>
 		
 		
 	</body>
