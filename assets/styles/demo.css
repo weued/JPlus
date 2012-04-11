@@ -709,7 +709,7 @@ body {
 	padding: 10px;	
 }
 
-.demo-page-clean #demo-body, #demo-body.demo-page-nosidebar{
+.demo-page-clean #demo-body, .demo-page-nosidebar #demo-body{
 	width: auto;
 	float: none;
 }
@@ -721,4 +721,12 @@ body {
 	clear: both;
 	color: #555555;
 	font-size: 12px;
+}
+
+.demo-page-loading ~ * {
+	visibility: hidden;
+}
+
+.demo-page-loading .demo-control-toolbar {
+	display: none;	
 }

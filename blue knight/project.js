@@ -2,10 +2,7 @@
  * @fileOverview 测试导航
  */
 
-System.title = '蓝色骑士';
-System.subtitle = 'blue knight';
-
-var menus = {
+Demo.items = {
 	Core: 'Base',
 	Page: 'Common Scaffolding',
     Form: 'Form',

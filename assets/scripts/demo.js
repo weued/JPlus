@@ -3931,7 +3931,7 @@ Demo.showPage = function (options) {
 
     if (eval("-[1,]")) {
 
-        document.write('<div id="demo-main">\
+        document.write('<div id="demo-main" class="demo-page-loading demo-page-nosidebar">\
 			<header id="demo-header">\
 				<nav id="demo-navbar">' + result.join('\r\n') + '</nav>\
 				<h1>' + options.title + '</h1>\
@@ -3950,7 +3950,7 @@ Demo.showPage = function (options) {
     } else {
 
 
-        document.write('<div id="demo-main">\
+        document.write('<div id="demo-main" class="demo-page-loading demo-page-nosidebar">\
 			<div id="demo-header">\
 				<div id="demo-navbar">' + result.join('\r\n') + '</div>\
 				<h1>' + options.title + '</h1>\
@@ -3967,38 +3967,41 @@ Demo.showPage = function (options) {
 		</div>');
     }
 
-    //try {
-    //    document.body.style.visibility = 'hidden';
-    //} catch (e) {
-    //    // 修正 Chrome 在没刷新时，  无法获取 body
-    //    location.reload();
-    //}
+    // try {
+       // document.body.style.visibility = 'hidden';
+    // } catch (e) {
+       // // 修正 Chrome 在没刷新时，  无法获取 body
+       // location.reload();
+    // }
+    
     Demo.addEvent(window, 'load', function () {
-        var main = document.getElementById('demo-body'),
-            last, next = document.getElementById('demo-main').nextSibling;
+        var main = document.getElementById('demo-main'),
+        	body = document.getElementById('demo-body'),
+            last, next = main.nextSibling;
 
         // 移除 正在载入... 节点
-        main.removeChild(document.getElementById('demo-loading'));
+
+        if (Demo.items) {
+            Demo.showMenu(Demo.items);
+            main.className = '';
+        } else {
+            main.className = 'demo-page-nosidebar';
+        }
+        
+        body.removeChild(document.getElementById('demo-loading'));
 
         // 将原有的 body 的节点拷贝到 demo-body
         for (; next; next = last) {
             last = next.nextSibling;
-            main.appendChild(next);
+            body.appendChild(next);
         }
-
-        //document.body.style.visibility = '';
+        
         if (Demo.getData('demo_view') === 'true') {
             document.getElementById('demo-main').className = 'demo-page-clean';
             document.getElementById('demo-toggleview').innerHTML = '❑ 标准视图';
         }
 
         prettyPrint();
-
-        if (Demo.items) {
-            Demo.showMenu(Demo.items);
-        } else {
-            main.className = 'demo-page-nosidebar';
-        }
 
     });
 
