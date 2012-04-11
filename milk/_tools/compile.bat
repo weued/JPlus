@@ -48,7 +48,7 @@
 "../../assets/tools/dotless/dotless.Compiler.exe" ../form/assets/styles/checkbox.less
 "../../assets/tools/dotless/dotless.Compiler.exe" ../form/assets/styles/radiobutton.less
 "../../assets/tools/dotless/dotless.Compiler.exe" ../form/assets/styles/listbox.less
-"../../assets/tools/dotless/dotless.Compiler.exe" ../form/assets/styles/suggest.less
+"../../assets/tools/dotless/dotless.Compiler.exe" ../form/assets/styles/autocomplete.less
 "../../assets/tools/dotless/dotless.Compiler.exe" ../form/assets/styles/validator.less
 "../../assets/tools/dotless/dotless.Compiler.exe" ../form/assets/styles/tagpicker.less
 "../../assets/tools/dotless/dotless.Compiler.exe" ../form/assets/styles/searchtextbox.less

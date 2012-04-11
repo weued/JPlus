@@ -24,7 +24,6 @@
 		<script src="../../assets/scripts/demo.js" type="text/javascript"></script>
 	</head>
 	<body>
-		<h1>Button/MenuButton</h1>
 		
 		<aside class="demo">
    			<a id="a" href="#" class="x-button x-menubutton">菜单Menu<span class="x-button-menu x-button-menu-down"></span></a>
@@ -36,9 +35,19 @@
 	   		
    		</aside>
 		
-		<aside class="demo">
+		<script class="demo" type="text/html">
+			<a id="a" href="#" class="x-button x-menubutton">菜单Menu<span class="x-button-menu x-button-menu-down"></span></a>
+	   		<script>
+	   			var a = new MenuButton('a');
+	   			a.items.add('click me').setAttr('href', 'javascript:alert(\'hello\');');
+	   			a.items.add('<a href="javascript:alert(\'hello\');">click me</a>');
+	   		<\/script>
+	   		
+		</script>
+		
+		<section class="demo-test">
    			<button class="x-button x-menubutton">菜单Menu<span class="x-button-menu x-button-menu-down"></span></button>
-   		</aside>
+   		</section>
 		
 		
 	</body>

@@ -18,18 +18,40 @@
 	</head>
 	<body>
 		
-		文字：<input type="text" class="x-textbox" id="a" />
+		<aside class="demo">
+			
+			文字：<input type="text" class="x-textbox" id="a" />
+			
+			<a class="x-tagpicker x-tagpicker-selected" href="javascript:;">选项1</a>
+			<a class="x-tagpicker" href="javascript:;">选项2</a>
+			<a class="x-tagpicker" href="javascript:;">选项3</a>
+			
+			
+			<script>
+				var a = new TagPicker({
+					dom: 'a',
+					targets: document.query('.x-tagpicker')
+				});
+			</script>
+			
+		</aside>
 		
-		<a class="x-tagpicker x-tagpicker-selected" href="javascript:;">选项1</a>
-		<a class="x-tagpicker" href="javascript:;">选项2</a>
-		<a class="x-tagpicker" href="javascript:;">选项3</a>
-		
-		
-		<script>
-			new TagPicker({
-				dom: 'a',
-				targets: document.query('.x-tagpicker')
-			});
+		<script class="demo" type="text/html">
+			
+			文字：<input type="text" class="x-textbox" id="a" />
+			
+			<a class="x-tagpicker x-tagpicker-selected" href="javascript:;">选项1</a>
+			<a class="x-tagpicker" href="javascript:;">选项2</a>
+			<a class="x-tagpicker" href="javascript:;">选项3</a>
+			
+			
+			<script>
+				var a = new TagPicker({
+					dom: 'a',
+					targets: document.query('.x-tagpicker')
+				});
+			<\/script>
+			
 		</script>
 	</body>
 </html>

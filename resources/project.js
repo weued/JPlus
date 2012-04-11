@@ -2,7 +2,7 @@
  * @fileOverview 资源导航
  */
 
-var menus = {
+Demo.items = {
 	
 	'工具': {
 		'HTML/Javascript 格式化': 'resources/tools/format/index.html',
