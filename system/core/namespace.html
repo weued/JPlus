@@ -10,17 +10,34 @@
 		<script>
 			
 			var testcases = {
-				'namespace': '-',
-				'JPlus.namespace': '"MyName.MyClass", {a:1} => assert.isTrue(typeof MyName != "undefined" && MyName.MyClass)',
-				'using': '"System.Ajax.Ajax" => assert.isTrue(window.Ajax)',
-				'imports': '"System.Ajax.Ajax" => assert.isTrue(window.Ajax)',
+				'Namespace': '-',
+				'JPlus.namespace': {
+					'~("MyName.MyClass")': function (value, assert) {
+					  assert(window.MyName);
+					  assert(window.MyName.MyClass);
+					  assert(window.MyName.MyClass === value);
+					}
+				},
+				'using': {
+					'~("System.Ajax.Ajax")': function (value, assert) {
+						assert.isTrue(window.Ajax)
+					}
+				},
+				'imports': '~("System.Ajax.Ajax")',
 				'Load': '-',
-				'execScript': '"assert.log(false)" => assert.logged("false")',
-				'JPlus.loadStyle': '"../../assets/styles/default.css"',
-				'JPlus.loadScript': '"../ajax/assets/scripts/ajax.js"',
-				'JPlus.loadText': '"namespace.html", function(v){alert(v)}',
-				'JPlus.rootPath': {method: false},
-				'JPlus.checkStatusCode': '200 => true ; 500 => false'
+				'execScript': {
+					'~("Demo.assert.log(false)")': function (value, assert) {
+						assert.logged("false")
+					}
+				},
+				'JPlus.checkStatusCode': {
+					'~(200)': true,
+					'~(500)': false
+				},
+				'JPlus.loadStyle': '~("../../assets/styles/default.css")',
+				'JPlus.loadScript': '~("../ajax/assets/scripts/ajax.js")',
+				'JPlus.loadText': '~("namespace.html", function(v){alert(v)})',
+				'JPlus.rootPath': '~'
 			};
 			
 			Demo.writeTestCases(testcases);

@@ -3,7 +3,7 @@
  */
 
 Demo.items = {
-	'Core': '+Object:对象 +Navigator +Class +Namespace +Trace',
+	'Core': '+Object +Navigator +Class +Namespace +Trace',
 	'Element': '+Core +Traversing +Manipulation +Style +Attributes +Event +DomReady +Dimension +Offset',
 	'Ajax': '*Request +Ajax +Json +Jsonp +Submit Element AjaxEx Xml',
 	'Fx': '+Base +Animate +Multifade +Transitions +Color String',

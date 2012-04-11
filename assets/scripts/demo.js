@@ -171,7 +171,7 @@
         createViewSource: function () {
             var viewSource = document.createElement('div');
             viewSource.className = 'demo-control-viewsource';
-            viewSource.innerHTML = '<a class="demo" href="javascript://查看用于创建上文组件的所有源码;" onclick="Demo.toggleSource(this)"><span class="demo-control-arrow">▸</span>查看源码</a>';
+            viewSource.innerHTML = '<a class="demo" href="javascript://查看用于创建上文组件的所有源码" onclick="Demo.toggleSource(this)"><span class="demo-control-arrow">▸</span>查看源码</a>';
             return viewSource;
         },
 
@@ -378,16 +378,16 @@
             if (info) {
 
                 switch (typeof info) {
-
-                    // 字符串: 转函数。
-                case 'string':
-                    info = new Function(info.replace(/~/g, name));
-                    break;
-
-                    // 测试用例: 先处理。
-                case 'object':
-                    info = complieTestCase(info, name);
-                    break;
+	
+	                    // 字符串: 转函数。
+	                case 'string':
+	                    info = new Function(info.replace(/~/g, name));
+	                    break;
+	
+	                    // 测试用例: 先处理。
+	                case 'object':
+	                    info = complieTestCase(info, name);
+	                    break;
                 }
 
                 var time = 0,
@@ -411,7 +411,7 @@
                 } while (past < 200);
 
                 start = past * 1000 / time;
-                console.log('[' + name + '] ', start, 'ms/k');
+                console.info('[' + name + '] ', start, 'ms/k');
             }
 
         },
@@ -697,7 +697,7 @@
     }
 
     function complieTestCase(info, name) {
-        var ret = [];
+        var ret = ['var assert=Demo.assert;'];
 
         for (var test in info) {
             ret.push(test.replace(/~/g, name));
@@ -711,6 +711,8 @@
 
         for (var test in info) {
             assert.clearLog();
+            
+            var value = info[test];
 
             test = test.replace(/~/g, name);
 
@@ -723,11 +725,13 @@
 
             console.info('[' + name + '] ', test, ' =>', ret);
 
-            if (info[test] !== '-') {
-                if (typeof info[test] !== 'function') {
-                    assert.areEqual(ret, info[test]);
-                } else if (info[test].call(ret, ret) === false) {
+            if (value !== '-') {
+                if (typeof value !== 'function') {
+                    assert.areEqual(ret, value);
+                } else if ((value = value.call(ret, ret, assert)) === false) {
                     assert.hasError = true;
+                } else if(value === true){
+                	assert.hasError = !!assert.hasError;
                 }
             }
 

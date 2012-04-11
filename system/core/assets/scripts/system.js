@@ -550,7 +550,7 @@
 		    // IE6 不会遍历系统对象需要复制，所以强制去测试，如果改写就复制 。
 		    return function(dest, src) {
 			    if (src) {
-				    assert(dest != null, "Basee.extend(dest, src): {dest} 不可为空。", dest);
+				    assert(dest != null, "Object.extend(dest, src): {dest} 不可为空。", dest);
 
 				    for ( var i = p.enumerables.length, value; i--;)
 					    if (hasOwnProperty.call(src, value = p.enumerables[i]))
@@ -593,8 +593,8 @@
 		 */
 	    each: function(iterable, fn, bind) {
 
-		    assert(!Function.isFunction(iterable), "Basee.each(iterable, fn, bind): {iterable} 不能是函数。 ", iterable);
-		    assert(Function.isFunction(fn), "Basee.each(iterable, fn, bind): {fn} 必须是函数。 ", fn);
+		    assert(!Function.isFunction(iterable), "Object.each(iterable, fn, bind): {iterable} 不能是函数。 ", iterable);
+		    assert(Function.isFunction(fn), "Object.each(iterable, fn, bind): {fn} 必须是函数。 ", fn);
 
 		    // 如果 iterable 是 null， 无需遍历 。
 		    if (iterable != null) {
@@ -651,7 +651,7 @@
 
 				    value = value[fn];
 
-				    assert(!args || dest[key], "Basee.update(iterable, fn, dest, args): 试图把iterable[{key}][{fn}] 放到 dest[key][fn], 但  dest[key] 是一个空的成员。",
+				    assert(!args || dest[key], "Object.update(iterable, fn, dest, args): 试图把iterable[{key}][{fn}] 放到 dest[key][fn], 但  dest[key] 是一个空的成员。",
 				            key, fn);
 
 				    // 如果属性是非函数，则说明更新。 a.value
@@ -1645,7 +1645,7 @@
 	 */
 	function apply(dest, src) {
 
-		assert(dest != null, "Basee.extend(dest, src): {dest} 不可为空。", dest);
+		assert(dest != null, "Object.extend(dest, src): {dest} 不可为空。", dest);
 
 		// 直接遍历，不判断是否为真实成员还是原型的成员。
 		for ( var b in src)
@@ -1661,7 +1661,7 @@
 	 */
 	function applyIf(dest, src) {
 
-		assert(dest != null, "Basee.extendIf(dest, src): {dest} 不可为空。", dest);
+		assert(dest != null, "Object.extendIf(dest, src): {dest} 不可为空。", dest);
 
 		// 和 apply 类似，只是判断目标的值是否为 undefiend 。
 		for ( var b in src)
