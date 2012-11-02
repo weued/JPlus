@@ -1,1 +1,0 @@
-@"../../assets/tools/JsHost/JsHost" "../../assets/tools/new/deletefile.js"

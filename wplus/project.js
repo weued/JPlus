@@ -1,9 +1,0 @@
-/**
- * @author WJZ
- */
-
-
-Demo.items = {
-	
-	
-};

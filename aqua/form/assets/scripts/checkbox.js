@@ -1,1 +1,0 @@
-/** * @author  */var CheckBox = ContentControl.extend({		tpl: '<input type="checkbox" class="x-checkbox">',		init: function(){		this.content = this.find('span').setUnselectable();	}	}).implement(IInputControl);

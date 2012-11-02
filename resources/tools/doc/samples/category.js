@@ -1,4 +1,0 @@
-/**
- * @category g
- * @class V
- */

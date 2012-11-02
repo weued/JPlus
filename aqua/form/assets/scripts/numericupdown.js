@@ -1,3 +1,0 @@
-/** * @author  */imports("Controls.Form.UpDown");using("System.Dom.Mark");using("Controls.Form.UpDown");var NumericUpDown = UpDown.extend({		value: 0,		init: function(options){		this.base('init');				Dom.markNumber(this.dom, Function.bind(this.onInvalid, this));				this.setText(this.value);			},		getValue: function () {
-		return this.value;
-	},		setValue: function (value) {		return this.setText(this.value = value);	},		addValue: function (d) {		return this.setValue(this.getValue() + d);	},		onInvalid: function (value) {	},		onUp: function(){		this.addValue(1);	},		onDown: function(){		this.addValue(-1);	}	});

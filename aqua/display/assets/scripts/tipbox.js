@@ -1,1 +1,0 @@
-/** * @author  */imports("Controls.Display.TipBox");using("Controls");var TipBox = Control.extend({		tpl: '<span class="x-tipbox"></span>',		setType: function(value){		this.dom.className = 'x-tipbox x-tipbox-' + value;	}	});

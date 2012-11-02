@@ -1,8 +1,0 @@
-/**
- * @namespace Value
- */
- 
- 
- /**
-  * @name Value
-  */

@@ -1,2 +1,0 @@
-@DplBuilder ../../.. build/assets/styles/share.css build/assets/scripts/share.js ../images Src.Jquery-Adapter Src.Uplus System.Browser.Cookies UPlus.Core.Index UPlus.Layout.Index UPlus.Layout.Box UPlus.Widget.Index UPlus.Widget.TopBar UPlus.Button.Index
-@pause

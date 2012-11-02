@@ -1,1 +1,0 @@
-/** * @author  */document.oncontextmenu = document.onselectstart = Function.returnFalse;

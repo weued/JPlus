@@ -1,4 +1,0 @@
-JSDB is JavaScript for databases, a scripting language for data-driven, network-centric programming on Windows, Mac, Linux, and SunOS. JSDB works with databases, XML, the web, and email. It is free and open-source. Use it as a JavaScript shell, to run CGI programs, or as a web server. 
-
-
-Visit http://www.jsdb.org/index.html to learn more

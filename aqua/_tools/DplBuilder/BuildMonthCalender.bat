@@ -1,2 +1,0 @@
-@DplBuilder ../../.. build/monthcalender/monthcalender.css build/monthcalender/monthcalender.js images System System.Dom.Element System.Fx.Base System.Fx.Element Controls System.Utils.Date Controls.Form.IInputControl Controls.Form.MonthCalender
-@pause

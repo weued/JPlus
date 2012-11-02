@@ -1,1 +1,0 @@
-/** * @author  */using("Controls.Form.IInputControl");var IInputControlProxy = Object.extendIf({		getForm: function () {		return Dom.get(this.dom.form);	}	}, IInputControl);

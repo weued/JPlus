@@ -1,6 +1,0 @@
-../../../system/core/assets/scripts/system.js
-../../../system/dom/assets/scripts/element.js
-../../../src/system/fx/base.js
-../../../src/system/fx/element.js
-../../../src/system/ajax/request.js
-../../../src/system/ajax/ajax.js
